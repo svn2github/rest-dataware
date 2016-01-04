@@ -62,10 +62,10 @@ end;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-// RESTClientSQL.Active := False;
-// RESTDataBase.Active  := False;
-// RESTClientSQL.DisposeOf;
-// RESTDataBase.DisposeOf;
+ RESTClientSQL.Active := False;
+ RESTDataBase.Active  := False;
+ Form1 := Nil;
+ Release;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -84,11 +84,6 @@ begin
       Memo1.Lines.Add(vTempList[I]);
     End;
   End;
-// RESTClientSQL.DataBase     := RESTDataBase;
- RESTClientSQL.Active       := False;
- RESTClientSQL.SQL.Clear;
- RESTClientSQL.SQL.Add(Edit1.Text);
- DataSource1.DataSet        := RESTClientSQL;
  RESTClientSQL.Active       := True;
 end;
 

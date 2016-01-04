@@ -58,7 +58,7 @@ object Form1: TForm1
   end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL
-    Left = 487
+    Left = 488
     Top = 72
   end
   object RESTClientSQL: TRESTClientSQL
@@ -84,7 +84,7 @@ object Form1: TForm1
     DataBase = RESTDataBase
     SQL.Strings = (
       'SELECT * FROM EMPLOYEE')
-    Left = 459
+    Left = 460
     Top = 72
     object RESTClientSQLEMP_NO: TSmallintField
       DisplayLabel = 'Numero'
@@ -139,7 +139,7 @@ object Form1: TForm1
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
-    Active = False
+    Active = True
     Proxy = False
     PoolerService = '127.0.0.1'
     PoolerPort = 8080
