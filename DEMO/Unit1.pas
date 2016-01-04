@@ -5,7 +5,9 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uRestPoolerDB, Vcl.StdCtrls, Data.DB,
-  Vcl.Grids, Vcl.DBGrids;
+  Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
 
 type
   TForm1 = class(TForm)
@@ -14,14 +16,25 @@ type
     DBGrid1: TDBGrid;
     Edit1: TEdit;
     Button1: TButton;
+    RESTClientSQL: TRESTClientSQL;
+    RESTDataBase: TRESTDataBase;
+    RESTClientSQLEMP_NO: TSmallintField;
+    RESTClientSQLFIRST_NAME: TStringField;
+    RESTClientSQLLAST_NAME: TStringField;
+    RESTClientSQLPHONE_EXT: TStringField;
+    RESTClientSQLHIRE_DATE: TSQLTimeStampField;
+    RESTClientSQLDEPT_NO: TStringField;
+    RESTClientSQLJOB_CODE: TStringField;
+    RESTClientSQLJOB_GRADE: TSmallintField;
+    RESTClientSQLJOB_COUNTRY: TStringField;
+    RESTClientSQLSALARY: TFloatField;
+    RESTClientSQLFULL_NAME: TStringField;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure RESTDataBaseConnection(Sucess: Boolean; const Error: string);
   private
     { Private declarations }
-   RESTDataBase  : TRESTDataBase;
-   RESTClientSQL : TRESTClientSQL;
-   procedure OnConnection(Sucess : Boolean; Const Error : String);
   public
     { Public declarations }
   end;
@@ -33,15 +46,11 @@ implementation
 
 {$R *.dfm}
 
-procedure TForm1.OnConnection(Sucess : Boolean; Const Error : String);
-Begin
+procedure TForm1.RESTDataBaseConnection(Sucess: Boolean; const Error: string);
+begin
  if Not (Sucess) then
   MessageDlg(Error, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-{
- Else if RESTDataBase.Active then
-  MessageDlg('Meu IP é : ' + RESTDataBase.MyIP, TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOK], 0);
-  }
-End;
+end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -64,12 +73,6 @@ Var
  I         : Integer;
  vTempList : TStringList;
 begin
- RESTDataBase               := TRESTDataBase.Create(Self);
- RESTDataBase.PoolerService := '127.0.0.1';
- RESTDataBase.PoolerURL     := '';
- RESTDataBase.PoolerPort    := 8080;
- RESTDataBase.OnConnection  := OnConnection;
- RESTDataBase.RestModule    := 'TServerMethods1';
  RESTDataBase.Active        := True;
  Memo1.Lines.Clear;
  If RESTDataBase.Active Then
@@ -81,8 +84,9 @@ begin
       Memo1.Lines.Add(vTempList[I]);
     End;
   End;
- RESTClientSQL              := TRESTClientSQL.Create(Self);
- RESTClientSQL.DataBase     := RESTDataBase;
+// RESTClientSQL.DataBase     := RESTDataBase;
+ RESTClientSQL.Active       := False;
+ RESTClientSQL.SQL.Clear;
  RESTClientSQL.SQL.Add(Edit1.Text);
  DataSource1.DataSet        := RESTClientSQL;
  RESTClientSQL.Active       := True;

@@ -29,14 +29,12 @@ package RestEasyObjects;
 
 requires
   rtl,
-  vcl,
   DbxCommonDriver,
   dbrtl,
   DataSnapClient,
   DataSnapCommon,
   DbxClientDriver,
   CustomIPTransport,
-  vclFireDAC,
   FireDAC,
   FireDACCommonDriver,
   FireDACCommon,

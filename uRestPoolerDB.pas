@@ -14,7 +14,7 @@ interface
 uses System.SysUtils,         System.Classes,           Datasnap.DSProxyRest, Datasnap.DSServer,
      FireDAC.Stan.Intf,       FireDAC.Stan.Option,      FireDAC.Stan.Param,   Datasnap.DSAuth,
      FireDAC.Stan.Error,      FireDAC.DatS,             FireDAC.Phys.Intf,    FireDAC.DApt.Intf,
-     FireDAC.Stan.Async,      FireDAC.DApt,             FireDAC.UI.Intf,      FireDAC.VCLUI.Wait,
+     FireDAC.Stan.Async,      FireDAC.DApt,             FireDAC.UI.Intf,
      FireDAC.Stan.Def,        FireDAC.Stan.Pool,        FireDAC.Phys,         Data.DB,
      FireDAC.Comp.Client,     FireDAC.Comp.UI,          FireDAC.Comp.DataSet, Data.FireDACJSONReflect,
      System.JSON,             FireDAC.Stan.StorageBin,  FireDAC.Stan.StorageJSON,
@@ -432,6 +432,7 @@ End;
 Procedure TRESTDataBase.SetConnectionOptions(Var Value : TDSRestConnection);
 Begin
  Value                   := TDSRestConnection.Create(Owner);
+ Value.LoginPrompt       := False;
  Value.PreserveSessionID := False;
  Value.Protocol          := 'http';
  Value.Host              := vRestWebService;
@@ -610,7 +611,9 @@ End;
 Procedure TRESTClientSQL.SetDataBase(Value : TRESTDataBase);
 Begin
  if Value is TRESTDataBase then
-  vRESTDataBase := Value;
+  vRESTDataBase := Value
+ Else
+  vRESTDataBase := Nil;
 End;
 
 Constructor TRESTClientSQL.Create(AOwner : TComponent);
@@ -697,6 +700,34 @@ Var
  LDataSetList  : TFDJSONDataSets;
  vError        : Boolean;
  vMessageError : String;
+ vTempTable    : TFDMemTable;
+ Procedure CloneDefinitions(Source : TFDMemTable; Var Dest : TRESTClientSQL);
+ Var
+  I, A : Integer;
+ Begin
+  Dest.Close;
+  For I := 0 to Source.FieldDefs.Count -1 do
+   Begin
+    For A := 0 to Dest.FieldDefs.Count -1 do
+     If Uppercase(Source.FieldDefs[I].Name) = Uppercase(Dest.FieldDefs[A].Name) Then
+      Begin
+       Dest.FieldDefs.Delete(A);
+       Break;
+      End;
+   End;
+  For I := 0 to Source.FieldDefs.Count -1 do
+   Begin
+    With Dest.FieldDefs.AddFieldDef Do
+     Begin
+      Name     := Source.FieldDefs[I].Name;
+      DataType := Source.FieldDefs[I].DataType;
+      Size     := Source.FieldDefs[I].Size;
+      Required := Source.FieldDefs[I].Required;
+     End;
+   End;
+  If Dest.FieldDefs.Count > 0 Then
+   Dest.CreateDataSet;
+ End;
 Begin
  Close;
  If Assigned(vRESTDataBase) Then
@@ -704,9 +735,19 @@ Begin
    LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, False);
    If LDataSetList <> Nil Then
     Begin
-     Self.Close;
+     vTempTable := TFDMemTable.Create(Nil);
      Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
-     AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
+     vTempTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
+     Self.Close;
+     Try
+      CloneDefinitions(vTempTable, Self);
+//      Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
+//      CloneCursor(vTempTable, False, True);
+//      CopyDataSet(vTempTable, [coStructure, coRestart, coAppend]);
+      AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
+     Finally
+      vTempTable.DisposeOf;
+     End;
     End;
   End;
 End;
@@ -714,7 +755,7 @@ End;
 Procedure TRESTClientSQL.SetActiveDB(Value : Boolean);
 Begin
  vActive := False;
- If Value Then
+ if (vRESTDataBase <> Nil) And (Value) Then
   Begin
    Try
     GetData;

@@ -3,10 +3,13 @@
         <ProjectGuid>{B9896F08-FBE4-4C46-BDAA-C3C41A03A68E}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
+        <Projects Include="RestDWServerProject.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="Project1.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="RestDWServerProject.dproj">
+        <Projects Include="..\RestEasyObjects.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -17,15 +20,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="Project1">
-        <MSBuild Projects="Project1.dproj"/>
-    </Target>
-    <Target Name="Project1:Clean">
-        <MSBuild Projects="Project1.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Project1:Make">
-        <MSBuild Projects="Project1.dproj" Targets="Make"/>
-    </Target>
     <Target Name="RestDWServerProject">
         <MSBuild Projects="RestDWServerProject.dproj"/>
     </Target>
@@ -35,14 +29,32 @@
     <Target Name="RestDWServerProject:Make">
         <MSBuild Projects="RestDWServerProject.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Project1">
+        <MSBuild Projects="Project1.dproj"/>
+    </Target>
+    <Target Name="Project1:Clean">
+        <MSBuild Projects="Project1.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Project1:Make">
+        <MSBuild Projects="Project1.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="RestEasyObjects">
+        <MSBuild Projects="..\RestEasyObjects.dproj"/>
+    </Target>
+    <Target Name="RestEasyObjects:Clean">
+        <MSBuild Projects="..\RestEasyObjects.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RestEasyObjects:Make">
+        <MSBuild Projects="..\RestEasyObjects.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Project1;RestDWServerProject"/>
+        <CallTarget Targets="RestDWServerProject;Project1;RestEasyObjects"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Project1:Clean;RestDWServerProject:Clean"/>
+        <CallTarget Targets="RestDWServerProject:Clean;Project1:Clean;RestEasyObjects:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Project1:Make;RestDWServerProject:Make"/>
+        <CallTarget Targets="RestDWServerProject:Make;Project1:Make;RestEasyObjects:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

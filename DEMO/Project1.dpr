@@ -2,9 +2,7 @@ program Project1;
 
 uses
   Vcl.Forms,
-  Unit1 in 'Unit1.pas' {Form1},
-  uRestPoolerDB in '..\uRestPoolerDB.pas',
-  uPoolerMethod in '..\uPoolerMethod.pas';
+  Unit1 in 'Unit1.pas' {Form1};
 
 {$R *.res}
 
