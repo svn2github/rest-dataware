@@ -8,8 +8,6 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
      Data.FireDACJSONReflect, Data.DBXJSONReflect;
 
  Type
-  IDSRestCachedTStringList     = Interface;
-  IDSRestCachedTFDJSONDataSets = Interface;
   TSMPoolerMethodClient        = Class(TDSAdminRestClient)
   Private
    FEchoPoolerCommand,
@@ -37,14 +35,6 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
                                   Var MessageError     : String;
                                   Execute              : Boolean;
                                   const ARequestFilter : String = ''): TFDJSONDataSets;
-  End;
-  IDSRestCachedTStringList = Interface(IDSRestCachedObject<TStringList>)
- End;
-  TDSRestCachedTStringList = class(TDSRestCachedObject<TStringList>, IDSRestCachedTStringList, IDSRestCachedCommand)
- End;
-  IDSRestCachedTFDJSONDataSets = interface(IDSRestCachedObject<TFDJSONDataSets>)
- End;
-  TDSRestCachedTFDJSONDataSets = class(TDSRestCachedObject<TFDJSONDataSets>, IDSRestCachedTFDJSONDataSets, IDSRestCachedCommand)
  End;
 
 Const
