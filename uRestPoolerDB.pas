@@ -44,7 +44,7 @@ Type
 End;
 
 Type
- TAutoCheckData = Class(TObject)
+ TAutoCheckData = Class(TPersistent)
  Private
   vAutoCheck : Boolean;                            //Se tem Autochecagem
   vInTime    : Integer;                            //Em milisegundos o timer
@@ -63,14 +63,14 @@ Type
 End;
 
 Type
- TProxyOptions = Class(TObject)
+ TProxyOptions = Class(TPersistent)
  Private
   vServer,              //Servidor Proxy na Rede
   vLogin,               //Login do Servidor Proxy
   vPassword : String;   //Senha do Servidor Proxy
   vPort     : Integer;  //Porta do Servidor Proxy
  Public
-  Constructor Create;   //Cria o Componente
+  Constructor Create; //(AOwner  : TComponent);Override;   //Cria o Componente
   Property Server   : String  Read vServer   Write vServer;   //Servidor Proxy na Rede
   Property Port     : Integer Read vPort     Write vPort;     //Porta do Servidor Proxy
   Property Login    : String  Read vLogin    Write vLogin;    //Login do Servidor Proxy
@@ -142,6 +142,7 @@ Type
   vOnBeforeDelete : TOnEventDB;                     //Variável do Evento BeforeDelete
   vOnGetDataError : TOnEventConnection;             //Se deu erro na hora de receber os dados ou não
   vRESTDataBase   : TRESTDataBase;                  //RESTDataBase do Dataset
+  Procedure OnChangingSQL(Sender: TObject);         //Quando Altera o SQL da Lista
   Procedure SetActiveDB(Value : Boolean);           //Seta o Estado do Dataset
   Procedure SetSQL(Value : TStringList);            //Seta o SQL a ser usado
   Function  NegociateTransaction : Boolean;         //Envia o comando de criação o Fluxo de Controle da Transação no Pooler
@@ -420,7 +421,7 @@ Begin
   End;
 End;
 
-Constructor TProxyOptions.Create;
+Constructor TProxyOptions.Create; //(AOwner  : TComponent);
 Begin
  Inherited;
  vServer   := '';
@@ -431,7 +432,7 @@ End;
 
 Procedure TRESTDataBase.SetConnectionOptions(Var Value : TDSRestConnection);
 Begin
- Value                   := TDSRestConnection.Create(Owner);
+ Value                   := TDSRestConnection.Create(Nil);
  Value.LoginPrompt       := False;
  Value.PreserveSessionID := False;
  Value.Protocol          := 'http';
@@ -545,7 +546,7 @@ Begin
  vRestPooler               := vPassword;
  vPoolerPort               := 8081;
  vProxy                    := False;
- vProxyOptions             := TProxyOptions.Create;
+ vProxyOptions             := TProxyOptions.Create; //(Self);
  vAutoCheckData            := TAutoCheckData.Create;
  vAutoCheckData.vAutoCheck := False;
  vAutoCheckData.vEvent     := CheckConnection;
@@ -625,6 +626,7 @@ Begin
  vConnectedOnce  := True;
  vActive         := False;
  vSQL            := TStringList.Create;
+ vSQL.OnChange   := OnChangingSQL;
  vParams         := TParams.Create(Self);
  vCacheDataDB    := Self.CloneSource;
 End;
@@ -639,14 +641,64 @@ Begin
 End;
 
 Procedure TRESTClientSQL.CreateParams;
+Var
+ I, A, X    : Integer;
+ vTempLine,
+ vTempBuff,
+ vParamName : String;
+ Procedure CreateParam(Value : String);
+ Begin
+  vParams.CreateParam(ftUnknown, Value, ptUnknown);
+ End;
 Begin
-
+ vParams.Clear;
+ For I := 0 to vSQL.Count -1 Do
+  Begin
+   vTempLine := vSQL[I];
+   While vTempLine <> '' Do
+    Begin
+     If Pos(':', vTempLine) > 0 Then
+      Begin
+       System.Delete(vTempLine, 1, Pos(':', vTempLine));
+       vTempBuff := vTempLine;
+       If Length(vTempBuff) = 0 then
+        X := 0
+       Else
+        X := 1;
+       vParamName := '';
+       If Length(vTempBuff) > 0 then
+        While (vTempBuff[X] <> ' ') Do
+         Begin
+          vParamName := vParamName + vTempBuff[X];
+          Inc(X);
+          If X > Length(vTempBuff) then
+           Break;
+         End;
+       If X <= Length(vTempBuff) then
+        System.Delete(vTempLine, 1, X)
+       Else
+        System.Delete(vTempLine, 1, Length(vTempLine));
+       CreateParam(vParamName);
+      End
+     Else
+      vTempLine := '';
+    End;
+  End;
 End;
 
 Function  TRESTClientSQL.ParamByName(Value : String) : TParam;
+Var
+ I : Integer;
 Begin
  Result := Nil;
-
+ For I := 0 to vParams.Count -1 do
+  Begin
+   if UpperCase(vParams[I].Name) = UpperCase(Value) then
+    Begin
+     Result := vParams[I];
+     Break;
+    End;
+  End;
 End;
 
 Procedure TRESTClientSQL.SetOnBeforePost(Value : TOnEventDB);
@@ -675,6 +727,11 @@ Begin
 
 End;
 
+Procedure TRESTClientSQL.OnChangingSQL(Sender: TObject);
+Begin
+ CreateParams;
+End;
+
 Procedure TRESTClientSQL.SetSQL(Value : TStringList);
 Var
  I : Integer;
@@ -682,7 +739,6 @@ Begin
  vSQL.Clear;
  For I := 0 To Value.Count -1 do
   vSQL.Add(Value[I]);
- CreateParams;
 End;
 
 Procedure TRESTClientSQL.Close;

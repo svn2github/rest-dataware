@@ -41,20 +41,36 @@ object Form1: TForm1
   end
   object Edit1: TEdit
     Left = 232
-    Top = 32
-    Width = 249
+    Top = 12
+    Width = 247
     Height = 21
     TabOrder = 2
-    Text = 'SELECT * FROM EMPLOYEE'
+    Text = 'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME'
   end
   object Button1: TButton
-    Left = 485
-    Top = 30
+    Left = 487
+    Top = 33
     Width = 75
     Height = 25
     Caption = 'Executar'
     TabOrder = 3
     OnClick = Button1Click
+  end
+  object Edit2: TEdit
+    Left = 232
+    Top = 59
+    Width = 247
+    Height = 21
+    TabOrder = 4
+    Text = 'Robert'
+  end
+  object Edit3: TEdit
+    Left = 232
+    Top = 35
+    Width = 247
+    Height = 21
+    TabOrder = 5
+    Text = 'FIRST_NAME'
   end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL
@@ -80,10 +96,15 @@ object Form1: TForm1
     StoreDefs = True
     AutoCommit = True
     DataCache = False
-    Params = <>
+    Params = <
+      item
+        DataType = ftUnknown
+        Name = 'FIRST_NAME'
+        ParamType = ptUnknown
+      end>
     DataBase = RESTDataBase
     SQL.Strings = (
-      'SELECT * FROM EMPLOYEE')
+      'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME')
     Left = 460
     Top = 72
     object RESTClientSQLEMP_NO: TSmallintField

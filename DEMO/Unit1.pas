@@ -29,6 +29,8 @@ type
     RESTClientSQLJOB_COUNTRY: TStringField;
     RESTClientSQLSALARY: TFloatField;
     RESTClientSQLFULL_NAME: TStringField;
+    Edit2: TEdit;
+    Edit3: TEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -57,6 +59,8 @@ begin
  RESTClientSQL.Active       := False;
  RESTClientSQL.SQL.Clear;
  RESTClientSQL.SQL.Add(Edit1.Text);
+ If RESTClientSQL.Params.Count > 0 Then
+  RESTClientSQL.ParamByName(Edit3.Text).AsString := Edit2.Text;
  RESTClientSQL.Active       := True;
 end;
 
@@ -84,7 +88,7 @@ begin
       Memo1.Lines.Add(vTempList[I]);
     End;
   End;
- RESTClientSQL.Active       := True;
+// RESTClientSQL.Active       := True;
 end;
 
 end.
