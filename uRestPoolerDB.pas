@@ -144,9 +144,7 @@ Type
   vRESTDataBase   : TRESTDataBase;                  //RESTDataBase do Dataset
   Procedure SetActiveDB(Value : Boolean);           //Seta o Estado do Dataset
   Procedure SetSQL(Value : TStringList);            //Seta o SQL a ser usado
-  Function  CreateOnlineConnection : Boolean;       //Cria a Conexão Online com o Servidor
   Function  NegociateTransaction : Boolean;         //Envia o comando de criação o Fluxo de Controle da Transação no Pooler
-//  Procedure ReleaseConnection;                      //Finaliza a Conexão
   Procedure SetOnBeforePost(Value : TOnEventDB);    //Seta o Evento de Before Post do Componente
   Procedure SetOnBeforeDelete(Value : TOnEventDB);  //Seta o Evento de Before Delete do Componente
   Procedure CreateParams;                           //Cria os Parametros na lista de Dataset
@@ -252,7 +250,6 @@ Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
                                       Execute    : Boolean = False) : TFDJSONDataSets;
 Var
  vTempQuery : TFDQuery;
- I          : Integer;
 Begin
  Result := Nil;
  Error  := False;
@@ -457,7 +454,6 @@ Function TRESTDataBase.ExecuteCommand(Var SQL    : TStringList;
                                       Var MessageError : String;
                                       Execute    : Boolean = False) : TFDJSONDataSets;
 Var
- I                 : Integer;
  vDSRConnection    : TDSRestConnection;
  vRESTConnectionDB : TSMPoolerMethodClient;
  Function GetLineSQL(Value : TStringList) : String;
@@ -659,19 +655,6 @@ Begin
 
 End;
 
-Function  TRESTClientSQL.CreateOnlineConnection : Boolean;
-Begin
- Result := False;
-
-End;
-
-{
-Procedure TRESTClientSQL.ReleaseConnection;
-Begin
-
-End;
-}
-
 Procedure TRESTClientSQL.Commit;
 Begin
 
@@ -711,23 +694,13 @@ Begin
  Close;
  If Assigned(vRESTDataBase) Then
   Begin
-   Try
-    LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, False);
-    if LDataSetList <> Nil then
-     Begin
-      Self.Close;
-      Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
-      AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
-     End;
-    If Assigned(vOnGetDataError) Then
-     vOnGetDataError(True, '');
-   Except
-    On E : Exception do
-     Begin
-      if Assigned(vOnGetDataError) then
-       vOnGetDataError(False, E.Message);
-     End;
-   End;
+   LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, False);
+   If LDataSetList <> Nil Then
+    Begin
+     Self.Close;
+     Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
+     AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
+    End;
   End;
 End;
 
@@ -739,8 +712,14 @@ Begin
    Try
     GetData;
     vActive := True;
+    If Assigned(vOnGetDataError) Then
+     vOnGetDataError(True, '');
    Except
-
+    On E : Exception do
+     Begin
+      if Assigned(vOnGetDataError) then
+       vOnGetDataError(False, E.Message);
+     End;
    End;
   End
  Else
