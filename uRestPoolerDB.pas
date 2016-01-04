@@ -757,6 +757,8 @@ Begin
  vActive := False;
  if (vRESTDataBase <> Nil) And (Value) Then
   Begin
+   if Not vRESTDataBase.Active then
+    Exit;
    Try
     GetData;
     vActive := True;

@@ -48,8 +48,8 @@ object Form1: TForm1
     Text = 'SELECT * FROM EMPLOYEE'
   end
   object Button1: TButton
-    Left = 488
-    Top = 32
+    Left = 485
+    Top = 30
     Width = 75
     Height = 25
     Caption = 'Executar'
@@ -139,7 +139,7 @@ object Form1: TForm1
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
-    Active = True
+    Active = False
     Proxy = False
     PoolerService = '127.0.0.1'
     PoolerPort = 8080
