@@ -199,7 +199,14 @@ Type
   Destructor  Destroy;Override;                     //Destroy a Classe
 End;
 
+Procedure Register;
+
 implementation
+
+Procedure Register;
+Begin
+ RegisterComponents('REST Dataware', [TRESTPoolerDB, TRESTDataBase, TRESTClientSQL]);
+End;
 
 Function  TRESTPoolerDB.GetConnection : TFDConnection;
 Begin
