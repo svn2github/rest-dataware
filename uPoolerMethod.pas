@@ -82,6 +82,7 @@ Function TSMPoolerMethodClient.ExecuteCommandPure(Pooler               : String;
                                                   Execute              : Boolean;
                                                   const ARequestFilter : String = ''): TFDJSONDataSets;
 Begin
+ Result := Nil;
  If FExecuteCommandPureCommand = Nil Then
   Begin
    FExecuteCommandPureCommand := FConnection.CreateCommand;
@@ -110,9 +111,7 @@ Begin
       FreeAndNil(FUnMarshal);
      End;
     End;
-  End
- Else
-  Result := Nil;
+  End;
 End;
 
 Function TSMPoolerMethodClient.ExecuteCommand(Pooler               : String;
@@ -124,6 +123,7 @@ Function TSMPoolerMethodClient.ExecuteCommand(Pooler               : String;
                                               Execute              : Boolean;
                                               Const ARequestFilter : String) : TFDJSONDataSets;
 Begin
+ Result := Nil;
  If FExecuteCommandCommand = Nil Then
   Begin
    FExecuteCommandCommand := FConnection.CreateCommand;
@@ -153,9 +153,7 @@ Begin
       FreeAndNil(FUnMarshal);
      End;
     End;
-  End
- Else
-  Result := Nil;
+  End;
 End;
 
 Function TSMPoolerMethodClient.EchoPooler(Value, Method_Prefix: string; const ARequestFilter: string): string;

@@ -145,7 +145,6 @@ Type
   Procedure OnChangingSQL(Sender: TObject);         //Quando Altera o SQL da Lista
   Procedure SetActiveDB(Value : Boolean);           //Seta o Estado do Dataset
   Procedure SetSQL(Value : TStringList);            //Seta o SQL a ser usado
-  Function  NegociateTransaction : Boolean;         //Envia o comando de criação o Fluxo de Controle da Transação no Pooler
   Procedure SetOnBeforePost(Value : TOnEventDB);    //Seta o Evento de Before Post do Componente
   Procedure SetOnBeforeDelete(Value : TOnEventDB);  //Seta o Evento de Before Delete do Componente
   Procedure CreateParams;                           //Cria os Parametros na lista de Dataset
@@ -163,7 +162,7 @@ Type
  Published
   Property OnBeforePost   : TOnEventDB         Read vOnBeforePost   Write SetOnBeforePost;   //Evento de Before Post, esse é essencial para o Componente
   Property OnBeforeDelete : TOnEventDB         Read vOnBeforeDelete Write SetOnBeforeDelete; //Evento de Before Delete, esse é essencial para o Componente
-  Property OnGetDataError : TOnEventConnection Read vOnGetDataError Write vOnGetDataError;
+  Property OnGetDataError : TOnEventConnection Read vOnGetDataError Write vOnGetDataError;   //Recebe os Erros de ExecSQL ou de GetData
   Property Active         : Boolean            Read vActive         Write SetActiveDB;       //Estado do Dataset
   Property AutoCommit     : Boolean            Read vAutoCommit     Write vAutoCommit;       //Se executa o Commit Automáticamente
   Property DataCache      : Boolean            Read vDataCache      Write vDataCache;        //Diz se será salvo o último Stream do Dataset
@@ -173,7 +172,8 @@ Type
 End;
 
 Type
- TRESTPoolerDB = Class(TComponent)
+ TRESTPoolerDBP = ^TComponent;
+ TRESTPoolerDB  = Class(TComponent)
  Private
   Owner          : TComponent;
   FLock          : TCriticalSection;
@@ -186,6 +186,17 @@ Type
   Procedure SetConnection(Value : TFDConnection);
   Function  GetConnection : TFDConnection;
  Public
+  Procedure ApplyChanges(TableName,
+                         SQL        : String;
+                         Params     : TParams;
+                         Var Error  : Boolean;
+                         Var MessageError : String;
+                         Const ADeltaList: TFDJSONDeltas);Overload;
+  Procedure ApplyChanges(TableName,
+                         SQL        : String;
+                         Var Error  : Boolean;
+                         Var MessageError : String;
+                         Const ADeltaList: TFDJSONDeltas);Overload;
   Function ExecuteCommand(SQL        : String;
                           Var Error  : Boolean;
                           Var MessageError : String;
@@ -290,6 +301,95 @@ Begin
    End;
  End;
 End;
+
+Procedure TRESTPoolerDB.ApplyChanges(TableName,
+                                     SQL              : String;
+                                     Var Error        : Boolean;
+                                     Var MessageError : String;
+                                     Const ADeltaList : TFDJSONDeltas);
+Var
+ vTempQuery : TFDQuery;
+ LApply     : IFDJSONDeltasApplyUpdates;
+begin
+ Error                    := False;
+ vTempQuery               := TFDQuery.Create(Owner);
+ Try
+  vTempQuery.Connection   := vFDConnection;
+  vTempQuery.SQL.Clear;
+  vTempQuery.SQL.Add(SQL);
+  vTempQuery.Active := True;
+ Except
+  On E : Exception do
+   Begin
+    Error := True;
+    MessageError := E.Message;
+    vTempQuery.DisposeOf;
+    Exit;
+   End;
+ End;
+ LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
+ LApply.ApplyUpdates(TableName,  vTempQuery.Command);
+ If LApply.Errors.Count = 0 then
+  LApply.ApplyUpdates(TableName, vTempQuery.Command);
+ If LApply.Errors.Count > 0 then
+  Begin
+   Error := True;
+   MessageError := LApply.Errors.Strings.Text;
+  End;
+ vTempQuery.DisposeOf;
+end;
+
+Procedure TRESTPoolerDB.ApplyChanges(TableName,
+                                     SQL              : String;
+                                     Params           : TParams;
+                                     Var Error        : Boolean;
+                                     Var MessageError : String;
+                                     Const ADeltaList : TFDJSONDeltas);
+Var
+ I          : Integer;
+ vTempQuery : TFDQuery;
+ LApply     : IFDJSONDeltasApplyUpdates;
+begin
+ Error  := False;
+ vTempQuery               := TFDQuery.Create(Owner);
+ Try
+  vTempQuery.Connection   := vFDConnection;
+  vTempQuery.SQL.Clear;
+  vTempQuery.SQL.Add(SQL);
+  If Params <> Nil Then
+   Begin
+    For I := 0 To Params.Count -1 Do
+     Begin
+      If vTempQuery.ParamCount > I Then
+       Begin
+        If vTempQuery.ParamByName(Params[I].Name) <> Nil Then
+         vTempQuery.ParamByName(Params[I].Name).Value := Params[I].Value;
+       End
+      Else
+       Break;
+     End;
+   End;
+  vTempQuery.Active := True;
+ Except
+  On E : Exception do
+   Begin
+    Error := True;
+    MessageError := E.Message;
+    vTempQuery.DisposeOf;
+    Exit;
+   End;
+ End;
+ LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
+ LApply.ApplyUpdates(TableName,  vTempQuery.Command);
+ If LApply.Errors.Count = 0 then
+  LApply.ApplyUpdates(TableName, vTempQuery.Command);
+ If LApply.Errors.Count > 0 then
+  Begin
+   Error := True;
+   MessageError := LApply.Errors.Strings.Text;
+  End;
+ vTempQuery.DisposeOf;
+end;
 
 Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
                                       Params     : TParams;
@@ -669,7 +769,7 @@ Var
  End;
  Function InBreakChar(Value : Char) : Boolean;
  Begin
-  Result := Value in [' ', ')', '(', '=', '<', '>', '[', ']', '}', '{'];
+  Result := CharInSet(Value, [' ', ')', '(', '=', '<', '>', '[', ']', '}', '{']);
  End;
 Begin
  vParams.Clear;
@@ -724,18 +824,12 @@ End;
 
 Procedure TRESTClientSQL.SetOnBeforePost(Value : TOnEventDB);
 Begin
-
+ vOnBeforePost := Value;
 End;
 
 Procedure TRESTClientSQL.SetOnBeforeDelete(Value : TOnEventDB);
 Begin
-
-End;
-
-Function  TRESTClientSQL.NegociateTransaction : Boolean;
-Begin
- Result := False;
-
+ vOnBeforeDelete := Value;
 End;
 
 Procedure TRESTClientSQL.Commit;
@@ -747,9 +841,8 @@ Procedure TRESTClientSQL.ExecSQL;
 Var
  vError        : Boolean;
  vMessageError : String;
- LDataSetList  : TFDJSONDataSets;
 Begin
- LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, True);
+ vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, True);
 End;
 
 Procedure TRESTClientSQL.OnChangingSQL(Sender: TObject);

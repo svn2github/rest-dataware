@@ -1,9 +1,10 @@
 object RestDWForm: TRestDWForm
   Left = 271
   Top = 114
+  BorderIcons = [biSystemMenu]
   Caption = 'Server REST Dataware'
-  ClientHeight = 235
-  ClientWidth = 399
+  ClientHeight = 92
+  ClientWidth = 176
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,19 +12,20 @@ object RestDWForm: TRestDWForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
-    Left = 24
-    Top = 48
+    Left = 25
+    Top = 8
     Width = 20
     Height = 13
     Caption = 'Port'
   end
   object ButtonStart: TButton
-    Left = 24
-    Top = 8
+    Left = 80
+    Top = 25
     Width = 75
     Height = 25
     Caption = 'Start'
@@ -31,8 +33,8 @@ object RestDWForm: TRestDWForm
     OnClick = ButtonStartClick
   end
   object ButtonStop: TButton
-    Left = 105
-    Top = 8
+    Left = 80
+    Top = 56
     Width = 75
     Height = 25
     Caption = 'Stop'
@@ -40,25 +42,16 @@ object RestDWForm: TRestDWForm
     OnClick = ButtonStopClick
   end
   object EditPort: TEdit
-    Left = 24
-    Top = 67
-    Width = 121
+    Left = 25
+    Top = 27
+    Width = 49
     Height = 21
     TabOrder = 2
     Text = '8080'
   end
-  object ButtonOpenBrowser: TButton
-    Left = 24
-    Top = 112
-    Width = 107
-    Height = 25
-    Caption = 'Open Browser'
-    TabOrder = 3
-    OnClick = ButtonOpenBrowserClick
-  end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
-    Left = 288
-    Top = 24
+    Left = 17
+    Top = 56
   end
 end
