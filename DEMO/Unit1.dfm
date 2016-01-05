@@ -168,7 +168,9 @@ object Form1: TForm1
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
-    Active = True
+    Active = False
+    Login = 'testserver'
+    Password = 'testserver'
     Proxy = False
     PoolerService = '127.0.0.1'
     PoolerPort = 8080

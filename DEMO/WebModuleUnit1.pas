@@ -23,6 +23,7 @@ type
     DSHTTPWebDispatcher1: TDSHTTPWebDispatcher;
     DSServer1: TDSServer;
     DSServerClass1: TDSServerClass;
+    DSAuthenticationManager1: TDSAuthenticationManager;
     procedure DSServerClass1GetClass(DSServerClass: TDSServerClass;
       var PersistentClass: TPersistentClass);
     procedure WebModule1DefaultHandlerAction(Sender: TObject;
@@ -31,6 +32,9 @@ type
       Response: TWebResponse; var Handled: Boolean);
     procedure DSServer1Connect(DSConnectEventObject: TDSConnectEventObject);
     procedure DSServer1Disconnect(DSConnectEventObject: TDSConnectEventObject);
+    procedure DSAuthenticationManager1UserAuthenticate(Sender: TObject;
+      const Protocol, Context, User, Password: string; var valid: Boolean;
+      UserRoles: TStrings);
   private
     { Private declarations }
   public
@@ -57,6 +61,14 @@ procedure TWebModule1.WebModuleBeforeDispatch(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
  remoteIP := Request.RemoteAddr;
+end;
+
+procedure TWebModule1.DSAuthenticationManager1UserAuthenticate(Sender: TObject;
+  const Protocol, Context, User, Password: string; var valid: Boolean;
+  UserRoles: TStrings);
+begin
+ //Adicionada Autenticação de Usuário
+ valid := (User = 'testserver') and (Password = 'testserver');
 end;
 
 procedure TWebModule1.DSServer1Connect(
