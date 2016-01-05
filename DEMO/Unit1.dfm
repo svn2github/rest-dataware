@@ -78,7 +78,7 @@ object Form1: TForm1
     Top = 18
     Width = 247
     Height = 21
-    TabOrder = 2
+    TabOrder = 3
     Text = 'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME'
   end
   object Button1: TButton
@@ -87,7 +87,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = 'Abrir'
-    TabOrder = 5
+    TabOrder = 6
     OnClick = Button1Click
   end
   object Edit2: TEdit
@@ -95,7 +95,7 @@ object Form1: TForm1
     Top = 56
     Width = 134
     Height = 21
-    TabOrder = 4
+    TabOrder = 5
     Text = 'Robert'
   end
   object Edit3: TEdit
@@ -103,7 +103,7 @@ object Form1: TForm1
     Top = 56
     Width = 107
     Height = 21
-    TabOrder = 3
+    TabOrder = 4
     Text = 'FIRST_NAME'
   end
   object ListBox1: TListBox
@@ -112,7 +112,7 @@ object Form1: TForm1
     Width = 193
     Height = 59
     ItemHeight = 13
-    TabOrder = 7
+    TabOrder = 2
     OnClick = ListBox1Click
   end
   object Button2: TButton
@@ -121,7 +121,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = 'Executar'
-    TabOrder = 6
+    TabOrder = 7
     OnClick = Button2Click
   end
   object Edit4: TEdit
