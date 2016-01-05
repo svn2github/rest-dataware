@@ -139,15 +139,11 @@ Type
   vSQL             : TStringList;                   //SQL a ser utilizado na conexão
   vParams          : TParams;                       //Parametros de Dataset
   vCacheDataDB     : TFDDataset;                    //O Cache de Dados Salvo para utilização rápida
-  vOnBeforePost,                                    //Variável do Evento BeforePost
-  vOnBeforeDelete  : TOnEventDB;                    //Variável do Evento BeforeDelete
   vOnGetDataError  : TOnEventConnection;            //Se deu erro na hora de receber os dados ou não
   vRESTDataBase    : TRESTDataBase;                 //RESTDataBase do Dataset
   Procedure OnChangingSQL(Sender: TObject);         //Quando Altera o SQL da Lista
   Procedure SetActiveDB(Value : Boolean);           //Seta o Estado do Dataset
   Procedure SetSQL(Value : TStringList);            //Seta o SQL a ser usado
-  Procedure SetOnBeforePost(Value : TOnEventDB);    //Seta o Evento de Before Post do Componente
-  Procedure SetOnBeforeDelete(Value : TOnEventDB);  //Seta o Evento de Before Delete do Componente
   Procedure CreateParams;                           //Cria os Parametros na lista de Dataset
   Procedure SetDataBase(Value : TRESTDataBase);     //Diz o REST Database
   Procedure GetData;
@@ -156,13 +152,10 @@ Type
   Procedure   Open;                                 //Método Open que será utilizado no Componente
   Procedure   Close;                                //Método Close que será utilizado no Componente
   Procedure   ExecSQL;                              //Método ExecSQL que será utilizado no Componente
-  Procedure   Commit;                               //Força a Gravação de Dados Online
   Function    ParamByName(Value : String) : TParam; //Retorna o Parametro de Acordo com seu nome
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                     //Destroy a Classe
  Published
-  Property OnBeforePost    : TOnEventDB         Read vOnBeforePost    Write SetOnBeforePost;   //Evento de Before Post, esse é essencial para o Componente
-  Property OnBeforeDelete  : TOnEventDB         Read vOnBeforeDelete  Write SetOnBeforeDelete; //Evento de Before Delete, esse é essencial para o Componente
   Property OnGetDataError  : TOnEventConnection Read vOnGetDataError  Write vOnGetDataError;   //Recebe os Erros de ExecSQL ou de GetData
   Property Active          : Boolean            Read vActive          Write SetActiveDB;       //Estado do Dataset
   Property AutoCommit      : Boolean            Read vAutoCommit      Write vAutoCommit;       //Se executa o Commit Automáticamente
@@ -841,21 +834,6 @@ Begin
      Break;
     End;
   End;
-End;
-
-Procedure TRESTClientSQL.SetOnBeforePost(Value : TOnEventDB);
-Begin
- vOnBeforePost := Value;
-End;
-
-Procedure TRESTClientSQL.SetOnBeforeDelete(Value : TOnEventDB);
-Begin
- vOnBeforeDelete := Value;
-End;
-
-Procedure TRESTClientSQL.Commit;
-Begin
-
 End;
 
 Procedure TRESTClientSQL.ExecSQL;
