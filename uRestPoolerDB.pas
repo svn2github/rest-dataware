@@ -242,42 +242,12 @@ Begin
  vFDConnectionBack := Value;
  If Value <> Nil Then
   vFDConnection     := vFDConnectionBack
-//  CopyConnection(Value, vFDConnection, vFDTransaction)
  Else
   Begin
-   if vFDConnection <> Nil then
-    Begin
-     vFDConnection.Close;
-//     vFDTransaction.DisposeOf;
-//     vFDConnection.DisposeOf;
-    End;
+   If vFDConnection <> Nil Then
+    vFDConnection.Close;
   End;
 End;
-
-{
-Procedure TRESTPoolerDB.CopyConnection(CopyDBConnection : TFDConnection;
-                                       Var DBConnection : TFDConnection;
-                                       Var WriteTrans   : TFDTransaction);
-Var
- I : Integer;
-Begin
- If CopyDBConnection <> Nil Then
-  Begin
-   DBConnection              := TFDConnection.Create(Nil);
-   WriteTrans                := TFDTransaction.Create(Nil);
-   DBConnection.LoginPrompt  := False;
-   DBConnection.DriverName   := CopyDBConnection.DriverName;
-   For I := 0 to CopyDBConnection.Params.Count -1 do
-    DBConnection.Params.Add(CopyDBConnection.Params[I]);
-   DBConnection.Transaction  := WriteTrans;
-   WriteTrans.Connection     := DBConnection;
-   Try
-    DBConnection.Connected   := True;
-   Except
-   End;
-  End;
-End;
-}
 
 Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
                                       Var Error  : Boolean;
@@ -537,7 +507,7 @@ Begin
   End;
 End;
 
-Constructor TProxyOptions.Create; //(AOwner  : TComponent);
+Constructor TProxyOptions.Create;
 Begin
  Inherited;
  vServer   := '';
@@ -666,7 +636,7 @@ Begin
  vRestPooler               := vPassword;
  vPoolerPort               := 8081;
  vProxy                    := False;
- vProxyOptions             := TProxyOptions.Create; //(Self);
+ vProxyOptions             := TProxyOptions.Create;
  vAutoCheckData            := TAutoCheckData.Create;
  vAutoCheckData.vAutoCheck := False;
  vAutoCheckData.vEvent     := CheckConnection;
@@ -916,9 +886,6 @@ Begin
      Self.Close;
      Try
       CloneDefinitions(vTempTable, Self);
-//      Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
-//      CloneCursor(vTempTable, False, True);
-//      CopyDataSet(vTempTable, [coStructure, coRestart, coAppend]);
       AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
      Finally
       vTempTable.DisposeOf;
