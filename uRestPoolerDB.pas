@@ -650,6 +650,10 @@ Var
  Begin
   vParams.CreateParam(ftUnknown, Value, ptUnknown);
  End;
+ Function InBreakChar(Value : Char) : Boolean;
+ Begin
+  Result := Value in [' ', ')', '(', '=', '<', '>', '[', ']', '}', '{'];
+ End;
 Begin
  vParams.Clear;
  For I := 0 to vSQL.Count -1 Do
@@ -667,7 +671,7 @@ Begin
         X := 1;
        vParamName := '';
        If Length(vTempBuff) > 0 then
-        While (vTempBuff[X] <> ' ') Do
+        While (Not InBreakChar(vTempBuff[X])) Do
          Begin
           vParamName := vParamName + vTempBuff[X];
           Inc(X);

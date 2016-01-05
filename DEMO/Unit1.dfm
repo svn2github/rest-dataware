@@ -97,9 +97,10 @@ object Form1: TForm1
     DataCache = False
     Params = <
       item
-        DataType = ftUnknown
+        DataType = ftString
         Name = 'FIRST_NAME'
         ParamType = ptUnknown
+        Value = 'Robert'
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
