@@ -865,6 +865,7 @@ End;
 Procedure TRESTClientSQL.Close;
 Begin
  TFDMemTable(Self).Close;
+ TFDMemTable(Self).FieldDefs.Clear;
 End;
 
 Procedure TRESTClientSQL.Open;
