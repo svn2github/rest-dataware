@@ -2,9 +2,10 @@ object Form1: TForm1
   Left = 0
   Top = 0
   ActiveControl = Edit1
-  Caption = 'Form1'
+  BorderIcons = [biSystemMenu]
+  Caption = 'Cliente de Testes Utilizando o PoolerDB'
   ClientHeight = 317
-  ClientWidth = 812
+  ClientWidth = 464
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +20,7 @@ object Form1: TForm1
   object DBGrid1: TDBGrid
     Left = 0
     Top = 95
-    Width = 812
+    Width = 464
     Height = 222
     Align = alBottom
     DataSource = DataSource1
@@ -31,16 +32,16 @@ object Form1: TForm1
     TitleFont.Style = []
   end
   object Edit1: TEdit
-    Left = 232
-    Top = 12
+    Left = 207
+    Top = 13
     Width = 247
     Height = 21
     TabOrder = 1
     Text = 'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME'
   end
   object Button1: TButton
-    Left = 485
-    Top = 12
+    Left = 379
+    Top = 36
     Width = 75
     Height = 25
     Caption = 'Abrir'
@@ -48,17 +49,17 @@ object Form1: TForm1
     OnClick = Button1Click
   end
   object Edit2: TEdit
-    Left = 232
-    Top = 59
-    Width = 247
+    Left = 207
+    Top = 63
+    Width = 134
     Height = 21
     TabOrder = 3
     Text = 'Robert'
   end
   object Edit3: TEdit
-    Left = 232
-    Top = 35
-    Width = 247
+    Left = 207
+    Top = 38
+    Width = 107
     Height = 21
     TabOrder = 2
     Text = 'FIRST_NAME'
@@ -73,8 +74,8 @@ object Form1: TForm1
     OnClick = ListBox1Click
   end
   object Button2: TButton
-    Left = 485
-    Top = 48
+    Left = 379
+    Top = 61
     Width = 75
     Height = 25
     Caption = 'Executar'
@@ -83,8 +84,8 @@ object Form1: TForm1
   end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL
-    Left = 456
-    Top = 128
+    Left = 144
+    Top = 24
   end
   object RESTClientSQL: TRESTClientSQL
     AutoCalcFields = False
@@ -114,8 +115,8 @@ object Form1: TForm1
     DataBase = RESTDataBase
     SQL.Strings = (
       'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME')
-    Left = 428
-    Top = 128
+    Left = 116
+    Top = 24
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
@@ -128,7 +129,7 @@ object Form1: TForm1
     PoolerName = 'ServerMethods1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
     TimeOut = 0
-    Left = 400
-    Top = 128
+    Left = 88
+    Top = 24
   end
 end

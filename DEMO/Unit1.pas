@@ -52,9 +52,12 @@ Begin
  if ListBox1.Items.Count = 0 then
   Begin
    vTempList   := RESTDataBase.GetRestPoolers;
-   ListBox1.Items.Assign(vTempList);
-   if ListBox1.Items.Count > 0 then
-    RESTDataBase.PoolerName := ListBox1.Items[0];
+   If vTempList <> Nil Then
+    If vTempList.Count > 0 Then
+     Begin
+      ListBox1.Items.Assign(vTempList);
+      RESTDataBase.PoolerName := ListBox1.Items[0];
+     End;
   End;
  RESTDataBase.Active := True;
  if RESTDataBase.Active then
@@ -76,8 +79,12 @@ Begin
   Begin
    vTempList   := RESTDataBase.GetRestPoolers;
    ListBox1.Items.Assign(vTempList);
-   if ListBox1.Items.Count > 0 then
-    RESTDataBase.PoolerName := ListBox1.Items[0];
+   If vTempList <> Nil Then
+    If vTempList.Count > 0 Then
+     Begin
+      ListBox1.Items.Assign(vTempList);
+      RESTDataBase.PoolerName := ListBox1.Items[0];
+     End;
   End;
  RESTDataBase.Active := True;
  if RESTDataBase.Active then
