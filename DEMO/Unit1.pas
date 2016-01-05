@@ -7,11 +7,10 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uRestPoolerDB, Vcl.StdCtrls, Data.DB,
   Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.ImgList;
 
 type
   TForm1 = class(TForm)
-    Memo1: TMemo;
     DataSource1: TDataSource;
     DBGrid1: TDBGrid;
     Edit1: TEdit;
@@ -31,9 +30,11 @@ type
     RESTClientSQLFULL_NAME: TStringField;
     Edit2: TEdit;
     Edit3: TEdit;
+    ListBox1: TListBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseConnection(Sucess: Boolean; const Error: string);
+    procedure ListBox1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -57,10 +58,14 @@ procedure TForm1.Button1Click(Sender: TObject);
 Var
  vTempList : TStringList;
 Begin
- RESTDataBase.Active        := True;
- Memo1.Lines.Clear;
- vTempList   := RESTDataBase.GetRestPoolers;
- Memo1.Lines.Assign(vTempList);
+ if ListBox1.Items.Count = 0 then
+  Begin
+   vTempList   := RESTDataBase.GetRestPoolers;
+   ListBox1.Items.Assign(vTempList);
+   if ListBox1.Items.Count > 0 then
+    RESTDataBase.PoolerName := ListBox1.Items[0];
+  End;
+ RESTDataBase.Active := True;
  if RESTDataBase.Active then
   Begin
    RESTClientSQL.Active       := False;
@@ -78,6 +83,12 @@ begin
  RESTDataBase.Active  := False;
  Form1 := Nil;
  Release;
+end;
+
+procedure TForm1.ListBox1Click(Sender: TObject);
+begin
+ if ListBox1.ItemIndex > -1 then
+  RESTDataBase.PoolerName := ListBox1.Items[ListBox1.ItemIndex];
 end;
 
 end.

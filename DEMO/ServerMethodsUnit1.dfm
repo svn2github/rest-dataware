@@ -1,6 +1,5 @@
 object ServerMethods1: TServerMethods1
   OldCreateOrder = False
-  OnCreate = DataModuleCreate
   Height = 335
   Width = 514
   object FDQueryDepartmentEmployees: TFDQuery
@@ -50,6 +49,10 @@ object ServerMethods1: TServerMethods1
     Left = 55
     Top = 112
   end
+  object FDStanStorageJSONLink1: TFDStanStorageJSONLink
+    Left = 392
+    Top = 264
+  end
   object FDConnectionEMPLOYEE: TFDConnection
     Params.Strings = (
       'DriverID=IB'
@@ -63,21 +66,9 @@ object ServerMethods1: TServerMethods1
     Left = 55
     Top = 32
   end
-  object FDStanStorageJSONLink1: TFDStanStorageJSONLink
-    Left = 392
-    Top = 264
-  end
-  object FDConnection1: TFDConnection
-    Params.Strings = (
-      'DriverID=IB'
-      
-        'Database=localhost:C:\Program Files (x86)\Common Files\Borland S' +
-        'hared\Data\employee.gdb'
-      'User_Name=sysdba'
-      'password=masterkey')
-    ConnectedStoredUsage = []
-    LoginPrompt = False
-    Left = 151
-    Top = 104
+  object RESTPoolerDB: TRESTPoolerDB
+    Database = FDConnectionEMPLOYEE
+    Left = 208
+    Top = 272
   end
 end

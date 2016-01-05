@@ -177,11 +177,12 @@ Type
  Private
   Owner          : TComponent;
   FLock          : TCriticalSection;
+  vFDConnectionBack,
   vFDConnection  : TFDConnection;
-  vFDTransaction : TFDTransaction;
-  Procedure CopyConnection(CopyDBConnection : TFDConnection;
-                           Var DBConnection : TFDConnection;
-                           Var WriteTrans   : TFDTransaction);
+//  vFDTransaction : TFDTransaction;
+//  Procedure CopyConnection(CopyDBConnection : TFDConnection;
+//                           Var DBConnection : TFDConnection;
+//                           Var WriteTrans   : TFDTransaction);
   Procedure SetConnection(Value : TFDConnection);
   Function  GetConnection : TFDConnection;
  Public
@@ -211,24 +212,27 @@ End;
 
 Function  TRESTPoolerDB.GetConnection : TFDConnection;
 Begin
- Result := vFDConnection;
+ Result := vFDConnectionBack;
 End;
 
 Procedure TRESTPoolerDB.SetConnection(Value : TFDConnection);
 Begin
+ vFDConnectionBack := Value;
  If Value <> Nil Then
-  CopyConnection(Value, vFDConnection, vFDTransaction)
+  vFDConnection     := vFDConnectionBack
+//  CopyConnection(Value, vFDConnection, vFDTransaction)
  Else
   Begin
    if vFDConnection <> Nil then
     Begin
      vFDConnection.Close;
-     vFDTransaction.DisposeOf;
-     vFDConnection.DisposeOf;
+//     vFDTransaction.DisposeOf;
+//     vFDConnection.DisposeOf;
     End;
   End;
 End;
 
+{
 Procedure TRESTPoolerDB.CopyConnection(CopyDBConnection : TFDConnection;
                                        Var DBConnection : TFDConnection;
                                        Var WriteTrans   : TFDTransaction);
@@ -251,6 +255,7 @@ Begin
    End;
   End;
 End;
+}
 
 Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
                                       Var Error  : Boolean;
@@ -481,15 +486,19 @@ Var
  End;
 Begin
  Result := Nil;
+ if vRestPooler = '' then
+  Exit;
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
  Try
   If Params.Count > 0 Then
-   Result := vRESTConnectionDB.ExecuteCommand(vRestModule, GetLineSQL(SQL),
+   Result := vRESTConnectionDB.ExecuteCommand(vRestPooler,
+                                              vRestModule, GetLineSQL(SQL),
                                               Params, Error,
                                               MessageError, Execute)
   Else
-   Result := vRESTConnectionDB.ExecuteCommandPure(vRestModule,
+   Result := vRESTConnectionDB.ExecuteCommandPure(vRestPooler,
+                                                  vRestModule,
                                                   GetLineSQL(SQL), Error,
                                                   MessageError, Execute);
   If Assigned(vOnEventConnection) Then
@@ -567,15 +576,20 @@ End;
 
 Function  TRESTDataBase.TryConnect : Boolean;
 Var
+ vTempSend,
  vTempResult       : String;
  vDSRConnection    : TDSRestConnection;
  vRESTConnectionDB : TSMPoolerMethodClient;
 Begin
  Result := False;
+ If vRestPooler = '' Then
+  vTempSend := 'ping'
+ Else
+  vTempSend := vRestPooler;
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
  Try
-  vTempResult := vRESTConnectionDB.EchoPooler('ping', vRestModule);
+  vTempResult := vRESTConnectionDB.EchoPooler(vTempSend, vRestModule);
   vMyIP       := vTempResult;
   Result      := True;
   If Assigned(vOnEventConnection) Then
@@ -594,6 +608,9 @@ End;
 
 Procedure TRESTDataBase.SetConnection(Value : Boolean);
 Begin
+ If (Value) And
+    (Trim(vRestPooler) = '') Then
+  Exit;
  vConnected := Value;
  if vConnected then
   vConnected := TryConnect;
@@ -642,7 +659,7 @@ End;
 
 Procedure TRESTClientSQL.CreateParams;
 Var
- I, A, X    : Integer;
+ I,  X      : Integer;
  vTempLine,
  vTempBuff,
  vParamName : String;

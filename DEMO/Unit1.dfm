@@ -15,15 +15,6 @@ object Form1: TForm1
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
-  object Memo1: TMemo
-    Left = 3
-    Top = 7
-    Width = 177
-    Height = 82
-    Lines.Strings = (
-      '')
-    TabOrder = 0
-  end
   object DBGrid1: TDBGrid
     Left = 0
     Top = 95
@@ -31,7 +22,7 @@ object Form1: TForm1
     Height = 222
     Align = alBottom
     DataSource = DataSource1
-    TabOrder = 1
+    TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
@@ -43,16 +34,16 @@ object Form1: TForm1
     Top = 12
     Width = 247
     Height = 21
-    TabOrder = 2
+    TabOrder = 1
     Text = 'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME'
   end
   object Button1: TButton
-    Left = 487
-    Top = 33
+    Left = 485
+    Top = 12
     Width = 75
     Height = 25
-    Caption = 'Executar'
-    TabOrder = 3
+    Caption = 'Abrir'
+    TabOrder = 2
     OnClick = Button1Click
   end
   object Edit2: TEdit
@@ -60,7 +51,7 @@ object Form1: TForm1
     Top = 59
     Width = 247
     Height = 21
-    TabOrder = 4
+    TabOrder = 3
     Text = 'Robert'
   end
   object Edit3: TEdit
@@ -68,13 +59,22 @@ object Form1: TForm1
     Top = 35
     Width = 247
     Height = 21
-    TabOrder = 5
+    TabOrder = 4
     Text = 'FIRST_NAME'
+  end
+  object ListBox1: TListBox
+    Left = 8
+    Top = 8
+    Width = 193
+    Height = 81
+    ItemHeight = 13
+    TabOrder = 5
+    OnClick = ListBox1Click
   end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL
-    Left = 488
-    Top = 72
+    Left = 456
+    Top = 128
   end
   object RESTClientSQL: TRESTClientSQL
     AutoCalcFields = False
@@ -97,16 +97,15 @@ object Form1: TForm1
     DataCache = False
     Params = <
       item
-        DataType = ftString
+        DataType = ftUnknown
         Name = 'FIRST_NAME'
         ParamType = ptUnknown
-        Value = 'Robert'
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
       'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME')
-    Left = 460
-    Top = 72
+    Left = 428
+    Top = 128
     object RESTClientSQLEMP_NO: TSmallintField
       DisplayLabel = 'Numero'
       FieldName = 'EMP_NO'
@@ -166,7 +165,7 @@ object Form1: TForm1
     PoolerPort = 8080
     RestModule = 'TServerMethods1'
     TimeOut = 0
-    Left = 432
-    Top = 72
+    Left = 400
+    Top = 128
   end
 end

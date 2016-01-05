@@ -30,29 +30,26 @@ type
     FDQueryDepartmentNames: TFDQuery;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     FDPhysIBDriverLink1: TFDPhysIBDriverLink;
-    FDConnectionEMPLOYEE: TFDConnection;
     FDStanStorageJSONLink1: TFDStanStorageJSONLink;
-    FDConnection1: TFDConnection;
-    procedure DataModuleCreate(Sender: TObject);
+    FDConnectionEMPLOYEE: TFDConnection;
+    RESTPoolerDB: TRESTPoolerDB;
   private
     { Private declarations }
-   vTRESTPoolerDB : TRESTPoolerDB;
   public
     { Public declarations }
     Function EchoPooler(Value: String): String;
     Function PoolersDataSet : String;
-    Function ExecuteCommandPure(SQL        : String;
+    Function ExecuteCommandPure(Pooler     : String;
+                                SQL        : String;
                                 Var Error  : Boolean;
                                 Var MessageError : String;
                                 Execute    : Boolean = False) : TFDJSONDataSets;Overload;
-    Function ExecuteCommand(SQL        : String;
+    Function ExecuteCommand(Pooler     : String;
+                            SQL        : String;
                             Params     : TParams;
                             Var Error  : Boolean;
                             Var MessageError : String;
                             Execute    : Boolean = False) : TFDJSONDataSets;Overload;
-
-    function EchoString(Value: string): string;
-    function ReverseString(Value: string): string;
     // Strongly typed methods
     function GetDepartmentNames: TFDJSONDataSets;
     function GetDepartmentEmployees(const AID: string): TFDJSONDataSets;
@@ -78,21 +75,23 @@ const
 
 // Get a Department and all Employees in the department.  Result TFDJSONDataSets.
 
-Function TServerMethods1.ExecuteCommand(SQL        : String;
+Function TServerMethods1.ExecuteCommand(Pooler     : String;
+                                        SQL        : String;
                                         Params     : TParams;
                                         Var Error  : Boolean;
                                         Var MessageError : String;
                                         Execute    : Boolean = False) : TFDJSONDataSets;
 Begin
- Result := vTRESTPoolerDB.ExecuteCommand(SQL, Params, Error, MessageError, Execute);
+ Result := RESTPoolerDB.ExecuteCommand(SQL, Params, Error, MessageError, Execute);
 End;
 
-Function TServerMethods1.ExecuteCommandPure(SQL        : String;
+Function TServerMethods1.ExecuteCommandPure(Pooler     : String;
+                                            SQL        : String;
                                             Var Error  : Boolean;
                                             Var MessageError : String;
                                             Execute    : Boolean = False) : TFDJSONDataSets;
 Begin
- Result := vTRESTPoolerDB.ExecuteCommand(SQL, Error, MessageError, Execute);
+ Result := RESTPoolerDB.ExecuteCommand(SQL, Error, MessageError, Execute);
 End;
 
 function TServerMethods1.GetDepartmentEmployees(
@@ -156,14 +155,6 @@ begin
   ApplyChangesDepartmentEmployees(LDeltas);
 end;
 
-
-procedure TServerMethods1.DataModuleCreate(Sender: TObject);
-begin
- vTRESTPoolerDB          := TRESTPoolerDB.Create(Self);
- vTRESTPoolerDB.Name     := 'PrimeiroPooler';
- vTRESTPoolerDB.Database := FDConnection1;
-end;
-
 // Get all Departments.  Result TFDJSONDataSets.
 function TServerMethods1.GetDepartmentNames: TFDJSONDataSets;
 begin
@@ -203,22 +194,12 @@ Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
      If Result = '' then
-      Result := Format('%s.%s', [Self.ClassName, Components[i].Name])
+      Result := Format('%s.%s', [Self.Name, Components[i].Name])
      Else
-      Result := Result + '|' + Format('%s.%s', [Self.ClassName, Self.Components[i].Name]);
+      Result := Result + '|' + Format('%s.%s', [Self.Name, Self.Components[i].Name]);
     End;
   End;
 End;
-
-function TServerMethods1.EchoString(Value: string): string;
-begin
-  Result := Value;
-end;
-
-function TServerMethods1.ReverseString(Value: string): string;
-begin
-  Result := System.StrUtils.ReverseString(Value);
-end;
 
 end.
 
