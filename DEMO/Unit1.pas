@@ -31,10 +31,12 @@ type
     Edit2: TEdit;
     Edit3: TEdit;
     ListBox1: TListBox;
+    Button2: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseConnection(Sucess: Boolean; const Error: string);
     procedure ListBox1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -74,6 +76,29 @@ Begin
    If RESTClientSQL.ParamByName(Edit3.Text) <> Nil Then
     RESTClientSQL.ParamByName(Edit3.Text).AsString := Edit2.Text;
    RESTClientSQL.Active       := True;
+  End;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+Var
+ vTempList : TStringList;
+Begin
+ if ListBox1.Items.Count = 0 then
+  Begin
+   vTempList   := RESTDataBase.GetRestPoolers;
+   ListBox1.Items.Assign(vTempList);
+   if ListBox1.Items.Count > 0 then
+    RESTDataBase.PoolerName := ListBox1.Items[0];
+  End;
+ RESTDataBase.Active := True;
+ if RESTDataBase.Active then
+  Begin
+   RESTClientSQL.Active       := False;
+   RESTClientSQL.SQL.Clear;
+   RESTClientSQL.SQL.Add(Edit1.Text);
+   If RESTClientSQL.ParamByName(Edit3.Text) <> Nil Then
+    RESTClientSQL.ParamByName(Edit3.Text).AsString := Edit2.Text;
+   RESTClientSQL.ExecSQL;
   End;
 end;
 

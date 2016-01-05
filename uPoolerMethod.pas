@@ -99,14 +99,17 @@ Begin
  MessageError := FExecuteCommandPureCommand.Parameters[3].Value.GetWideString;
  If Not FExecuteCommandPureCommand.Parameters[5].Value.IsNull Then
   Begin
-   FUnMarshal := TDSRestCommand(FExecuteCommandPureCommand.Parameters[5].ConnectionHandler).GetJSONUnMarshaler;
-   Try
-    Result := TFDJSONDataSets(FUnMarshal.UnMarshal(FExecuteCommandPureCommand.Parameters[5].Value.GetJSONValue(True)));
-    If FInstanceOwner Then
-     FExecuteCommandPureCommand.FreeOnExecute(Result);
-   Finally
-    FreeAndNil(FUnMarshal);
-   End;
+   If Not Execute Then
+    Begin
+     FUnMarshal := TDSRestCommand(FExecuteCommandPureCommand.Parameters[5].ConnectionHandler).GetJSONUnMarshaler;
+     Try
+      Result := TFDJSONDataSets(FUnMarshal.UnMarshal(FExecuteCommandPureCommand.Parameters[5].Value.GetJSONValue(True)));
+      If FInstanceOwner Then
+       FExecuteCommandPureCommand.FreeOnExecute(Result);
+     Finally
+      FreeAndNil(FUnMarshal);
+     End;
+    End;
   End
  Else
   Result := Nil;
@@ -139,14 +142,17 @@ Begin
  MessageError := FExecuteCommandCommand.Parameters[4].Value.GetWideString;
  If Not FExecuteCommandCommand.Parameters[6].Value.IsNull Then
   Begin
-   FUnMarshal := TDSRestCommand(FExecuteCommandCommand.Parameters[6].ConnectionHandler).GetJSONUnMarshaler;
-   Try
-    Result := TFDJSONDataSets(FUnMarshal.UnMarshal(FExecuteCommandCommand.Parameters[6].Value.GetJSONValue(True)));
-    If FInstanceOwner Then
-     FExecuteCommandCommand.FreeOnExecute(Result);
-   Finally
-    FreeAndNil(FUnMarshal);
-   End;
+   If Not Execute Then
+    Begin
+     FUnMarshal := TDSRestCommand(FExecuteCommandCommand.Parameters[6].ConnectionHandler).GetJSONUnMarshaler;
+     Try
+      Result := TFDJSONDataSets(FUnMarshal.UnMarshal(FExecuteCommandCommand.Parameters[6].Value.GetJSONValue(True)));
+      If FInstanceOwner Then
+       FExecuteCommandCommand.FreeOnExecute(Result);
+     Finally
+      FreeAndNil(FUnMarshal);
+     End;
+    End;
   End
  Else
   Result := Nil;
@@ -170,7 +176,6 @@ Function TSMPoolerMethodClient.PoolersDataSet(Method_Prefix: string;const AReque
 Var
  vTempString : String;
 Begin
- Result := Nil;
  If FPoolersDataSetCommand = Nil then
   Begin
    FPoolersDataSetCommand             := FConnection.CreateCommand;

@@ -744,8 +744,12 @@ Begin
 End;
 
 Procedure TRESTClientSQL.ExecSQL;
+Var
+ vError        : Boolean;
+ vMessageError : String;
+ LDataSetList  : TFDJSONDataSets;
 Begin
-
+ LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, True);
 End;
 
 Procedure TRESTClientSQL.OnChangingSQL(Sender: TObject);

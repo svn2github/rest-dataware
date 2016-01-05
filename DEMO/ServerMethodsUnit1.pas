@@ -81,8 +81,22 @@ Function TServerMethods1.ExecuteCommand(Pooler     : String;
                                         Var Error  : Boolean;
                                         Var MessageError : String;
                                         Execute    : Boolean = False) : TFDJSONDataSets;
+Var
+ I : Integer;
+ vTempPooler : String;
 Begin
- Result := RESTPoolerDB.ExecuteCommand(SQL, Params, Error, MessageError, Execute);
+ vTempPooler := UpperCase(StringReplace(Pooler, Self.Name + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ For I := 0 to ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Params, Error, MessageError, Execute);
+       Break;
+      End;
+    End;
+  End;
 End;
 
 Function TServerMethods1.ExecuteCommandPure(Pooler     : String;
@@ -90,8 +104,22 @@ Function TServerMethods1.ExecuteCommandPure(Pooler     : String;
                                             Var Error  : Boolean;
                                             Var MessageError : String;
                                             Execute    : Boolean = False) : TFDJSONDataSets;
+Var
+ I : Integer;
+ vTempPooler : String;
 Begin
- Result := RESTPoolerDB.ExecuteCommand(SQL, Error, MessageError, Execute);
+ vTempPooler := UpperCase(StringReplace(Pooler, Self.Name + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ For I := 0 to ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Error, MessageError, Execute);
+       Break;
+      End;
+    End;
+  End;
 End;
 
 function TServerMethods1.GetDepartmentEmployees(

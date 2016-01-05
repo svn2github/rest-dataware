@@ -71,6 +71,15 @@ object Form1: TForm1
     TabOrder = 5
     OnClick = ListBox1Click
   end
+  object Button2: TButton
+    Left = 485
+    Top = 48
+    Width = 75
+    Height = 25
+    Caption = 'Executar'
+    TabOrder = 6
+    OnClick = Button2Click
+  end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL
     Left = 456
@@ -163,6 +172,7 @@ object Form1: TForm1
     Proxy = False
     PoolerService = '127.0.0.1'
     PoolerPort = 8080
+    PoolerName = 'ServerMethods1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
     TimeOut = 0
     Left = 400
