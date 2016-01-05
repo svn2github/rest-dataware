@@ -25,6 +25,7 @@ object ServerMethods1: TServerMethods1
       'password=masterkey')
     ConnectedStoredUsage = []
     LoginPrompt = False
+    BeforeConnect = FDConnectionEMPLOYEEBeforeConnect
     Left = 60
     Top = 21
   end

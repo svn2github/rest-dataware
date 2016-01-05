@@ -30,6 +30,7 @@ type
     FDStanStorageJSONLink1: TFDStanStorageJSONLink;
     FDConnectionEMPLOYEE: TFDConnection;
     RESTPoolerDB: TRESTPoolerDB;
+    procedure FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
   private
     { Private declarations }
   public
@@ -191,6 +192,11 @@ Begin
     End;
   End;
 End;
+
+procedure TServerMethods1.FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
+begin
+ FDConnectionEMPLOYEE.Params.Database := 'localhost:' + ExtractFilePath(ParamSTR(0)) + 'EMPLOYEE.GDB';
+end;
 
 end.
 

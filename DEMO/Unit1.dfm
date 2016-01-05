@@ -5,7 +5,7 @@ object Form1: TForm1
   BorderIcons = [biSystemMenu]
   Caption = 'Cliente de Testes Utilizando o PoolerDB'
   ClientHeight = 317
-  ClientWidth = 464
+  ClientWidth = 585
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,11 +20,11 @@ object Form1: TForm1
   object DBGrid1: TDBGrid
     Left = 0
     Top = 95
-    Width = 464
+    Width = 585
     Height = 222
     Align = alBottom
     DataSource = DataSource1
-    TabOrder = 6
+    TabOrder = 8
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
@@ -32,60 +32,76 @@ object Form1: TForm1
     TitleFont.Style = []
   end
   object Edit1: TEdit
-    Left = 207
-    Top = 13
+    Left = 126
+    Top = 15
     Width = 247
     Height = 21
-    TabOrder = 1
+    TabOrder = 2
     Text = 'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME'
   end
   object Button1: TButton
-    Left = 379
+    Left = 298
     Top = 36
     Width = 75
     Height = 25
     Caption = 'Abrir'
-    TabOrder = 4
+    TabOrder = 5
     OnClick = Button1Click
   end
   object Edit2: TEdit
-    Left = 207
-    Top = 63
+    Left = 126
+    Top = 65
     Width = 134
     Height = 21
-    TabOrder = 3
+    TabOrder = 4
     Text = 'Robert'
   end
   object Edit3: TEdit
-    Left = 207
-    Top = 38
+    Left = 126
+    Top = 40
     Width = 107
     Height = 21
-    TabOrder = 2
+    TabOrder = 3
     Text = 'FIRST_NAME'
   end
   object ListBox1: TListBox
-    Left = 8
-    Top = 8
+    Left = 379
+    Top = 15
     Width = 193
-    Height = 81
+    Height = 71
     ItemHeight = 13
-    TabOrder = 0
+    TabOrder = 7
     OnClick = ListBox1Click
   end
   object Button2: TButton
-    Left = 379
+    Left = 298
     Top = 61
     Width = 75
     Height = 25
     Caption = 'Executar'
-    TabOrder = 5
+    TabOrder = 6
     OnClick = Button2Click
+  end
+  object Edit4: TEdit
+    Left = 12
+    Top = 15
+    Width = 107
+    Height = 21
+    TabOrder = 0
+    Text = '127.0.0.1'
+  end
+  object Edit5: TEdit
+    Left = 12
+    Top = 40
+    Width = 45
+    Height = 21
+    TabOrder = 1
+    Text = '8082'
   end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL
-    Left = 144
-    Top = 24
+    Left = 280
+    Top = 240
   end
   object RESTClientSQL: TRESTClientSQL
     AutoCalcFields = False
@@ -115,8 +131,8 @@ object Form1: TForm1
     DataBase = RESTDataBase
     SQL.Strings = (
       'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME')
-    Left = 116
-    Top = 24
+    Left = 252
+    Top = 240
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
@@ -129,7 +145,7 @@ object Form1: TForm1
     PoolerName = 'ServerMethods1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
     TimeOut = 0
-    Left = 88
-    Top = 24
+    Left = 224
+    Top = 240
   end
 end

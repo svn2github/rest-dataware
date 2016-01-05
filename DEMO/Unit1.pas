@@ -21,6 +21,8 @@ type
     Edit3: TEdit;
     ListBox1: TListBox;
     Button2: TButton;
+    Edit4: TEdit;
+    Edit5: TEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseConnection(Sucess: Boolean; const Error: string);
@@ -41,14 +43,19 @@ implementation
 
 procedure TForm1.RESTDataBaseConnection(Sucess: Boolean; const Error: string);
 begin
+ Caption := 'Cliente de Testes Utilizando o PoolerDB';
  if Not (Sucess) then
-  MessageDlg(Error, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+  MessageDlg(Error, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0)
+ Else
+  Caption := Caption + ' - ' + RESTDataBase.MyIP;
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 Var
  vTempList : TStringList;
 Begin
+ RESTDataBase.PoolerService := Edit4.Text;
+ RESTDataBase.PoolerPort    := StrToInt(Edit5.Text);
  if ListBox1.Items.Count = 0 then
   Begin
    vTempList   := RESTDataBase.GetRestPoolers;

@@ -47,7 +47,7 @@ object RestDWForm: TRestDWForm
     Width = 49
     Height = 21
     TabOrder = 2
-    Text = '8080'
+    Text = '8082'
   end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
