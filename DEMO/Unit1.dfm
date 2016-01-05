@@ -4,8 +4,8 @@ object Form1: TForm1
   ActiveControl = Edit1
   BorderIcons = [biSystemMenu]
   Caption = 'Cliente de Testes Utilizando o PoolerDB'
-  ClientHeight = 317
-  ClientWidth = 585
+  ClientHeight = 304
+  ClientWidth = 652
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,10 +17,52 @@ object Form1: TForm1
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
+  object Label1: TLabel
+    Left = 121
+    Top = 3
+    Width = 133
+    Height = 13
+    Caption = 'Lista de Poolers no Servidor'
+  end
+  object Label2: TLabel
+    Left = 315
+    Top = 3
+    Width = 74
+    Height = 13
+    Caption = 'SQL a Executar'
+  end
+  object Label3: TLabel
+    Left = 9
+    Top = 3
+    Width = 81
+    Height = 13
+    Caption = 'Caminho do Host'
+  end
+  object Label4: TLabel
+    Left = 315
+    Top = 41
+    Width = 87
+    Height = 13
+    Caption = 'Par'#226'metro do SQL'
+  end
+  object Label5: TLabel
+    Left = 9
+    Top = 41
+    Width = 66
+    Height = 13
+    Caption = 'Porta do Host'
+  end
+  object Label6: TLabel
+    Left = 428
+    Top = 41
+    Width = 111
+    Height = 13
+    Caption = 'Valor para o Par'#226'metro'
+  end
   object DBGrid1: TDBGrid
     Left = 0
-    Top = 95
-    Width = 585
+    Top = 82
+    Width = 652
     Height = 222
     Align = alBottom
     DataSource = DataSource1
@@ -32,16 +74,16 @@ object Form1: TForm1
     TitleFont.Style = []
   end
   object Edit1: TEdit
-    Left = 126
-    Top = 15
+    Left = 315
+    Top = 18
     Width = 247
     Height = 21
     TabOrder = 2
     Text = 'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME'
   end
   object Button1: TButton
-    Left = 298
-    Top = 36
+    Left = 568
+    Top = 18
     Width = 75
     Height = 25
     Caption = 'Abrir'
@@ -49,33 +91,33 @@ object Form1: TForm1
     OnClick = Button1Click
   end
   object Edit2: TEdit
-    Left = 126
-    Top = 65
+    Left = 428
+    Top = 56
     Width = 134
     Height = 21
     TabOrder = 4
     Text = 'Robert'
   end
   object Edit3: TEdit
-    Left = 126
-    Top = 40
+    Left = 315
+    Top = 56
     Width = 107
     Height = 21
     TabOrder = 3
     Text = 'FIRST_NAME'
   end
   object ListBox1: TListBox
-    Left = 379
-    Top = 15
+    Left = 119
+    Top = 18
     Width = 193
-    Height = 71
+    Height = 59
     ItemHeight = 13
     TabOrder = 7
     OnClick = ListBox1Click
   end
   object Button2: TButton
-    Left = 298
-    Top = 61
+    Left = 568
+    Top = 52
     Width = 75
     Height = 25
     Caption = 'Executar'
@@ -83,16 +125,16 @@ object Form1: TForm1
     OnClick = Button2Click
   end
   object Edit4: TEdit
-    Left = 12
-    Top = 15
+    Left = 9
+    Top = 18
     Width = 107
     Height = 21
     TabOrder = 0
     Text = '127.0.0.1'
   end
   object Edit5: TEdit
-    Left = 12
-    Top = 40
+    Left = 9
+    Top = 56
     Width = 45
     Height = 21
     TabOrder = 1
