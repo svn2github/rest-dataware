@@ -74,6 +74,22 @@ Const
 
 implementation
 
+Function EncodeStrings(Value : String) : String;
+Begin
+ Result := StringReplace(Value,  '%', '|:|', [rfReplaceAll, rfIgnoreCase]); //Sinal de %
+ Result := StringReplace(Result, '/', '|*|', [rfReplaceAll, rfIgnoreCase]); //Sinal de /
+ Result := StringReplace(Result, '-', '|A|', [rfReplaceAll, rfIgnoreCase]); //Sinal de -
+ Result := StringReplace(Result, '.', '|B|', [rfReplaceAll, rfIgnoreCase]); //Sinal de .
+End;
+
+Function DecodeStrings(Value : String) : String;
+Begin
+ Result := StringReplace(Value,  '|:|', '%', [rfReplaceAll, rfIgnoreCase]); //Sinal de %
+ Result := StringReplace(Result, '|*|', '/', [rfReplaceAll, rfIgnoreCase]); //Sinal de /
+ Result := StringReplace(Result, '|A|', '-', [rfReplaceAll, rfIgnoreCase]); //Sinal de -
+ Result := StringReplace(Result, '|B|', '.', [rfReplaceAll, rfIgnoreCase]); //Sinal de .
+End;
+
 Function TSMPoolerMethodClient.ExecuteCommandPure(Pooler               : String;
                                                   Method_Prefix        : String;
                                                   SQL                  : String;
@@ -91,7 +107,7 @@ Begin
    FExecuteCommandPureCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandPure);
   End;
  FExecuteCommandPureCommand.Parameters[0].Value.SetWideString(Pooler);
- FExecuteCommandPureCommand.Parameters[1].Value.SetWideString(SQL);
+ FExecuteCommandPureCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandPureCommand.Parameters[2].Value.SetBoolean(Error);
  FExecuteCommandPureCommand.Parameters[3].Value.SetWideString(MessageError);
  FExecuteCommandPureCommand.Parameters[4].Value.SetBoolean(Execute);
@@ -132,7 +148,7 @@ Begin
    FExecuteCommandCommand.Prepare(TSMPoolerMethodClient_ExecuteCommand);
   End;
  FExecuteCommandCommand.Parameters[0].Value.SetWideString(Pooler);
- FExecuteCommandCommand.Parameters[1].Value.SetWideString(SQL);
+ FExecuteCommandCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
  FExecuteCommandCommand.Parameters[3].Value.SetBoolean(Error);
  FExecuteCommandCommand.Parameters[4].Value.SetWideString(MessageError);

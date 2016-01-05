@@ -223,6 +223,22 @@ Begin
  RegisterComponents('REST Dataware', [TRESTPoolerDB, TRESTDataBase, TRESTClientSQL]);
 End;
 
+Function EncodeStrings(Value : String) : String;
+Begin
+ Result := StringReplace(Value,  '%', '|:|', [rfReplaceAll, rfIgnoreCase]); //Sinal de %
+ Result := StringReplace(Result, '/', '|*|', [rfReplaceAll, rfIgnoreCase]); //Sinal de /
+ Result := StringReplace(Result, '-', '|A|', [rfReplaceAll, rfIgnoreCase]); //Sinal de -
+ Result := StringReplace(Result, '.', '|B|', [rfReplaceAll, rfIgnoreCase]); //Sinal de .
+End;
+
+Function DecodeStrings(Value : String) : String;
+Begin
+ Result := StringReplace(Value,  '|:|', '%', [rfReplaceAll, rfIgnoreCase]); //Sinal de %
+ Result := StringReplace(Result, '|*|', '/', [rfReplaceAll, rfIgnoreCase]); //Sinal de /
+ Result := StringReplace(Result, '|A|', '-', [rfReplaceAll, rfIgnoreCase]); //Sinal de -
+ Result := StringReplace(Result, '|B|', '.', [rfReplaceAll, rfIgnoreCase]); //Sinal de .
+End;
+
 Function  TRESTPoolerDB.GetConnection : TFDConnection;
 Begin
  Result := vFDConnectionBack;
@@ -283,7 +299,56 @@ Begin
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(SQL);
+  vTempQuery.SQL.Add(DecodeStrings(SQL));
+  If Not Execute Then
+   Begin
+    vTempQuery.Active := True;
+    Result            := TFDJSONDataSets.Create;
+    TFDJSONDataSetsWriter.ListAdd(Result, vTempQuery);
+   End
+  Else
+   Begin
+    vTempQuery.ExecSQL;
+    vFDConnection.CommitRetaining;
+   End;
+ Except
+  On E : Exception do
+   Begin
+    Error := True;
+    MessageError := E.Message;
+   End;
+ End;
+End;
+
+Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
+                                      Params     : TParams;
+                                      Var Error  : Boolean;
+                                      Var MessageError : String;
+                                      Execute    : Boolean = False) : TFDJSONDataSets;
+Var
+ vTempQuery : TFDQuery;
+ I          : Integer;
+Begin
+ Result := Nil;
+ Error  := False;
+ vTempQuery               := TFDQuery.Create(Owner);
+ Try
+  vTempQuery.Connection   := vFDConnection;
+  vTempQuery.SQL.Clear;
+  vTempQuery.SQL.Add(DecodeStrings(SQL));
+  If Params <> Nil Then
+   Begin
+    For I := 0 To Params.Count -1 Do
+     Begin
+      If vTempQuery.ParamCount > I Then
+       Begin
+        If vTempQuery.ParamByName(Params[I].Name) <> Nil Then
+         vTempQuery.ParamByName(Params[I].Name).Value := Params[I].Value;
+       End
+      Else
+       Break;
+     End;
+   End;
   If Not Execute Then
    Begin
     vTempQuery.Active := True;
@@ -318,7 +383,7 @@ begin
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(SQL);
+  vTempQuery.SQL.Add(DecodeStrings(SQL));
   vTempQuery.Active := True;
  Except
   On E : Exception do
@@ -357,7 +422,7 @@ begin
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(SQL);
+  vTempQuery.SQL.Add(DecodeStrings(SQL));
   If Params <> Nil Then
    Begin
     For I := 0 To Params.Count -1 Do
@@ -392,55 +457,6 @@ begin
   End;
  vTempQuery.DisposeOf;
 end;
-
-Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
-                                      Params     : TParams;
-                                      Var Error  : Boolean;
-                                      Var MessageError : String;
-                                      Execute    : Boolean = False) : TFDJSONDataSets;
-Var
- vTempQuery : TFDQuery;
- I          : Integer;
-Begin
- Result := Nil;
- Error  := False;
- vTempQuery               := TFDQuery.Create(Owner);
- Try
-  vTempQuery.Connection   := vFDConnection;
-  vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(SQL);
-  If Params <> Nil Then
-   Begin
-    For I := 0 To Params.Count -1 Do
-     Begin
-      If vTempQuery.ParamCount > I Then
-       Begin
-        If vTempQuery.ParamByName(Params[I].Name) <> Nil Then
-         vTempQuery.ParamByName(Params[I].Name).Value := Params[I].Value;
-       End
-      Else
-       Break;
-     End;
-   End;
-  If Not Execute Then
-   Begin
-    vTempQuery.Active := True;
-    Result            := TFDJSONDataSets.Create;
-    TFDJSONDataSetsWriter.ListAdd(Result, vTempQuery);
-   End
-  Else
-   Begin
-    vTempQuery.ExecSQL;
-    vFDConnection.CommitRetaining;
-   End;
- Except
-  On E : Exception do
-   Begin
-    Error := True;
-    MessageError := E.Message;
-   End;
- End;
-End;
 
 Constructor TRESTPoolerDB.Create(AOwner : TComponent);
 Begin
@@ -715,7 +731,9 @@ Begin
   Exit;
  vConnected := Value;
  if vConnected then
-  vConnected := TryConnect;
+  vConnected := TryConnect
+ Else
+  vMyIP := '';
 End;
 
 Procedure TRESTDataBase.SetPoolerPort(Value : Integer);

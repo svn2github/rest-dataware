@@ -1,13 +1,7 @@
-//
-// FireDACJSONReflect demo
-// Copyright (c) 1995-2013 Embarcadero Technologies, Inc.
+// Procurem os comentarios "Criar para retornar o IP do Cliente"
+//para saber os córigos a acrescentar.
+//Gilberto Rocha da Silva
 
-// You may only use this software if you are an authorized licensee
-// of Delphi, C++Builder or RAD Studio (Embarcadero Products).
-// This software is considered a Redistributable as defined under
-// the software license agreement that comes with the Embarcadero Products
-// and is subject to that software license agreement.
-//
 unit WebModuleUnit1;
 
 interface
@@ -43,7 +37,7 @@ type
 
 var
   WebModuleClass: TComponentClass = TWebModule1;
-  threadvar remoteIP : AnsiString;
+  threadvar remoteIP : AnsiString;   //Criar para retornar o IP do Cliente
 
 implementation
 
@@ -57,6 +51,7 @@ begin
   Response.Content := '<html><heading/><body>DataSnap Server</body></html>';
 end;
 
+//Criar para retornar o IP do Cliente
 procedure TWebModule1.WebModuleBeforeDispatch(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
@@ -71,12 +66,14 @@ begin
  valid := (User = 'testserver') and (Password = 'testserver');
 end;
 
+//Criar para retornar o IP do Cliente
 procedure TWebModule1.DSServer1Connect(
   DSConnectEventObject: TDSConnectEventObject);
 begin
  TDSSessionManager.GetThreadSession.PutData('RemoteAddr', String(remoteIP));
 end;
 
+//Criar para retornar o IP do Cliente
 procedure TWebModule1.DSServer1Disconnect(
   DSConnectEventObject: TDSConnectEventObject);
 begin

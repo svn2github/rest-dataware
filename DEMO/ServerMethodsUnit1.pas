@@ -1,13 +1,8 @@
-//
-// FireDACJSONReflect demo
-// Copyright (c) 1995-2013 Embarcadero Technologies, Inc.
+// Para Funcionar o Servidor é necessário que todos os Métodos declarados em PUBLIC sejam
+//adicionados em seus Projetos.
+//Gilberto Rocha da Silva
 
-// You may only use this software if you are an authorized licensee
-// of Delphi, C++Builder or RAD Studio (Embarcadero Products).
-// This software is considered a Redistributable as defined under
-// the software license agreement that comes with the Embarcadero Products
-// and is subject to that software license agreement.
-//
+
 unit ServerMethodsUnit1;
 
 interface
@@ -20,15 +15,15 @@ uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
      FireDAC.Comp.Client,     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,    FireDAC.Comp.UI,
      FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,
      FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
-     WebModuleUnit1,          uRestPoolerDB;
+     WebModuleUnit1,          uRestPoolerDB,            Vcl.Dialogs,        Vcl.Forms;
 
 type
 {$METHODINFO ON}
   TServerMethods1 = class(TDataModule)
-    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
-    FDPhysIBDriverLink1: TFDPhysIBDriverLink;
-    FDStanStorageJSONLink1: TFDStanStorageJSONLink;
-    FDConnectionEMPLOYEE: TFDConnection;
+    FDGUIxWaitCursor1      : TFDGUIxWaitCursor;
+    FDPhysIBDriverLink1    : TFDPhysIBDriverLink;
+    FDStanStorageJSONLink1 : TFDStanStorageJSONLink;
+    FDConnectionEMPLOYEE   : TFDConnection;
     RESTPoolerDB: TRESTPoolerDB;
     procedure FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
   private
@@ -195,7 +190,11 @@ End;
 
 procedure TServerMethods1.FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
 begin
- FDConnectionEMPLOYEE.Params.Database := 'localhost:' + ExtractFilePath(ParamSTR(0)) + 'EMPLOYEE.GDB';
+ FDConnectionEMPLOYEE.Params.Clear;
+ FDConnectionEMPLOYEE.Params.Add('DriverID=IB');
+ FDConnectionEMPLOYEE.Params.Add('Database=localhost:' + ExtractFilePath(Application.ExeName) + 'EMPLOYEE.GDB');
+ FDConnectionEMPLOYEE.Params.Add('User_Name=sysdba');
+ FDConnectionEMPLOYEE.Params.Add('password=masterkey');
 end;
 
 end.

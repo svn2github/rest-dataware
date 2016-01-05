@@ -17,12 +17,7 @@ object ServerMethods1: TServerMethods1
   end
   object FDConnectionEMPLOYEE: TFDConnection
     Params.Strings = (
-      'DriverID=IB'
-      
-        'Database=localhost:C:\Program Files (x86)\Common Files\Borland S' +
-        'hared\Data\employee.gdb'
-      'User_Name=sysdba'
-      'password=masterkey')
+      '')
     ConnectedStoredUsage = []
     LoginPrompt = False
     BeforeConnect = FDConnectionEMPLOYEEBeforeConnect
