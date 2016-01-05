@@ -130,18 +130,19 @@ End;
 Type
  TRESTClientSQL   = Class(TFDMemTable)              //Classe com as funcionalidades de um DBQuery
  Private
-  Owner           : TComponent;
+  Owner            : TComponent;
+  vUpdateTableName : String;                        //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
   vAutoCommit,                                      //Se manda o Comando de AutoSalvar a Reflexão no Banco de Dados
   vDataCache,                                       //Se usa cache local
   vConnectedOnce,                                   //Verifica se foi conectado ao Servidor
-  vActive         : Boolean;                        //Estado do Dataset
-  vSQL            : TStringList;                    //SQL a ser utilizado na conexão
-  vParams         : TParams;                        //Parametros de Dataset
-  vCacheDataDB    : TFDDataset;                     //O Cache de Dados Salvo para utilização rápida
+  vActive          : Boolean;                       //Estado do Dataset
+  vSQL             : TStringList;                   //SQL a ser utilizado na conexão
+  vParams          : TParams;                       //Parametros de Dataset
+  vCacheDataDB     : TFDDataset;                    //O Cache de Dados Salvo para utilização rápida
   vOnBeforePost,                                    //Variável do Evento BeforePost
-  vOnBeforeDelete : TOnEventDB;                     //Variável do Evento BeforeDelete
-  vOnGetDataError : TOnEventConnection;             //Se deu erro na hora de receber os dados ou não
-  vRESTDataBase   : TRESTDataBase;                  //RESTDataBase do Dataset
+  vOnBeforeDelete  : TOnEventDB;                    //Variável do Evento BeforeDelete
+  vOnGetDataError  : TOnEventConnection;            //Se deu erro na hora de receber os dados ou não
+  vRESTDataBase    : TRESTDataBase;                 //RESTDataBase do Dataset
   Procedure OnChangingSQL(Sender: TObject);         //Quando Altera o SQL da Lista
   Procedure SetActiveDB(Value : Boolean);           //Seta o Estado do Dataset
   Procedure SetSQL(Value : TStringList);            //Seta o SQL a ser usado
@@ -160,15 +161,16 @@ Type
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                     //Destroy a Classe
  Published
-  Property OnBeforePost   : TOnEventDB         Read vOnBeforePost   Write SetOnBeforePost;   //Evento de Before Post, esse é essencial para o Componente
-  Property OnBeforeDelete : TOnEventDB         Read vOnBeforeDelete Write SetOnBeforeDelete; //Evento de Before Delete, esse é essencial para o Componente
-  Property OnGetDataError : TOnEventConnection Read vOnGetDataError Write vOnGetDataError;   //Recebe os Erros de ExecSQL ou de GetData
-  Property Active         : Boolean            Read vActive         Write SetActiveDB;       //Estado do Dataset
-  Property AutoCommit     : Boolean            Read vAutoCommit     Write vAutoCommit;       //Se executa o Commit Automáticamente
-  Property DataCache      : Boolean            Read vDataCache      Write vDataCache;        //Diz se será salvo o último Stream do Dataset
-  Property Params         : TParams            Read vParams         Write vParams;           //Parametros de Dataset
-  Property DataBase       : TRESTDataBase      Read vRESTDataBase   Write SetDataBase;       //Database REST do Dataset
-  Property SQL            : TStringList        Read vSQL            Write SetSQL;            //SQL a ser Executado
+  Property OnBeforePost    : TOnEventDB         Read vOnBeforePost    Write SetOnBeforePost;   //Evento de Before Post, esse é essencial para o Componente
+  Property OnBeforeDelete  : TOnEventDB         Read vOnBeforeDelete  Write SetOnBeforeDelete; //Evento de Before Delete, esse é essencial para o Componente
+  Property OnGetDataError  : TOnEventConnection Read vOnGetDataError  Write vOnGetDataError;   //Recebe os Erros de ExecSQL ou de GetData
+  Property Active          : Boolean            Read vActive          Write SetActiveDB;       //Estado do Dataset
+  Property AutoCommit      : Boolean            Read vAutoCommit      Write vAutoCommit;       //Se executa o Commit Automáticamente
+  Property DataCache       : Boolean            Read vDataCache       Write vDataCache;        //Diz se será salvo o último Stream do Dataset
+  Property Params          : TParams            Read vParams          Write vParams;           //Parametros de Dataset
+  Property DataBase        : TRESTDataBase      Read vRESTDataBase    Write SetDataBase;       //Database REST do Dataset
+  Property SQL             : TStringList        Read vSQL             Write SetSQL;            //SQL a ser Executado
+  Property UpdateTableName : String             Read vUpdateTableName Write vUpdateTableName;  //Tabela que será usada para Reflexão de Dados
 End;
 
 Type
@@ -737,15 +739,16 @@ End;
 Constructor TRESTClientSQL.Create(AOwner : TComponent);
 Begin
  Inherited;
- Owner           := AOwner;
- vAutoCommit     := True;
- vDataCache      := False;
- vConnectedOnce  := True;
- vActive         := False;
- vSQL            := TStringList.Create;
- vSQL.OnChange   := OnChangingSQL;
- vParams         := TParams.Create(Self);
- vCacheDataDB    := Self.CloneSource;
+ Owner            := AOwner;
+ vAutoCommit      := True;
+ vDataCache       := False;
+ vConnectedOnce   := True;
+ vActive          := False;
+ vSQL             := TStringList.Create;
+ vSQL.OnChange    := OnChangingSQL;
+ vParams          := TParams.Create(Self);
+ vCacheDataDB     := Self.CloneSource;
+ vUpdateTableName := '';
 End;
 
 Destructor  TRESTClientSQL.Destroy;
