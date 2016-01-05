@@ -13,7 +13,6 @@ object Form1: TForm1
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Memo1: TMemo
@@ -22,7 +21,7 @@ object Form1: TForm1
     Width = 177
     Height = 82
     Lines.Strings = (
-      'Memo1')
+      '')
     TabOrder = 0
   end
   object DBGrid1: TDBGrid

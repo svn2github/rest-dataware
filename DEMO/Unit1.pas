@@ -32,7 +32,6 @@ type
     Edit2: TEdit;
     Edit3: TEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseConnection(Sucess: Boolean; const Error: string);
   private
@@ -55,13 +54,22 @@ begin
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
-begin
- RESTClientSQL.Active       := False;
- RESTClientSQL.SQL.Clear;
- RESTClientSQL.SQL.Add(Edit1.Text);
- If RESTClientSQL.Params.Count > 0 Then
-  RESTClientSQL.ParamByName(Edit3.Text).AsString := Edit2.Text;
- RESTClientSQL.Active       := True;
+Var
+ vTempList : TStringList;
+Begin
+ RESTDataBase.Active        := True;
+ Memo1.Lines.Clear;
+ vTempList   := RESTDataBase.GetRestPoolers;
+ Memo1.Lines.Assign(vTempList);
+ if RESTDataBase.Active then
+  Begin
+   RESTClientSQL.Active       := False;
+   RESTClientSQL.SQL.Clear;
+   RESTClientSQL.SQL.Add(Edit1.Text);
+   If RESTClientSQL.ParamByName(Edit3.Text) <> Nil Then
+    RESTClientSQL.ParamByName(Edit3.Text).AsString := Edit2.Text;
+   RESTClientSQL.Active       := True;
+  End;
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -70,25 +78,6 @@ begin
  RESTDataBase.Active  := False;
  Form1 := Nil;
  Release;
-end;
-
-procedure TForm1.FormCreate(Sender: TObject);
-Var
- I         : Integer;
- vTempList : TStringList;
-begin
- RESTDataBase.Active        := True;
- Memo1.Lines.Clear;
- If RESTDataBase.Active Then
-  Begin
-   vTempList := RESTDataBase.GetRestPoolers;
-   If vTempList <> Nil Then
-    Begin
-     For I := 0 to vTempList.Count -1 do
-      Memo1.Lines.Add(vTempList[I]);
-    End;
-  End;
-// RESTClientSQL.Active       := True;
 end;
 
 end.
