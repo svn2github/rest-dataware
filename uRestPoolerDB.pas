@@ -57,6 +57,8 @@ Type
  Public
   Constructor Create; //Cria o Componente
   Destructor  Destroy;Override;//Destroy a Classe
+  Procedure   Assign(Source : TPersistent); Override;
+ Published
   Property AutoCheck    : Boolean       Read vAutoCheck Write SetState;      //Se tem Autochecagem
   Property InTime       : Integer       Read vInTime    Write SetInTime;     //Em milisegundos o timer
   Property OnEventTimer : TOnEventTimer Read vEvent     Write SetEventTimer; //Evento a executar
@@ -70,7 +72,9 @@ Type
   vPassword : String;   //Senha do Servidor Proxy
   vPort     : Integer;  //Porta do Servidor Proxy
  Public
-  Constructor Create; //(AOwner  : TComponent);Override;   //Cria o Componente
+  Constructor Create;
+  Procedure   Assign(Source : TPersistent); Override;
+ Published
   Property Server   : String  Read vServer   Write vServer;   //Servidor Proxy na Rede
   Property Port     : Integer Read vPort     Write vPort;     //Porta do Servidor Proxy
   Property Login    : String  Read vLogin    Write vLogin;    //Login do Servidor Proxy
@@ -91,7 +95,6 @@ Type
   vPoolerPort          : Integer;                    //A Porta do Pooler
   vProxy               : Boolean;                    //Diz se tem servidor Proxy
   vProxyOptions        : TProxyOptions;              //Se tem Proxy diz quais as opções
-  vTimeOut             : Integer;                    //Tempo de espera por conexão ao Servidor
   vConnected           : Boolean;                    //Diz o Estado da Conexão
   vOnEventConnection   : TOnEventConnection;         //Evento de Estado da Conexão
   vAutoCheckData       : TAutoCheckData;             //Autocheck de Conexão
@@ -130,7 +133,6 @@ Type
   Property PoolerName      : String             Read vRestPooler        Write SetRestPooler;      //Qual o Pooler de Conexão ligado ao componente
   Property RestModule      : String             Read vRestModule        Write vRestModule;        //Classe do Servidor REST Principal
   Property StateConnection : TAutoCheckData     Read vAutoCheckData     Write vAutoCheckData;     //Autocheck da Conexão
-  Property TimeOut         : Integer            Read vTimeOut           Write vTimeOut;           //Tempo de espera por conexão ao Servidor
 End;
 
 Type
@@ -243,6 +245,37 @@ Begin
  Result := StringReplace(Result, '|*|', '/', [rfReplaceAll, rfIgnoreCase]); //Sinal de /
  Result := StringReplace(Result, '|A|', '-', [rfReplaceAll, rfIgnoreCase]); //Sinal de -
  Result := StringReplace(Result, '|B|', '.', [rfReplaceAll, rfIgnoreCase]); //Sinal de .
+End;
+
+Procedure TAutoCheckData.Assign(Source: TPersistent);
+Var
+ Src : TAutoCheckData;
+Begin
+ If Source is TAutoCheckData Then
+  Begin
+   Src        := TAutoCheckData(Source);
+   vAutoCheck := Src.AutoCheck;
+   vInTime    := Src.InTime;
+//   vEvent     := Src.OnEventTimer;
+  End
+ Else
+  Inherited;
+End;
+
+Procedure TProxyOptions.Assign(Source: TPersistent);
+Var
+ Src : TProxyOptions;
+Begin
+ If Source is TProxyOptions Then
+  Begin
+   Src := TProxyOptions(Source);
+   vServer := Src.Server;
+   vLogin  := Src.Login;
+   vPassword := Src.Password;
+   vPort     := Src.Port;
+  End
+ Else
+  Inherited;
 End;
 
 Function  TRESTPoolerDB.GetConnection : TFDConnection;
@@ -719,6 +752,7 @@ Begin
  vProxyOptions             := TProxyOptions.Create;
  vAutoCheckData            := TAutoCheckData.Create;
  vAutoCheckData.vAutoCheck := False;
+ vAutoCheckData.vInTime    := 1000;
  vAutoCheckData.vEvent     := CheckConnection;
 End;
 

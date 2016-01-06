@@ -199,11 +199,13 @@ object Form1: TForm1
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
+    ProxyOptions.Port = 8888
     PoolerService = '127.0.0.1'
     PoolerPort = 8080
     PoolerName = 'ServerMethods1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
-    TimeOut = 0
+    StateConnection.AutoCheck = False
+    StateConnection.InTime = 1000
     Left = 224
     Top = 240
   end
