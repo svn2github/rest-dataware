@@ -192,7 +192,7 @@ procedure TServerMethods1.FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
 begin
  FDConnectionEMPLOYEE.Params.Clear;
  FDConnectionEMPLOYEE.Params.Add('DriverID=IB');
- FDConnectionEMPLOYEE.Params.Add('Database=localhost:' + ExtractFilePath(Application.ExeName) + 'EMPLOYEE.GDB');
+ FDConnectionEMPLOYEE.Params.Add('Database=localhost:' + ExtractFilePath(ParamSTR(0)) + 'EMPLOYEE.GDB');
  FDConnectionEMPLOYEE.Params.Add('User_Name=sysdba');
  FDConnectionEMPLOYEE.Params.Add('password=masterkey');
 end;

@@ -4,7 +4,7 @@ object Form1: TForm1
   ActiveControl = Edit1
   BorderIcons = [biSystemMenu]
   Caption = 'Cliente de Testes Utilizando o PoolerDB'
-  ClientHeight = 304
+  ClientHeight = 331
   ClientWidth = 652
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -59,14 +59,21 @@ object Form1: TForm1
     Height = 13
     Caption = 'Valor para o Par'#226'metro'
   end
+  object Label7: TLabel
+    Left = 315
+    Top = 79
+    Width = 150
+    Height = 13
+    Caption = 'Tablename to use ApplyUpdate'
+  end
   object DBGrid1: TDBGrid
     Left = 0
-    Top = 82
+    Top = 119
     Width = 652
-    Height = 222
+    Height = 212
     Align = alBottom
     DataSource = DataSource1
-    TabOrder = 8
+    TabOrder = 9
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
@@ -87,7 +94,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = 'Abrir'
-    TabOrder = 6
+    TabOrder = 7
     OnClick = Button1Click
   end
   object Edit2: TEdit
@@ -110,7 +117,7 @@ object Form1: TForm1
     Left = 119
     Top = 18
     Width = 193
-    Height = 59
+    Height = 97
     ItemHeight = 13
     TabOrder = 2
     OnClick = ListBox1Click
@@ -121,7 +128,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = 'Executar'
-    TabOrder = 7
+    TabOrder = 8
     OnClick = Button2Click
   end
   object Edit4: TEdit
@@ -140,6 +147,14 @@ object Form1: TForm1
     TabOrder = 1
     Text = '8082'
   end
+  object Edit6: TEdit
+    Left = 315
+    Top = 94
+    Width = 107
+    Height = 21
+    TabOrder = 6
+    Text = 'EMPLOYEE'
+  end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL
     Left = 280
@@ -147,6 +162,9 @@ object Form1: TForm1
   end
   object RESTClientSQL: TRESTClientSQL
     AutoCalcFields = False
+    AfterOpen = RESTClientSQLAfterOpen
+    AfterPost = RESTClientSQLAfterPost
+    AfterDelete = RESTClientSQLAfterDelete
     FieldDefs = <>
     IndexDefs = <>
     FetchOptions.AssignedValues = [evMode]
@@ -162,7 +180,6 @@ object Form1: TForm1
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
     StoreDefs = True
-    AutoCommit = True
     DataCache = False
     Params = <
       item

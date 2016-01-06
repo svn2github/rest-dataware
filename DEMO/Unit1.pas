@@ -29,11 +29,16 @@ type
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
+    Edit6: TEdit;
+    Label7: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseConnection(Sucess: Boolean; const Error: string);
     procedure ListBox1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure RESTClientSQLAfterPost(DataSet: TDataSet);
+    procedure RESTClientSQLAfterOpen(DataSet: TDataSet);
+    procedure RESTClientSQLAfterDelete(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -46,6 +51,27 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TForm1.RESTClientSQLAfterDelete(DataSet: TDataSet);
+Var
+ vError : String;
+begin
+ If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
+  MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+end;
+
+procedure TForm1.RESTClientSQLAfterOpen(DataSet: TDataSet);
+begin
+ RESTClientSQL.UpdateTableName := Edit6.Text;
+end;
+
+procedure TForm1.RESTClientSQLAfterPost(DataSet: TDataSet);
+Var
+ vError : String;
+begin
+ If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
+  MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+end;
 
 procedure TForm1.RESTDataBaseConnection(Sucess: Boolean; const Error: string);
 begin

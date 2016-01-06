@@ -106,6 +106,12 @@ Type
                           Var Error  : Boolean;
                           Var MessageError : String;
                           Execute    : Boolean = False) : TFDJSONDataSets;
+  Procedure ApplyUpdates(Var SQL          : TStringList;
+                         Var Params       : TParams;
+                         ADeltaList       : TFDJSONDeltas;
+                         TableName        : String;
+                         Var Error        : Boolean;
+                         Var MessageError : String);
  Public
   Function    GetRestPoolers : TStringList;          //Retorna a Lista de DataSet Sources do Pooler
   Constructor Create(AOwner  : TComponent);Override; //Cria o Componente
@@ -130,40 +136,47 @@ End;
 Type
  TRESTClientSQL   = Class(TFDMemTable)              //Classe com as funcionalidades de um DBQuery
  Private
-  Owner            : TComponent;
-  vUpdateTableName : String;                        //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
-  vAutoCommit,                                      //Se manda o Comando de AutoSalvar a Reflexão no Banco de Dados
+  Owner               : TComponent;
+  vUpdateTableName    : String;                     //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
   vDataCache,                                       //Se usa cache local
   vConnectedOnce,                                   //Verifica se foi conectado ao Servidor
-  vActive          : Boolean;                       //Estado do Dataset
-  vSQL             : TStringList;                   //SQL a ser utilizado na conexão
-  vParams          : TParams;                       //Parametros de Dataset
-  vCacheDataDB     : TFDDataset;                    //O Cache de Dados Salvo para utilização rápida
-  vOnGetDataError  : TOnEventConnection;            //Se deu erro na hora de receber os dados ou não
-  vRESTDataBase    : TRESTDataBase;                 //RESTDataBase do Dataset
+  vCommitUpdates,
+  vActive              : Boolean;                   //Estado do Dataset
+  vSQL                 : TStringList;               //SQL a ser utilizado na conexão
+  vParams              : TParams;                   //Parametros de Dataset
+  vCacheDataDB         : TFDDataset;                //O Cache de Dados Salvo para utilização rápida
+  vOnGetDataError      : TOnEventConnection;        //Se deu erro na hora de receber os dados ou não
+  vRESTDataBase        : TRESTDataBase;             //RESTDataBase do Dataset
+  vOnAfterDelete,
+  vOnAfterPost         : TDataSetNotifyEvent;
   Procedure OnChangingSQL(Sender: TObject);         //Quando Altera o SQL da Lista
   Procedure SetActiveDB(Value : Boolean);           //Seta o Estado do Dataset
   Procedure SetSQL(Value : TStringList);            //Seta o SQL a ser usado
   Procedure CreateParams;                           //Cria os Parametros na lista de Dataset
   Procedure SetDataBase(Value : TRESTDataBase);     //Diz o REST Database
-  Procedure GetData;
+  Procedure GetData;                                //Recebe os Dados da Internet vindo do Servidor REST
+  Procedure SetUpdateTableName(Value : String);     //Diz qual a tabela que será feito Update no Banco
+  Procedure OldAfterPost(DataSet: TDataSet);        //Eventos do Dataset para realizar o AfterPost
+  Procedure OldAfterDelete(DataSet: TDataSet);      //Eventos do Dataset para realizar o AfterDelete
  Public
   //Métodos
   Procedure   Open;                                 //Método Open que será utilizado no Componente
   Procedure   Close;                                //Método Close que será utilizado no Componente
   Procedure   ExecSQL;                              //Método ExecSQL que será utilizado no Componente
   Function    ParamByName(Value : String) : TParam; //Retorna o Parametro de Acordo com seu nome
+  Function    ApplyUpdates(var Error : String) : Boolean;
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                     //Destroy a Classe
  Published
-  Property OnGetDataError  : TOnEventConnection Read vOnGetDataError  Write vOnGetDataError;   //Recebe os Erros de ExecSQL ou de GetData
-  Property Active          : Boolean            Read vActive          Write SetActiveDB;       //Estado do Dataset
-  Property AutoCommit      : Boolean            Read vAutoCommit      Write vAutoCommit;       //Se executa o Commit Automáticamente
-  Property DataCache       : Boolean            Read vDataCache       Write vDataCache;        //Diz se será salvo o último Stream do Dataset
-  Property Params          : TParams            Read vParams          Write vParams;           //Parametros de Dataset
-  Property DataBase        : TRESTDataBase      Read vRESTDataBase    Write SetDataBase;       //Database REST do Dataset
-  Property SQL             : TStringList        Read vSQL             Write SetSQL;            //SQL a ser Executado
-  Property UpdateTableName : String             Read vUpdateTableName Write vUpdateTableName;  //Tabela que será usada para Reflexão de Dados
+  Property AfterDelete     : TDataSetNotifyEvent Read vOnAfterDelete            Write vOnAfterDelete;
+  Property AfterPost       : TDataSetNotifyEvent Read vOnAfterPost              Write vOnAfterPost;
+  Property OnGetDataError  : TOnEventConnection  Read vOnGetDataError           Write vOnGetDataError;         //Recebe os Erros de ExecSQL ou de GetData
+  Property Active          : Boolean             Read vActive                   Write SetActiveDB;             //Estado do Dataset
+  Property DataCache       : Boolean             Read vDataCache                Write vDataCache;              //Diz se será salvo o último Stream do Dataset
+  Property Params          : TParams             Read vParams                   Write vParams;                 //Parametros de Dataset
+  Property DataBase        : TRESTDataBase       Read vRESTDataBase             Write SetDataBase;             //Database REST do Dataset
+  Property SQL             : TStringList         Read vSQL                      Write SetSQL;                  //SQL a ser Executado
+  Property UpdateTableName : String              Read vUpdateTableName          Write SetUpdateTableName;      //Tabela que será usada para Reflexão de Dados
 End;
 
 Type
@@ -358,9 +371,8 @@ begin
    End;
  End;
  LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
- LApply.ApplyUpdates(TableName,  vTempQuery.Command);
- If LApply.Errors.Count = 0 then
-  LApply.ApplyUpdates(TableName, vTempQuery.Command);
+ vTempQuery.UpdateOptions.UpdateTableName := TableName;
+ LApply.ApplyUpdates(0,  vTempQuery.Command);
  If LApply.Errors.Count > 0 then
   Begin
    Error := True;
@@ -410,14 +422,22 @@ begin
    End;
  End;
  LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
- LApply.ApplyUpdates(TableName,  vTempQuery.Command);
- If LApply.Errors.Count = 0 then
-  LApply.ApplyUpdates(TableName, vTempQuery.Command);
+ vTempQuery.UpdateOptions.UpdateTableName := TableName;
+ LApply.ApplyUpdates(0,  vTempQuery.Command);
  If LApply.Errors.Count > 0 then
   Begin
    Error := True;
    MessageError := LApply.Errors.Strings.Text;
   End;
+ Try
+  Database.CommitRetaining;
+ Except
+  On E : Exception do
+   Begin
+    Error := True;
+    MessageError := E.Message;
+   End;
+ End;
  vTempQuery.DisposeOf;
 end;
 
@@ -541,6 +561,66 @@ Begin
    Value.ProxyUsername := '';
    Value.ProxyPassword := '';
   End;
+End;
+
+Procedure TRESTDataBase.ApplyUpdates(Var SQL          : TStringList;
+                                     Var Params       : TParams;
+                                     ADeltaList       : TFDJSONDeltas;
+                                     TableName        : String;
+                                     Var Error        : Boolean;
+                                     Var MessageError : String);
+Var
+ vDSRConnection    : TDSRestConnection;
+ vRESTConnectionDB : TSMPoolerMethodClient;
+ Function GetLineSQL(Value : TStringList) : String;
+ Var
+  I : Integer;
+ Begin
+  Result := '';
+  If Value <> Nil Then
+   For I := 0 To Value.Count -1 do
+    Begin
+     If I = 0 then
+      Result := Value[I]
+     Else
+      Result := Result + ' ' + Value[I];
+    End;
+ End;
+Begin
+ if vRestPooler = '' then
+  Exit;
+ SetConnectionOptions(vDSRConnection);
+ vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
+ Try
+  If Params.Count > 0 Then
+   vRESTConnectionDB.ApplyChanges(vRestPooler,
+                                  vRestModule,
+                                  TableName,
+                                  GetLineSQL(SQL),
+                                  Params,
+                                  ADeltaList,
+                                  Error,
+                                  MessageError)
+  Else
+   vRESTConnectionDB.ApplyChangesPure(vRestPooler,
+                                      vRestModule,
+                                      TableName,
+                                      GetLineSQL(SQL),
+                                      ADeltaList,
+                                      Error,
+                                      MessageError);
+  If Assigned(vOnEventConnection) Then
+   vOnEventConnection(True, 'ApplyUpdates Ok')
+ Except
+  On E : Exception do
+   Begin
+    vDSRConnection.SessionID := '';
+    if Assigned(vOnEventConnection) then
+     vOnEventConnection(False, E.Message);
+   End;
+ End;
+ vDSRConnection.DisposeOf;
+ vRESTConnectionDB.DisposeOf;
 End;
 
 Function TRESTDataBase.ExecuteCommand(Var SQL    : TStringList;
@@ -720,16 +800,17 @@ End;
 Constructor TRESTClientSQL.Create(AOwner : TComponent);
 Begin
  Inherited;
- Owner            := AOwner;
- vAutoCommit      := True;
- vDataCache       := False;
- vConnectedOnce   := True;
- vActive          := False;
- vSQL             := TStringList.Create;
- vSQL.OnChange    := OnChangingSQL;
- vParams          := TParams.Create(Self);
- vCacheDataDB     := Self.CloneSource;
- vUpdateTableName := '';
+ Owner             := AOwner;
+ vDataCache        := False;
+ vConnectedOnce    := True;
+ vActive           := False;
+ vSQL              := TStringList.Create;
+ vSQL.OnChange     := OnChangingSQL;
+ vParams           := TParams.Create(Self);
+ vCacheDataDB      := Self.CloneSource;
+ vUpdateTableName  := '';
+ Inherited AfterPost   := OldAfterPost;
+ Inherited AfterDelete := OldAfterDelete;
 End;
 
 Destructor  TRESTClientSQL.Destroy;
@@ -791,6 +872,26 @@ Begin
   End;
 End;
 
+Function  TRESTClientSQL.ApplyUpdates(Var Error : String) : Boolean;
+var
+ LDeltaList    : TFDJSONDeltas;
+ vError        : Boolean;
+ vMessageError : String;
+ Function GetDeltas : TFDJSONDeltas;
+ Begin
+  if TFDMemTable(Self).State in [dsEdit, dsInsert] then
+   TFDMemTable(Self).Post;
+  Result := TFDJSONDeltas.Create;
+  TFDJSONDeltasWriter.ListAdd(Result, UpdateTableName, TFDMemTable(Self));
+ End;
+Begin
+ LDeltaList := GetDeltas;
+ If Assigned(vRESTDataBase) And (Trim(UpdateTableName) <> '') Then
+  vRESTDataBase.ApplyUpdates(vSQL, vParams, LDeltaList, Trim(UpdateTableName), vError, vMessageError);
+ Result := Not vError;
+ Error  := vMessageError;
+End;
+
 Function  TRESTClientSQL.ParamByName(Value : String) : TParam;
 Var
  I : Integer;
@@ -838,6 +939,27 @@ End;
 Procedure TRESTClientSQL.Open;
 Begin
  TFDMemTable(Self).Open;
+End;
+
+Procedure TRESTClientSQL.OldAfterPost(DataSet: TDataSet);
+Begin
+ if Assigned(vOnAfterPost) then
+  vOnAfterPost(Self);
+ TFDMemTable(Self).CommitUpdates;
+End;
+
+Procedure TRESTClientSQL.OldAfterDelete(DataSet: TDataSet);
+Begin
+ if Assigned(vOnAfterDelete) then
+  vOnAfterDelete(Self);
+ TFDMemTable(Self).CommitUpdates;
+End;
+
+Procedure TRESTClientSQL.SetUpdateTableName(Value : String);
+Begin
+ vCommitUpdates                  := Trim(Value) <> '';
+ TFDMemTable(Self).CachedUpdates := vCommitUpdates;
+ vUpdateTableName                := Value;
 End;
 
 Procedure TRESTClientSQL.GetData;
