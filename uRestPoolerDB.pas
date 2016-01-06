@@ -887,7 +887,15 @@ var
 Begin
  LDeltaList := GetDeltas;
  If Assigned(vRESTDataBase) And (Trim(UpdateTableName) <> '') Then
-  vRESTDataBase.ApplyUpdates(vSQL, vParams, LDeltaList, Trim(UpdateTableName), vError, vMessageError);
+  vRESTDataBase.ApplyUpdates(vSQL, vParams, LDeltaList, Trim(UpdateTableName), vError, vMessageError)
+ Else
+  Begin
+   vError := True;
+   If Not Assigned(vRESTDataBase) Then
+    vMessageError := 'No RESTDatabase defined'
+   Else
+    vMessageError := 'No UpdateTableName defined';
+  End;
  Result := Not vError;
  Error  := vMessageError;
 End;
