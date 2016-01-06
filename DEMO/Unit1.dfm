@@ -183,9 +183,10 @@ object Form1: TForm1
     DataCache = False
     Params = <
       item
-        DataType = ftUnknown
+        DataType = ftString
         Name = 'FIRST_NAME'
         ParamType = ptUnknown
+        Value = 'Roberta'
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
@@ -201,7 +202,7 @@ object Form1: TForm1
     Proxy = False
     ProxyOptions.Port = 8888
     PoolerService = '127.0.0.1'
-    PoolerPort = 8080
+    PoolerPort = 8082
     PoolerName = 'ServerMethods1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
     StateConnection.AutoCheck = False
