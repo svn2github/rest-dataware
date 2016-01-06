@@ -157,8 +157,8 @@ object Form1: TForm1
   end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL
-    Left = 280
-    Top = 240
+    Left = 336
+    Top = 144
   end
   object RESTClientSQL: TRESTClientSQL
     AutoCalcFields = False
@@ -190,8 +190,8 @@ object Form1: TForm1
     DataBase = RESTDataBase
     SQL.Strings = (
       'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME')
-    Left = 252
-    Top = 240
+    Left = 308
+    Top = 144
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
@@ -206,7 +206,7 @@ object Form1: TForm1
     RestModule = 'TServerMethods1'
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
-    Left = 224
-    Top = 240
+    Left = 280
+    Top = 144
   end
 end
