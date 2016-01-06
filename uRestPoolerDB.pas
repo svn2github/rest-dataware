@@ -143,6 +143,7 @@ Type
   vDataCache,                                       //Se usa cache local
   vConnectedOnce,                                   //Verifica se foi conectado ao Servidor
   vCommitUpdates,
+  vErrorBefore,
   vActive              : Boolean;                   //Estado do Dataset
   vSQL                 : TStringList;               //SQL a ser utilizado na conexão
   vParams              : TParams;                   //Parametros de Dataset
@@ -323,6 +324,7 @@ Begin
  Except
   On E : Exception do
    Begin
+    vFDConnection.RollbackRetaining;
     Error := True;
     MessageError := E.Message;
    End;
@@ -372,6 +374,7 @@ Begin
  Except
   On E : Exception do
    Begin
+    vFDConnection.RollbackRetaining;
     Error := True;
     MessageError := E.Message;
    End;
@@ -405,11 +408,28 @@ begin
  End;
  LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
  vTempQuery.UpdateOptions.UpdateTableName := TableName;
- LApply.ApplyUpdates(0,  vTempQuery.Command);
+ Try
+  LApply.ApplyUpdates(0,  vTempQuery.Command);
+ Except
+
+ End;
  If LApply.Errors.Count > 0 then
   Begin
    Error := True;
    MessageError := LApply.Errors.Strings.Text;
+  End;
+ If Not Error Then
+  Begin
+   Try
+    Database.CommitRetaining;
+   Except
+    On E : Exception do
+     Begin
+      Database.RollbackRetaining;
+      Error := True;
+      MessageError := E.Message;
+     End;
+   End;
   End;
  vTempQuery.DisposeOf;
 end;
@@ -456,7 +476,11 @@ begin
  End;
  LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
  vTempQuery.UpdateOptions.UpdateTableName := TableName;
- LApply.ApplyUpdates(0,  vTempQuery.Command);
+ Try
+  LApply.ApplyUpdates(0,  vTempQuery.Command);
+ Except
+
+ End;
  If LApply.Errors.Count > 0 then
   Begin
    Error := True;
@@ -467,6 +491,7 @@ begin
  Except
   On E : Exception do
    Begin
+    Database.RollbackRetaining;
     Error := True;
     MessageError := E.Message;
    End;
@@ -930,8 +955,9 @@ Begin
    Else
     vMessageError := 'No UpdateTableName defined';
   End;
- Result := Not vError;
- Error  := vMessageError;
+ Result       := Not vError;
+ Error        := vMessageError;
+ vErrorBefore := vError;
 End;
 
 Function  TRESTClientSQL.ParamByName(Value : String) : TParam;
@@ -985,16 +1011,20 @@ End;
 
 Procedure TRESTClientSQL.OldAfterPost(DataSet: TDataSet);
 Begin
+ vErrorBefore := False;
  if Assigned(vOnAfterPost) then
   vOnAfterPost(Self);
- TFDMemTable(Self).CommitUpdates;
+ if Not vErrorBefore then
+  TFDMemTable(Self).CommitUpdates;
 End;
 
 Procedure TRESTClientSQL.OldAfterDelete(DataSet: TDataSet);
 Begin
- if Assigned(vOnAfterDelete) then
+ vErrorBefore := False;
+ If Assigned(vOnAfterDelete) Then
   vOnAfterDelete(Self);
- TFDMemTable(Self).CommitUpdates;
+ If Not vErrorBefore Then
+  TFDMemTable(Self).CommitUpdates;
 End;
 
 Procedure TRESTClientSQL.SetUpdateTableName(Value : String);
