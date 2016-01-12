@@ -157,7 +157,7 @@ object Form1: TForm1
   end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL
-    Left = 336
+    Left = 368
     Top = 144
   end
   object RESTClientSQL: TRESTClientSQL
@@ -183,15 +183,14 @@ object Form1: TForm1
     DataCache = False
     Params = <
       item
-        DataType = ftString
+        DataType = ftUnknown
         Name = 'FIRST_NAME'
         ParamType = ptUnknown
-        Value = 'Roberta'
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
       'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME')
-    Left = 308
+    Left = 300
     Top = 144
   end
   object RESTDataBase: TRESTDataBase
@@ -207,7 +206,7 @@ object Form1: TForm1
     RestModule = 'TServerMethods1'
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
-    Left = 280
+    Left = 224
     Top = 144
   end
 end
