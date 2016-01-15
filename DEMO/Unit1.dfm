@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   ActiveControl = Edit1
   BorderIcons = [biSystemMenu]
-  Caption = 'Cliente de Testes Utilizando o PoolerDB'
+  Caption = 'Client for Test of PoolerDB'
   ClientHeight = 331
   ClientWidth = 652
   Color = clBtnFace
@@ -20,44 +20,44 @@ object Form1: TForm1
   object Label1: TLabel
     Left = 121
     Top = 3
-    Width = 133
+    Width = 117
     Height = 13
-    Caption = 'Lista de Poolers no Servidor'
+    Caption = 'List of Poolers on Server'
   end
   object Label2: TLabel
     Left = 315
     Top = 3
     Width = 74
     Height = 13
-    Caption = 'SQL a Executar'
+    Caption = 'SQL to Execute'
   end
   object Label3: TLabel
     Left = 9
     Top = 3
-    Width = 81
+    Width = 52
     Height = 13
-    Caption = 'Caminho do Host'
+    Caption = 'Host Name'
   end
   object Label4: TLabel
     Left = 315
     Top = 41
-    Width = 87
+    Width = 65
     Height = 13
-    Caption = 'Par'#226'metro do SQL'
+    Caption = 'Param of SQL'
   end
   object Label5: TLabel
     Left = 9
     Top = 41
-    Width = 66
+    Width = 20
     Height = 13
-    Caption = 'Porta do Host'
+    Caption = 'Port'
   end
   object Label6: TLabel
     Left = 428
     Top = 41
-    Width = 111
+    Width = 76
     Height = 13
-    Caption = 'Valor para o Par'#226'metro'
+    Caption = 'Value for Param'
   end
   object Label7: TLabel
     Left = 315
@@ -93,7 +93,7 @@ object Form1: TForm1
     Top = 18
     Width = 75
     Height = 25
-    Caption = 'Abrir'
+    Caption = 'Open'
     TabOrder = 7
     OnClick = Button1Click
   end
@@ -127,7 +127,7 @@ object Form1: TForm1
     Top = 52
     Width = 75
     Height = 25
-    Caption = 'Executar'
+    Caption = 'Execute'
     TabOrder = 8
     OnClick = Button2Click
   end
