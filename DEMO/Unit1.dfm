@@ -55,9 +55,9 @@ object Form1: TForm1
   object Label6: TLabel
     Left = 428
     Top = 41
-    Width = 76
+    Width = 62
     Height = 13
-    Caption = 'Value for Param'
+    Caption = 'Param Value '
   end
   object Label7: TLabel
     Left = 315
