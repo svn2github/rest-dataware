@@ -88,19 +88,19 @@ Var
 Begin
  RESTDataBase.PoolerService := Edit4.Text;
  RESTDataBase.PoolerPort    := StrToInt(Edit5.Text);
- if ListBox1.Items.Count = 0 then
-  Begin
-   vTempList   := RESTDataBase.GetRestPoolers;
-   If vTempList <> Nil Then
-    If vTempList.Count > 0 Then
-     Begin
-      ListBox1.Items.Assign(vTempList);
-      RESTDataBase.PoolerName := ListBox1.Items[0];
-     End;
-  End;
  RESTDataBase.Active := True;
- if RESTDataBase.Active then
+ If RESTDataBase.Active Then
   Begin
+   if ListBox1.Items.Count = 0 then
+    Begin
+     vTempList   := RESTDataBase.GetRestPoolers;
+     If vTempList <> Nil Then
+      If vTempList.Count > 0 Then
+       Begin
+        ListBox1.Items.Assign(vTempList);
+        RESTDataBase.PoolerName := ListBox1.Items[0];
+       End;
+    End;
    RESTClientSQL.Active       := False;
    RESTClientSQL.SQL.Clear;
    RESTClientSQL.SQL.Add(Edit1.Text);
