@@ -86,7 +86,7 @@ object Form1: TForm1
     Width = 247
     Height = 21
     TabOrder = 3
-    Text = 'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME'
+    Text = 'SELECT * FROM EMPLOYEE WHERE FIRST_NAME like :FIRST_NAME'
   end
   object Button1: TButton
     Left = 568
@@ -103,7 +103,7 @@ object Form1: TForm1
     Width = 134
     Height = 21
     TabOrder = 5
-    Text = 'Robert'
+    Text = 'Robert%'
   end
   object Edit3: TEdit
     Left = 315
