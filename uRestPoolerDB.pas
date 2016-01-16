@@ -11,15 +11,20 @@ unit uRestPoolerDB;
 
 interface
 
-uses System.SysUtils,         System.Classes,           Datasnap.DSProxyRest, Datasnap.DSServer,
-     FireDAC.Stan.Intf,       FireDAC.Stan.Option,      FireDAC.Stan.Param,   Datasnap.DSAuth,
-     FireDAC.Stan.Error,      FireDAC.DatS,             FireDAC.Phys.Intf,    FireDAC.DApt.Intf,
+uses System.SysUtils,         System.Classes,
+     FireDAC.Stan.Intf,       FireDAC.Stan.Option,      FireDAC.Stan.Param,
+     FireDAC.Stan.Error,      FireDAC.DatS,             FireDAC.Phys.Intf,
      FireDAC.Stan.Async,      FireDAC.DApt,             FireDAC.UI.Intf,
-     FireDAC.Stan.Def,        FireDAC.Stan.Pool,        FireDAC.Phys,         Data.DB,
-     FireDAC.Comp.Client,     FireDAC.Comp.UI,          FireDAC.Comp.DataSet, Data.FireDACJSONReflect,
+     FireDAC.Stan.Def,        FireDAC.Stan.Pool,        FireDAC.Phys,
+     FireDAC.Comp.Client,     FireDAC.Comp.UI,          FireDAC.Comp.DataSet,
      System.JSON,             FireDAC.Stan.StorageBin,  FireDAC.Stan.StorageJSON,
+     FireDAC.DApt.Intf,       Data.DB,
+     Data.FireDACJSONReflect, Data.DBXJSONReflect,
      FireDAC.Phys.IBDef,      IPPeerClient,             Datasnap.DSClientRest,
-     System.SyncObjs,         Data.DBXJSONReflect,      uPoolerMethod,        System.TypInfo;
+     System.SyncObjs,         uPoolerMethod,            System.TypInfo
+     {$IFDEF MSWINDOWS}
+     , Datasnap.DSServer, Datasnap.DSAuth, Datasnap.DSProxyRest
+     {$ENDIF};
 
 Type
  TOnEventDB = Procedure (DataSet: TDataSet) of Object;
@@ -182,6 +187,7 @@ Type
   Property UpdateTableName : String              Read vUpdateTableName          Write SetUpdateTableName;      //Tabela que será usada para Reflexão de Dados
 End;
 
+{$IFDEF MSWINDOWS}
 Type
  TRESTPoolerDBP = ^TComponent;
  TRESTPoolerDB  = Class(TComponent)
@@ -190,10 +196,6 @@ Type
   FLock          : TCriticalSection;
   vFDConnectionBack,
   vFDConnection  : TFDConnection;
-//  vFDTransaction : TFDTransaction;
-//  Procedure CopyConnection(CopyDBConnection : TFDConnection;
-//                           Var DBConnection : TFDConnection;
-//                           Var WriteTrans   : TFDTransaction);
   Procedure SetConnection(Value : TFDConnection);
   Function  GetConnection : TFDConnection;
  Public
@@ -222,15 +224,24 @@ Type
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                     //Destroy a Classe
 End;
+{$ENDIF}
 
 Procedure Register;
 
 implementation
 
+{$IFDEF MSWINDOWS}
 Procedure Register;
 Begin
  RegisterComponents('REST Dataware', [TRESTPoolerDB, TRESTDataBase, TRESTClientSQL]);
 End;
+{$ENDIF}
+{$IFNDEF MSWINDOWS}
+Procedure Register;
+Begin
+ RegisterComponents('REST Dataware', [TRESTDataBase, TRESTClientSQL]);
+End;
+{$ENDIF}
 
 Function EncodeStrings(Value : String) : String;
 Begin
@@ -279,6 +290,7 @@ Begin
   Inherited;
 End;
 
+{$IFDEF MSWINDOWS}
 Function  TRESTPoolerDB.GetConnection : TFDConnection;
 Begin
  Result := vFDConnectionBack;
@@ -512,6 +524,7 @@ Begin
  FLock.DisposeOf;
  Inherited;
 End;
+{$ENDIF}
 
 Constructor TAutoCheckData.Create;
 Begin
@@ -1040,23 +1053,23 @@ Var
  vError        : Boolean;
  vMessageError : String;
  vTempTable    : TFDMemTable;
- Procedure CloneDefinitions(Source : TFDMemTable; Var Dest : TRESTClientSQL);
+ Procedure CloneDefinitions(Source : TFDMemTable);
  Var
   I, A : Integer;
  Begin
-  Dest.Close;
+  Close;
   For I := 0 to Source.FieldDefs.Count -1 do
    Begin
-    For A := 0 to Dest.FieldDefs.Count -1 do
-     If Uppercase(Source.FieldDefs[I].Name) = Uppercase(Dest.FieldDefs[A].Name) Then
+    For A := 0 to FieldDefs.Count -1 do
+     If Uppercase(Source.FieldDefs[I].Name) = Uppercase(FieldDefs[A].Name) Then
       Begin
-       Dest.FieldDefs.Delete(A);
+       FieldDefs.Delete(A);
        Break;
       End;
    End;
   For I := 0 to Source.FieldDefs.Count -1 do
    Begin
-    With Dest.FieldDefs.AddFieldDef Do
+    With FieldDefs.AddFieldDef Do
      Begin
       Name     := Source.FieldDefs[I].Name;
       DataType := Source.FieldDefs[I].DataType;
@@ -1064,8 +1077,8 @@ Var
       Required := Source.FieldDefs[I].Required;
      End;
    End;
-  If Dest.FieldDefs.Count > 0 Then
-   Dest.CreateDataSet;
+  If FieldDefs.Count > 0 Then
+   CreateDataSet;
  End;
 Begin
  Close;
@@ -1079,7 +1092,7 @@ Begin
      vTempTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
      Self.Close;
      Try
-      CloneDefinitions(vTempTable, Self);
+      CloneDefinitions(vTempTable);
       AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
      Finally
       vTempTable.DisposeOf;

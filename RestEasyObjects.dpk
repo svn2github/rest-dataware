@@ -31,16 +31,12 @@ requires
   rtl,
   DbxCommonDriver,
   dbrtl,
-  DataSnapClient,
-  DataSnapCommon,
   DbxClientDriver,
   CustomIPTransport,
   FireDAC,
   FireDACCommonDriver,
   FireDACCommon,
   FireDACIBDriver,
-  DataSnapServer,
-  DataSnapFireDAC,
   IndyIPClient,
   IndyIPCommon,
   IndySystem,
@@ -48,7 +44,13 @@ requires
   IndyCore,
   dsnap,
   dbexpress,
-  dbxcds;
+  dbxcds
+  {$IFDEF MSWINDOWS}
+  ,DataSnapCommon,
+  DataSnapServer,
+  DataSnapFireDAC,
+  DataSnapClient
+  {$ENDIF};
 
 contains
   uRestPoolerDB in 'uRestPoolerDB.pas',
