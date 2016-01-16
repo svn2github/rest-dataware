@@ -12,25 +12,26 @@ unit uRestPoolerDB;
 interface
 
 uses System.SysUtils,         System.Classes,
-     FireDAC.Stan.Intf,       FireDAC.Stan.Option,      FireDAC.Stan.Param,
-     FireDAC.Stan.Error,      FireDAC.DatS,             FireDAC.Phys.Intf,
-     FireDAC.Stan.Async,      FireDAC.DApt,             FireDAC.UI.Intf,
-     FireDAC.Stan.Def,        FireDAC.Stan.Pool,        FireDAC.Phys,
-     FireDAC.Comp.Client,     FireDAC.Comp.UI,          FireDAC.Comp.DataSet,
-     System.JSON,             FireDAC.Stan.StorageBin,  FireDAC.Stan.StorageJSON,
-     FireDAC.DApt.Intf,       Data.DB,
-     Data.FireDACJSONReflect, Data.DBXJSONReflect,
-     FireDAC.Phys.IBDef,      IPPeerClient,             Datasnap.DSClientRest,
-     System.SyncObjs,         uPoolerMethod,            System.TypInfo
-     {$IFDEF MSWINDOWS}
-     , Datasnap.DSServer, Datasnap.DSAuth, Datasnap.DSProxyRest
-     {$ENDIF};
+     FireDAC.Stan.Intf,       FireDAC.Stan.Option,     FireDAC.Stan.Param,
+     FireDAC.Stan.Error,      FireDAC.DatS,            FireDAC.Stan.Async,
+     FireDAC.DApt,            FireDAC.UI.Intf,         FireDAC.Stan.Def,
+     FireDAC.Stan.Pool,       FireDAC.Comp.Client,     FireDAC.Comp.UI,
+     FireDAC.Comp.DataSet,    System.JSON,             FireDAC.DApt.Intf,
+     Data.DB,                 Data.FireDACJSONReflect, Data.DBXJSONReflect,
+     IPPeerClient,            Datasnap.DSClientRest,   System.SyncObjs,
+     uPoolerMethod,           FireDAC.Stan.StorageBin,
+     Data.Bind.Components,    BindListUtils,           System.Bindings.Outputs,
+     FireDAC.Stan.StorageJSON{$IFDEF MSWINDOWS},       Datasnap.DSServer,
+     Datasnap.DSAuth,         Datasnap.DSProxyRest{$ENDIF};
 
 Type
  TOnEventDB = Procedure (DataSet: TDataSet) of Object;
 
 Type
  TOnEventConnection = Procedure (Sucess : Boolean; Const Error : String) of Object;
+
+Type
+ TOnEventBeforeConnection = Procedure (Sender : TComponent) of Object;
 
 Type
  TOnEventTimer = Procedure of Object;
@@ -102,6 +103,7 @@ Type
   vProxyOptions        : TProxyOptions;              //Se tem Proxy diz quais as opções
   vConnected           : Boolean;                    //Diz o Estado da Conexão
   vOnEventConnection   : TOnEventConnection;         //Evento de Estado da Conexão
+  vOnBeforeConnection  : TOnEventBeforeConnection;   //Evento antes de Connectar o Database
   vAutoCheckData       : TAutoCheckData;             //Autocheck de Conexão
   Procedure SetConnection(Value : Boolean);          //Seta o Estado da Conexão
   Procedure SetRestPooler(Value : String);           //Seta o Restpooler a ser utilizado
@@ -125,19 +127,20 @@ Type
   Constructor Create(AOwner  : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                      //Destroy a Classe
  Published
-  Property OnConnection    : TOnEventConnection Read vOnEventConnection Write vOnEventConnection; //Evento relativo a tudo que acontece quando tenta conectar ao Servidor
-  Property Active          : Boolean            Read vConnected         Write SetConnection;      //Seta o Estado da Conexão
-  Property MyIP            : String             Read vMyIP;
-  Property Login           : String             Read vLogin             Write vLogin;             //Login do Usuário caso haja autenticação
-  Property Password        : String             Read vPassword          Write vPassword;          //Senha do Usuário caso haja autenticação
-  Property Proxy           : Boolean            Read vProxy             Write vProxy;             //Diz se tem servidor Proxy
-  Property ProxyOptions    : TProxyOptions      Read vProxyOptions      Write vProxyOptions;      //Se tem Proxy diz quais as opções
-  Property PoolerService   : String             Read vRestWebService    Write vRestWebService;    //Host do WebService REST
-  Property PoolerURL       : String             Read vRestURL           Write vRestURL;           //URL do WebService REST
-  Property PoolerPort      : Integer            Read vPoolerPort        Write SetPoolerPort;      //A Porta do Pooler do DataSet
-  Property PoolerName      : String             Read vRestPooler        Write SetRestPooler;      //Qual o Pooler de Conexão ligado ao componente
-  Property RestModule      : String             Read vRestModule        Write vRestModule;        //Classe do Servidor REST Principal
-  Property StateConnection : TAutoCheckData     Read vAutoCheckData     Write vAutoCheckData;     //Autocheck da Conexão
+  Property OnConnection       : TOnEventConnection       Read vOnEventConnection  Write vOnEventConnection; //Evento relativo a tudo que acontece quando tenta conectar ao Servidor
+  Property OnBeforeConnect    : TOnEventBeforeConnection Read vOnBeforeConnection Write vOnBeforeConnection; //Evento antes de Connectar o Database
+  Property Active             : Boolean                  Read vConnected          Write SetConnection;      //Seta o Estado da Conexão
+  Property MyIP               : String                   Read vMyIP;
+  Property Login              : String                   Read vLogin              Write vLogin;             //Login do Usuário caso haja autenticação
+  Property Password           : String                   Read vPassword           Write vPassword;          //Senha do Usuário caso haja autenticação
+  Property Proxy              : Boolean                  Read vProxy              Write vProxy;             //Diz se tem servidor Proxy
+  Property ProxyOptions       : TProxyOptions            Read vProxyOptions       Write vProxyOptions;      //Se tem Proxy diz quais as opções
+  Property PoolerService      : String                   Read vRestWebService     Write vRestWebService;    //Host do WebService REST
+  Property PoolerURL          : String                   Read vRestURL            Write vRestURL;           //URL do WebService REST
+  Property PoolerPort         : Integer                  Read vPoolerPort         Write SetPoolerPort;      //A Porta do Pooler do DataSet
+  Property PoolerName         : String                   Read vRestPooler         Write SetRestPooler;      //Qual o Pooler de Conexão ligado ao componente
+  Property RestModule         : String                   Read vRestModule         Write vRestModule;        //Classe do Servidor REST Principal
+  Property StateConnection    : TAutoCheckData           Read vAutoCheckData      Write vAutoCheckData;     //Autocheck da Conexão
 End;
 
 Type
@@ -166,6 +169,8 @@ Type
   Procedure SetUpdateTableName(Value : String);     //Diz qual a tabela que será feito Update no Banco
   Procedure OldAfterPost(DataSet: TDataSet);        //Eventos do Dataset para realizar o AfterPost
   Procedure OldAfterDelete(DataSet: TDataSet);      //Eventos do Dataset para realizar o AfterDelete
+ Protected
+  Function CanObserve(const ID: Integer): Boolean; Override;                       { declaration is in System.Classes }
  Public
   //Métodos
   Procedure   Open;                                 //Método Open que será utilizado no Componente
@@ -175,6 +180,7 @@ Type
   Function    ApplyUpdates(var Error : String) : Boolean;
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                     //Destroy a Classe
+  Procedure   Loaded; Override;
  Published
   Property AfterDelete     : TDataSetNotifyEvent Read vOnAfterDelete            Write vOnAfterDelete;
   Property AfterPost       : TDataSetNotifyEvent Read vOnAfterPost              Write vOnAfterPost;
@@ -844,6 +850,9 @@ Begin
  If (Value) And
     (Trim(vRestPooler) = '') Then
   Exit;
+ if (Value) And Not(vConnected) then
+  If Assigned(vOnBeforeConnection) Then
+   vOnBeforeConnection(Self);
  vConnected := Value;
  if vConnected then
   vConnected := TryConnect
@@ -1017,6 +1026,19 @@ Begin
   TFDMemTable(Self).FieldDefs.Clear;
 End;
 
+Function TRESTClientSQL.CanObserve(const ID: Integer): Boolean;
+{ Controls which implement observers always override TComponent.CanObserve(const ID: Integer). }
+{ This method identifies the type of observers supported by TObservableTrackbar. }
+begin
+  case ID of
+    TObserverMapping.EditLinkID,      { EditLinkID is the observer that is used for control-to-field links }
+    TObserverMapping.ControlValueID:
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
 Procedure TRESTClientSQL.Open;
 Begin
  TFDMemTable(Self).Open;
@@ -1047,6 +1069,15 @@ Begin
  vUpdateTableName                := Value;
 End;
 
+Procedure TRESTClientSQL.Loaded;
+Begin
+ Inherited Loaded;
+{
+ If (csDesigning in ComponentState) then
+    RebuildTabs;
+ }
+End;
+
 Procedure TRESTClientSQL.GetData;
 Var
  LDataSetList  : TFDJSONDataSets;
@@ -1057,19 +1088,19 @@ Var
  Var
   I, A : Integer;
  Begin
-  Close;
+  Self.Close;
   For I := 0 to Source.FieldDefs.Count -1 do
    Begin
-    For A := 0 to FieldDefs.Count -1 do
-     If Uppercase(Source.FieldDefs[I].Name) = Uppercase(FieldDefs[A].Name) Then
+    For A := 0 to Self.FieldDefs.Count -1 do
+     If Uppercase(Source.FieldDefs[I].Name) = Uppercase(Self.FieldDefs[A].Name) Then
       Begin
-       FieldDefs.Delete(A);
+       Self.FieldDefs.Delete(A);
        Break;
       End;
    End;
   For I := 0 to Source.FieldDefs.Count -1 do
    Begin
-    With FieldDefs.AddFieldDef Do
+    With Self.FieldDefs.AddFieldDef Do
      Begin
       Name     := Source.FieldDefs[I].Name;
       DataType := Source.FieldDefs[I].DataType;
@@ -1077,8 +1108,8 @@ Var
       Required := Source.FieldDefs[I].Required;
      End;
    End;
-  If FieldDefs.Count > 0 Then
-   CreateDataSet;
+  If Self.FieldDefs.Count > 0 Then
+   Self.CreateDataSet;
  End;
 Begin
  Close;

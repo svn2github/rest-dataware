@@ -1,0 +1,194 @@
+object Form2: TForm2
+  Left = 0
+  Top = 0
+  Caption = 'Form2'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object Panel1: TPanel
+    Align = Top
+    Size.Width = 640.000000000000000000
+    Size.Height = 78.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 5
+    object Button1: TButton
+      Position.X = 245.000000000000000000
+      Position.Y = 34.000000000000000000
+      TabOrder = 2
+      Text = 'Abrir'
+      OnClick = Button1Click
+    end
+    object Edit1: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 3
+      Text = '192.168.1.6'
+      Position.X = 32.000000000000000000
+      Position.Y = 34.000000000000000000
+    end
+    object Edit2: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 4
+      Text = '8082'
+      Position.X = 138.000000000000000000
+      Position.Y = 34.000000000000000000
+    end
+    object Label1: TLabel
+      Position.X = 32.000000000000000000
+      Position.Y = 12.000000000000000000
+      Size.Width = 68.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Host'
+    end
+    object Label2: TLabel
+      Position.X = 139.000000000000000000
+      Position.Y = 12.000000000000000000
+      Size.Width = 70.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Port'
+    end
+  end
+  object ListView1: TListView
+    ItemAppearanceClassName = 'TMultiDetailItemAppearance'
+    ItemEditAppearanceClassName = 'TMultiDetailDeleteAppearance'
+    HeaderAppearanceClassName = 'TListHeaderObjects'
+    FooterAppearanceClassName = 'TListHeaderObjects'
+    Align = Client
+    Size.Width = 640.000000000000000000
+    Size.Height = 402.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 17
+  end
+  object RESTClientSQL: TRESTClientSQL
+    FieldDefs = <>
+    IndexDefs = <>
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    FormatOptions.AssignedValues = [fvMaxBcdPrecision, fvMaxBcdScale]
+    FormatOptions.MaxBcdPrecision = 2147483647
+    FormatOptions.MaxBcdScale = 2147483647
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvUpdateChngFields, uvUpdateMode, uvLockMode, uvLockPoint, uvLockWait, uvRefreshMode, uvFetchGeneratorsPoint, uvCheckRequired, uvCheckReadOnly, uvCheckUpdatable, uvAutoCommitUpdates]
+    UpdateOptions.LockWait = True
+    UpdateOptions.FetchGeneratorsPoint = gpNone
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    StoreDefs = True
+    DataCache = False
+    Params = <>
+    DataBase = RESTDataBase
+    SQL.Strings = (
+      'SELECT * FROM EMPLOYEE')
+    Left = 284
+    Top = 128
+    object RESTClientSQLEMP_NO: TSmallintField
+      FieldName = 'EMP_NO'
+      Required = True
+    end
+    object RESTClientSQLFIRST_NAME: TStringField
+      FieldName = 'FIRST_NAME'
+      Required = True
+      Size = 15
+    end
+    object RESTClientSQLLAST_NAME: TStringField
+      FieldName = 'LAST_NAME'
+      Required = True
+    end
+    object RESTClientSQLPHONE_EXT: TStringField
+      FieldName = 'PHONE_EXT'
+      Size = 4
+    end
+    object RESTClientSQLHIRE_DATE: TSQLTimeStampField
+      FieldName = 'HIRE_DATE'
+      Required = True
+    end
+    object RESTClientSQLDEPT_NO: TStringField
+      FieldName = 'DEPT_NO'
+      Required = True
+      FixedChar = True
+      Size = 3
+    end
+    object RESTClientSQLJOB_CODE: TStringField
+      FieldName = 'JOB_CODE'
+      Required = True
+      Size = 5
+    end
+    object RESTClientSQLJOB_GRADE: TSmallintField
+      FieldName = 'JOB_GRADE'
+      Required = True
+    end
+    object RESTClientSQLJOB_COUNTRY: TStringField
+      FieldName = 'JOB_COUNTRY'
+      Required = True
+      Size = 15
+    end
+    object RESTClientSQLSALARY: TFloatField
+      FieldName = 'SALARY'
+      Required = True
+      currency = True
+    end
+    object RESTClientSQLFULL_NAME: TStringField
+      FieldName = 'FULL_NAME'
+      Size = 37
+    end
+  end
+  object RESTDataBase: TRESTDataBase
+    OnBeforeConnect = RESTDataBaseBeforeConnect
+    Active = True
+    Login = 'testserver'
+    Password = 'testserver'
+    Proxy = False
+    ProxyOptions.Port = 8888
+    PoolerService = '192.168.1.6'
+    PoolerPort = 8082
+    PoolerName = 'ServerMethods1.RESTPoolerDB'
+    RestModule = 'TServerMethods1'
+    StateConnection.AutoCheck = False
+    StateConnection.InTime = 1000
+    Left = 224
+    Top = 144
+  end
+  object BindSourceDB1: TBindSourceDB
+    DataSet = RESTClientSQL
+    ScopeMappings = <>
+    Left = 352
+    Top = 129
+  end
+  object BindingsList1: TBindingsList
+    Methods = <>
+    OutputConverters = <>
+    Left = 388
+    Top = 5
+    object LinkListControlToField2: TLinkListControlToField
+      Category = 'Quick Bindings'
+      DataSource = BindSourceDB1
+      FieldName = 'FULL_NAME'
+      Control = ListView1
+      FillExpressions = <
+        item
+          SourceMemberName = 'FIRST_NAME'
+          ControlMemberName = 'Detail1'
+        end
+        item
+          SourceMemberName = 'LAST_NAME'
+          ControlMemberName = 'Detail2'
+        end
+        item
+          SourceMemberName = 'SALARY'
+          ControlMemberName = 'Detail3'
+        end>
+      FillHeaderExpressions = <>
+      FillBreakGroups = <>
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = RESTClientSQL
+    Left = 472
+    Top = 64
+  end
+end

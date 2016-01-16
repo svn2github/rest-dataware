@@ -7,14 +7,13 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uRestPoolerDB, Vcl.StdCtrls, Data.DB,
   Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.ImgList;
+  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.ImgList,
+  BindCompReg;
 
 type
   TForm1 = class(TForm)
     DataSource1: TDataSource;
-    DBGrid1: TDBGrid;
     Edit1: TEdit;
-    Button1: TButton;
     RESTClientSQL: TRESTClientSQL;
     RESTDataBase: TRESTDataBase;
     Edit2: TEdit;
@@ -23,12 +22,8 @@ type
     Button2: TButton;
     Edit4: TEdit;
     Edit5: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
-    Label6: TLabel;
     Edit6: TEdit;
     Label7: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);

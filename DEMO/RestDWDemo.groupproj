@@ -6,10 +6,13 @@
         <Projects Include="RestDWServerProject.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Project1.dproj">
+        <Projects Include="ClientWin.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="..\RestEasyObjects.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Android\ClientMobile.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -29,14 +32,14 @@
     <Target Name="RestDWServerProject:Make">
         <MSBuild Projects="RestDWServerProject.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Project1">
-        <MSBuild Projects="Project1.dproj"/>
+    <Target Name="ClientWin">
+        <MSBuild Projects="ClientWin.dproj"/>
     </Target>
-    <Target Name="Project1:Clean">
-        <MSBuild Projects="Project1.dproj" Targets="Clean"/>
+    <Target Name="ClientWin:Clean">
+        <MSBuild Projects="ClientWin.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Project1:Make">
-        <MSBuild Projects="Project1.dproj" Targets="Make"/>
+    <Target Name="ClientWin:Make">
+        <MSBuild Projects="ClientWin.dproj" Targets="Make"/>
     </Target>
     <Target Name="RestEasyObjects">
         <MSBuild Projects="..\RestEasyObjects.dproj"/>
@@ -47,14 +50,23 @@
     <Target Name="RestEasyObjects:Make">
         <MSBuild Projects="..\RestEasyObjects.dproj" Targets="Make"/>
     </Target>
+    <Target Name="ClientMobile">
+        <MSBuild Projects="Android\ClientMobile.dproj"/>
+    </Target>
+    <Target Name="ClientMobile:Clean">
+        <MSBuild Projects="Android\ClientMobile.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ClientMobile:Make">
+        <MSBuild Projects="Android\ClientMobile.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestDWServerProject;Project1;RestEasyObjects"/>
+        <CallTarget Targets="RestDWServerProject;ClientWin;RestEasyObjects;ClientMobile"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestDWServerProject:Clean;Project1:Clean;RestEasyObjects:Clean"/>
+        <CallTarget Targets="RestDWServerProject:Clean;ClientWin:Clean;RestEasyObjects:Clean;ClientMobile:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestDWServerProject:Make;Project1:Make;RestEasyObjects:Make"/>
+        <CallTarget Targets="RestDWServerProject:Make;ClientWin:Make;RestEasyObjects:Make;ClientMobile:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
