@@ -26,7 +26,6 @@ type
     Label2: TLabel;
     BindSourceDB1: TBindSourceDB;
     BindingsList1: TBindingsList;
-    DataSource1: TDataSource;
     ListView1: TListView;
     RESTClientSQLEMP_NO: TSmallintField;
     RESTClientSQLFIRST_NAME: TStringField;

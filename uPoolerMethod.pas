@@ -15,7 +15,9 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
    FPoolersDataSetCommand_Cache,
    FEchoStringCommand,
    FExecuteCommandCommand,
+   FExecuteCommandJSONCommand,
    FExecuteCommandPureCommand,
+   FExecuteCommandPureJSONCommand,
    FApplyChangesPureCommand,
    FApplyChangesCommand          : TDSRestCommand;
   Public
@@ -37,13 +39,29 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
                                   Var MessageError     : String;
                                   Execute              : Boolean;
                                   Const ARequestFilter : String = '') : TFDJSONDataSets;
+   Function    ExecuteCommandJSON(Pooler,
+                                  Method_Prefix,
+                                  SQL                  : String;
+                                  Params               : TParams;
+                                  Var Error            : Boolean;
+                                  Var MessageError     : String;
+                                  Execute              : Boolean;
+                                  Const ARequestFilter : String = '') : TJSONObject;
+
    Function    ExecuteCommandPure(Pooler,
                                   Method_Prefix,
                                   SQL                  : String;
                                   Var Error            : Boolean;
                                   Var MessageError     : String;
                                   Execute              : Boolean;
-                                  const ARequestFilter : String = '') : TFDJSONDataSets;
+                                  Const ARequestFilter : String = '') : TFDJSONDataSets;
+   Function    ExecuteCommandPureJSON(Pooler,
+                                      Method_Prefix,
+                                      SQL              : String;
+                                      Var Error: Boolean;
+                                      Var MessageError : String;
+                                      Execute: Boolean;
+                                      Const ARequestFilter: string = ''): TJSONObject;
    //Executa um ApplyUpdate no Servidor
    Procedure   ApplyChangesPure  (Pooler,
                                   Method_Prefix,
@@ -87,6 +105,17 @@ Const
     (Name: ''; Direction: 4; DBXType: 37; TypeName: 'TFDJSONDataSets')
   );
 
+  TSMPoolerMethodClient_ExecuteCommandJSON: array [0..6] of TDSRestParameterMetaData =
+  (
+    (Name: 'Pooler'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'SQL'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'Params'; Direction: 1; DBXType: 23; TypeName: 'TParams'),
+    (Name: 'Error'; Direction: 3; DBXType: 4; TypeName: 'Boolean'),
+    (Name: 'MessageError'; Direction: 3; DBXType: 26; TypeName: 'string'),
+    (Name: 'Execute'; Direction: 1; DBXType: 4; TypeName: 'Boolean'),
+    (Name: ''; Direction: 4; DBXType: 37; TypeName: 'TJSONObject')
+  );
+
   TSMPoolerMethodClient_ExecuteCommandPure: array [0..5] of TDSRestParameterMetaData =
   (
     (Name: 'Pooler'; Direction: 1; DBXType: 26; TypeName: 'string'),
@@ -95,6 +124,16 @@ Const
     (Name: 'MessageError'; Direction: 3; DBXType: 26; TypeName: 'string'),
     (Name: 'Execute'; Direction: 1; DBXType: 4; TypeName: 'Boolean'),
     (Name: ''; Direction: 4; DBXType: 37; TypeName: 'TFDJSONDataSets')
+  );
+
+  TSMPoolerMethodClient_ExecuteCommandPureJSON: array [0..5] of TDSRestParameterMetaData =
+  (
+    (Name: 'Pooler'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'SQL'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'Error'; Direction: 3; DBXType: 4; TypeName: 'Boolean'),
+    (Name: 'MessageError'; Direction: 3; DBXType: 26; TypeName: 'string'),
+    (Name: 'Execute'; Direction: 1; DBXType: 4; TypeName: 'Boolean'),
+    (Name: ''; Direction: 4; DBXType: 37; TypeName: 'TJSONObject')
   );
 
   TSMPoolerMethodClient_ApplyChangesPure: array [0..5] of TDSRestParameterMetaData =
@@ -216,8 +255,35 @@ Begin
  MessageError := FApplyChangesCommand.Parameters[6].Value.GetWideString;
 end;
 
-Function TSMPoolerMethodClient.ExecuteCommandPure(Pooler               : String;
-                                                  Method_Prefix        : String;
+Function TSMPoolerMethodClient.ExecuteCommandPureJSON(Pooler,
+                                                      Method_Prefix,
+                                                      SQL                  : String;
+                                                      Var Error            : Boolean;
+                                                      Var MessageError     : String;
+                                                      Execute              : Boolean;
+                                                      Const ARequestFilter : string = ''): TJSONObject;
+Begin
+ If FExecuteCommandPureJSONCommand = Nil Then
+  Begin
+   FExecuteCommandPureJSONCommand := FConnection.CreateCommand;
+   FExecuteCommandPureJSONCommand.RequestType := 'GET';
+   FExecuteCommandPureJSONCommand.Text := Method_Prefix + '.ExecuteCommandPureJSON';
+   FExecuteCommandPureJSONCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandPureJSON);
+  End;
+ FExecuteCommandPureJSONCommand.Parameters[0].Value.SetWideString(Pooler);
+ FExecuteCommandPureJSONCommand.Parameters[1].Value.SetWideString(SQL);
+ FExecuteCommandPureJSONCommand.Parameters[2].Value.SetBoolean(Error);
+ FExecuteCommandPureJSONCommand.Parameters[3].Value.SetWideString(MessageError);
+ FExecuteCommandPureJSONCommand.Parameters[4].Value.SetBoolean(Execute);
+ FExecuteCommandPureJSONCommand.Execute(ARequestFilter);
+ Error := FExecuteCommandPureJSONCommand.Parameters[2].Value.GetBoolean;
+ MessageError := FExecuteCommandPureJSONCommand.Parameters[3].Value.GetWideString;
+ Result := TJSONObject(FExecuteCommandPureJSONCommand.Parameters[5].Value.GetJSONValue(FInstanceOwner));
+End;
+
+
+Function TSMPoolerMethodClient.ExecuteCommandPure(Pooler,
+                                                  Method_Prefix,
                                                   SQL                  : String;
                                                   Var Error            : Boolean;
                                                   Var MessageError     : String;
@@ -254,6 +320,34 @@ Begin
      End;
     End;
   End;
+End;
+
+Function TSMPoolerMethodClient.ExecuteCommandJSON(Pooler,
+                                                  Method_Prefix,
+                                                  SQL                  : String;
+                                                  Params               : TParams;
+                                                  Var Error            : Boolean;
+                                                  Var MessageError     : String;
+                                                  Execute              : Boolean;
+                                                  Const ARequestFilter : String) : TJSONObject;
+Begin
+ If FExecuteCommandJSONCommand = Nil Then
+  Begin
+   FExecuteCommandJSONCommand := FConnection.CreateCommand;
+   FExecuteCommandJSONCommand.RequestType := 'POST';
+   FExecuteCommandJSONCommand.Text := Method_Prefix + '."ExecuteCommandJSON"';
+   FExecuteCommandJSONCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandJSON);
+  End;
+ FExecuteCommandJSONCommand.Parameters[0].Value.SetWideString(Pooler);
+ FExecuteCommandJSONCommand.Parameters[1].Value.SetWideString(SQL);
+ FExecuteCommandJSONCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
+ FExecuteCommandJSONCommand.Parameters[3].Value.SetBoolean(Error);
+ FExecuteCommandJSONCommand.Parameters[4].Value.SetWideString(MessageError);
+ FExecuteCommandJSONCommand.Parameters[5].Value.SetBoolean(Execute);
+ FExecuteCommandJSONCommand.Execute(ARequestFilter);
+ Error := FExecuteCommandJSONCommand.Parameters[3].Value.GetBoolean;
+ MessageError := FExecuteCommandJSONCommand.Parameters[4].Value.GetWideString;
+ Result := TJSONObject(FExecuteCommandJSONCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner));
 End;
 
 Function TSMPoolerMethodClient.ExecuteCommand(Pooler               : String;

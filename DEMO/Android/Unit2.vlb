@@ -25,7 +25,7 @@ Coordinates=190,298,55,36
 Visible=True
 
 []
-Coordinates=548,372,161,36
+Coordinates=0,0,89,36
 Visible=True
 
 [BindSourceDB1]
@@ -33,9 +33,6 @@ Coordinates=460,30,106,322
 
 [BindingsList1]
 Coordinates=118,80,91,36
-
-[DataSource1]
-Coordinates=0,0,89,36
 
 [ListView1]
 Coordinates=275,53,107,278

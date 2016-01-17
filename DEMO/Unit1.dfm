@@ -182,7 +182,7 @@ object Form1: TForm1
     DataCache = False
     Params = <
       item
-        DataType = ftString
+        DataType = ftUnknown
         Name = 'FIRST_NAME'
         ParamType = ptUnknown
       end>
@@ -194,7 +194,7 @@ object Form1: TForm1
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
-    Active = True
+    Active = False
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False

@@ -729,6 +729,7 @@ Function TRESTDataBase.ExecuteCommand(Var SQL    : TStringList;
 Var
  vDSRConnection    : TDSRestConnection;
  vRESTConnectionDB : TSMPoolerMethodClient;
+ oJsonObject       : TJSONObject;
  Function GetLineSQL(Value : TStringList) : String;
  Var
   I : Integer;
@@ -751,15 +752,17 @@ Begin
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
  Try
   If Params.Count > 0 Then
-   Result := vRESTConnectionDB.ExecuteCommand(vRestPooler,
-                                              vRestModule, GetLineSQL(SQL),
-                                              Params, Error,
-                                              MessageError, Execute)
+   oJsonObject := vRESTConnectionDB.ExecuteCommandJSON(vRestPooler,
+                                                       vRestModule, GetLineSQL(SQL),
+                                                       Params, Error,
+                                                       MessageError, Execute)
   Else
-   Result := vRESTConnectionDB.ExecuteCommandPure(vRestPooler,
-                                                  vRestModule,
-                                                  GetLineSQL(SQL), Error,
-                                                  MessageError, Execute);
+   oJsonObject := vRESTConnectionDB.ExecuteCommandPureJSON(vRestPooler,
+                                                           vRestModule,
+                                                           GetLineSQL(SQL), Error,
+                                                           MessageError, Execute);
+  Result := TFDJSONDataSets.Create;
+  TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, Result);
   If Assigned(vOnEventConnection) Then
    vOnEventConnection(True, 'ExecuteCommand Ok');
  Except

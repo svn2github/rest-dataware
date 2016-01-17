@@ -38,13 +38,24 @@ type
                                 SQL        : String;
                                 Var Error  : Boolean;
                                 Var MessageError : String;
-                                Execute    : Boolean = False) : TFDJSONDataSets;Overload;
+                                Execute    : Boolean = False) : TFDJSONDataSets;
+    Function ExecuteCommandPureJSON(Pooler     : String;
+                                    SQL        : String;
+                                    Var Error  : Boolean;
+                                    Var MessageError : String;
+                                    Execute    : Boolean = False) : TJSONObject;
     Function ExecuteCommand(Pooler     : String;
                             SQL        : String;
                             Params     : TParams;
                             Var Error  : Boolean;
                             Var MessageError : String;
-                            Execute    : Boolean = False) : TFDJSONDataSets;Overload;
+                            Execute    : Boolean = False) : TFDJSONDataSets;
+    Function ExecuteCommandJSON(Pooler     : String;
+                                SQL        : String;
+                                Params     : TParams;
+                                Var Error  : Boolean;
+                                Var MessageError : String;
+                                Execute    : Boolean = False) : TJSONObject;
     //Apply Changes on DB
     Procedure ApplyChangesPure(Pooler           : String;
                                TableName        : String;
@@ -137,6 +148,41 @@ Begin
       End;
     End;
   End;
+End;
+
+Function TServerMethods1.ExecuteCommandPureJSON(Pooler     : String;
+                                                SQL        : String;
+                                                Var Error  : Boolean;
+                                                Var MessageError : String;
+                                                Execute    : Boolean = False) : TJSONObject;
+Var
+ LDataSets : TFDJSONDataSets;
+Begin
+ LDataSets := ExecuteCommandPure(Pooler, SQL, Error, MessageError, Execute);
+ Try
+  Result := TJSONObject.Create;
+  TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
+ Finally
+  LDataSets.Free;
+ End;
+End;
+
+Function TServerMethods1.ExecuteCommandJSON(Pooler     : String;
+                                            SQL        : String;
+                                            Params     : TParams;
+                                            Var Error  : Boolean;
+                                            Var MessageError : String;
+                                            Execute    : Boolean = False) : TJSONObject;
+Var
+ LDataSets : TFDJSONDataSets;
+Begin
+ LDataSets := ExecuteCommand(Pooler, SQL, Params, Error, MessageError, Execute);
+ Try
+  Result := TJSONObject.Create;
+  TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
+ Finally
+  LDataSets.Free;
+ End;
 End;
 
 Function TServerMethods1.ExecuteCommand(Pooler     : String;
