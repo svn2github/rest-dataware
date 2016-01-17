@@ -66,20 +66,6 @@ object Form1: TForm1
     Height = 13
     Caption = 'Tablename to use ApplyUpdate'
   end
-  object DBGrid1: TDBGrid
-    Left = 0
-    Top = 119
-    Width = 652
-    Height = 212
-    Align = alBottom
-    DataSource = DataSource1
-    TabOrder = 9
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-  end
   object Edit1: TEdit
     Left = 315
     Top = 18
@@ -155,13 +141,26 @@ object Form1: TForm1
     TabOrder = 6
     Text = 'EMPLOYEE'
   end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Top = 119
+    Width = 652
+    Height = 212
+    Align = alBottom
+    DataSource = DataSource1
+    TabOrder = 9
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+  end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL
     Left = 368
     Top = 144
   end
   object RESTClientSQL: TRESTClientSQL
-    AutoCalcFields = False
     AfterOpen = RESTClientSQLAfterOpen
     AfterPost = RESTClientSQLAfterPost
     AfterDelete = RESTClientSQLAfterDelete
@@ -183,7 +182,7 @@ object Form1: TForm1
     DataCache = False
     Params = <
       item
-        DataType = ftUnknown
+        DataType = ftString
         Name = 'FIRST_NAME'
         ParamType = ptUnknown
       end>
@@ -195,7 +194,7 @@ object Form1: TForm1
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
-    Active = False
+    Active = True
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False

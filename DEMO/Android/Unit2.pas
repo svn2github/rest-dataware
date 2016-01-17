@@ -18,6 +18,16 @@ type
   TForm2 = class(TForm)
     RESTClientSQL: TRESTClientSQL;
     RESTDataBase: TRESTDataBase;
+    Panel1: TPanel;
+    Button1: TButton;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    BindSourceDB1: TBindSourceDB;
+    BindingsList1: TBindingsList;
+    DataSource1: TDataSource;
+    ListView1: TListView;
     RESTClientSQLEMP_NO: TSmallintField;
     RESTClientSQLFIRST_NAME: TStringField;
     RESTClientSQLLAST_NAME: TStringField;
@@ -29,17 +39,7 @@ type
     RESTClientSQLJOB_COUNTRY: TStringField;
     RESTClientSQLSALARY: TFloatField;
     RESTClientSQLFULL_NAME: TStringField;
-    Panel1: TPanel;
-    Button1: TButton;
-    Edit1: TEdit;
-    Edit2: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    BindSourceDB1: TBindSourceDB;
-    BindingsList1: TBindingsList;
-    DataSource1: TDataSource;
-    ListView1: TListView;
-    LinkListControlToField2: TLinkListControlToField;
+    LinkListControlToField1: TLinkListControlToField;
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseBeforeConnect(Sender: TComponent);
   private

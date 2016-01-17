@@ -19,13 +19,15 @@ uses System.SysUtils,         System.Classes,
      FireDAC.Comp.DataSet,    System.JSON,             FireDAC.DApt.Intf,
      Data.DB,                 Data.FireDACJSONReflect, Data.DBXJSONReflect,
      IPPeerClient,            Datasnap.DSClientRest,   System.SyncObjs,
-     uPoolerMethod,           FireDAC.Stan.StorageBin,
-     Data.Bind.Components,    BindListUtils,           System.Bindings.Outputs,
-     FireDAC.Stan.StorageJSON{$IFDEF MSWINDOWS},       Datasnap.DSServer,
+     uPoolerMethod,           FireDAC.Stan.StorageBin, Data.DBXPlatform,
+     FireDAC.Stan.StorageJSON {$IFDEF MSWINDOWS},      Datasnap.DSServer,
      Datasnap.DSAuth,         Datasnap.DSProxyRest{$ENDIF};
 
 Type
  TOnEventDB = Procedure (DataSet: TDataSet) of Object;
+
+Type
+ TExecuteProc       = Reference to Procedure;
 
 Type
  TOnEventConnection = Procedure (Sucess : Boolean; Const Error : String) of Object;
@@ -160,6 +162,8 @@ Type
   vRESTDataBase        : TRESTDataBase;             //RESTDataBase do Dataset
   vOnAfterDelete,
   vOnAfterPost         : TDataSetNotifyEvent;
+  Procedure CloneDefinitions(Source : TFDMemTable;
+                             aSelf  : TRESTClientSQL); //Fields em Definições
   Procedure OnChangingSQL(Sender: TObject);         //Quando Altera o SQL da Lista
   Procedure SetActiveDB(Value : Boolean);           //Seta o Estado do Dataset
   Procedure SetSQL(Value : TStringList);            //Seta o SQL a ser usado
@@ -181,6 +185,8 @@ Type
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                     //Destroy a Classe
   Procedure   Loaded; Override;
+  {$IFDEF FMX} //Se é FMX
+  {$ENDIF}
  Published
   Property AfterDelete     : TDataSetNotifyEvent Read vOnAfterDelete            Write vOnAfterDelete;
   Property AfterPost       : TDataSetNotifyEvent Read vOnAfterPost              Write vOnAfterPost;
@@ -319,7 +325,8 @@ Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
                                       Var MessageError : String;
                                       Execute    : Boolean = False) : TFDJSONDataSets;
 Var
- vTempQuery : TFDQuery;
+ vTempQuery  : TFDQuery;
+ vTempWriter : TFDJSONDataSetsWriter;
 Begin
  Result := Nil;
  Error  := False;
@@ -330,9 +337,15 @@ Begin
   vTempQuery.SQL.Add(DecodeStrings(SQL));
   If Not Execute Then
    Begin
-    vTempQuery.Active := True;
+//    vTempQuery.Active := True;
     Result            := TFDJSONDataSets.Create;
-    TFDJSONDataSetsWriter.ListAdd(Result, vTempQuery);
+    vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
+    Try
+     vTempWriter.ListAdd(Result, vTempQuery);
+    Finally
+     vTempWriter := Nil;
+     vTempWriter.DisposeOf;
+    End;
    End
   Else
    Begin
@@ -355,8 +368,9 @@ Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
                                       Var MessageError : String;
                                       Execute    : Boolean = False) : TFDJSONDataSets;
 Var
- vTempQuery : TFDQuery;
- I          : Integer;
+ vTempQuery  : TFDQuery;
+ I           : Integer;
+ vTempWriter : TFDJSONDataSetsWriter;
 Begin
  Result := Nil;
  Error  := False;
@@ -380,9 +394,15 @@ Begin
    End;
   If Not Execute Then
    Begin
-    vTempQuery.Active := True;
+//    vTempQuery.Active := True;
     Result            := TFDJSONDataSets.Create;
-    TFDJSONDataSetsWriter.ListAdd(Result, vTempQuery);
+    vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
+    Try
+     vTempWriter.ListAdd(Result, vTempQuery);
+    Finally
+     vTempWriter := Nil;
+     vTempWriter.DisposeOf;
+    End;
    End
   Else
    Begin
@@ -397,6 +417,7 @@ Begin
     MessageError := E.Message;
    End;
  End;
+ GetInvocationMetaData.CloseSession := True;
 End;
 
 Procedure TRESTPoolerDB.ApplyChanges(TableName,
@@ -1078,56 +1099,73 @@ Begin
  }
 End;
 
+Procedure ExecMethod(Execute : TExecuteProc = Nil);
+Var
+ EffectThread : TThread;
+Begin
+ EffectThread.CreateAnonymousThread(Procedure
+                                    Begin
+                                     //Se precisar interagir com a Thread da Interface
+                                     If Assigned(Execute) Then
+                                      TThread.Synchronize (TThread.CurrentThread,
+                                                           Procedure
+                                                           Begin
+                                                            Execute;
+                                                            EffectThread.DisposeOf;
+                                                           End);
+                                    End).Start;
+End;
+
+Procedure TRESTClientSQL.CloneDefinitions(Source : TFDMemTable; aSelf : TRESTClientSQL);
+Var
+ I, A : Integer;
+Begin
+ aSelf.Close;
+ For I := 0 to Source.FieldDefs.Count -1 do
+  Begin
+   For A := 0 to aSelf.FieldDefs.Count -1 do
+    If Uppercase(Source.FieldDefs[I].Name) = Uppercase(aSelf.FieldDefs[A].Name) Then
+     Begin
+      aSelf.FieldDefs.Delete(A);
+      Break;
+     End;
+  End;
+ For I := 0 to Source.FieldDefs.Count -1 do
+  Begin
+   With aSelf.FieldDefs.AddFieldDef Do
+    Begin
+     Name     := Source.FieldDefs[I].Name;
+     DataType := Source.FieldDefs[I].DataType;
+     Size     := Source.FieldDefs[I].Size;
+     Required := Source.FieldDefs[I].Required;
+    End;
+  End;
+ If aSelf.FieldDefs.Count > 0 Then
+  aSelf.CreateDataSet;
+End;
+
 Procedure TRESTClientSQL.GetData;
 Var
  LDataSetList  : TFDJSONDataSets;
  vError        : Boolean;
  vMessageError : String;
  vTempTable    : TFDMemTable;
- Procedure CloneDefinitions(Source : TFDMemTable);
- Var
-  I, A : Integer;
- Begin
-  Self.Close;
-  For I := 0 to Source.FieldDefs.Count -1 do
-   Begin
-    For A := 0 to Self.FieldDefs.Count -1 do
-     If Uppercase(Source.FieldDefs[I].Name) = Uppercase(Self.FieldDefs[A].Name) Then
-      Begin
-       Self.FieldDefs.Delete(A);
-       Break;
-      End;
-   End;
-  For I := 0 to Source.FieldDefs.Count -1 do
-   Begin
-    With Self.FieldDefs.AddFieldDef Do
-     Begin
-      Name     := Source.FieldDefs[I].Name;
-      DataType := Source.FieldDefs[I].DataType;
-      Size     := Source.FieldDefs[I].Size;
-      Required := Source.FieldDefs[I].Required;
-     End;
-   End;
-  If Self.FieldDefs.Count > 0 Then
-   Self.CreateDataSet;
- End;
 Begin
- Close;
+ Self.Close;
  If Assigned(vRESTDataBase) Then
   Begin
    LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, False);
    If LDataSetList <> Nil Then
     Begin
      vTempTable := TFDMemTable.Create(Nil);
-     Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
-     vTempTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
-     Self.Close;
      Try
-      CloneDefinitions(vTempTable);
+      Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
+      vTempTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
+      CloneDefinitions(vTempTable, Self);
       AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
-     Finally
-      vTempTable.DisposeOf;
+     Except
      End;
+     vTempTable.DisposeOf;
     End;
   End;
 End;

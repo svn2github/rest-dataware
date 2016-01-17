@@ -3,10 +3,7 @@
 	<ActiveMobileDevice>
 		<PIOS9 iOSSimulator="iPhone5"/>
 		<NoProfile Android="android5"/>
-	</ActiveMobileDevice>  <Transactions>
-    <Transaction>2016/01/16 19:07:15.325,=bindengine.dcp</Transaction>
-    <Transaction>2016/01/16 19:07:15.345,=bindcomp.dcp</Transaction>
-    <Transaction>2016/01/16 19:13:38.857,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\Unit3.pas</Transaction>
-    <Transaction>2016/01/16 19:13:50.133,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\BindListUtils.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\Unit3.pas</Transaction>
-  </Transactions>
+	</ActiveMobileDevice>
+	<Transactions>
+	</Transactions>
 </BorlandProject>

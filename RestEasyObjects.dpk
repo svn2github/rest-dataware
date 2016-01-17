@@ -44,18 +44,16 @@ requires
   IndyCore,
   dsnap,
   dbexpress,
-  dbxcds,
-  bindengine,
-  bindcomp
+  dbxcds
   {$IFDEF MSWINDOWS}
-  ,DataSnapClient,
+  , DataSnapClient,
   DataSnapCommon,
   DataSnapServer,
-  DataSnapFireDAC{$ENDIF};
+  DataSnapFireDAC
+  {$ENDIF};
 
 contains
   uRestPoolerDB in 'uRestPoolerDB.pas',
-  uPoolerMethod in 'uPoolerMethod.pas',
-  BindListUtils in 'BindListUtils.pas';
+  uPoolerMethod in 'uPoolerMethod.pas';
 
 end.
