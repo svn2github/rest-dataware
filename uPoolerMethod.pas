@@ -271,7 +271,7 @@ Begin
    FExecuteCommandPureJSONCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandPureJSON);
   End;
  FExecuteCommandPureJSONCommand.Parameters[0].Value.SetWideString(Pooler);
- FExecuteCommandPureJSONCommand.Parameters[1].Value.SetWideString(SQL);
+ FExecuteCommandPureJSONCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandPureJSONCommand.Parameters[2].Value.SetBoolean(Error);
  FExecuteCommandPureJSONCommand.Parameters[3].Value.SetWideString(MessageError);
  FExecuteCommandPureJSONCommand.Parameters[4].Value.SetBoolean(Execute);
@@ -339,7 +339,7 @@ Begin
    FExecuteCommandJSONCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandJSON);
   End;
  FExecuteCommandJSONCommand.Parameters[0].Value.SetWideString(Pooler);
- FExecuteCommandJSONCommand.Parameters[1].Value.SetWideString(SQL);
+ FExecuteCommandJSONCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandJSONCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
  FExecuteCommandJSONCommand.Parameters[3].Value.SetBoolean(Error);
  FExecuteCommandJSONCommand.Parameters[4].Value.SetWideString(MessageError);
