@@ -371,6 +371,7 @@ Var
  vTempQuery  : TFDQuery;
  I           : Integer;
  vTempWriter : TFDJSONDataSetsWriter;
+ vParamName  : String;
 Begin
  Result := Nil;
  Error  := False;
@@ -385,8 +386,9 @@ Begin
      Begin
       If vTempQuery.ParamCount > I Then
        Begin
-        If vTempQuery.ParamByName(Params[I].Name) <> Nil Then
-         vTempQuery.ParamByName(Params[I].Name).Value := Params[I].Value;
+        vParamName := Copy(Params[I].Name, 0, Length(Params[I].Name) -1);
+        If vTempQuery.ParamByName(vParamName) <> Nil Then
+         vTempQuery.ParamByName(vParamName).Value := Params[I].Value;
        End
       Else
        Break;
@@ -952,10 +954,7 @@ Begin
       Begin
        System.Delete(vTempLine, 1, Pos(':', vTempLine));
        vTempBuff := vTempLine;
-       If Length(vTempBuff) = 0 then
-        X := 0
-       Else
-        X := 1;
+       X := 0;
        vParamName := '';
        If Length(vTempBuff) > 0 then
         While (Not InBreakChar(vTempBuff[X])) Do
@@ -1009,11 +1008,27 @@ End;
 Function  TRESTClientSQL.ParamByName(Value : String) : TParam;
 Var
  I : Integer;
+ vParamName,
+ vTempParam : String;
+ Function CompareValue(Value1, Value2 : String) : Boolean;
+ Var
+  I : Integer;
+ Begin
+  Result := False;
+  For I := 0 To Length(Value1) Do
+   Begin
+    Result := Value1[I] = Value2[I];
+    If Not Result Then
+     Break;
+   End;
+ End;
 Begin
  Result := Nil;
  For I := 0 to vParams.Count -1 do
   Begin
-   if UpperCase(vParams[I].Name) = UpperCase(Value) then
+   vParamName := UpperCase(vParams[I].Name);
+   vTempParam := UpperCase(Trim(Value));
+   if CompareValue(vTempParam, vParamName) then
     Begin
      Result := vParams[I];
      Break;
