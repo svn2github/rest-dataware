@@ -372,6 +372,7 @@ Var
  I           : Integer;
  vTempWriter : TFDJSONDataSetsWriter;
  vParamName  : String;
+// vLogErro    : TStringList;
 Begin
  Result := Nil;
  Error  := False;
@@ -386,7 +387,7 @@ Begin
      Begin
       If vTempQuery.ParamCount > I Then
        Begin
-        vParamName := Copy(Params[I].Name, 0, Length(Params[I].Name) -1);
+        vParamName := Copy(Params[I].Name, 1, Length(Params[I].Name));
         If vTempQuery.ParamByName(vParamName) <> Nil Then
          vTempQuery.ParamByName(vParamName).Value := Params[I].Value;
        End
@@ -417,6 +418,12 @@ Begin
     vFDConnection.RollbackRetaining;
     Error := True;
     MessageError := E.Message;
+{
+    vLogErro := TStringList.Create;
+    vLogErro.Add(MessageError);
+    vLogErro.SaveToFile(ExtractFilePath(ParamSTR(0)) + '..\LogErr.Text');
+    vLogErro.DisposeOf;
+}
    End;
  End;
  GetInvocationMetaData.CloseSession := True;
@@ -931,7 +938,9 @@ End;
 
 Procedure TRESTClientSQL.CreateParams;
 Var
- I,  X      : Integer;
+ I,  X,
+ InitStr,
+ FinalStr      : Integer;
  vTempLine,
  vTempBuff,
  vParamName : String;
@@ -943,6 +952,27 @@ Var
  Begin
   Result := CharInSet(Value, [' ', ')', '(', '=', '<', '>', '[', ']', '}', '{']);
  End;
+ Procedure DeleteSTR(Var Value : String; Init, Quant : Integer);
+ Var
+  I,
+  InitStr,
+  FinalStr  : Integer;
+  vTempText : String;
+ Begin
+  {$IFDEF MSWINDOWS}
+  InitStr   := 1;
+  FinalStr  := 0;
+  {$ELSE}
+  InitStr   := 0;
+  FinalStr  := 1;
+  {$ENDIF}
+  For I := InitStr to Length(Value) - FinalStr Do
+   Begin
+    If Not(I In [Init..Init + Quant]) then
+     vTempText := vTempText + Value[I];
+   End;
+  Value := vTempText;
+ End;
 Begin
  vParams.Clear;
  For I := 0 to vSQL.Count -1 Do
@@ -952,22 +982,29 @@ Begin
     Begin
      If Pos(':', vTempLine) > 0 Then
       Begin
-       System.Delete(vTempLine, 1, Pos(':', vTempLine));
+       {$IFDEF MSWINDOWS}
+       InitStr   := 1;
+       FinalStr  := 0;
+       {$ELSE}
+       InitStr   := 0;
+       FinalStr  := 1;
+       {$ENDIF}
+       X := InitStr;
+       DeleteSTR(vTempLine, 0, Pos(':', vTempLine) - FinalStr);
        vTempBuff := vTempLine;
-       X := 0;
        vParamName := '';
        If Length(vTempBuff) > 0 then
         While (Not InBreakChar(vTempBuff[X])) Do
          Begin
           vParamName := vParamName + vTempBuff[X];
           Inc(X);
-          If X > Length(vTempBuff) then
+          If X > Length(vTempBuff) - FinalStr then
            Break;
          End;
        If X <= Length(vTempBuff) then
-        System.Delete(vTempLine, 1, X)
+        System.Delete(vTempLine, InitStr, X)
        Else
-        System.Delete(vTempLine, 1, Length(vTempLine));
+        System.Delete(vTempLine, InitStr, Length(vTempLine) - FinalStr);
        CreateParam(vParamName);
       End
      Else
@@ -1012,10 +1049,19 @@ Var
  vTempParam : String;
  Function CompareValue(Value1, Value2 : String) : Boolean;
  Var
-  I : Integer;
+  InitStr,
+  FinalStr,
+  I         : Integer;
  Begin
   Result := False;
-  For I := 0 To Length(Value1) Do
+  {$IFDEF MSWINDOWS}
+  InitStr   := 1;
+  FinalStr  := 0;
+  {$ELSE}
+  InitStr   := 0;
+  FinalStr  := 1;
+  {$ENDIF}
+  For I := InitStr To Length(Value1) - FinalStr Do
    Begin
     Result := Value1[I] = Value2[I];
     If Not Result Then

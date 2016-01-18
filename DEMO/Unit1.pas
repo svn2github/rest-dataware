@@ -101,7 +101,7 @@ Begin
    RESTClientSQL.SQL.Clear;
    RESTClientSQL.SQL.Add(Edit1.Text);
    If RESTClientSQL.ParamByName(Edit3.Text) <> Nil Then
-    RESTClientSQL.ParamByName(Edit3.Text).AsString := Edit2.Text;
+    RESTClientSQL.ParamByName(Edit3.Text).AsInteger := StrToInt(Edit2.Text);
    RESTClientSQL.Active       := True;
   End;
 end;
