@@ -5,7 +5,7 @@ Interface
 Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,          Data.DBXCommon,
      Data.DBXClient,          Data.DBXDataSnap,      Data.DBXJSON, Datasnap.DSProxy, System.Classes,
      System.SysUtils,         Data.DB, Data.SqlExpr, Data.DBXDBReaders,              Data.DBXCDSReaders,
-     Data.FireDACJSONReflect, Data.DBXJSONReflect;
+     Data.FireDACJSONReflect, Data.DBXJSONReflect,   FireDAC.Stan.Param;
 
  Type
   TSMPoolerMethodClient        = Class(TDSAdminRestClient)
@@ -191,6 +191,7 @@ Begin
    FApplyChangesPureCommand.Text := Method_Prefix + '."ApplyChangesPure"';
    FApplyChangesPureCommand.Prepare(TSMPoolerMethodClient_ApplyChangesPure);
   End;
+// FApplyChangesPureCommand.Connection.HTTP.ConnectTimeout := 30000;
  FApplyChangesPureCommand.Parameters[0].Value.SetWideString(Pooler);
  FApplyChangesPureCommand.Parameters[1].Value.SetWideString(TableName);
  FApplyChangesPureCommand.Parameters[2].Value.SetWideString(SQL);
@@ -231,10 +232,11 @@ Begin
    FApplyChangesCommand.Text := Method_Prefix + '."ApplyChanges"';
    FApplyChangesCommand.Prepare(TSMPoolerMethodClient_ApplyChanges);
   End;
+// FApplyChangesCommand.Connection.HTTP.ConnectTimeout := 30000;
  FApplyChangesCommand.Parameters[0].Value.SetWideString(Pooler);
  FApplyChangesCommand.Parameters[1].Value.SetWideString(TableName);
  FApplyChangesCommand.Parameters[2].Value.SetWideString(SQL);
- FApplyChangesCommand.Parameters[3].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
+ FApplyChangesCommand.Parameters[3].Value.SetDBXReader(TDBXParamsReader.Create(TParams(Params), FInstanceOwner), True);
  If Not Assigned(ADeltaList) Then
   FApplyChangesCommand.Parameters[4].Value.SetNull
  Else
@@ -270,6 +272,7 @@ Begin
    FExecuteCommandPureJSONCommand.Text := Method_Prefix + '.ExecuteCommandPureJSON';
    FExecuteCommandPureJSONCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandPureJSON);
   End;
+// FExecuteCommandPureJSONCommand.Connection.HTTP.ConnectTimeout := 30000;
  FExecuteCommandPureJSONCommand.Parameters[0].Value.SetWideString(Pooler);
  FExecuteCommandPureJSONCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandPureJSONCommand.Parameters[2].Value.SetBoolean(Error);
@@ -298,6 +301,7 @@ Begin
    FExecuteCommandPureCommand.Text := Method_Prefix + '.ExecuteCommandPure';
    FExecuteCommandPureCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandPure);
   End;
+// FExecuteCommandPureCommand.Connection.HTTP.ConnectTimeout := 30000;
  FExecuteCommandPureCommand.Parameters[0].Value.SetWideString(Pooler);
  FExecuteCommandPureCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandPureCommand.Parameters[2].Value.SetBoolean(Error);
@@ -338,6 +342,7 @@ Begin
    FExecuteCommandJSONCommand.Text := Method_Prefix + '."ExecuteCommandJSON"';
    FExecuteCommandJSONCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandJSON);
   End;
+// FExecuteCommandJSONCommand.Connection.HTTP.ConnectTimeout := 30000;
  FExecuteCommandJSONCommand.Parameters[0].Value.SetWideString(Pooler);
  FExecuteCommandJSONCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandJSONCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
@@ -367,6 +372,7 @@ Begin
    FExecuteCommandCommand.Text := Method_Prefix + '."ExecuteCommand"';
    FExecuteCommandCommand.Prepare(TSMPoolerMethodClient_ExecuteCommand);
   End;
+// FExecuteCommandCommand.Connection.HTTP.ConnectTimeout := 30000;
  FExecuteCommandCommand.Parameters[0].Value.SetWideString(Pooler);
  FExecuteCommandCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
@@ -402,6 +408,7 @@ Begin
    FEchoPoolerCommand.Text := Method_Prefix + '.EchoPooler';
    FEchoPoolerCommand.Prepare(TSMPoolerMethodClient_EchoPooler);
   End;
+// FEchoPoolerCommand.Connection.HTTP.ConnectTimeout := 30000;
  FEchoPoolerCommand.Parameters[0].Value.SetWideString(Value);
  FEchoPoolerCommand.Execute(ARequestFilter);
  Result := FEchoPoolerCommand.Parameters[1].Value.GetWideString;
@@ -419,6 +426,7 @@ Begin
    FPoolersDataSetCommand.Text        := Method_Prefix + '.PoolersDataSet';
    FPoolersDataSetCommand.Prepare(TSMPoolerMethodClient_PoolersDataSet);
   End;
+// FPoolersDataSetCommand.Connection.HTTP.ConnectTimeout := 30000;
  FPoolersDataSetCommand.Execute(ARequestFilter);
  vTempString := FPoolersDataSetCommand.Parameters[0].Value.GetWideString;
  Result      := TStringList.Create;

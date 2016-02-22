@@ -156,7 +156,7 @@ Type
   vErrorBefore,
   vActive              : Boolean;                   //Estado do Dataset
   vSQL                 : TStringList;               //SQL a ser utilizado na conexão
-  vParams              : TParams;                   //Parametros de Dataset
+  vParams              : TParams;                 //Parametros de Dataset
   vCacheDataDB         : TFDDataset;                //O Cache de Dados Salvo para utilização rápida
   vOnGetDataError      : TOnEventConnection;        //Se deu erro na hora de receber os dados ou não
   vRESTDataBase        : TRESTDataBase;             //RESTDataBase do Dataset
@@ -193,7 +193,7 @@ Type
   Property OnGetDataError  : TOnEventConnection  Read vOnGetDataError           Write vOnGetDataError;         //Recebe os Erros de ExecSQL ou de GetData
   Property Active          : Boolean             Read vActive                   Write SetActiveDB;             //Estado do Dataset
   Property DataCache       : Boolean             Read vDataCache                Write vDataCache;              //Diz se será salvo o último Stream do Dataset
-  Property Params          : TParams             Read vParams                   Write vParams;                 //Parametros de Dataset
+  Property Params          : TParams           Read vParams                   Write vParams;                 //Parametros de Dataset
   Property DataBase        : TRESTDataBase       Read vRESTDataBase             Write SetDataBase;             //Database REST do Dataset
   Property SQL             : TStringList         Read vSQL                      Write SetSQL;                  //SQL a ser Executado
   Property UpdateTableName : String              Read vUpdateTableName          Write SetUpdateTableName;      //Tabela que será usada para Reflexão de Dados
@@ -369,10 +369,24 @@ Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
                                       Execute    : Boolean = False) : TFDJSONDataSets;
 Var
  vTempQuery  : TFDQuery;
- I           : Integer;
+ A, I        : Integer;
  vTempWriter : TFDJSONDataSetsWriter;
  vParamName  : String;
 // vLogErro    : TStringList;
+ Function GetParamIndex(Params : TFDParams; ParamName : String) : Integer;
+ Var
+  I : Integer;
+ Begin
+  Result := -1;
+  For I := 0 To Params.Count -1 Do
+   Begin
+    If UpperCase(Params[I].Name) = UpperCase(ParamName) Then
+     Begin
+      Result := I;
+      Break;
+     End;
+   End;
+ End;
 Begin
  Result := Nil;
  Error  := False;
@@ -387,9 +401,10 @@ Begin
      Begin
       If vTempQuery.ParamCount > I Then
        Begin
-        vParamName := Copy(Params[I].Name, 1, Length(Params[I].Name));
-        If vTempQuery.ParamByName(vParamName) <> Nil Then
-         vTempQuery.ParamByName(vParamName).Value := Params[I].Value;
+        vParamName := Copy(StringReplace(Params[I].Name, ',', '', []), 1, Length(Params[I].Name));
+        A          := GetParamIndex(vTempQuery.Params, vParamName);
+        If A > -1 Then//vTempQuery.ParamByName(vParamName) <> Nil Then
+         vTempQuery.Params[A].Value := Params[I].Value;
        End
       Else
        Break;
@@ -920,7 +935,7 @@ Begin
  vActive           := False;
  vSQL              := TStringList.Create;
  vSQL.OnChange     := OnChangingSQL;
- vParams           := TParams.Create(Self);
+ vParams           := TParams.Create;
  vCacheDataDB      := Self.CloneSource;
  vUpdateTableName  := '';
  Inherited AfterPost   := OldAfterPost;
