@@ -44,13 +44,12 @@ requires
   IndyCore,
   dsnap,
   dbexpress,
-  dbxcds
-  {$IFDEF MSWINDOWS}
-  , DataSnapClient,
+  dbxcds,
+  DataSnapClient,
   DataSnapCommon,
   DataSnapServer,
-  DataSnapFireDAC
-  {$ENDIF};
+  DataSnapFireDAC,
+  soaprtl;
 
 contains
   uRestPoolerDB in 'uRestPoolerDB.pas',

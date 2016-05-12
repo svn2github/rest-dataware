@@ -21,7 +21,8 @@ uses System.SysUtils,         System.Classes,
      IPPeerClient,            Datasnap.DSClientRest,   System.SyncObjs,
      uPoolerMethod,           FireDAC.Stan.StorageBin, Data.DBXPlatform,
      FireDAC.Stan.StorageJSON {$IFDEF MSWINDOWS},      Datasnap.DSServer,
-     Datasnap.DSAuth,         Datasnap.DSProxyRest{$ENDIF};
+     Datasnap.DSAuth,         Datasnap.DSProxyRest{$ENDIF},
+     Soap.EncdDecd,           System.NetEncoding;
 
 Type
  TOnEventDB = Procedure (DataSet: TDataSet) of Object;
@@ -169,7 +170,7 @@ Type
   Procedure SetSQL(Value : TStringList);            //Seta o SQL a ser usado
   Procedure CreateParams;                           //Cria os Parametros na lista de Dataset
   Procedure SetDataBase(Value : TRESTDataBase);     //Diz o REST Database
-  Procedure GetData;                                //Recebe os Dados da Internet vindo do Servidor REST
+  Function  GetData : Boolean;                      //Recebe os Dados da Internet vindo do Servidor REST
   Procedure SetUpdateTableName(Value : String);     //Diz qual a tabela que será feito Update no Banco
   Procedure OldAfterPost(DataSet: TDataSet);        //Eventos do Dataset para realizar o AfterPost
   Procedure OldAfterDelete(DataSet: TDataSet);      //Eventos do Dataset para realizar o AfterDelete
@@ -256,19 +257,50 @@ End;
 {$ENDIF}
 
 Function EncodeStrings(Value : String) : String;
+Var
+ Input,
+ Output : TStringStream;
 Begin
- Result := StringReplace(Value,  '%', '|:|', [rfReplaceAll, rfIgnoreCase]); //Sinal de %
- Result := StringReplace(Result, '/', '|*|', [rfReplaceAll, rfIgnoreCase]); //Sinal de /
- Result := StringReplace(Result, '-', '|A|', [rfReplaceAll, rfIgnoreCase]); //Sinal de -
- Result := StringReplace(Result, '.', '|B|', [rfReplaceAll, rfIgnoreCase]); //Sinal de .
+ Input := TStringStream.Create(Value, TEncoding.ASCII);
+ Try
+  Input.Position := 0;
+  Output := TStringStream.Create('', TEncoding.ASCII);
+  Try
+   Soap.EncdDecd.EncodeStream(Input, Output);
+   Result := Output.DataString;
+  Finally
+   Output.Free;
+  End;
+ Finally
+  Input.Free;
+ End;
 End;
 
 Function DecodeStrings(Value : String) : String;
+Var
+ Input,
+ Output : TStringStream;
 Begin
- Result := StringReplace(Value,  '|:|', '%', [rfReplaceAll, rfIgnoreCase]); //Sinal de %
- Result := StringReplace(Result, '|*|', '/', [rfReplaceAll, rfIgnoreCase]); //Sinal de /
- Result := StringReplace(Result, '|A|', '-', [rfReplaceAll, rfIgnoreCase]); //Sinal de -
- Result := StringReplace(Result, '|B|', '.', [rfReplaceAll, rfIgnoreCase]); //Sinal de .
+ If Length(Value) > 0 Then
+  Begin
+   Input := TStringStream.Create(Value, TEncoding.ASCII);
+   Try
+    Output := TStringStream.Create('', TEncoding.ASCII);
+    Try
+     Soap.EncdDecd.DecodeStream(Input, Output);
+     Output.Position := 0;
+     Try
+      Result := Output.DataString;
+     Except
+      Raise;
+     End;
+    Finally
+     Output.Free;
+    End;
+   Finally
+    Input.Free;
+   End;
+  End;
 End;
 
 Procedure TAutoCheckData.Assign(Source: TPersistent);
@@ -1223,13 +1255,14 @@ Begin
   aSelf.CreateDataSet;
 End;
 
-Procedure TRESTClientSQL.GetData;
+Function TRESTClientSQL.GetData : Boolean;
 Var
  LDataSetList  : TFDJSONDataSets;
  vError        : Boolean;
  vMessageError : String;
  vTempTable    : TFDMemTable;
 Begin
+ Result := False;
  Self.Close;
  If Assigned(vRESTDataBase) Then
   Begin
@@ -1242,6 +1275,7 @@ Begin
       vTempTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
       CloneDefinitions(vTempTable, Self);
       AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
+      Result := True;
      Except
      End;
      vTempTable.DisposeOf;
@@ -1257,8 +1291,7 @@ Begin
    if Not vRESTDataBase.Active then
     Exit;
    Try
-    GetData;
-    vActive := True;
+    vActive := GetData;
     If Assigned(vOnGetDataError) Then
      vOnGetDataError(True, '');
    Except

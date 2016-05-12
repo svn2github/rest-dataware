@@ -5,7 +5,8 @@ Interface
 Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,          Data.DBXCommon,
      Data.DBXClient,          Data.DBXDataSnap,      Data.DBXJSON, Datasnap.DSProxy, System.Classes,
      System.SysUtils,         Data.DB, Data.SqlExpr, Data.DBXDBReaders,              Data.DBXCDSReaders,
-     Data.FireDACJSONReflect, Data.DBXJSONReflect,   FireDAC.Stan.Param;
+     Data.FireDACJSONReflect, Data.DBXJSONReflect,   FireDAC.Stan.Param,             Soap.EncdDecd,
+     System.NetEncoding;
 
  Type
   TSMPoolerMethodClient        = Class(TDSAdminRestClient)
@@ -160,19 +161,50 @@ Const
 implementation
 
 Function EncodeStrings(Value : String) : String;
+Var
+ Input,
+ Output : TStringStream;
 Begin
- Result := StringReplace(Value,  '%', '|:|', [rfReplaceAll, rfIgnoreCase]); //Sinal de %
- Result := StringReplace(Result, '/', '|*|', [rfReplaceAll, rfIgnoreCase]); //Sinal de /
- Result := StringReplace(Result, '-', '|A|', [rfReplaceAll, rfIgnoreCase]); //Sinal de -
- Result := StringReplace(Result, '.', '|B|', [rfReplaceAll, rfIgnoreCase]); //Sinal de .
+ Input := TStringStream.Create(Value, TEncoding.ASCII);
+ Try
+  Input.Position := 0;
+  Output := TStringStream.Create('', TEncoding.ASCII);
+  Try
+   Soap.EncdDecd.EncodeStream(Input, Output);
+   Result := Output.DataString;
+  Finally
+   Output.Free;
+  End;
+ Finally
+  Input.Free;
+ End;
 End;
 
 Function DecodeStrings(Value : String) : String;
+Var
+ Input,
+ Output : TStringStream;
 Begin
- Result := StringReplace(Value,  '|:|', '%', [rfReplaceAll, rfIgnoreCase]); //Sinal de %
- Result := StringReplace(Result, '|*|', '/', [rfReplaceAll, rfIgnoreCase]); //Sinal de /
- Result := StringReplace(Result, '|A|', '-', [rfReplaceAll, rfIgnoreCase]); //Sinal de -
- Result := StringReplace(Result, '|B|', '.', [rfReplaceAll, rfIgnoreCase]); //Sinal de .
+ If Length(Value) > 0 Then
+  Begin
+   Input := TStringStream.Create(Value, TEncoding.ASCII);
+   Try
+    Output := TStringStream.Create('', TEncoding.ASCII);
+    Try
+     Soap.EncdDecd.DecodeStream(Input, Output);
+     Output.Position := 0;
+     Try
+      Result := Output.DataString;
+     Except
+      Raise;
+     End;
+    Finally
+     Output.Free;
+    End;
+   Finally
+    Input.Free;
+   End;
+  End;
 End;
 
 Procedure TSMPoolerMethodClient.ApplyChangesPure(Pooler,
