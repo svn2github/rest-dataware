@@ -194,7 +194,7 @@ Type
   Property OnGetDataError  : TOnEventConnection  Read vOnGetDataError           Write vOnGetDataError;         //Recebe os Erros de ExecSQL ou de GetData
   Property Active          : Boolean             Read vActive                   Write SetActiveDB;             //Estado do Dataset
   Property DataCache       : Boolean             Read vDataCache                Write vDataCache;              //Diz se será salvo o último Stream do Dataset
-  Property Params          : TParams           Read vParams                   Write vParams;                 //Parametros de Dataset
+  Property Params          : TParams             Read vParams                   Write vParams;                 //Parametros de Dataset
   Property DataBase        : TRESTDataBase       Read vRESTDataBase             Write SetDataBase;             //Database REST do Dataset
   Property SQL             : TStringList         Read vSQL                      Write SetSQL;                  //SQL a ser Executado
   Property UpdateTableName : String              Read vUpdateTableName          Write SetUpdateTableName;      //Tabela que será usada para Reflexão de Dados
@@ -1070,12 +1070,12 @@ var
   if TFDMemTable(Self).State in [dsEdit, dsInsert] then
    TFDMemTable(Self).Post;
   Result := TFDJSONDeltas.Create;
-  TFDJSONDeltasWriter.ListAdd(Result, UpdateTableName, TFDMemTable(Self));
+  TFDJSONDeltasWriter.ListAdd(Result, vUpdateTableName, TFDMemTable(Self));
  End;
 Begin
  LDeltaList := GetDeltas;
  If Assigned(vRESTDataBase) And (Trim(UpdateTableName) <> '') Then
-  vRESTDataBase.ApplyUpdates(vSQL, vParams, LDeltaList, Trim(UpdateTableName), vError, vMessageError)
+  vRESTDataBase.ApplyUpdates(vSQL, vParams, LDeltaList, Trim(vUpdateTableName), vError, vMessageError)
  Else
   Begin
    vError := True;

@@ -226,7 +226,7 @@ Begin
 // FApplyChangesPureCommand.Connection.HTTP.ConnectTimeout := 30000;
  FApplyChangesPureCommand.Parameters[0].Value.SetWideString(Pooler);
  FApplyChangesPureCommand.Parameters[1].Value.SetWideString(TableName);
- FApplyChangesPureCommand.Parameters[2].Value.SetWideString(SQL);
+ FApplyChangesPureCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL));
  If Not Assigned(ADeltaList) Then
   FApplyChangesPureCommand.Parameters[3].Value.SetNull
  Else
@@ -267,7 +267,7 @@ Begin
 // FApplyChangesCommand.Connection.HTTP.ConnectTimeout := 30000;
  FApplyChangesCommand.Parameters[0].Value.SetWideString(Pooler);
  FApplyChangesCommand.Parameters[1].Value.SetWideString(TableName);
- FApplyChangesCommand.Parameters[2].Value.SetWideString(SQL);
+ FApplyChangesCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL));
  FApplyChangesCommand.Parameters[3].Value.SetDBXReader(TDBXParamsReader.Create(TParams(Params), FInstanceOwner), True);
  If Not Assigned(ADeltaList) Then
   FApplyChangesCommand.Parameters[4].Value.SetNull
