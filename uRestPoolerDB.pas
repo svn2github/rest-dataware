@@ -818,7 +818,8 @@ Begin
                                                            GetLineSQL(SQL), Error,
                                                            MessageError, Execute);
   Result := TFDJSONDataSets.Create;
-  TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, Result);
+  If (oJsonObject <> Nil) Then
+   TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, Result);
   If Assigned(vOnEventConnection) Then
    vOnEventConnection(True, 'ExecuteCommand Ok');
  Except
