@@ -34,6 +34,11 @@ type
     Function EchoPooler(Value: String): String;
     Function PoolersDataSet : String;
     //Execute commands
+    Function    InsertValue(Pooler,
+                            SQL                  : String;
+                            Params               : TParams;
+                            Var Error            : Boolean;
+                            Var MessageError     : String): Integer;
     Function ExecuteCommandPure(Pooler     : String;
                                 SQL        : String;
                                 Var Error  : Boolean;
@@ -56,6 +61,10 @@ type
                                 Var Error  : Boolean;
                                 Var MessageError : String;
                                 Execute    : Boolean = False) : TJSONObject;
+    Function  InsertValuePure(Pooler,
+                              SQL                  : String;
+                              Var Error            : Boolean;
+                              Var MessageError     : String) : Integer;
     //Apply Changes on DB
     Procedure ApplyChangesPure(Pooler           : String;
                                TableName        : String;
@@ -228,6 +237,53 @@ Begin
      If UpperCase(Components[i].Name) = vTempPooler Then
       Begin
        Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Error, MessageError, Execute);
+       Break;
+      End;
+    End;
+  End;
+End;
+
+Function TServerMethods1.InsertValue(Pooler,
+                                     SQL                  : String;
+                                     Params               : TParams;
+                                     Var Error            : Boolean;
+                                     Var MessageError     : String): Integer;
+Var
+ I : Integer;
+ vTempPooler : String;
+Begin
+ Result := -1;
+ vTempPooler := UpperCase(StringReplace(Pooler, Self.Name + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ For I := 0 to ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Params, Error, MessageError);
+       Break;
+      End;
+    End;
+  End;
+End;
+
+Function  TServerMethods1.InsertValuePure(Pooler,
+                                          SQL                  : String;
+                                          Var Error            : Boolean;
+                                          Var MessageError     : String) : Integer;
+Var
+ I : Integer;
+ vTempPooler : String;
+Begin
+ Result := -1;
+ vTempPooler := UpperCase(StringReplace(Pooler, Self.Name + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ For I := 0 to ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Error, MessageError);
        Break;
       End;
     End;

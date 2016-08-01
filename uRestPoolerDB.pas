@@ -378,7 +378,7 @@ Begin
  Try
   fdCommand.Connection := vFDConnection;
   fdCommand.CommandText.Clear;
-  fdCommand.CommandText.Add(SQL + '; SELECT LAST_INSERT_ID()ID');
+  fdCommand.CommandText.Add(DecodeStrings(SQL) + '; SELECT LAST_INSERT_ID()ID');
   fdCommand.Open;
   oTab := fdCommand.Define;
   fdCommand.Fetch(oTab, True);
@@ -429,7 +429,7 @@ Begin
  Try
   fdCommand.Connection := vFDConnection;
   fdCommand.CommandText.Clear;
-  fdCommand.CommandText.Add(SQL + '; SELECT LAST_INSERT_ID()ID');
+  fdCommand.CommandText.Add(DecodeStrings(SQL) + '; SELECT LAST_INSERT_ID()ID');
   If Params <> Nil Then
    Begin
     For I := 0 To Params.Count -1 Do
