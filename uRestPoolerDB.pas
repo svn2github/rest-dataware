@@ -125,6 +125,10 @@ Type
                          TableName        : String;
                          Var Error        : Boolean;
                          Var MessageError : String);
+  Function InsertMySQLReturnID(Var SQL          : TStringList;
+                               Var Params       : TParams;
+                               Var Error        : Boolean;
+                               Var MessageError : String) : Integer;
  Public
   Function    GetRestPoolers : TStringList;          //Retorna a Lista de DataSet Sources do Pooler
   Constructor Create(AOwner  : TComponent);Override; //Cria o Componente
@@ -181,6 +185,7 @@ Type
   Procedure   Open;                                 //Método Open que será utilizado no Componente
   Procedure   Close;                                //Método Close que será utilizado no Componente
   Procedure   ExecSQL;                              //Método ExecSQL que será utilizado no Componente
+  Function    InsertMySQLReturnID : Integer;        //Método de ExecSQL com retorno de Incremento
   Function    ParamByName(Value : String) : TParam; //Retorna o Parametro de Acordo com seu nome
   Function    ApplyUpdates(var Error : String) : Boolean;
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
@@ -232,6 +237,13 @@ Type
                           Var Error        : Boolean;
                           Var MessageError : String;
                           Execute          : Boolean = False) : TFDJSONDataSets;Overload;
+  Function InsertMySQLReturnID(SQL              : String;
+                               Var Error        : Boolean;
+                               Var MessageError : String) : Integer;Overload;
+  Function InsertMySQLReturnID(SQL              : String;
+                               Params           : TParams;
+                               Var Error        : Boolean;
+                               Var MessageError : String) : Integer;Overload;
  Published
   Property    Database : TFDConnection Read GetConnection Write SetConnection;
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
@@ -350,6 +362,107 @@ Begin
    If vFDConnection <> Nil Then
     vFDConnection.Close;
   End;
+End;
+
+Function TRESTPoolerDB.InsertMySQLReturnID(SQL              : String;
+                                           Var Error        : Boolean;
+                                           Var MessageError : String) : Integer;
+Var
+ oTab        : TFDDatStable;
+ A, I        : Integer;
+ fdCommand   : TFDCommand;
+Begin
+ Result := -1;
+ Error  := False;
+ fdCommand := TFDCommand.Create(Owner);
+ Try
+  fdCommand.Connection := vFDConnection;
+  fdCommand.CommandText.Clear;
+  fdCommand.CommandText.Add(SQL + '; SELECT LAST_INSERT_ID()ID');
+  fdCommand.Open;
+  oTab := fdCommand.Define;
+  fdCommand.Fetch(oTab, True);
+  If oTab.Rows.Count > 0 Then
+   Result := StrToInt(oTab.Rows[0].AsString['ID']);
+  vFDConnection.CommitRetaining;
+ Except
+  On E : Exception do
+   Begin
+    vFDConnection.RollbackRetaining;
+    Error        := True;
+    MessageError := E.Message;
+   End;
+ End;
+ fdCommand.Close;
+ FreeAndNil(fdCommand);
+ FreeAndNil(oTab);
+ GetInvocationMetaData.CloseSession := True;
+End;
+
+Function TRESTPoolerDB.InsertMySQLReturnID(SQL              : String;
+                                           Params           : TParams;
+                                           Var Error        : Boolean;
+                                           Var MessageError : String) : Integer;
+Var
+ oTab        : TFDDatStable;
+ A, I        : Integer;
+ vParamName  : String;
+ fdCommand   : TFDCommand;
+ Function GetParamIndex(Params : TFDParams; ParamName : String) : Integer;
+ Var
+  I : Integer;
+ Begin
+  Result := -1;
+  For I := 0 To Params.Count -1 Do
+   Begin
+    If UpperCase(Params[I].Name) = UpperCase(ParamName) Then
+     Begin
+      Result := I;
+      Break;
+     End;
+   End;
+ End;
+Begin
+ Result := -1;
+ Error  := False;
+ fdCommand := TFDCommand.Create(Owner);
+ Try
+  fdCommand.Connection := vFDConnection;
+  fdCommand.CommandText.Clear;
+  fdCommand.CommandText.Add(SQL + '; SELECT LAST_INSERT_ID()ID');
+  If Params <> Nil Then
+   Begin
+    For I := 0 To Params.Count -1 Do
+     Begin
+      If fdCommand.Params.Count > I Then
+       Begin
+        vParamName := Copy(StringReplace(Params[I].Name, ',', '', []), 1, Length(Params[I].Name));
+        A          := GetParamIndex(fdCommand.Params, vParamName);
+        If A > -1 Then
+         fdCommand.Params[A].Value := Params[I].Value;
+       End
+      Else
+       Break;
+     End;
+   End;
+  fdCommand.Open;
+  oTab := fdCommand.Define;
+  fdCommand.Fetch(oTab, True);
+  If oTab.Rows.Count > 0 Then
+   Result := StrToInt(oTab.Rows[0].AsString['ID']);
+  vFDConnection.CommitRetaining;
+ Except
+  On E : Exception do
+   Begin
+    vFDConnection.RollbackRetaining;
+    Error        := True;
+    MessageError := E.Message;
+   End;
+ End;
+ fdCommand.Close;
+ FreeAndNil(fdCommand);
+ FreeAndNil(oTab);
+ GetInvocationMetaData.CloseSession := True;
 End;
 
 Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
@@ -777,6 +890,61 @@ Begin
  vRESTConnectionDB.DisposeOf;
 End;
 
+Function TRESTDataBase.InsertMySQLReturnID(Var SQL          : TStringList;
+                                           Var Params       : TParams;
+                                           Var Error        : Boolean;
+                                           Var MessageError : String) : Integer;
+Var
+ vDSRConnection    : TDSRestConnection;
+ vRESTConnectionDB : TSMPoolerMethodClient;
+ oJsonObject       : Integer;
+ Function GetLineSQL(Value : TStringList) : String;
+ Var
+  I : Integer;
+ Begin
+  Result := '';
+  If Value <> Nil Then
+   For I := 0 To Value.Count -1 do
+    Begin
+     If I = 0 then
+      Result := Value[I]
+     Else
+      Result := Result + ' ' + Value[I];
+    End;
+ End;
+Begin
+ Result := -1;
+ if vRestPooler = '' then
+  Exit;
+ SetConnectionOptions(vDSRConnection);
+ vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
+ Try
+  If Params.Count > 0 Then
+   oJsonObject := vRESTConnectionDB.InsertValue(vRestPooler,
+                                                vRestModule,
+                                                GetLineSQL(SQL),
+                                                Params,
+                                                Error, MessageError)
+  Else
+   oJsonObject := vRESTConnectionDB.InsertValuePure(vRestPooler,
+                                                    vRestModule,
+                                                    GetLineSQL(SQL),
+                                                    Error, MessageError);
+  Result := oJsonObject;
+  If Assigned(vOnEventConnection) Then
+   vOnEventConnection(True, 'ExecuteCommand Ok');
+ Except
+  On E : Exception do
+   Begin
+    vDSRConnection.SessionID := '';
+    if Assigned(vOnEventConnection) then
+     vOnEventConnection(False, E.Message);
+   End;
+ End;
+ vDSRConnection.DisposeOf;
+ vRESTConnectionDB.DisposeOf;
+End;
+
 Function TRESTDataBase.ExecuteCommand(Var SQL    : TStringList;
                                       Var Params : TParams;
                                       Var Error  : Boolean;
@@ -1136,6 +1304,14 @@ Var
  vMessageError : String;
 Begin
  vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, True);
+End;
+
+Function TRESTClientSQL.InsertMySQLReturnID : Integer;
+Var
+ vError        : Boolean;
+ vMessageError : String;
+Begin
+ Result := vRESTDataBase.InsertMySQLReturnID(vSQL, vParams, vError, vMessageError);
 End;
 
 Procedure TRESTClientSQL.OnChangingSQL(Sender: TObject);

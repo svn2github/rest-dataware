@@ -15,8 +15,10 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
    FPoolersDataSetCommand,
    FPoolersDataSetCommand_Cache,
    FEchoStringCommand,
+   FInsertValueCommand,
    FExecuteCommandCommand,
    FExecuteCommandJSONCommand,
+   FInsertValueCommandPure,
    FExecuteCommandPureCommand,
    FExecuteCommandPureJSONCommand,
    FApplyChangesPureCommand,
@@ -32,6 +34,13 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
    Function    PoolersDataSet(Method_Prefix        : String;
                               Const ARequestFilter : String = '') : TStringList;
    //Roda Comando SQL
+   Function    InsertValue       (Pooler,
+                                  Method_Prefix,
+                                  SQL                  : String;
+                                  Params               : TParams;
+                                  Var Error            : Boolean;
+                                  Var MessageError     : String;
+                                  Const ARequestFilter : String = ''): Integer;
    Function    ExecuteCommand    (Pooler,
                                   Method_Prefix,
                                   SQL                  : String;
@@ -48,7 +57,12 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
                                   Var MessageError     : String;
                                   Execute              : Boolean;
                                   Const ARequestFilter : String = '') : TJSONObject;
-
+   Function    InsertValuePure   (Pooler,
+                                  Method_Prefix,
+                                  SQL                  : String;
+                                  Var Error            : Boolean;
+                                  Var MessageError     : String;
+                                  Const ARequestFilter : String = '') : Integer;
    Function    ExecuteCommandPure(Pooler,
                                   Method_Prefix,
                                   SQL                  : String;
@@ -157,6 +171,26 @@ Const
     (Name: 'Error'; Direction: 3; DBXType: 4; TypeName: 'Boolean'),
     (Name: 'MessageError'; Direction: 3; DBXType: 26; TypeName: 'string')
   );
+
+  TSMPoolerMethodClient_InsertValuePure: array [0..4] of TDSRestParameterMetaData =
+  (
+    (Name: 'Pooler'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'SQL'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'Error'; Direction: 3; DBXType: 4; TypeName: 'Boolean'),
+    (Name: 'MessageError'; Direction: 3; DBXType: 26; TypeName: 'string'),
+    (Name: ''; Direction: 4; DBXType: 6; TypeName: 'Integer')
+  );
+
+  TSMPoolerMethodClient_InsertValue: array [0..5] of TDSRestParameterMetaData =
+  (
+    (Name: 'Pooler'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'SQL'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'Params'; Direction: 1; DBXType: 23; TypeName: 'TParams'),
+    (Name: 'Error'; Direction: 3; DBXType: 4; TypeName: 'Boolean'),
+    (Name: 'MessageError'; Direction: 3; DBXType: 26; TypeName: 'string'),
+    (Name: ''; Direction: 4; DBXType: 6; TypeName: 'Integer')
+  );
+
 
 implementation
 
@@ -385,6 +419,74 @@ Begin
  Error := FExecuteCommandJSONCommand.Parameters[3].Value.GetBoolean;
  MessageError := FExecuteCommandJSONCommand.Parameters[4].Value.GetWideString;
  Result := TJSONObject(FExecuteCommandJSONCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner));
+End;
+
+Function TSMPoolerMethodClient.InsertValuePure(Pooler,
+                                               Method_Prefix,
+                                               SQL                  : String;
+                                               Var Error            : Boolean;
+                                               Var MessageError     : String;
+                                               Const ARequestFilter : String): Integer;
+begin
+ Result := -1;
+ If FInsertValueCommandPure = Nil Then
+  Begin
+   FInsertValueCommandPure             := FConnection.CreateCommand;
+   FInsertValueCommandPure.RequestType := 'GET';
+   FInsertValueCommandPure.Text        := Method_Prefix + '.InsertValuePure';
+   FInsertValueCommandPure.Prepare(TSMPoolerMethodClient_InsertValuePure);
+  End;
+ FInsertValueCommandPure.Parameters[0].Value.SetWideString(Pooler);
+ FInsertValueCommandPure.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
+ FInsertValueCommandPure.Parameters[2].Value.SetBoolean(Error);
+ FInsertValueCommandPure.Parameters[3].Value.SetWideString(MessageError);
+ Try
+  FInsertValueCommandPure.Execute(ARequestFilter);
+  Error        := FInsertValueCommandPure.Parameters[2].Value.GetBoolean;
+  MessageError := FInsertValueCommandPure.Parameters[3].Value.GetWideString;
+  Result       := FInsertValueCommandPure.Parameters[4].Value.GetInt32;
+ Except
+  On E : Exception do
+   Begin
+    Error        := True;
+    MessageError := E.Message;
+   End;
+ End;
+end;
+
+Function TSMPoolerMethodClient.InsertValue(Pooler,
+                                           Method_Prefix,
+                                           SQL                  : String;
+                                           Params               : TParams;
+                                           Var Error            : Boolean;
+                                           Var MessageError     : String;
+                                           Const ARequestFilter : String): Integer;
+begin
+ Result := -1;
+ If FInsertValueCommand = Nil Then
+  Begin
+   FInsertValueCommand             := FConnection.CreateCommand;
+   FInsertValueCommand.RequestType := 'POST';
+   FInsertValueCommand.Text        := Method_Prefix + '."InsertValue"';
+   FInsertValueCommand.Prepare(TSMPoolerMethodClient_InsertValue);
+  End;
+ FInsertValueCommand.Parameters[0].Value.SetWideString(Pooler);
+ FInsertValueCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
+ FInsertValueCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
+ FInsertValueCommand.Parameters[3].Value.SetBoolean(Error);
+ FInsertValueCommand.Parameters[4].Value.SetWideString(MessageError);
+ Try
+  FInsertValueCommand.Execute(ARequestFilter);
+  Error        := FInsertValueCommand.Parameters[3].Value.GetBoolean;
+  MessageError := FInsertValueCommand.Parameters[4].Value.GetWideString;
+  Result       := FInsertValueCommand.Parameters[5].Value.GetInt32;
+ Except
+  On E : Exception do
+   Begin
+    Error        := True;
+    MessageError := E.Message;
+   End;
+ End;
 End;
 
 Function TSMPoolerMethodClient.ExecuteCommand(Pooler               : String;
