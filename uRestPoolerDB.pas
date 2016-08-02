@@ -914,6 +914,7 @@ Var
  End;
 Begin
  Result := -1;
+ Error  := False;
  if vRestPooler = '' then
   Exit;
  SetConnectionOptions(vDSRConnection);
@@ -937,6 +938,8 @@ Begin
   On E : Exception do
    Begin
     vDSRConnection.SessionID := '';
+    Error                    := True;
+    MessageError             := E.Message;
     if Assigned(vOnEventConnection) then
      vOnEventConnection(False, E.Message);
    End;
@@ -1154,26 +1157,45 @@ End;
 
 Procedure TRESTClientSQL.CreateParams;
 Var
- I,  X,
- InitStr,
- FinalStr      : Integer;
- vTempLine,
- vTempBuff,
- vParamName : String;
+ I         : Integer;
+ ParamList : TStringList;
  Procedure CreateParam(Value : String);
  Begin
   vParams.CreateParam(ftUnknown, Value, ptUnknown);
  End;
- Function InBreakChar(Value : Char) : Boolean;
- Begin
-  Result := CharInSet(Value, [' ', ')', '(', '=', '<', '>', '[', ']', '}', '{']);
- End;
- Procedure DeleteSTR(Var Value : String; Init, Quant : Integer);
+ Function ReturnParams(SQL : String) : TStringList;
  Var
-  I,
   InitStr,
-  FinalStr  : Integer;
-  vTempText : String;
+  FinalStr    : Integer;
+  vTempString : String;
+  Function CreateParamS(Var Value : String) : String;
+  Var
+   I      : Integer;
+   vTempS : String;
+  Begin
+   I      := InitStr;
+   vTempS := Value;
+   Result := '';
+   While (vTempS <> '') Do
+    Begin
+     If vTempS[I] in ['0'..'9', 'a'..'z', 'A'..'Z', '_'] then
+      Result := Result + vTempS[I]
+     Else
+      Break;
+     {$IFDEF MSWINDOWS}
+     If I = Length(Value) Then
+      Break;
+     {$ELSE}
+     If I = Length(Value) -1 Then
+      Break;
+     {$ENDIF}
+     Inc(I);
+    End;
+   If (I = Length(Value)) Or (Length(Value) = 1) Then
+    Value := ''
+   Else
+    Value := Copy(Value, Length(Result) + 1, Length(Value));
+  End;
  Begin
   {$IFDEF MSWINDOWS}
   InitStr   := 1;
@@ -1182,51 +1204,26 @@ Var
   InitStr   := 0;
   FinalStr  := 1;
   {$ENDIF}
-  For I := InitStr to Length(Value) - FinalStr Do
+  vTempString := StringReplace(SQL, #12, '', [rfReplaceAll]);
+  If Pos(':', SQL) > 0 Then
    Begin
-    If Not(I In [Init..Init + Quant]) then
-     vTempText := vTempText + Value[I];
+    vTempString := Copy(vTempString, Pos(':', vTempString) + 1, Length(vTempString));
+    Result := TStringList.Create;
+    While vTempString <> '' Do
+     Begin
+      Result.Add(CreateParamS(vTempString));
+      vTempString := Copy(vTempString, Pos(':', vTempString) + 1, Length(vTempString));
+      If Pos(':', vTempString) = 0 Then
+       Break;
+     End;
    End;
-  Value := vTempText;
  End;
 Begin
  vParams.Clear;
- For I := 0 to vSQL.Count -1 Do
-  Begin
-   vTempLine := vSQL[I];
-   While vTempLine <> '' Do
-    Begin
-     If Pos(':', vTempLine) > 0 Then
-      Begin
-       {$IFDEF MSWINDOWS}
-       InitStr   := 1;
-       FinalStr  := 0;
-       {$ELSE}
-       InitStr   := 0;
-       FinalStr  := 1;
-       {$ENDIF}
-       X := InitStr;
-       DeleteSTR(vTempLine, 0, Pos(':', vTempLine) - FinalStr);
-       vTempBuff := vTempLine;
-       vParamName := '';
-       If Length(vTempBuff) > 0 then
-        While (Not InBreakChar(vTempBuff[X])) Do
-         Begin
-          vParamName := vParamName + vTempBuff[X];
-          Inc(X);
-          If X > Length(vTempBuff) - FinalStr then
-           Break;
-         End;
-       If X <= Length(vTempBuff) then
-        System.Delete(vTempLine, InitStr, X)
-       Else
-        System.Delete(vTempLine, InitStr, Length(vTempLine) - FinalStr);
-       CreateParam(vParamName);
-      End
-     Else
-      vTempLine := '';
-    End;
-  End;
+ ParamList := ReturnParams(vSQL.Text);
+ If ParamList <> Nil Then
+ For I := 0 to ParamList.Count -1 Do
+  CreateParam(ParamList[I]);
 End;
 
 Function  TRESTClientSQL.ApplyUpdates(Var Error : String) : Boolean;
