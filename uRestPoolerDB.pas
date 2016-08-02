@@ -1212,9 +1212,11 @@ Var
     While vTempString <> '' Do
      Begin
       Result.Add(CreateParamS(vTempString));
-      vTempString := Copy(vTempString, Pos(':', vTempString) + 1, Length(vTempString));
+      vTempString := Copy(vTempString, Pos(':', vTempString), Length(vTempString));
       If Pos(':', vTempString) = 0 Then
-       Break;
+       Break
+      Else
+       vTempString := Copy(vTempString, Pos(':', vTempString) + 1, Length(vTempString));
      End;
    End;
  End;
