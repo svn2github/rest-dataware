@@ -600,6 +600,7 @@ Var
 begin
  Error                    := False;
  vTempQuery               := TFDQuery.Create(Owner);
+ vTempQuery.CachedUpdates := True;
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
@@ -655,6 +656,7 @@ Var
 begin
  Error  := False;
  vTempQuery               := TFDQuery.Create(Owner);
+ vTempQuery.CachedUpdates := True;
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
@@ -1155,6 +1157,65 @@ Begin
  Inherited;
 End;
 
+Function ReturnParams(SQL : String) : TStringList;
+Var
+ InitStr,
+ FinalStr    : Integer;
+ vTempString : String;
+ Function CreateParamS(Var Value : String) : String;
+ Var
+  I      : Integer;
+  vTempS : String;
+ Begin
+  I      := InitStr;
+  vTempS := Value;
+  Result := '';
+  While (vTempS <> '') Do
+   Begin
+    If vTempS[I] in ['0'..'9', 'a'..'z', 'A'..'Z', '_'] then
+     Result := Result + vTempS[I]
+    Else
+     Break;
+    {$IFDEF MSWINDOWS}
+    If I = Length(Value) Then
+     Break;
+    {$ELSE}
+    If I = Length(Value) -1 Then
+     Break;
+    {$ENDIF}
+    Inc(I);
+   End;
+  If (I = Length(Value)) Or (Length(Value) = 1) Then
+   Value := ''
+  Else
+   Value := Copy(Value, Length(Result) + 1, Length(Value));
+ End;
+Begin
+ {$IFDEF MSWINDOWS}
+ InitStr   := 1;
+ FinalStr  := 0;
+ {$ELSE}
+ InitStr   := 0;
+ FinalStr  := 1;
+ {$ENDIF}
+ Result := Nil;
+ vTempString := StringReplace(SQL, #12, '', [rfReplaceAll]);
+ If Pos(':', SQL) > 0 Then
+  Begin
+   vTempString := Copy(vTempString, Pos(':', vTempString) + 1, Length(vTempString));
+   Result := TStringList.Create;
+   While vTempString <> '' Do
+    Begin
+     Result.Add(CreateParamS(vTempString));
+     vTempString := Copy(vTempString, Pos(':', vTempString), Length(vTempString));
+     If Pos(':', vTempString) = 0 Then
+      Break
+     Else
+      vTempString := Copy(vTempString, Pos(':', vTempString) + 1, Length(vTempString));
+    End;
+  End;
+End;
+
 Procedure TRESTClientSQL.CreateParams;
 Var
  I         : Integer;
@@ -1162,63 +1223,6 @@ Var
  Procedure CreateParam(Value : String);
  Begin
   vParams.CreateParam(ftUnknown, Value, ptUnknown);
- End;
- Function ReturnParams(SQL : String) : TStringList;
- Var
-  InitStr,
-  FinalStr    : Integer;
-  vTempString : String;
-  Function CreateParamS(Var Value : String) : String;
-  Var
-   I      : Integer;
-   vTempS : String;
-  Begin
-   I      := InitStr;
-   vTempS := Value;
-   Result := '';
-   While (vTempS <> '') Do
-    Begin
-     If vTempS[I] in ['0'..'9', 'a'..'z', 'A'..'Z', '_'] then
-      Result := Result + vTempS[I]
-     Else
-      Break;
-     {$IFDEF MSWINDOWS}
-     If I = Length(Value) Then
-      Break;
-     {$ELSE}
-     If I = Length(Value) -1 Then
-      Break;
-     {$ENDIF}
-     Inc(I);
-    End;
-   If (I = Length(Value)) Or (Length(Value) = 1) Then
-    Value := ''
-   Else
-    Value := Copy(Value, Length(Result) + 1, Length(Value));
-  End;
- Begin
-  {$IFDEF MSWINDOWS}
-  InitStr   := 1;
-  FinalStr  := 0;
-  {$ELSE}
-  InitStr   := 0;
-  FinalStr  := 1;
-  {$ENDIF}
-  vTempString := StringReplace(SQL, #12, '', [rfReplaceAll]);
-  If Pos(':', SQL) > 0 Then
-   Begin
-    vTempString := Copy(vTempString, Pos(':', vTempString) + 1, Length(vTempString));
-    Result := TStringList.Create;
-    While vTempString <> '' Do
-     Begin
-      Result.Add(CreateParamS(vTempString));
-      vTempString := Copy(vTempString, Pos(':', vTempString), Length(vTempString));
-      If Pos(':', vTempString) = 0 Then
-       Break
-      Else
-       vTempString := Copy(vTempString, Pos(':', vTempString) + 1, Length(vTempString));
-     End;
-   End;
  End;
 Begin
  vParams.Clear;

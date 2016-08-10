@@ -2,7 +2,7 @@
 <BorlandProject>
 	<ActiveMobileDevice>
 		<PIOS9 iOSSimulator="iPhone5"/>
-		<NoProfile Android="38019fd23720a200" iOSSimulator="iPhone5"/>
+		<NoProfile Android="LGD8559b10e06d" iOSSimulator="iPhone5"/>
 	</ActiveMobileDevice>
 	<Transactions>
 	</Transactions>
