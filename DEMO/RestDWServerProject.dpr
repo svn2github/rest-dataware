@@ -8,7 +8,6 @@ uses
   RestDWServerFormU in 'RestDWServerFormU.pas' {RestDWForm},
   ServerMethodsUnit1 in 'ServerMethodsUnit1.pas' {ServerMethods1: TDataModule},
   WebModuleUnit1 in 'WebModuleUnit1.pas' {WebModule1: TWebModule},
-  Datasnap.DSClientRest in 'C:\Program Files (x86)\Embarcadero\Studio\17.0\source\data\datasnap\Datasnap.DSClientRest.pas',
   uPoolerMethod in '..\uPoolerMethod.pas',
   uRestPoolerDB in '..\uRestPoolerDB.pas';
 

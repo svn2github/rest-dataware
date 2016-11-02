@@ -1,16 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>2015/10/29 21:00:18.000.458,=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2015/10/29 21:00:21.000.657,=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\ServerMethodsUnit1.pas</Transaction>
-    <Transaction>2015/10/29 21:00:36.000.902,=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\ServerContainerUnit1.pas</Transaction>
-    <Transaction>2015/11/12 09:20:40.000.643,=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2015/12/30 14:44:51.000.472,=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\WebModuleUnit1.pas</Transaction>
-    <Transaction>2015/12/30 15:23:09.000.848,=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2016/01/16 16:24:31.000.531,=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
-    <Transaction>2016/01/16 17:03:51.000.604,=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
     <Transaction>2016/01/16 17:08:08.000.863,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit2.fmx=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\Android\Unit2.fmx</Transaction>
-    <Transaction>2016/01/16 17:08:08.000.863,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit2.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\Android\Unit2.pas</Transaction>
     <Transaction>2016/01/16 17:08:10.000.972,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Project1.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\Android\Project1.dproj</Transaction>
     <Transaction>2016/01/16 17:08:31.000.242,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\Android\Project1.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\Android\Project1.dproj</Transaction>
     <Transaction>2016/01/16 17:11:54.000.380,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\Android\ClientMobile.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\Android\Project1.dproj</Transaction>

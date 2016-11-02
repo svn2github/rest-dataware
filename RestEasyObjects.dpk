@@ -53,6 +53,7 @@ requires
 
 contains
   uRestPoolerDB in 'uRestPoolerDB.pas',
-  uPoolerMethod in 'uPoolerMethod.pas';
+  uPoolerMethod in 'uPoolerMethod.pas',
+  ZLIBEX in 'ZLIBEX.pas';
 
 end.

@@ -180,21 +180,16 @@ object Form1: TForm1
     UpdateOptions.AutoCommitUpdates = True
     StoreDefs = True
     DataCache = False
-    Params = <
-      item
-        DataType = ftUnknown
-        Name = 'FIRST_NAME'
-        ParamType = ptUnknown
-      end>
+    Params = <>
     DataBase = RESTDataBase
     SQL.Strings = (
-      'SELECT * FROM EMPLOYEE WHERE FIRST_NAME = :FIRST_NAME')
+      'select * from employee')
     Left = 300
     Top = 144
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
-    Active = False
+    Active = True
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
