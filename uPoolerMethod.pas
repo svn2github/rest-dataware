@@ -344,10 +344,16 @@ Begin
  FExecuteCommandPureJSONCommand.Parameters[2].Value.SetBoolean(Error);
  FExecuteCommandPureJSONCommand.Parameters[3].Value.SetWideString(MessageError);
  FExecuteCommandPureJSONCommand.Parameters[4].Value.SetBoolean(Execute);
- FExecuteCommandPureJSONCommand.Execute(ARequestFilter);
- Error := FExecuteCommandPureJSONCommand.Parameters[2].Value.GetBoolean;
- MessageError := FExecuteCommandPureJSONCommand.Parameters[3].Value.GetWideString;
- Result := TJSONObject(FExecuteCommandPureJSONCommand.Parameters[5].Value.GetJSONValue(FInstanceOwner));
+ Try
+  FExecuteCommandPureJSONCommand.Execute(ARequestFilter);
+  Error := FExecuteCommandPureJSONCommand.Parameters[2].Value.GetBoolean;
+  MessageError := FExecuteCommandPureJSONCommand.Parameters[3].Value.GetWideString;
+  Result := TJSONObject(FExecuteCommandPureJSONCommand.Parameters[5].Value.GetJSONValue(FInstanceOwner));
+ Except
+  Result := Nil;
+  FExecuteCommandPureJSONCommand := Nil;
+  FExecuteCommandPureJSONCommand.DisposeOf;
+ End;
 End;
 
 
@@ -415,10 +421,16 @@ Begin
  FExecuteCommandJSONCommand.Parameters[3].Value.SetBoolean(Error);
  FExecuteCommandJSONCommand.Parameters[4].Value.SetWideString(MessageError);
  FExecuteCommandJSONCommand.Parameters[5].Value.SetBoolean(Execute);
- FExecuteCommandJSONCommand.Execute(ARequestFilter);
- Error := FExecuteCommandJSONCommand.Parameters[3].Value.GetBoolean;
- MessageError := FExecuteCommandJSONCommand.Parameters[4].Value.GetWideString;
- Result := TJSONObject(FExecuteCommandJSONCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner));
+ Try
+  FExecuteCommandJSONCommand.Execute(ARequestFilter);
+  Error := FExecuteCommandJSONCommand.Parameters[3].Value.GetBoolean;
+  MessageError := FExecuteCommandJSONCommand.Parameters[4].Value.GetWideString;
+  Result := TJSONObject(FExecuteCommandJSONCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner));
+ Except
+  Result := Nil;
+  FExecuteCommandJSONCommand := Nil;
+  FExecuteCommandJSONCommand.DisposeOf;
+ End;
 End;
 
 Function TSMPoolerMethodClient.InsertValuePure(Pooler,
