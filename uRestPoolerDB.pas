@@ -1462,8 +1462,11 @@ Begin
        Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
        vTempTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
        CloneDefinitions(vTempTable, Self);
-       AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
-       Result := True;
+       If LDataSetList <> Nil Then
+        Begin
+         AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
+         Result := True;
+        End;
       Except
       End;
       vTempTable.DisposeOf;
