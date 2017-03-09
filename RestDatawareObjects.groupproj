@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{E729998A-C622-4A8D-BED0-93F018D8044C}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="RestEasyObjects.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="DEMO\RestDWServerProject.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="RestEasyObjects">
+        <MSBuild Projects="RestEasyObjects.dproj"/>
+    </Target>
+    <Target Name="RestEasyObjects:Clean">
+        <MSBuild Projects="RestEasyObjects.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RestEasyObjects:Make">
+        <MSBuild Projects="RestEasyObjects.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="RestDWServerProject">
+        <MSBuild Projects="DEMO\RestDWServerProject.dproj"/>
+    </Target>
+    <Target Name="RestDWServerProject:Clean">
+        <MSBuild Projects="DEMO\RestDWServerProject.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RestDWServerProject:Make">
+        <MSBuild Projects="DEMO\RestDWServerProject.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="RestEasyObjects;RestDWServerProject"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerProject:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="RestEasyObjects:Make;RestDWServerProject:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

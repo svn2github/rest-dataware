@@ -1306,7 +1306,10 @@ Var
  vError        : Boolean;
  vMessageError : String;
 Begin
- vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, True);
+ Try
+  vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, True);
+ Except
+ End;
 End;
 
 Function TRESTClientSQL.InsertMySQLReturnID : Integer;
@@ -1314,7 +1317,11 @@ Var
  vError        : Boolean;
  vMessageError : String;
 Begin
- Result := vRESTDataBase.InsertMySQLReturnID(vSQL, vParams, vError, vMessageError);
+ Try
+  Result := vRESTDataBase.InsertMySQLReturnID(vSQL, vParams, vError, vMessageError);
+ Except
+  Result := -1;
+ End;
 End;
 
 Procedure TRESTClientSQL.OnChangingSQL(Sender: TObject);
@@ -1446,20 +1453,25 @@ Begin
  Self.Close;
  If Assigned(vRESTDataBase) Then
   Begin
-   LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, False);
-   If LDataSetList <> Nil Then
-    Begin
-     vTempTable := TFDMemTable.Create(Nil);
-     Try
-      Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
-      vTempTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
-      CloneDefinitions(vTempTable, Self);
-      AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
-      Result := True;
-     Except
+   Try
+    LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, False);
+    If LDataSetList <> Nil Then
+     Begin
+      vTempTable := TFDMemTable.Create(Nil);
+      Try
+       Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
+       vTempTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
+       CloneDefinitions(vTempTable, Self);
+       AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
+       Result := True;
+      Except
+      End;
+      vTempTable.DisposeOf;
      End;
-     vTempTable.DisposeOf;
-    End;
+   Except
+    If LDataSetList <> Nil Then
+     LDataSetList.DisposeOf;
+   End;
   End;
 End;
 
