@@ -25,6 +25,7 @@ type
     FDStanStorageJSONLink1 : TFDStanStorageJSONLink;
     FDConnectionEMPLOYEE   : TFDConnection;
     RESTPoolerDB: TRESTPoolerDB;
+    FDTransaction1: TFDTransaction;
     procedure FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
   private
     { Private declarations }
@@ -297,6 +298,7 @@ begin
  FDConnectionEMPLOYEE.Params.Add('Database=localhost:' + ExtractFilePath(ParamSTR(0)) + 'EMPLOYEE.GDB');
  FDConnectionEMPLOYEE.Params.Add('User_Name=sysdba');
  FDConnectionEMPLOYEE.Params.Add('password=masterkey');
+ FDConnectionEMPLOYEE.UpdateOptions.CountUpdatedRecords := False;
 end;
 
 end.

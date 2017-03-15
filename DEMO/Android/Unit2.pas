@@ -27,17 +27,7 @@ type
     BindSourceDB1: TBindSourceDB;
     BindingsList1: TBindingsList;
     ListView1: TListView;
-    RESTClientSQLEMP_NO: TSmallintField;
-    RESTClientSQLFIRST_NAME: TStringField;
-    RESTClientSQLLAST_NAME: TStringField;
-    RESTClientSQLPHONE_EXT: TStringField;
-    RESTClientSQLHIRE_DATE: TSQLTimeStampField;
-    RESTClientSQLDEPT_NO: TStringField;
-    RESTClientSQLJOB_CODE: TStringField;
-    RESTClientSQLJOB_GRADE: TSmallintField;
-    RESTClientSQLJOB_COUNTRY: TStringField;
-    RESTClientSQLSALARY: TFloatField;
-    RESTClientSQLFULL_NAME: TStringField;
+    RESTClientSQLCAMPO: TWideStringField;
     LinkListControlToField1: TLinkListControlToField;
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseBeforeConnect(Sender: TComponent);

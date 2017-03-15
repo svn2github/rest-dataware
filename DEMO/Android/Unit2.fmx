@@ -24,7 +24,7 @@ object Form2: TForm2
     object Edit1: TEdit
       Touch.InteractiveGestures = [LongTap, DoubleTap]
       TabOrder = 3
-      Text = '192.168.1.6'
+      Text = '192.168.20.132'
       Position.X = 32.000000000000000000
       Position.Y = 34.000000000000000000
     end
@@ -64,7 +64,14 @@ object Form2: TForm2
     TabOrder = 17
   end
   object RESTClientSQL: TRESTClientSQL
-    FieldDefs = <>
+    Active = True
+    FieldDefs = <
+      item
+        Name = 'CAMPO'
+        Attributes = [faFixed]
+        DataType = ftFixedWideChar
+        Size = 31
+      end>
     IndexDefs = <>
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
@@ -83,58 +90,16 @@ object Form2: TForm2
     Params = <>
     DataBase = RESTDataBase
     SQL.Strings = (
-      'SELECT * FROM EMPLOYEE')
+      
+        'SELECT RDB$RELATION_NAME as Campo FROM RDB$RELATION_FIELDS WHERE' +
+        ' RDB$RELATION_NAME = '#39'EMPLOYEE'#39' AND   RDB$FIELD_NAME = '#39'LAST_NAM' +
+        'E'#39' order by 1 rows 1')
     Left = 340
     Top = 176
-    object RESTClientSQLEMP_NO: TSmallintField
-      FieldName = 'EMP_NO'
-      Required = True
-    end
-    object RESTClientSQLFIRST_NAME: TStringField
-      FieldName = 'FIRST_NAME'
-      Required = True
-      Size = 15
-    end
-    object RESTClientSQLLAST_NAME: TStringField
-      FieldName = 'LAST_NAME'
-      Required = True
-    end
-    object RESTClientSQLPHONE_EXT: TStringField
-      FieldName = 'PHONE_EXT'
-      Size = 4
-    end
-    object RESTClientSQLHIRE_DATE: TSQLTimeStampField
-      FieldName = 'HIRE_DATE'
-      Required = True
-    end
-    object RESTClientSQLDEPT_NO: TStringField
-      FieldName = 'DEPT_NO'
-      Required = True
+    object RESTClientSQLCAMPO: TWideStringField
+      FieldName = 'CAMPO'
       FixedChar = True
-      Size = 3
-    end
-    object RESTClientSQLJOB_CODE: TStringField
-      FieldName = 'JOB_CODE'
-      Required = True
-      Size = 5
-    end
-    object RESTClientSQLJOB_GRADE: TSmallintField
-      FieldName = 'JOB_GRADE'
-      Required = True
-    end
-    object RESTClientSQLJOB_COUNTRY: TStringField
-      FieldName = 'JOB_COUNTRY'
-      Required = True
-      Size = 15
-    end
-    object RESTClientSQLSALARY: TFloatField
-      FieldName = 'SALARY'
-      Required = True
-      DisplayFormat = '###,###,###,##0.000'
-    end
-    object RESTClientSQLFULL_NAME: TStringField
-      FieldName = 'FULL_NAME'
-      Size = 37
+      Size = 31
     end
   end
   object RESTDataBase: TRESTDataBase
@@ -144,7 +109,7 @@ object Form2: TForm2
     Password = 'testserver'
     Proxy = False
     ProxyOptions.Port = 8888
-    PoolerService = '192.168.1.6'
+    PoolerService = '192.168.20.132'
     PoolerPort = 8082
     PoolerName = 'ServerMethods1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
@@ -167,21 +132,9 @@ object Form2: TForm2
     object LinkListControlToField1: TLinkListControlToField
       Category = 'Quick Bindings'
       DataSource = BindSourceDB1
-      FieldName = 'FULL_NAME'
+      FieldName = 'CAMPO'
       Control = ListView1
-      FillExpressions = <
-        item
-          SourceMemberName = 'FIRST_NAME'
-          ControlMemberName = 'Detail1'
-        end
-        item
-          SourceMemberName = 'LAST_NAME'
-          ControlMemberName = 'Detail2'
-        end
-        item
-          SourceMemberName = 'SALARY'
-          ControlMemberName = 'Detail3'
-        end>
+      FillExpressions = <>
       FillHeaderExpressions = <>
       FillBreakGroups = <>
     end

@@ -687,6 +687,8 @@ begin
  LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
  vTempQuery.UpdateOptions.UpdateTableName := TableName;
  Try
+  If Database.Transaction <> Nil Then
+   Database.Transaction.StartTransaction;
   LApply.ApplyUpdates(0,  vTempQuery.Command);
  Except
 
@@ -697,11 +699,17 @@ begin
    MessageError := LApply.Errors.Strings.Text;
   End;
  Try
-  Database.CommitRetaining;
+  If Database.Transaction <> Nil Then
+   Database.Transaction.Commit
+  Else
+   Database.CommitRetaining;
  Except
   On E : Exception do
    Begin
-    Database.RollbackRetaining;
+    If Database.Transaction <> Nil Then
+     Database.Transaction.Rollback
+    Else
+     Database.RollbackRetaining;
     Error := True;
     MessageError := E.Message;
    End;
@@ -1135,17 +1143,18 @@ End;
 Constructor TRESTClientSQL.Create(AOwner : TComponent);
 Begin
  Inherited;
- Owner             := AOwner;
- vDataCache        := False;
- vConnectedOnce    := True;
- vActive           := False;
- vSQL              := TStringList.Create;
- vSQL.OnChange     := OnChangingSQL;
- vParams           := TParams.Create;
- vCacheDataDB      := Self.CloneSource;
- vUpdateTableName  := '';
- Inherited AfterPost   := OldAfterPost;
- Inherited AfterDelete := OldAfterDelete;
+ Owner                             := AOwner;
+ vDataCache                        := False;
+ vConnectedOnce                    := True;
+ vActive                           := False;
+ UpdateOptions.CountUpdatedRecords := False;
+ vSQL                              := TStringList.Create;
+ vSQL.OnChange                     := OnChangingSQL;
+ vParams                           := TParams.Create;
+ vCacheDataDB                      := Self.CloneSource;
+ vUpdateTableName                  := '';
+ Inherited AfterPost               := OldAfterPost;
+ Inherited AfterDelete             := OldAfterDelete;
 End;
 
 Destructor  TRESTClientSQL.Destroy;
@@ -1239,10 +1248,12 @@ var
  vMessageError : String;
  Function GetDeltas : TFDJSONDeltas;
  Begin
-  if TFDMemTable(Self).State in [dsEdit, dsInsert] then
+  TFDMemTable(Self).UpdateOptions.CountUpdatedRecords := False;
+  If TFDMemTable(Self).State In [dsEdit, dsInsert] Then
    TFDMemTable(Self).Post;
   Result := TFDJSONDeltas.Create;
   TFDJSONDeltasWriter.ListAdd(Result, vUpdateTableName, TFDMemTable(Self));
+  TFDMemTable(Self).ApplyUpdates(-1);
  End;
 Begin
  LDeltaList := GetDeltas;
@@ -1458,6 +1469,7 @@ Begin
     If LDataSetList <> Nil Then
      Begin
       vTempTable := TFDMemTable.Create(Nil);
+      vTempTable.UpdateOptions.CountUpdatedRecords := False;
       Try
        Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
        vTempTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
