@@ -27,6 +27,17 @@ type
     Edit6: TEdit;
     Label7: TLabel;
     DBGrid1: TDBGrid;
+    RESTClientSQLEMP_NO: TSmallintField;
+    RESTClientSQLFIRST_NAME: TStringField;
+    RESTClientSQLLAST_NAME: TStringField;
+    RESTClientSQLPHONE_EXT: TStringField;
+    RESTClientSQLHIRE_DATE: TSQLTimeStampField;
+    RESTClientSQLDEPT_NO: TStringField;
+    RESTClientSQLJOB_CODE: TStringField;
+    RESTClientSQLJOB_GRADE: TSmallintField;
+    RESTClientSQLJOB_COUNTRY: TStringField;
+    RESTClientSQLSALARY: TFloatField;
+    RESTClientSQLFULL_NAME: TStringField;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseConnection(Sucess: Boolean; const Error: string);
