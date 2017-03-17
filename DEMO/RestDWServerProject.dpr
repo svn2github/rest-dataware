@@ -7,8 +7,7 @@ uses
   IdHTTPWebBrokerBridge,
   RestDWServerFormU in 'RestDWServerFormU.pas' {RestDWForm},
   ServerMethodsUnit1 in 'ServerMethodsUnit1.pas' {ServerMethods1: TDataModule},
-  WebModuleUnit1 in 'WebModuleUnit1.pas' {WebModule1: TWebModule},
-  uComboPoolers in '..\uComboPoolers.pas';
+  WebModuleUnit1 in 'WebModuleUnit1.pas' {WebModule1: TWebModule};
 
 {$R *.res}
 

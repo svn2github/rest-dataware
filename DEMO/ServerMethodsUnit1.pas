@@ -14,8 +14,8 @@ uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
      FireDAC.Comp.Client,     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,    FireDAC.Comp.UI,
      FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,
      FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
-     WebModuleUnit1,          uRestPoolerDB,            Vcl.Dialogs,        TypInfo,
-     Vcl.Forms;
+     WebModuleUnit1,          Vcl.Dialogs,              TypInfo,
+     Vcl.Forms, uRestPoolerDB;
 
 type
 {$METHODINFO ON}
@@ -24,8 +24,8 @@ type
     FDPhysIBDriverLink1    : TFDPhysIBDriverLink;
     FDStanStorageJSONLink1 : TFDStanStorageJSONLink;
     FDConnectionEMPLOYEE   : TFDConnection;
-    RESTPoolerDB: TRESTPoolerDB;
     FDTransaction1: TFDTransaction;
+    RESTPoolerDB: TRESTPoolerDB;
     procedure FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
   private
     { Private declarations }

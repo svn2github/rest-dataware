@@ -27,7 +27,7 @@ package RestEasyObjects;
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'REST Dataware'}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   rtl,
@@ -55,8 +55,8 @@ requires
   Designide;
 
 contains
-  uRestPoolerDB in 'uRestPoolerDB.pas',
   uPoolerMethod in 'uPoolerMethod.pas',
-  uComboPoolers in 'uComboPoolers.pas';
+  uComboPoolers in 'uComboPoolers.pas',
+  uRestPoolerDB in 'uRestPoolerDB.pas';
 
 end.

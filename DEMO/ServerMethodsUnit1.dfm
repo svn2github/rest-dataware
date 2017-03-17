@@ -27,14 +27,14 @@ object ServerMethods1: TServerMethods1
     Left = 60
     Top = 21
   end
-  object RESTPoolerDB: TRESTPoolerDB
-    Database = FDConnectionEMPLOYEE
-    Left = 128
-    Top = 21
-  end
   object FDTransaction1: TFDTransaction
     Connection = FDConnectionEMPLOYEE
     Left = 88
+    Top = 21
+  end
+  object RESTPoolerDB: TRESTPoolerDB
+    Database = FDConnectionEMPLOYEE
+    Left = 128
     Top = 21
   end
 end
