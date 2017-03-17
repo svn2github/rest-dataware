@@ -162,13 +162,14 @@
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <DCC_Description>REST Dataware</DCC_Description>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_UnitSearchPath>.\$(Platform)\$(Config);$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_BplOutput>.\$(Platform)\$(Config)</DCC_BplOutput>
-        <VerInfo_Build>111</VerInfo_Build>
+        <VerInfo_Build>124</VerInfo_Build>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Release>1</VerInfo_Release>
-        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=Pacote de Componentes REST para usuários de Dataset;FileVersion=1.0.1.111;InternalName=RestEasyObjects;LegalCopyright=;LegalTrademarks=;OriginalFilename=RestEasyObjects.dpk;ProductName=RestEasyObjects;ProductVersion=1.0.1.1;Comments=Criado por : Gilberto Rocha da Silva</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=Pacote de Componentes REST para usuários de Dataset;FileVersion=1.0.1.124;InternalName=RestEasyObjects;LegalCopyright=;LegalTrademarks=;OriginalFilename=RestEasyObjects.dpk;ProductName=RestEasyObjects;ProductVersion=1.0.1.1;Comments=Criado por : Gilberto Rocha da Silva</VerInfo_Keys>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
     </PropertyGroup>
     <ItemGroup>
@@ -197,6 +198,7 @@
         <DCCReference Include="DataSnapServer.dcp"/>
         <DCCReference Include="DataSnapFireDAC.dcp"/>
         <DCCReference Include="soaprtl.dcp"/>
+        <DCCReference Include="designide.dcp"/>
         <DCCReference Include="uRestPoolerDB.pas"/>
         <DCCReference Include="uPoolerMethod.pas"/>
         <RcItem Include="TRESTClientSQL.bmp">
@@ -236,11 +238,9 @@
                     <Source Name="MainSource">RestEasyObjects.dpk</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\17.0\Bpl\RestEasyObjects.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\17.0\Bpl\RestEasyObjects.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k230.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp230.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k230.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp230.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k240.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp240.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\18.0\Bpl\mouseBar.bpl">Standard</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>

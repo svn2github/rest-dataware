@@ -26,6 +26,7 @@ package RestEasyObjects;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'REST Dataware'}
 {$IMPLICITBUILD ON}
 
 requires
@@ -50,7 +51,8 @@ requires
   DataSnapCommon,
   DataSnapServer,
   DataSnapFireDAC,
-  soaprtl;
+  soaprtl,
+  designide;
 
 contains
   uRestPoolerDB in 'uRestPoolerDB.pas',
