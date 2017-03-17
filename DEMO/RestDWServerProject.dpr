@@ -8,8 +8,7 @@ uses
   RestDWServerFormU in 'RestDWServerFormU.pas' {RestDWForm},
   ServerMethodsUnit1 in 'ServerMethodsUnit1.pas' {ServerMethods1: TDataModule},
   WebModuleUnit1 in 'WebModuleUnit1.pas' {WebModule1: TWebModule},
-  uPoolerMethod in '..\uPoolerMethod.pas',
-  uRestPoolerDB in '..\uRestPoolerDB.pas';
+  uComboPoolers in '..\uComboPoolers.pas';
 
 {$R *.res}
 

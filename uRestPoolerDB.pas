@@ -22,8 +22,7 @@ uses System.SysUtils,         System.Classes,
      uPoolerMethod,           FireDAC.Stan.StorageBin, Data.DBXPlatform,
      FireDAC.Stan.StorageJSON {$IFDEF MSWINDOWS},      Datasnap.DSServer,
      Datasnap.DSAuth,         Datasnap.DSProxyRest{$ENDIF},
-     Soap.EncdDecd,           System.NetEncoding,      DesignEditors,
-     DesignIntf;
+     Soap.EncdDecd,           System.NetEncoding;
 
 Type
  TOnEventDB = Procedure (DataSet: TDataSet) of Object;
@@ -149,14 +148,6 @@ Type
   Property PoolerName         : String                   Read vRestPooler         Write SetRestPooler;      //Qual o Pooler de Conexão ligado ao componente
   Property RestModule         : String                   Read vRestModule         Write vRestModule;        //Classe do Servidor REST Principal
   Property StateConnection    : TAutoCheckData           Read vAutoCheckData      Write vAutoCheckData;     //Autocheck da Conexão
-End;
-
-Type
- TPoolersList = Class(TStringProperty)
- Public
-  Function  GetAttributes  : TPropertyAttributes; Override;
-  Procedure GetValues(Proc : TGetStrProc);        Override;
-  Procedure Edit;                                 Override;
 End;
 
 Type
@@ -295,24 +286,7 @@ Type
 End;
 {$ENDIF}
 
-Procedure Register;
-
 implementation
-
-{$IFDEF MSWINDOWS}
-Procedure Register;
-Begin
- RegisterComponents('REST Dataware',     [TRESTPoolerDB, TRESTDataBase, TRESTClientSQL, TRESTPoolerList]);
- RegisterPropertyEditor(TypeInfo(String), TRESTDataBase, 'PoolerName', TPoolersList);
-End;
-{$ENDIF}
-{$IFNDEF MSWINDOWS}
-Procedure Register;
-Begin
- RegisterComponents('REST Dataware',      [TRESTDataBase, TRESTClientSQL, TRESTPoolerList]);
- RegisterPropertyEditor(TypeInfo(String),  TRESTDataBase, 'PoolerName',  TPoolersList);
-End;
-{$ENDIF}
 
 Function EncodeStrings(Value : String) : String;
 Var
@@ -1166,43 +1140,6 @@ End;
 Procedure TRESTDataBase.CheckConnection;
 Begin
  vConnected := TryConnect;
-End;
-
-procedure TPoolersList.Edit;
-Var
- vTempData : String;
-Begin
- Inherited Edit;
- Try
-  vTempData := GetValue;
-  SetValue(vTempData);
- Finally
- End;
-end;
-
-Procedure TPoolersList.GetValues(Proc : TGetStrProc);
-Var
- vLista : TStringList;
- I      : Integer;
-Begin
- //Provide a list of Poolers
- With GetComponent(0) as TRESTDataBase Do
-  Begin
-   Try
-    vLista := TRESTDataBase(GetComponent(0)).GetRestPoolers;
-    For I := 0 To vLista.Count -1 Do
-     Proc (vLista[I]);
-   Except
-   End;
-   If vLista <> Nil Then
-    vLista.DisposeOf;
-  End;
-End;
-
-Function TPoolersList.GetAttributes : TPropertyAttributes;
-Begin
-  // editor, sorted list, multiple selection
- Result := Inherited GetAttributes + [paValueList, paSortList];
 End;
 
 Function  TRESTPoolerList.TryConnect : Boolean;
