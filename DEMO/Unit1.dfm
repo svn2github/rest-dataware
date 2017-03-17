@@ -157,11 +157,10 @@ object Form1: TForm1
   end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL
-    Left = 368
-    Top = 144
+    Left = 280
+    Top = 168
   end
   object RESTClientSQL: TRESTClientSQL
-    Active = True
     AfterOpen = RESTClientSQLAfterOpen
     AfterPost = RESTClientSQLAfterPost
     AfterDelete = RESTClientSQLAfterDelete
@@ -245,8 +244,8 @@ object Form1: TForm1
     DataBase = RESTDataBase
     SQL.Strings = (
       'select * from employee')
-    Left = 300
-    Top = 144
+    Left = 224
+    Top = 189
     object RESTClientSQLEMP_NO: TSmallintField
       FieldName = 'EMP_NO'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
@@ -300,7 +299,7 @@ object Form1: TForm1
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
-    Active = True
+    Active = False
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False

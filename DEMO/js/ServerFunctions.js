@@ -615,9 +615,9 @@ function DSAdmin(connectionInfo)
   };
 }
 
-function TServerMethods1(connectionInfo)
+function TdmServerMConnections(connectionInfo)
 {
-  this.executor = new ServerFunctionExecutor("TServerMethods1",connectionInfo);
+  this.executor = new ServerFunctionExecutor("TdmServerMConnections",connectionInfo);
 
   /*
    * @param Value [in] - Type on server: string

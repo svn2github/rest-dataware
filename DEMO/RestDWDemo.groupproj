@@ -15,6 +15,9 @@
         <Projects Include="Android\ClientMobile.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="ListPoolers.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -59,14 +62,23 @@
     <Target Name="ClientMobile:Make">
         <MSBuild Projects="Android\ClientMobile.dproj" Targets="Make"/>
     </Target>
+    <Target Name="ListPoolers">
+        <MSBuild Projects="ListPoolers.dproj"/>
+    </Target>
+    <Target Name="ListPoolers:Clean">
+        <MSBuild Projects="ListPoolers.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ListPoolers:Make">
+        <MSBuild Projects="ListPoolers.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestDWServerProject;ClientWin;RestEasyObjects;ClientMobile"/>
+        <CallTarget Targets="RestDWServerProject;ClientWin;RestEasyObjects;ClientMobile;ListPoolers"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestDWServerProject:Clean;ClientWin:Clean;RestEasyObjects:Clean;ClientMobile:Clean"/>
+        <CallTarget Targets="RestDWServerProject:Clean;ClientWin:Clean;RestEasyObjects:Clean;ClientMobile:Clean;ListPoolers:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestDWServerProject:Make;ClientWin:Make;RestEasyObjects:Make;ClientMobile:Make"/>
+        <CallTarget Targets="RestDWServerProject:Make;ClientWin:Make;RestEasyObjects:Make;ClientMobile:Make;ListPoolers:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

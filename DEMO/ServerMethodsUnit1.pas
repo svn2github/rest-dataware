@@ -2,7 +2,6 @@
 //adicionados em seus Projetos.
 //Gilberto Rocha da Silva
 
-
 unit ServerMethodsUnit1;
 
 interface
@@ -15,7 +14,8 @@ uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
      FireDAC.Comp.Client,     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,    FireDAC.Comp.UI,
      FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,
      FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
-     WebModuleUnit1,          uRestPoolerDB,            Vcl.Dialogs,        Vcl.Forms;
+     WebModuleUnit1,          uRestPoolerDB,            Vcl.Dialogs,        TypInfo,
+     Vcl.Forms;
 
 type
 {$METHODINFO ON}
@@ -29,6 +29,7 @@ type
     procedure FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
   private
     { Private declarations }
+    Function  GetUnitClassName : String;
   public
     { Public declarations }
     //Echo Commands
@@ -80,6 +81,8 @@ type
                            Const ADeltaList : TFDJSONDeltas;
                            Var Error        : Boolean;
                            Var MessageError : String);Overload;
+    //Get All Poolers
+    Procedure GetPoolerList(Var PoolerList : TStringList);
   end;
 {$METHODINFO OFF}
 
@@ -132,6 +135,32 @@ Begin
        Break;
       End;
     End;
+  End;
+End;
+
+Function TServerMethods1.GetUnitClassName : String;
+Var
+ VMT,
+ P    : Pointer;
+Begin
+ Result := '';
+ VMT:= Pointer(Self.ClassType);
+ P:= PPointer(PByte(VMT) + vmtTypeInfo)^;
+ If P <> Nil Then
+  Result := GetTypeData(P).UnitName;
+End;
+
+Procedure TServerMethods1.GetPoolerList(Var PoolerList : TStringList);
+Var
+ I : Integer;
+Begin
+ If PoolerList = Nil Then
+  PoolerList := TStringList.Create;
+ PoolerList.Clear;
+ For I := 0 to ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    PoolerList.Add(GetUnitClassName + '.' + TRESTPoolerDB(Components[i]).Name);
   End;
 End;
 

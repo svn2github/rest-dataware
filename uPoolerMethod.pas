@@ -9,6 +9,7 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
      System.NetEncoding;
 
  Type
+  IDSRestCachedTStringList     = Interface;
   TSMPoolerMethodClient        = Class(TDSAdminRestClient)
   Private
    FEchoPoolerCommand,
@@ -22,7 +23,9 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
    FExecuteCommandPureCommand,
    FExecuteCommandPureJSONCommand,
    FApplyChangesPureCommand,
-   FApplyChangesCommand          : TDSRestCommand;
+   FApplyChangesCommand,
+   FGetPoolerListCommand,
+   FGetPoolerListCommand_Cache          : TDSRestCommand;
   Public
    Constructor Create(ARestConnection: TDSRestConnection); Overload;
    Constructor Create(ARestConnection: TDSRestConnection; AInstanceOwner: Boolean); Overload;
@@ -95,6 +98,18 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
                                   Var Error            : Boolean;
                                   Var MessageError     : String;
                                   Const ARequestFilter : String = '');
+   //Lista todos os Pooler's do Servidor
+   Procedure GetPoolerList       (Method_Prefix        : String;
+                                  Var PoolerList       : TStringList;
+                                  Const ARequestFilter : String = '');
+   Procedure GetPoolerList_Cache (Method_Prefix        : String;
+                                  PoolerList : TStringList;
+                                  Out PoolerList_Cache : IDSRestCachedTStringList;
+                                  Const ARequestFilter : String = '');
+ End;
+  IDSRestCachedTStringList = Interface(IDSRestCachedObject<TStringList>)
+ End;
+  TDSRestCachedTStringList = Class(TDSRestCachedObject<TStringList>, IDSRestCachedTStringList, IDSRestCachedCommand)
  End;
 
 Const
@@ -190,6 +205,15 @@ Const
     (Name: 'MessageError'; Direction: 3; DBXType: 26; TypeName: 'string'),
     (Name: ''; Direction: 4; DBXType: 6; TypeName: 'Integer')
   );
+  TSMPoolerMethodClient_GetPoolerList: array [0..0] of TDSRestParameterMetaData =
+  (
+    (Name: 'PoolerList'; Direction: 3; DBXType: 37; TypeName: 'TStringList')
+  );
+
+  TSMPoolerMethodClient_GetPoolerList_Cache: array [0..0] of TDSRestParameterMetaData =
+  (
+    (Name: 'PoolerList'; Direction: 2; DBXType: 26; TypeName: 'String')
+  );
 
 
 implementation
@@ -279,6 +303,75 @@ Begin
  FApplyChangesPureCommand.Execute(ARequestFilter);
  Error := FApplyChangesPureCommand.Parameters[4].Value.GetBoolean;
  MessageError := FApplyChangesPureCommand.Parameters[5].Value.GetWideString;
+End;
+
+Procedure TSMPoolerMethodClient.GetPoolerList_Cache(Method_Prefix        : String;
+                                                    PoolerList           : TStringList;
+                                                    Out PoolerList_Cache : IDSRestCachedTStringList;
+                                                    Const ARequestFilter : String);
+Begin
+ If FGetPoolerListCommand_Cache = Nil Then
+  Begin
+   FGetPoolerListCommand_Cache := FConnection.CreateCommand;
+   FGetPoolerListCommand_Cache.RequestType := 'POST';
+   FGetPoolerListCommand_Cache.Text := Method_Prefix + '."GetPoolerList"';
+   FGetPoolerListCommand_Cache.Prepare(TSMPoolerMethodClient_GetPoolerList_Cache);
+  End;
+ If Not Assigned(PoolerList) Then
+  FGetPoolerListCommand_Cache.Parameters[0].Value.SetNull
+ Else
+  Begin
+   FMarshal := TDSRestCommand(FGetPoolerListCommand_Cache.Parameters[0].ConnectionHandler).GetJSONMarshaler;
+   Try
+    FGetPoolerListCommand_Cache.Parameters[0].Value.SetJSONValue(FMarshal.Marshal(PoolerList), True);
+    If FInstanceOwner Then
+     PoolerList.Free;
+   Finally
+    FreeAndNil(FMarshal);
+   End;
+  End;
+ FGetPoolerListCommand_Cache.ExecuteCache(ARequestFilter);
+ PoolerList_Cache := TDSRestCachedTStringList.Create(FGetPoolerListCommand_Cache.Parameters[0].Value.GetString);
+End;
+
+Procedure TSMPoolerMethodClient.GetPoolerList(Method_Prefix        : String;
+                                              Var PoolerList       : TStringList;
+                                              Const ARequestFilter : String);
+Begin
+ If FGetPoolerListCommand = Nil Then
+  Begin
+   FGetPoolerListCommand := FConnection.CreateCommand;
+   FGetPoolerListCommand.RequestType := 'POST';
+   FGetPoolerListCommand.Text := Method_Prefix + '."GetPoolerList"';
+   FGetPoolerListCommand.Prepare(TSMPoolerMethodClient_GetPoolerList);
+  End;
+ If Not Assigned(PoolerList) Then
+  FGetPoolerListCommand.Parameters[0].Value.SetNull
+ Else
+  Begin
+   FMarshal := TDSRestCommand(FGetPoolerListCommand.Parameters[0].ConnectionHandler).GetJSONMarshaler;
+   Try
+    FGetPoolerListCommand.Parameters[0].Value.SetJSONValue(FMarshal.Marshal(PoolerList), True);
+    If FInstanceOwner Then
+     PoolerList.Free
+   Finally
+    FreeAndNil(FMarshal)
+   End;
+  End;
+  FGetPoolerListCommand.Execute(ARequestFilter);
+  If Not FGetPoolerListCommand.Parameters[0].Value.IsNull Then
+   Begin
+    FUnMarshal := TDSRestCommand(FGetPoolerListCommand.Parameters[0].ConnectionHandler).GetJSONUnMarshaler;
+    Try
+     PoolerList := TStringList(FUnMarshal.UnMarshal(FGetPoolerListCommand.Parameters[0].Value.GetJSONValue(True)));
+     If FInstanceOwner Then
+      FGetPoolerListCommand.FreeOnExecute(PoolerList);
+    Finally
+     FreeAndNil(FUnMarshal)
+    End;
+   End
+  Else
+   PoolerList := nil;
 End;
 
 Procedure TSMPoolerMethodClient.ApplyChanges(Pooler,

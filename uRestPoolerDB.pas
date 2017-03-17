@@ -205,6 +205,41 @@ Type
   Property UpdateTableName : String              Read vUpdateTableName          Write SetUpdateTableName;      //Tabela que será usada para Reflexão de Dados
 End;
 
+
+Type
+ TRESTPoolerList = Class(TComponent)
+ Private
+  Owner                : TComponent;                 //Proprietario do Componente
+  vPoolerPrefix,                                     //Prefixo do WS
+  vLogin,                                            //Login do Usuário caso haja autenticação
+  vPassword,                                         //Senha do Usuário caso haja autenticação
+  vRestWebService,                                   //Rest WebService para consultas
+  vRestURL             : String;                     //Qual o Pooler de Conexão do DataSet
+  vPoolerPort          : Integer;                    //A Porta do Pooler
+  vConnected,
+  vProxy               : Boolean;                    //Diz se tem servidor Proxy
+  vProxyOptions        : TProxyOptions;              //Se tem Proxy diz quais as opções
+  vPoolerList          : TStringList;
+  Procedure SetConnection(Value : Boolean);          //Seta o Estado da Conexão
+  Procedure SetPoolerPort(Value : Integer);          //Seta a Porta do Pooler a ser usada
+  Function  TryConnect : Boolean;                    //Tenta Conectar o Servidor para saber se posso executar comandos
+  Procedure SetConnectionOptions(Var Value : TDSRestConnection); //Seta as Opções de Conexão
+ Public
+  Constructor Create(AOwner  : TComponent);Override; //Cria o Componente
+  Destructor  Destroy;Override;                      //Destroy a Classe
+ Published
+  Property Active             : Boolean                  Read vConnected          Write SetConnection;      //Seta o Estado da Conexão
+  Property Login              : String                   Read vLogin              Write vLogin;             //Login do Usuário caso haja autenticação
+  Property Password           : String                   Read vPassword           Write vPassword;          //Senha do Usuário caso haja autenticação
+  Property Proxy              : Boolean                  Read vProxy              Write vProxy;             //Diz se tem servidor Proxy
+  Property ProxyOptions       : TProxyOptions            Read vProxyOptions       Write vProxyOptions;      //Se tem Proxy diz quais as opções
+  Property PoolerService      : String                   Read vRestWebService     Write vRestWebService;    //Host do WebService REST
+  Property PoolerURL          : String                   Read vRestURL            Write vRestURL;           //URL do WebService REST
+  Property PoolerPort         : Integer                  Read vPoolerPort         Write SetPoolerPort;      //A Porta do Pooler do DataSet
+  Property PoolerPrefix       : String                   Read vPoolerPrefix       Write vPoolerPrefix;      //Prefixo do WebService REST
+  Property Poolers            : TStringList              Read vPoolerList;
+End;
+
 {$IFDEF MSWINDOWS}
 Type
  TRESTPoolerDBP = ^TComponent;
@@ -258,13 +293,13 @@ implementation
 {$IFDEF MSWINDOWS}
 Procedure Register;
 Begin
- RegisterComponents('REST Dataware', [TRESTPoolerDB, TRESTDataBase, TRESTClientSQL]);
+ RegisterComponents('REST Dataware', [TRESTPoolerDB, TRESTDataBase, TRESTClientSQL, TRESTPoolerList]);
 End;
 {$ENDIF}
 {$IFNDEF MSWINDOWS}
 Procedure Register;
 Begin
- RegisterComponents('REST Dataware', [TRESTDataBase, TRESTClientSQL]);
+ RegisterComponents('REST Dataware', [TRESTDataBase, TRESTClientSQL, TRESTPoolerList]);
 End;
 {$ENDIF}
 
@@ -813,6 +848,33 @@ Begin
  vPort     := 8888;
 End;
 
+Procedure TRESTPoolerList.SetConnectionOptions(Var Value : TDSRestConnection);
+Begin
+ Value                   := TDSRestConnection.Create(Nil);
+ Value.LoginPrompt       := False;
+ Value.PreserveSessionID := False;
+ Value.Protocol          := 'http';
+ Value.Host              := vRestWebService;
+ Value.Port              := vPoolerPort;
+ Value.UrlPath           := vRestURL;
+ Value.UserName          := vLogin;
+ Value.Password          := vPassword;
+ if vProxy then
+  Begin
+   Value.ProxyHost     := vProxyOptions.vServer;
+   Value.ProxyPort     := vProxyOptions.vPort;
+   Value.ProxyUsername := vProxyOptions.vLogin;
+   Value.ProxyPassword := vProxyOptions.vPassword;
+  End
+ Else
+  Begin
+   Value.ProxyHost     := '';
+   Value.ProxyPort     := 0;
+   Value.ProxyUsername := '';
+   Value.ProxyPassword := '';
+  End;
+End;
+
 Procedure TRESTDataBase.SetConnectionOptions(Var Value : TDSRestConnection);
 Begin
  Value                   := TDSRestConnection.Create(Nil);
@@ -1044,6 +1106,18 @@ Begin
  vRESTConnectionDB.DisposeOf;
 End;
 
+Constructor TRESTPoolerList.Create(AOwner : TComponent);
+Begin
+ Inherited;
+ Owner                     := AOwner;
+ vLogin                    := '';
+ vPassword                 := vLogin;
+ vPoolerPort               := 8082;
+ vProxy                    := False;
+ vProxyOptions             := TProxyOptions.Create;
+ vPoolerList               := TStringList.Create;
+End;
+
 Constructor TRESTDataBase.Create(AOwner : TComponent);
 Begin
  Inherited;
@@ -1062,6 +1136,14 @@ Begin
  vAutoCheckData.vEvent     := CheckConnection;
 End;
 
+Destructor  TRESTPoolerList.Destroy;
+Begin
+ vProxyOptions.DisposeOf;
+ If vPoolerList <> Nil Then
+  vPoolerList.DisposeOf;
+ Inherited;
+End;
+
 Destructor  TRESTDataBase.Destroy;
 Begin
  vAutoCheckData.vAutoCheck := False;
@@ -1073,6 +1155,30 @@ End;
 Procedure TRESTDataBase.CheckConnection;
 Begin
  vConnected := TryConnect;
+End;
+
+Function  TRESTPoolerList.TryConnect : Boolean;
+Var
+ vTempSend,
+ vTempResult       : String;
+ vDSRConnection    : TDSRestConnection;
+ vRESTConnectionDB : TSMPoolerMethodClient;
+Begin
+ Result := False;
+ SetConnectionOptions(vDSRConnection);
+ vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
+ Try
+  vPoolerList.Clear;
+  vPoolerList.Assign(vRESTConnectionDB.PoolersDataSet(vPoolerPrefix));
+  Result      := True;
+ Except
+  On E : Exception do
+   Begin
+    vDSRConnection.SessionID := '';
+   End;
+ End;
+ vDSRConnection.DisposeOf;
+ vRESTConnectionDB.DisposeOf;
 End;
 
 Function  TRESTDataBase.TryConnect : Boolean;
@@ -1122,7 +1228,20 @@ Begin
   vMyIP := '';
 End;
 
+Procedure TRESTPoolerList.SetConnection(Value : Boolean);
+Begin
+ If (Value) And Not(vConnected) then
+ vConnected := Value;
+ If vConnected Then
+  vConnected := TryConnect;
+End;
+
 Procedure TRESTDataBase.SetPoolerPort(Value : Integer);
+Begin
+ vPoolerPort := Value;
+End;
+
+Procedure TRESTPoolerList.SetPoolerPort(Value : Integer);
 Begin
  vPoolerPort := Value;
 End;
