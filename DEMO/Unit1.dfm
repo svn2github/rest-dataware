@@ -306,10 +306,11 @@ object Form1: TForm1
     ProxyOptions.Port = 8888
     PoolerService = '127.0.0.1'
     PoolerPort = 8082
-    PoolerName = 'ServerMethods1.RESTPoolerDB'
+    PoolerName = 'ServerMethodsUnit1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
+    RequestTimeOut = 10000
     Left = 224
     Top = 144
   end

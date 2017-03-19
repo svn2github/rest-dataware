@@ -1,5 +1,6 @@
 object ServerMethods1: TServerMethods1
   OldCreateOrder = False
+  OnCreate = DataModuleCreate
   Height = 144
   Width = 182
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor

@@ -27,9 +27,12 @@ type
     FDTransaction1: TFDTransaction;
     RESTPoolerDB: TRESTPoolerDB;
     procedure FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
+    procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
-    Function  GetUnitClassName : String;
+   vUserName,
+   vPassword : String;
+   Function  GetUnitClassName : String;
   public
     { Public declarations }
     //Echo Commands
@@ -82,9 +85,13 @@ type
                            Var Error        : Boolean;
                            Var MessageError : String);Overload;
     //Get All Poolers
-    Procedure GetPoolerList(Var PoolerList : TStringList);
+   Procedure GetPoolerList(Var PoolerList : TStringList);
   end;
 {$METHODINFO OFF}
+
+Var
+ UserName,
+ Password : String;
 
 implementation
 
@@ -107,9 +114,9 @@ Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
      If Result = '' then
-      Result := Format('%s.%s', [Self.Name, Components[i].Name])
+      Result := Format('%s.%s', [GetUnitClassName, Components[i].Name])
      Else
-      Result := Result + '|' + Format('%s.%s', [Self.Name, Self.Components[i].Name]);
+      Result := Result + '|' + Format('%s.%s', [GetUnitClassName, Self.Components[i].Name]);
     End;
   End;
 End;
@@ -124,7 +131,7 @@ Var
  I : Integer;
  vTempPooler : String;
 Begin
- vTempPooler := UpperCase(StringReplace(Pooler, Self.Name + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
@@ -137,6 +144,12 @@ Begin
     End;
   End;
 End;
+
+procedure TServerMethods1.DataModuleCreate(Sender: TObject);
+begin
+ UserName := 'testserver';
+ Password := 'testserver';
+end;
 
 Function TServerMethods1.GetUnitClassName : String;
 Var
@@ -175,7 +188,7 @@ Var
  I : Integer;
  vTempPooler : String;
 Begin
- vTempPooler := UpperCase(StringReplace(Pooler, Self.Name + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
@@ -235,7 +248,7 @@ Var
  vTempPooler : String;
 Begin
  Result := Nil;
- vTempPooler := UpperCase(StringReplace(Pooler, Self.Name + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
@@ -259,7 +272,7 @@ Var
  vTempPooler : String;
 Begin
  Result := Nil;
- vTempPooler := UpperCase(StringReplace(Pooler, Self.Name + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
@@ -283,7 +296,7 @@ Var
  vTempPooler : String;
 Begin
  Result := -1;
- vTempPooler := UpperCase(StringReplace(Pooler, Self.Name + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
@@ -306,7 +319,7 @@ Var
  vTempPooler : String;
 Begin
  Result := -1;
- vTempPooler := UpperCase(StringReplace(Pooler, Self.Name + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then

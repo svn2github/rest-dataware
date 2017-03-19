@@ -63,7 +63,12 @@ procedure TWebModule1.DSAuthenticationManager1UserAuthenticate(Sender: TObject;
   UserRoles: TStrings);
 begin
  //Adicionada Autenticação de Usuário
- valid := (User = 'testserver') and (Password = 'testserver');
+ valid := (((User = ServerMethodsUnit1.UserName)     And
+            (ServerMethodsUnit1.UserName <> ''))     And
+           ((Password = ServerMethodsUnit1.Password) And
+            (ServerMethodsUnit1.Password <> '')))    Or
+          ((ServerMethodsUnit1.UserName = '')        And
+           (ServerMethodsUnit1.Password = ''));
 end;
 
 //Criar para retornar o IP do Cliente

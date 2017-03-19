@@ -32,10 +32,16 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
    Destructor  Destroy; override;
    //Faz uma chamada de Execução para verificar o funcionamento do WebService
    Function    EchoPooler(Value, Method_Prefix : String;
-                          Const ARequestFilter : String = '')     : String;
+                          Const ARequestFilter : String = '';
+                          TimeOut              : Integer = 3000;
+                          UserName             : String  = '';
+                          Password             : String  = '')     : String;
    //Retorna todos os Poolers no DataModule do WebService
    Function    PoolersDataSet(Method_Prefix        : String;
-                              Const ARequestFilter : String = '') : TStringList;
+                              Const ARequestFilter : String = '';
+                              TimeOut              : Integer = 3000;
+                              UserName             : String  = '';
+                              Password             : String  = '') : TStringList;
    //Roda Comando SQL
    Function    InsertValue       (Pooler,
                                   Method_Prefix,
@@ -43,7 +49,10 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
                                   Params               : TParams;
                                   Var Error            : Boolean;
                                   Var MessageError     : String;
-                                  Const ARequestFilter : String = ''): Integer;
+                                  Const ARequestFilter : String = '';
+                                  TimeOut              : Integer = 3000;
+                                  UserName             : String  = '';
+                                  Password             : String  = ''): Integer;
    Function    ExecuteCommand    (Pooler,
                                   Method_Prefix,
                                   SQL                  : String;
@@ -51,7 +60,10 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
                                   Var Error            : Boolean;
                                   Var MessageError     : String;
                                   Execute              : Boolean;
-                                  Const ARequestFilter : String = '') : TFDJSONDataSets;
+                                  Const ARequestFilter : String = '';
+                                  TimeOut              : Integer = 3000;
+                                  UserName             : String  = '';
+                                  Password             : String  = '') : TFDJSONDataSets;
    Function    ExecuteCommandJSON(Pooler,
                                   Method_Prefix,
                                   SQL                  : String;
@@ -59,27 +71,39 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
                                   Var Error            : Boolean;
                                   Var MessageError     : String;
                                   Execute              : Boolean;
-                                  Const ARequestFilter : String = '') : TJSONObject;
+                                  Const ARequestFilter : String = '';
+                                  TimeOut              : Integer = 3000;
+                                  UserName             : String  = '';
+                                  Password             : String  = '') : TJSONObject;
    Function    InsertValuePure   (Pooler,
                                   Method_Prefix,
                                   SQL                  : String;
                                   Var Error            : Boolean;
                                   Var MessageError     : String;
-                                  Const ARequestFilter : String = '') : Integer;
+                                  Const ARequestFilter : String = '';
+                                  TimeOut              : Integer = 3000;
+                                  UserName             : String  = '';
+                                  Password             : String  = '') : Integer;
    Function    ExecuteCommandPure(Pooler,
                                   Method_Prefix,
                                   SQL                  : String;
                                   Var Error            : Boolean;
                                   Var MessageError     : String;
                                   Execute              : Boolean;
-                                  Const ARequestFilter : String = '') : TFDJSONDataSets;
+                                  Const ARequestFilter : String = '';
+                                  TimeOut              : Integer = 3000;
+                                  UserName             : String  = '';
+                                  Password             : String  = '') : TFDJSONDataSets;
    Function    ExecuteCommandPureJSON(Pooler,
                                       Method_Prefix,
-                                      SQL              : String;
+                                      SQL                  : String;
                                       Var Error: Boolean;
-                                      Var MessageError : String;
+                                      Var MessageError     : String;
                                       Execute: Boolean;
-                                      Const ARequestFilter: string = ''): TJSONObject;
+                                      Const ARequestFilter : String = '';
+                                      TimeOut              : Integer = 3000;
+                                      UserName             : String  = '';
+                                      Password             : String  = ''): TJSONObject;
    //Executa um ApplyUpdate no Servidor
    Procedure   ApplyChangesPure  (Pooler,
                                   Method_Prefix,
@@ -88,7 +112,10 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
                                   ADeltaList           : TFDJSONDeltas;
                                   Var Error            : Boolean;
                                   Var MessageError     : String;
-                                  Const ARequestFilter : String = '');
+                                  Const ARequestFilter : String = '';
+                                  TimeOut              : Integer = 3000;
+                                  UserName             : String  = '';
+                                  Password             : String  = '');
    Procedure   ApplyChanges      (Pooler,
                                   Method_Prefix,
                                   TableName,
@@ -97,15 +124,24 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
                                   ADeltaList           : TFDJSONDeltas;
                                   Var Error            : Boolean;
                                   Var MessageError     : String;
-                                  Const ARequestFilter : String = '');
+                                  Const ARequestFilter : String = '';
+                                  TimeOut              : Integer = 3000;
+                                  UserName             : String  = '';
+                                  Password             : String  = '');
    //Lista todos os Pooler's do Servidor
    Procedure GetPoolerList       (Method_Prefix        : String;
                                   Var PoolerList       : TStringList;
-                                  Const ARequestFilter : String = '');
+                                  Const ARequestFilter : String = '';
+                                  TimeOut              : Integer = 3000;
+                                  UserName             : String  = '';
+                                  Password             : String  = '');
    Procedure GetPoolerList_Cache (Method_Prefix        : String;
                                   PoolerList : TStringList;
                                   Out PoolerList_Cache : IDSRestCachedTStringList;
-                                  Const ARequestFilter : String = '');
+                                  Const ARequestFilter : String = '';
+                                  TimeOut              : Integer = 3000;
+                                  UserName             : String  = '';
+                                  Password             : String  = '');
  End;
   IDSRestCachedTStringList = Interface(IDSRestCachedObject<TStringList>)
  End;
@@ -272,7 +308,10 @@ Procedure TSMPoolerMethodClient.ApplyChangesPure(Pooler,
                                                  ADeltaList           : TFDJSONDeltas;
                                                  Var Error            : Boolean;
                                                  Var MessageError     : String;
-                                                 Const ARequestFilter : String = '');
+                                                 Const ARequestFilter : String = '';
+                                                 TimeOut              : Integer = 3000;
+                                                 UserName             : String  = '';
+                                                 Password             : String  = '');
 Begin
  If FApplyChangesPureCommand = Nil Then
   Begin
@@ -281,7 +320,9 @@ Begin
    FApplyChangesPureCommand.Text := Method_Prefix + '."ApplyChangesPure"';
    FApplyChangesPureCommand.Prepare(TSMPoolerMethodClient_ApplyChangesPure);
   End;
-// FApplyChangesPureCommand.Connection.HTTP.ConnectTimeout := 30000;
+ FApplyChangesPureCommand.Connection.HTTP.ConnectTimeout := TimeOut;
+ FApplyChangesPureCommand.Connection.UserName            := UserName;
+ FApplyChangesPureCommand.Connection.Password            := Password;
  FApplyChangesPureCommand.Parameters[0].Value.SetWideString(Pooler);
  FApplyChangesPureCommand.Parameters[1].Value.SetWideString(TableName);
  FApplyChangesPureCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL));
@@ -308,7 +349,10 @@ End;
 Procedure TSMPoolerMethodClient.GetPoolerList_Cache(Method_Prefix        : String;
                                                     PoolerList           : TStringList;
                                                     Out PoolerList_Cache : IDSRestCachedTStringList;
-                                                    Const ARequestFilter : String);
+                                                    Const ARequestFilter : String = '';
+                                                    TimeOut              : Integer = 3000;
+                                                    UserName             : String  = '';
+                                                    Password             : String  = '');
 Begin
  If FGetPoolerListCommand_Cache = Nil Then
   Begin
@@ -317,6 +361,9 @@ Begin
    FGetPoolerListCommand_Cache.Text := Method_Prefix + '."GetPoolerList"';
    FGetPoolerListCommand_Cache.Prepare(TSMPoolerMethodClient_GetPoolerList_Cache);
   End;
+ FGetPoolerListCommand_Cache.Connection.HTTP.ConnectTimeout := TimeOut;
+ FGetPoolerListCommand_Cache.Connection.UserName            := UserName;
+ FGetPoolerListCommand_Cache.Connection.Password            := Password;
  If Not Assigned(PoolerList) Then
   FGetPoolerListCommand_Cache.Parameters[0].Value.SetNull
  Else
@@ -336,7 +383,10 @@ End;
 
 Procedure TSMPoolerMethodClient.GetPoolerList(Method_Prefix        : String;
                                               Var PoolerList       : TStringList;
-                                              Const ARequestFilter : String);
+                                              Const ARequestFilter : String = '';
+                                              TimeOut              : Integer = 3000;
+                                              UserName             : String  = '';
+                                              Password             : String  = '');
 Begin
  If FGetPoolerListCommand = Nil Then
   Begin
@@ -345,6 +395,9 @@ Begin
    FGetPoolerListCommand.Text := Method_Prefix + '."GetPoolerList"';
    FGetPoolerListCommand.Prepare(TSMPoolerMethodClient_GetPoolerList);
   End;
+ FGetPoolerListCommand.Connection.HTTP.ConnectTimeout := TimeOut;
+ FGetPoolerListCommand.Connection.UserName            := UserName;
+ FGetPoolerListCommand.Connection.Password            := Password;
  If Not Assigned(PoolerList) Then
   FGetPoolerListCommand.Parameters[0].Value.SetNull
  Else
@@ -382,7 +435,10 @@ Procedure TSMPoolerMethodClient.ApplyChanges(Pooler,
                                              ADeltaList           : TFDJSONDeltas;
                                              Var Error            : Boolean;
                                              Var MessageError     : String;
-                                             Const ARequestFilter : String = '');
+                                             Const ARequestFilter : String = '';
+                                             TimeOut              : Integer = 3000;
+                                             UserName             : String  = '';
+                                             Password             : String  = '');
 Begin
  If FApplyChangesCommand = Nil Then
   Begin
@@ -391,7 +447,9 @@ Begin
    FApplyChangesCommand.Text := Method_Prefix + '."ApplyChanges"';
    FApplyChangesCommand.Prepare(TSMPoolerMethodClient_ApplyChanges);
   End;
-// FApplyChangesCommand.Connection.HTTP.ConnectTimeout := 30000;
+ FApplyChangesCommand.Connection.HTTP.ConnectTimeout := TimeOut;
+ FApplyChangesCommand.Connection.UserName            := UserName;
+ FApplyChangesCommand.Connection.Password            := Password;
  FApplyChangesCommand.Parameters[0].Value.SetWideString(Pooler);
  FApplyChangesCommand.Parameters[1].Value.SetWideString(TableName);
  FApplyChangesCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL));
@@ -422,7 +480,10 @@ Function TSMPoolerMethodClient.ExecuteCommandPureJSON(Pooler,
                                                       Var Error            : Boolean;
                                                       Var MessageError     : String;
                                                       Execute              : Boolean;
-                                                      Const ARequestFilter : string = ''): TJSONObject;
+                                                      Const ARequestFilter : String = '';
+                                                      TimeOut              : Integer = 3000;
+                                                      UserName             : String  = '';
+                                                      Password             : String  = ''): TJSONObject;
 Begin
  If FExecuteCommandPureJSONCommand = Nil Then
   Begin
@@ -431,7 +492,9 @@ Begin
    FExecuteCommandPureJSONCommand.Text := Method_Prefix + '.ExecuteCommandPureJSON';
    FExecuteCommandPureJSONCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandPureJSON);
   End;
-// FExecuteCommandPureJSONCommand.Connection.HTTP.ConnectTimeout := 30000;
+ FExecuteCommandPureJSONCommand.Connection.HTTP.ConnectTimeout := TimeOut;
+ FExecuteCommandPureJSONCommand.Connection.UserName            := UserName;
+ FExecuteCommandPureJSONCommand.Connection.Password            := Password;
  FExecuteCommandPureJSONCommand.Parameters[0].Value.SetWideString(Pooler);
  FExecuteCommandPureJSONCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandPureJSONCommand.Parameters[2].Value.SetBoolean(Error);
@@ -456,7 +519,10 @@ Function TSMPoolerMethodClient.ExecuteCommandPure(Pooler,
                                                   Var Error            : Boolean;
                                                   Var MessageError     : String;
                                                   Execute              : Boolean;
-                                                  const ARequestFilter : String = ''): TFDJSONDataSets;
+                                                  Const ARequestFilter : String = '';
+                                                  TimeOut              : Integer = 3000;
+                                                  UserName             : String  = '';
+                                                  Password             : String  = ''): TFDJSONDataSets;
 Begin
  Result := Nil;
  If FExecuteCommandPureCommand = Nil Then
@@ -466,7 +532,9 @@ Begin
    FExecuteCommandPureCommand.Text := Method_Prefix + '.ExecuteCommandPure';
    FExecuteCommandPureCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandPure);
   End;
-// FExecuteCommandPureCommand.Connection.HTTP.ConnectTimeout := 30000;
+ FExecuteCommandPureCommand.Connection.HTTP.ConnectTimeout := TimeOut;
+ FExecuteCommandPureCommand.Connection.UserName            := UserName;
+ FExecuteCommandPureCommand.Connection.Password            := Password;
  FExecuteCommandPureCommand.Parameters[0].Value.SetWideString(Pooler);
  FExecuteCommandPureCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandPureCommand.Parameters[2].Value.SetBoolean(Error);
@@ -498,7 +566,10 @@ Function TSMPoolerMethodClient.ExecuteCommandJSON(Pooler,
                                                   Var Error            : Boolean;
                                                   Var MessageError     : String;
                                                   Execute              : Boolean;
-                                                  Const ARequestFilter : String) : TJSONObject;
+                                                  Const ARequestFilter : String = '';
+                                                  TimeOut              : Integer = 3000;
+                                                  UserName             : String  = '';
+                                                  Password             : String  = '') : TJSONObject;
 Begin
  If FExecuteCommandJSONCommand = Nil Then
   Begin
@@ -507,7 +578,9 @@ Begin
    FExecuteCommandJSONCommand.Text := Method_Prefix + '."ExecuteCommandJSON"';
    FExecuteCommandJSONCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandJSON);
   End;
-// FExecuteCommandJSONCommand.Connection.HTTP.ConnectTimeout := 30000;
+ FExecuteCommandJSONCommand.Connection.HTTP.ConnectTimeout := TimeOut;
+ FExecuteCommandJSONCommand.Connection.UserName            := UserName;
+ FExecuteCommandJSONCommand.Connection.Password            := Password;
  FExecuteCommandJSONCommand.Parameters[0].Value.SetWideString(Pooler);
  FExecuteCommandJSONCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandJSONCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
@@ -531,7 +604,10 @@ Function TSMPoolerMethodClient.InsertValuePure(Pooler,
                                                SQL                  : String;
                                                Var Error            : Boolean;
                                                Var MessageError     : String;
-                                               Const ARequestFilter : String): Integer;
+                                               Const ARequestFilter : String = '';
+                                               TimeOut              : Integer = 3000;
+                                               UserName             : String  = '';
+                                               Password             : String  = ''): Integer;
 begin
  Result := -1;
  If FInsertValueCommandPure = Nil Then
@@ -541,6 +617,9 @@ begin
    FInsertValueCommandPure.Text        := Method_Prefix + '.InsertValuePure';
    FInsertValueCommandPure.Prepare(TSMPoolerMethodClient_InsertValuePure);
   End;
+ FInsertValueCommandPure.Connection.HTTP.ConnectTimeout := TimeOut;
+ FInsertValueCommandPure.Connection.UserName            := UserName;
+ FInsertValueCommandPure.Connection.Password            := Password;
  FInsertValueCommandPure.Parameters[0].Value.SetWideString(Pooler);
  FInsertValueCommandPure.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FInsertValueCommandPure.Parameters[2].Value.SetBoolean(Error);
@@ -565,7 +644,10 @@ Function TSMPoolerMethodClient.InsertValue(Pooler,
                                            Params               : TParams;
                                            Var Error            : Boolean;
                                            Var MessageError     : String;
-                                           Const ARequestFilter : String): Integer;
+                                           Const ARequestFilter : String = '';
+                                           TimeOut              : Integer = 3000;
+                                           UserName             : String  = '';
+                                           Password             : String  = ''): Integer;
 begin
  Result := -1;
  If FInsertValueCommand = Nil Then
@@ -575,6 +657,9 @@ begin
    FInsertValueCommand.Text        := Method_Prefix + '."InsertValue"';
    FInsertValueCommand.Prepare(TSMPoolerMethodClient_InsertValue);
   End;
+ FInsertValueCommand.Connection.HTTP.ConnectTimeout := TimeOut;
+ FInsertValueCommand.Connection.UserName            := UserName;
+ FInsertValueCommand.Connection.Password            := Password;
  FInsertValueCommand.Parameters[0].Value.SetWideString(Pooler);
  FInsertValueCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FInsertValueCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
@@ -601,7 +686,10 @@ Function TSMPoolerMethodClient.ExecuteCommand(Pooler               : String;
                                               Var Error            : Boolean;
                                               Var MessageError     : String;
                                               Execute              : Boolean;
-                                              Const ARequestFilter : String) : TFDJSONDataSets;
+                                              Const ARequestFilter : String = '';
+                                              TimeOut              : Integer = 3000;
+                                              UserName             : String  = '';
+                                              Password             : String  = '') : TFDJSONDataSets;
 Begin
  Result := Nil;
  If FExecuteCommandCommand = Nil Then
@@ -611,7 +699,9 @@ Begin
    FExecuteCommandCommand.Text := Method_Prefix + '."ExecuteCommand"';
    FExecuteCommandCommand.Prepare(TSMPoolerMethodClient_ExecuteCommand);
   End;
-// FExecuteCommandCommand.Connection.HTTP.ConnectTimeout := 30000;
+ FExecuteCommandCommand.Connection.HTTP.ConnectTimeout := TimeOut;
+ FExecuteCommandCommand.Connection.UserName            := UserName;
+ FExecuteCommandCommand.Connection.Password            := Password;
  FExecuteCommandCommand.Parameters[0].Value.SetWideString(Pooler);
  FExecuteCommandCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
  FExecuteCommandCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
@@ -638,7 +728,10 @@ Begin
 End;
 
 Function TSMPoolerMethodClient.EchoPooler(Value, Method_Prefix : String;
-                                          Const ARequestFilter : String) : String;
+                                          Const ARequestFilter : String = '';
+                                          TimeOut              : Integer = 3000;
+                                          UserName             : String  = '';
+                                          Password             : String  = '') : String;
 Begin
  If FEchoPoolerCommand = Nil Then
   Begin
@@ -647,14 +740,19 @@ Begin
    FEchoPoolerCommand.Text := Method_Prefix + '.EchoPooler';
    FEchoPoolerCommand.Prepare(TSMPoolerMethodClient_EchoPooler);
   End;
-// FEchoPoolerCommand.Connection.HTTP.ConnectTimeout := 30000;
+ FEchoPoolerCommand.Connection.HTTP.ConnectTimeout := TimeOut;
+ FEchoPoolerCommand.Connection.UserName            := UserName;
+ FEchoPoolerCommand.Connection.Password            := Password;
  FEchoPoolerCommand.Parameters[0].Value.SetWideString(Value);
  FEchoPoolerCommand.Execute(ARequestFilter);
  Result := FEchoPoolerCommand.Parameters[1].Value.GetWideString;
 end;
 
 Function TSMPoolerMethodClient.PoolersDataSet(Method_Prefix        : String;
-                                              Const ARequestFilter : String) : TStringList;
+                                              Const ARequestFilter : String = '';
+                                              TimeOut              : Integer = 3000;
+                                              UserName             : String  = '';
+                                              Password             : String  = '') : TStringList;
 Var
  vTempString : String;
 Begin
@@ -665,7 +763,9 @@ Begin
    FPoolersDataSetCommand.Text        := Method_Prefix + '.PoolersDataSet';
    FPoolersDataSetCommand.Prepare(TSMPoolerMethodClient_PoolersDataSet);
   End;
-// FPoolersDataSetCommand.Connection.HTTP.ConnectTimeout := 30000;
+ FPoolersDataSetCommand.Connection.HTTP.ConnectTimeout := TimeOut;
+ FPoolersDataSetCommand.Connection.UserName            := UserName;
+ FPoolersDataSetCommand.Connection.Password            := Password;
  FPoolersDataSetCommand.Execute(ARequestFilter);
  vTempString := FPoolersDataSetCommand.Parameters[0].Value.GetWideString;
  Result      := TStringList.Create;

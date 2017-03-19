@@ -108,6 +108,7 @@ Type
   vOnEventConnection   : TOnEventConnection;         //Evento de Estado da Conexão
   vOnBeforeConnection  : TOnEventBeforeConnection;   //Evento antes de Connectar o Database
   vAutoCheckData       : TAutoCheckData;             //Autocheck de Conexão
+  vTimeOut             : Integer;
   Procedure SetConnection(Value : Boolean);          //Seta o Estado da Conexão
   Procedure SetRestPooler(Value : String);           //Seta o Restpooler a ser utilizado
   Procedure SetPoolerPort(Value : Integer);          //Seta a Porta do Pooler a ser usada
@@ -148,6 +149,7 @@ Type
   Property PoolerName         : String                   Read vRestPooler         Write SetRestPooler;      //Qual o Pooler de Conexão ligado ao componente
   Property RestModule         : String                   Read vRestModule         Write vRestModule;        //Classe do Servidor REST Principal
   Property StateConnection    : TAutoCheckData           Read vAutoCheckData      Write vAutoCheckData;     //Autocheck da Conexão
+  Property RequestTimeOut     : Integer                  Read vTimeOut            Write vTimeOut;           //Timeout da Requisição
 End;
 
 Type
@@ -862,16 +864,17 @@ End;
 
 Procedure TRESTDataBase.SetConnectionOptions(Var Value : TDSRestConnection);
 Begin
- Value                   := TDSRestConnection.Create(Nil);
- Value.LoginPrompt       := False;
- Value.PreserveSessionID := False;
- Value.Protocol          := 'http';
- Value.Host              := vRestWebService;
- Value.Port              := vPoolerPort;
- Value.UrlPath           := vRestURL;
- Value.UserName          := vLogin;
- Value.Password          := vPassword;
- if vProxy then
+ Value                     := TDSRestConnection.Create(Nil);
+ Value.LoginPrompt         := False;
+ Value.PreserveSessionID   := False;
+ Value.Protocol            := 'http';
+ Value.Host                := vRestWebService;
+ Value.Port                := vPoolerPort;
+ Value.UrlPath             := vRestURL;
+ Value.UserName            := vLogin;
+ Value.Password            := vPassword;
+ Value.HTTP.ConnectTimeout := vTimeOut;
+ If vProxy Then
   Begin
    Value.ProxyHost     := vProxyOptions.vServer;
    Value.ProxyPort     := vProxyOptions.vPort;
@@ -924,7 +927,8 @@ Begin
                                   Params,
                                   ADeltaList,
                                   Error,
-                                  MessageError)
+                                  MessageError, '',
+                                  vTimeOut, vLogin, vPassword)
   Else
    vRESTConnectionDB.ApplyChangesPure(vRestPooler,
                                       vRestModule,
@@ -932,7 +936,8 @@ Begin
                                       GetLineSQL(SQL),
                                       ADeltaList,
                                       Error,
-                                      MessageError);
+                                      MessageError, '',
+                                      vTimeOut, vLogin, vPassword);
   If Assigned(vOnEventConnection) Then
    vOnEventConnection(True, 'ApplyUpdates Ok')
  Except
@@ -982,12 +987,14 @@ Begin
                                                 vRestModule,
                                                 GetLineSQL(SQL),
                                                 Params,
-                                                Error, MessageError)
+                                                Error, MessageError, '',
+                                                vTimeOut, vLogin, vPassword)
   Else
    oJsonObject := vRESTConnectionDB.InsertValuePure(vRestPooler,
                                                     vRestModule,
                                                     GetLineSQL(SQL),
-                                                    Error, MessageError);
+                                                    Error, MessageError, '',
+                                                    vTimeOut, vLogin, vPassword);
   Result := oJsonObject;
   If Assigned(vOnEventConnection) Then
    vOnEventConnection(True, 'ExecuteCommand Ok');
@@ -1039,12 +1046,12 @@ Begin
    oJsonObject := vRESTConnectionDB.ExecuteCommandJSON(vRestPooler,
                                                        vRestModule, GetLineSQL(SQL),
                                                        Params, Error,
-                                                       MessageError, Execute)
+                                                       MessageError, Execute, '', vTimeOut, vLogin, vPassword)
   Else
    oJsonObject := vRESTConnectionDB.ExecuteCommandPureJSON(vRestPooler,
                                                            vRestModule,
                                                            GetLineSQL(SQL), Error,
-                                                           MessageError, Execute);
+                                                           MessageError, Execute, '', vTimeOut, vLogin, vPassword);
   Result := TFDJSONDataSets.Create;
   If (oJsonObject <> Nil) Then
    TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, Result);
@@ -1073,7 +1080,7 @@ Begin
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
  Try
-  vTempList        := vRESTConnectionDB.PoolersDataSet(vRestModule);
+  vTempList        := vRESTConnectionDB.PoolersDataSet(vRestModule, '', vTimeOut, vLogin, vPassword);
   Result           := TStringList.Create;
   For I := 0 To vTempList.Count -1 do
    Result.Add(vTempList[I]);
@@ -1118,6 +1125,7 @@ Begin
  vAutoCheckData            := TAutoCheckData.Create;
  vAutoCheckData.vAutoCheck := False;
  vAutoCheckData.vInTime    := 1000;
+ vTimeOut                  := 10000;
  vAutoCheckData.vEvent     := CheckConnection;
 End;
 
@@ -1181,7 +1189,7 @@ Begin
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
  Try
-  vTempResult := vRESTConnectionDB.EchoPooler(vTempSend, vRestModule);
+  vTempResult := vRESTConnectionDB.EchoPooler(vTempSend, vRestModule, '', vTimeOut, vLogin, vPassword);
   vMyIP       := vTempResult;
   Result      := True;
   If Assigned(vOnEventConnection) Then

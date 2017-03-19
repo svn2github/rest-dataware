@@ -1,0 +1,12 @@
+Alterações :
+
+1.0.1.140 :
+
+Servidor :
+
+ Na Unit ServerMethodsUnit1 foram criadas duas variáveis, UserName e Password, são usadas para Autenticação de Usuário, 
+preencha o valor para cada uma no OnCreate do ServerMethods.
+ 
+Client :
+ Foi criada a Propriedade RequestTimeOut para você poder definir o timeout da requisição.
+ Ajustes da Autenticação para acertar os Bug's de Autenticação.
