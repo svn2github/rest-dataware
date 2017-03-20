@@ -164,67 +164,7 @@ object Form1: TForm1
     AfterOpen = RESTClientSQLAfterOpen
     AfterPost = RESTClientSQLAfterPost
     AfterDelete = RESTClientSQLAfterDelete
-    FieldDefs = <
-      item
-        Name = 'EMP_NO'
-        Attributes = [faRequired]
-        DataType = ftSmallint
-      end
-      item
-        Name = 'FIRST_NAME'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 15
-      end
-      item
-        Name = 'LAST_NAME'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'PHONE_EXT'
-        DataType = ftString
-        Size = 4
-      end
-      item
-        Name = 'HIRE_DATE'
-        Attributes = [faRequired]
-        DataType = ftTimeStamp
-      end
-      item
-        Name = 'DEPT_NO'
-        Attributes = [faRequired, faFixed]
-        DataType = ftFixedChar
-        Size = 3
-      end
-      item
-        Name = 'JOB_CODE'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 5
-      end
-      item
-        Name = 'JOB_GRADE'
-        Attributes = [faRequired]
-        DataType = ftSmallint
-      end
-      item
-        Name = 'JOB_COUNTRY'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 15
-      end
-      item
-        Name = 'SALARY'
-        Attributes = [faRequired]
-        DataType = ftFloat
-      end
-      item
-        Name = 'FULL_NAME'
-        DataType = ftString
-        Size = 37
-      end>
+    FieldDefs = <>
     IndexDefs = <>
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
@@ -248,7 +188,6 @@ object Form1: TForm1
     Top = 189
     object RESTClientSQLEMP_NO: TSmallintField
       FieldName = 'EMP_NO'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
     object RESTClientSQLFIRST_NAME: TStringField

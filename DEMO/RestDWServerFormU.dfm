@@ -4,8 +4,8 @@ object RestDWForm: TRestDWForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Server REST Dataware'
-  ClientHeight = 103
-  ClientWidth = 323
+  ClientHeight = 95
+  ClientWidth = 321
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -39,7 +39,7 @@ object RestDWForm: TRestDWForm
     Caption = 'Password'
   end
   object ButtonStart: TButton
-    Left = 34
+    Left = 38
     Top = 59
     Width = 121
     Height = 25
@@ -48,7 +48,7 @@ object RestDWForm: TRestDWForm
     OnClick = ButtonStartClick
   end
   object ButtonStop: TButton
-    Left = 161
+    Left = 165
     Top = 59
     Width = 121
     Height = 25
@@ -82,7 +82,7 @@ object RestDWForm: TRestDWForm
   end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
-    Left = 27
-    Top = 50
+    Left = 163
+    Top = 2
   end
 end
