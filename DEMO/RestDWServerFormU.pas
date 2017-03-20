@@ -1,13 +1,3 @@
-//
-// FireDACJSONReflect demo
-// Copyright (c) 1995-2013 Embarcadero Technologies, Inc.
-
-// You may only use this software if you are an authorized licensee
-// of Delphi, C++Builder or RAD Studio (Embarcadero Products).
-// This software is considered a Redistributable as defined under
-// the software license agreement that comes with the Embarcadero Products
-// and is subject to that software license agreement.
-//
 unit RestDWServerFormU;
 
 interface
@@ -23,20 +13,28 @@ type
     EditPort: TEdit;
     Label1: TLabel;
     ApplicationEvents1: TApplicationEvents;
+    Label2: TLabel;
+    eUserName: TEdit;
+    ePassword: TEdit;
+    Label3: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);
     procedure ButtonStopClick(Sender: TObject);
   private
-    FServer: TIdHTTPWebBrokerBridge;
+    FServer    : TIdHTTPWebBrokerBridge;
+    vUsername,
+    vPassword  : String;
     procedure StartServer;
     { Private declarations }
   public
     { Public declarations }
+   Property Username : String Read vUsername Write vUsername;
+   Property Password : String Read vPassword Write vPassword;
   end;
 
 var
-  RestDWForm: TRestDWForm;
+  RestDWForm : TRestDWForm;
 
 implementation
 
@@ -50,10 +48,14 @@ Begin
  ButtonStart.Enabled := Not FServer.Active;
  ButtonStop.Enabled  := FServer.Active;
  EditPort.Enabled    := Not FServer.Active;
+ eUserName.Enabled   := EditPort.Enabled;
+ ePassword.Enabled   := eUserName.Enabled;
 End;
 
 procedure TRestDWForm.ButtonStartClick(Sender: TObject);
 Begin
+ vUsername := eUsername.Text;
+ vPassword := ePassword.Text;
  StartServer;
 End;
 

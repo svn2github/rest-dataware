@@ -24,7 +24,6 @@ type
     FDPhysIBDriverLink1    : TFDPhysIBDriverLink;
     FDStanStorageJSONLink1 : TFDStanStorageJSONLink;
     FDConnectionEMPLOYEE   : TFDConnection;
-    FDTransaction1: TFDTransaction;
     RESTPoolerDB: TRESTPoolerDB;
     procedure FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
     procedure DataModuleCreate(Sender: TObject);
@@ -97,7 +96,7 @@ implementation
 
 {$R *.dfm}
 
-uses System.StrUtils, System.Generics.Collections;
+uses System.StrUtils, System.Generics.Collections, RestDWServerFormU;
 
 Function TServerMethods1.EchoPooler(Value: String): String;
 Begin
@@ -147,8 +146,8 @@ End;
 
 procedure TServerMethods1.DataModuleCreate(Sender: TObject);
 begin
- UserName := 'testserver';
- Password := 'testserver';
+ UserName := RestDWForm.Username;
+ Password := RestDWForm.Password;
 end;
 
 Function TServerMethods1.GetUnitClassName : String;

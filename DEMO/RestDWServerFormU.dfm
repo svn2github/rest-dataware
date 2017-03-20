@@ -1,10 +1,11 @@
 object RestDWForm: TRestDWForm
   Left = 271
   Top = 114
-  BorderIcons = [biSystemMenu]
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'Server REST Dataware'
-  ClientHeight = 92
-  ClientWidth = 176
+  ClientHeight = 103
+  ClientWidth = 323
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,41 +18,71 @@ object RestDWForm: TRestDWForm
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
-    Left = 25
+    Left = 11
     Top = 8
     Width = 20
     Height = 13
     Caption = 'Port'
   end
+  object Label2: TLabel
+    Left = 66
+    Top = 8
+    Width = 48
+    Height = 13
+    Caption = 'Username'
+  end
+  object Label3: TLabel
+    Left = 191
+    Top = 8
+    Width = 46
+    Height = 13
+    Caption = 'Password'
+  end
   object ButtonStart: TButton
-    Left = 80
-    Top = 25
-    Width = 75
+    Left = 34
+    Top = 59
+    Width = 121
     Height = 25
     Caption = 'Start'
     TabOrder = 0
     OnClick = ButtonStartClick
   end
   object ButtonStop: TButton
-    Left = 80
-    Top = 56
-    Width = 75
+    Left = 161
+    Top = 59
+    Width = 121
     Height = 25
     Caption = 'Stop'
     TabOrder = 1
     OnClick = ButtonStopClick
   end
   object EditPort: TEdit
-    Left = 25
+    Left = 11
     Top = 27
     Width = 49
     Height = 21
     TabOrder = 2
     Text = '8082'
   end
+  object eUserName: TEdit
+    Left = 66
+    Top = 27
+    Width = 119
+    Height = 21
+    TabOrder = 3
+    Text = 'testserver'
+  end
+  object ePassword: TEdit
+    Left = 191
+    Top = 27
+    Width = 119
+    Height = 21
+    TabOrder = 4
+    Text = 'testserver'
+  end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
-    Left = 17
-    Top = 56
+    Left = 27
+    Top = 50
   end
 end
