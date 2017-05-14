@@ -25,19 +25,14 @@ uses System.SysUtils,         System.Classes,
      Soap.EncdDecd,           System.NetEncoding;
 
 Type
- TOnEventDB = Procedure (DataSet: TDataSet) of Object;
-
-Type
- TExecuteProc       = Reference to Procedure;
-
-Type
- TOnEventConnection = Procedure (Sucess : Boolean; Const Error : String) of Object;
-
-Type
- TOnEventBeforeConnection = Procedure (Sender : TComponent) of Object;
-
-Type
- TOnEventTimer = Procedure of Object;
+ TOnEventDB               = Procedure (DataSet : TDataSet)         of Object;
+ TExecuteProc             = Reference to Procedure;
+ TOnEventConnection       = Procedure (Sucess  : Boolean;
+                                       Const Error : String)       of Object;
+ TOnEventBeforeConnection = Procedure (Sender  : TComponent)       of Object;
+ TOnEventTimer            = Procedure of Object;
+ TBeforeGetRecords        = Procedure (Sender  : TObject;
+                                       Var OwnerData : OleVariant) of Object;
 
 Type
  TTimerData = Class(TThread)
@@ -157,6 +152,7 @@ Type
  Private
   Owner               : TComponent;
   vUpdateTableName    : String;                     //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
+  vBeforeClone,
   vDataCache,                                       //Se usa cache local
   vConnectedOnce,                                   //Verifica se foi conectado ao Servidor
   vCommitUpdates,
@@ -169,6 +165,7 @@ Type
   vRESTDataBase        : TRESTDataBase;             //RESTDataBase do Dataset
   vOnAfterDelete,
   vOnAfterPost         : TDataSetNotifyEvent;
+  FieldDefsUPD         : TFieldDefs;
   Procedure CloneDefinitions(Source : TFDMemTable;
                              aSelf  : TRESTClientSQL); //Fields em Definições
   Procedure OnChangingSQL(Sender: TObject);         //Quando Altera o SQL da Lista
@@ -184,7 +181,7 @@ Type
   Function CanObserve(const ID: Integer): Boolean; Override;                       { declaration is in System.Classes }
  Public
   //Métodos
-  Procedure   Open;                                 //Método Open que será utilizado no Componente
+  Procedure   Open; Virtual;                        //Método Open que será utilizado no Componente
   Procedure   Close;                                //Método Close que será utilizado no Componente
   Procedure   ExecSQL;                              //Método ExecSQL que será utilizado no Componente
   Function    InsertMySQLReturnID : Integer;        //Método de ExecSQL com retorno de Incremento
@@ -193,8 +190,7 @@ Type
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                     //Destroy a Classe
   Procedure   Loaded; Override;
-  {$IFDEF FMX} //Se é FMX
-  {$ENDIF}
+  procedure   OpenCursor(InfoQuery: Boolean); override;
  Published
   Property AfterDelete     : TDataSetNotifyEvent Read vOnAfterDelete            Write vOnAfterDelete;
   Property AfterPost       : TDataSetNotifyEvent Read vOnAfterPost              Write vOnAfterPost;
@@ -1260,11 +1256,14 @@ Begin
  vConnectedOnce                    := True;
  vActive                           := False;
  UpdateOptions.CountUpdatedRecords := False;
+ vBeforeClone                      := False;
  vSQL                              := TStringList.Create;
  vSQL.OnChange                     := OnChangingSQL;
  vParams                           := TParams.Create;
  vCacheDataDB                      := Self.CloneSource;
  vUpdateTableName                  := '';
+ FieldDefsUPD                      := TFieldDefs.Create(Self);
+ FieldDefs                         := FieldDefsUPD;
  Inherited AfterPost               := OldAfterPost;
  Inherited AfterDelete             := OldAfterDelete;
 End;
@@ -1273,6 +1272,7 @@ Destructor  TRESTClientSQL.Destroy;
 Begin
  vSQL.DisposeOf;
  vParams.DisposeOf;
+ FieldDefsUPD.DisposeOf;
  If vCacheDataDB <> Nil Then
   vCacheDataDB.DisposeOf;
  Inherited;
@@ -1403,12 +1403,15 @@ Var
   InitStr   := 0;
   FinalStr  := 1;
   {$ENDIF}
+  Result := Value1 = Value2;
+  {
   For I := InitStr To Length(Value1) - FinalStr Do
    Begin
     Result := Value1[I] = Value2[I];
     If Not Result Then
      Break;
    End;
+   }
  End;
 Begin
  Result := Nil;
@@ -1483,7 +1486,33 @@ end;
 
 Procedure TRESTClientSQL.Open;
 Begin
- TFDMemTable(Self).Open;
+ If Not vActive Then
+  SetActiveDB(True);
+ If vActive Then
+  Inherited Open;
+End;
+
+Procedure TRESTClientSQL.OpenCursor(InfoQuery: Boolean);
+Begin
+ If Not vBeforeClone Then
+  Begin
+   vBeforeClone := True;
+   If vRESTDataBase <> Nil Then
+    Begin
+     vRESTDataBase.Active := True;
+     If vRESTDataBase.Active Then
+      Begin
+       Try
+        If Not vActive Then
+         SetActiveDB(True);
+        If vActive Then
+         Inherited OpenCursor(InfoQuery);
+       Finally
+        vBeforeClone := False;
+       End;
+      End;
+    End;
+  End;
 End;
 
 Procedure TRESTClientSQL.OldAfterPost(DataSet: TDataSet);
