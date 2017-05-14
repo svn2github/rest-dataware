@@ -148,49 +148,49 @@ Type
 End;
 
 Type
- TRESTClientSQL   = Class(TFDMemTable)              //Classe com as funcionalidades de um DBQuery
+ TRESTClientSQL   = Class(TFDMemTable)                    //Classe com as funcionalidades de um DBQuery
  Private
   Owner               : TComponent;
-  vUpdateTableName    : String;                     //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
+  vUpdateTableName    : String;                           //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
   vBeforeClone,
-  vDataCache,                                       //Se usa cache local
-  vConnectedOnce,                                   //Verifica se foi conectado ao Servidor
+  vDataCache,                                             //Se usa cache local
+  vConnectedOnce,                                         //Verifica se foi conectado ao Servidor
   vCommitUpdates,
   vErrorBefore,
-  vActive              : Boolean;                   //Estado do Dataset
-  vSQL                 : TStringList;               //SQL a ser utilizado na conexão
-  vParams              : TParams;                 //Parametros de Dataset
-  vCacheDataDB         : TFDDataset;                //O Cache de Dados Salvo para utilização rápida
-  vOnGetDataError      : TOnEventConnection;        //Se deu erro na hora de receber os dados ou não
-  vRESTDataBase        : TRESTDataBase;             //RESTDataBase do Dataset
+  vActive              : Boolean;                         //Estado do Dataset
+  vSQL                 : TStringList;                     //SQL a ser utilizado na conexão
+  vParams              : TParams;                         //Parametros de Dataset
+  vCacheDataDB         : TFDDataset;                      //O Cache de Dados Salvo para utilização rápida
+  vOnGetDataError      : TOnEventConnection;              //Se deu erro na hora de receber os dados ou não
+  vRESTDataBase        : TRESTDataBase;                   //RESTDataBase do Dataset
   vOnAfterDelete,
   vOnAfterPost         : TDataSetNotifyEvent;
   FieldDefsUPD         : TFieldDefs;
   Procedure CloneDefinitions(Source : TFDMemTable;
-                             aSelf  : TRESTClientSQL); //Fields em Definições
-  Procedure OnChangingSQL(Sender: TObject);         //Quando Altera o SQL da Lista
-  Procedure SetActiveDB(Value : Boolean);           //Seta o Estado do Dataset
-  Procedure SetSQL(Value : TStringList);            //Seta o SQL a ser usado
-  Procedure CreateParams;                           //Cria os Parametros na lista de Dataset
-  Procedure SetDataBase(Value : TRESTDataBase);     //Diz o REST Database
-  Function  GetData : Boolean;                      //Recebe os Dados da Internet vindo do Servidor REST
-  Procedure SetUpdateTableName(Value : String);     //Diz qual a tabela que será feito Update no Banco
-  Procedure OldAfterPost(DataSet: TDataSet);        //Eventos do Dataset para realizar o AfterPost
-  Procedure OldAfterDelete(DataSet: TDataSet);      //Eventos do Dataset para realizar o AfterDelete
+                             aSelf  : TRESTClientSQL);    //Fields em Definições
+  Procedure OnChangingSQL(Sender: TObject);               //Quando Altera o SQL da Lista
+  Procedure SetActiveDB(Value : Boolean);                 //Seta o Estado do Dataset
+  Procedure SetSQL(Value : TStringList);                  //Seta o SQL a ser usado
+  Procedure CreateParams;                                 //Cria os Parametros na lista de Dataset
+  Procedure SetDataBase(Value : TRESTDataBase);           //Diz o REST Database
+  Function  GetData : Boolean;                            //Recebe os Dados da Internet vindo do Servidor REST
+  Procedure SetUpdateTableName(Value : String);           //Diz qual a tabela que será feito Update no Banco
+  Procedure OldAfterPost(DataSet: TDataSet);              //Eventos do Dataset para realizar o AfterPost
+  Procedure OldAfterDelete(DataSet: TDataSet);            //Eventos do Dataset para realizar o AfterDelete
  Protected
-  Function CanObserve(const ID: Integer): Boolean; Override;                       { declaration is in System.Classes }
+  Function CanObserve(const ID: Integer): Boolean; Override;
  Public
   //Métodos
-  Procedure   Open; Virtual;                        //Método Open que será utilizado no Componente
-  Procedure   Close;                                //Método Close que será utilizado no Componente
-  Procedure   ExecSQL;                              //Método ExecSQL que será utilizado no Componente
-  Function    InsertMySQLReturnID : Integer;        //Método de ExecSQL com retorno de Incremento
-  Function    ParamByName(Value : String) : TParam; //Retorna o Parametro de Acordo com seu nome
-  Function    ApplyUpdates(var Error : String) : Boolean;
-  Constructor Create(AOwner : TComponent);Override; //Cria o Componente
-  Destructor  Destroy;Override;                     //Destroy a Classe
+  Procedure   Open; Virtual;                              //Método Open que será utilizado no Componente
+  Procedure   Close;                                      //Método Close que será utilizado no Componente
+  Procedure   ExecSQL;                                    //Método ExecSQL que será utilizado no Componente
+  Function    InsertMySQLReturnID : Integer;              //Método de ExecSQL com retorno de Incremento
+  Function    ParamByName(Value : String) : TParam;       //Retorna o Parametro de Acordo com seu nome
+  Function    ApplyUpdates(var Error : String) : Boolean; //Aplica Alterações no Banco de Dados
+  Constructor Create(AOwner : TComponent);Override;       //Cria o Componente
+  Destructor  Destroy;Override;                           //Destroy a Classe
   Procedure   Loaded; Override;
-  procedure   OpenCursor(InfoQuery: Boolean); override;
+  procedure   OpenCursor(InfoQuery: Boolean); Override;   //Subscrevendo o OpenCursor para não ter erros de ADD Fields em Tempo de Design
  Published
   Property AfterDelete     : TDataSetNotifyEvent Read vOnAfterDelete            Write vOnAfterDelete;
   Property AfterPost       : TDataSetNotifyEvent Read vOnAfterPost              Write vOnAfterPost;
@@ -1472,8 +1472,6 @@ Begin
 End;
 
 Function TRESTClientSQL.CanObserve(const ID: Integer): Boolean;
-{ Controls which implement observers always override TComponent.CanObserve(const ID: Integer). }
-{ This method identifies the type of observers supported by TObservableTrackbar. }
 begin
   case ID of
     TObserverMapping.EditLinkID,      { EditLinkID is the observer that is used for control-to-field links }
@@ -1503,10 +1501,18 @@ Begin
      If vRESTDataBase.Active Then
       Begin
        Try
-        If Not vActive Then
-         SetActiveDB(True);
-        If vActive Then
-         Inherited OpenCursor(InfoQuery);
+        Try
+         If GetData Then
+          Inherited OpenCursor(InfoQuery);
+         If Assigned(vOnGetDataError) Then
+          vOnGetDataError(True, '');
+        Except
+         On E : Exception do
+          Begin
+           If Assigned(vOnGetDataError) Then
+            vOnGetDataError(False, E.Message);
+          End;
+        End;
        Finally
         vBeforeClone := False;
        End;
