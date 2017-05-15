@@ -52,11 +52,15 @@ requires
   DataSnapServer,
   DataSnapFireDAC,
   soaprtl,
-  Designide;
+  Designide,
+  bindengine,
+  bindcomp,
+  RESTComponents;
 
 contains
   uPoolerMethod in 'uPoolerMethod.pas',
   uComboPoolers in 'uComboPoolers.pas',
-  uRestPoolerDB in 'uRestPoolerDB.pas';
+  uRestPoolerDB in 'uRestPoolerDB.pas',
+  uRestCompressTools in 'uRestCompressTools.pas';
 
 end.

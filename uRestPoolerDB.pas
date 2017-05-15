@@ -99,6 +99,7 @@ Type
   vPoolerPort          : Integer;                    //A Porta do Pooler
   vProxy               : Boolean;                    //Diz se tem servidor Proxy
   vProxyOptions        : TProxyOptions;              //Se tem Proxy diz quais as opções
+  vCompression,                                      //Se Vai haver compressão de Dados
   vConnected           : Boolean;                    //Diz o Estado da Conexão
   vOnEventConnection   : TOnEventConnection;         //Evento de Estado da Conexão
   vOnBeforeConnection  : TOnEventBeforeConnection;   //Evento antes de Connectar o Database
@@ -133,6 +134,7 @@ Type
   Property OnConnection       : TOnEventConnection       Read vOnEventConnection  Write vOnEventConnection; //Evento relativo a tudo que acontece quando tenta conectar ao Servidor
   Property OnBeforeConnect    : TOnEventBeforeConnection Read vOnBeforeConnection Write vOnBeforeConnection; //Evento antes de Connectar o Database
   Property Active             : Boolean                  Read vConnected          Write SetConnection;      //Seta o Estado da Conexão
+  Property Compression        : Boolean                  Read vCompression        Write vCompression;       //Compressão de Dados
   Property MyIP               : String                   Read vMyIP;
   Property Login              : String                   Read vLogin              Write vLogin;             //Login do Usuário caso haja autenticação
   Property Password           : String                   Read vPassword           Write vPassword;          //Senha do Usuário caso haja autenticação
@@ -182,7 +184,7 @@ Type
  Public
   //Métodos
   Procedure   Open; Virtual;                              //Método Open que será utilizado no Componente
-  Procedure   Close;                                      //Método Close que será utilizado no Componente
+  Procedure   Close;Virtual;                              //Método Close que será utilizado no Componente
   Procedure   ExecSQL;                                    //Método ExecSQL que será utilizado no Componente
   Function    InsertMySQLReturnID : Integer;              //Método de ExecSQL com retorno de Incremento
   Function    ParamByName(Value : String) : TParam;       //Retorna o Parametro de Acordo com seu nome
@@ -247,6 +249,7 @@ Type
   FLock          : TCriticalSection;
   vFDConnectionBack,
   vFDConnection  : TFDConnection;
+  vCompression   : Boolean;
   Procedure SetConnection(Value : TFDConnection);
   Function  GetConnection : TFDConnection;
  Public
@@ -278,7 +281,8 @@ Type
                                Var Error        : Boolean;
                                Var MessageError : String) : Integer;Overload;
  Published
-  Property    Database : TFDConnection Read GetConnection Write SetConnection;
+  Property    Database    : TFDConnection Read GetConnection Write SetConnection;
+  Property    Compression : Boolean       Read vCompression  Write vCompression;
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                     //Destroy a Classe
 End;
@@ -506,6 +510,8 @@ Begin
     Try
      vTempWriter.ListAdd(Result, vTempQuery);
     Finally
+//     If vCompression Then
+//      Result.ToString
      vTempWriter := Nil;
      vTempWriter.DisposeOf;
     End;
@@ -738,8 +744,9 @@ end;
 Constructor TRESTPoolerDB.Create(AOwner : TComponent);
 Begin
  Inherited;
- Owner := aOwner;
- FLock := TCriticalSection.Create;
+ Owner        := aOwner;
+ FLock        := TCriticalSection.Create;
+ vCompression := False;
 End;
 
 Destructor  TRESTPoolerDB.Destroy;
@@ -914,6 +921,7 @@ Begin
   Exit;
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
+ vRESTConnectionDB.Compression := vCompression;
  Try
   If Params.Count > 0 Then
    vRESTConnectionDB.ApplyChanges(vRestPooler,
@@ -977,6 +985,7 @@ Begin
   Exit;
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
+ vRESTConnectionDB.Compression := vCompression;
  Try
   If Params.Count > 0 Then
    oJsonObject := vRESTConnectionDB.InsertValue(vRestPooler,
@@ -1037,6 +1046,7 @@ Begin
   Exit;
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
+ vRESTConnectionDB.Compression := vCompression;
  Try
   If Params.Count > 0 Then
    oJsonObject := vRESTConnectionDB.ExecuteCommandJSON(vRestPooler,
@@ -1075,6 +1085,7 @@ Begin
  Result := Nil;
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
+ vRESTConnectionDB.Compression := vCompression;
  Try
   vTempList        := vRESTConnectionDB.PoolersDataSet(vRestModule, '', vTimeOut, vLogin, vPassword);
   Result           := TStringList.Create;
@@ -1112,6 +1123,7 @@ Begin
  Owner                     := AOwner;
  vLogin                    := '';
  vMyIP                     := '0.0.0.0';
+ vCompression              := False;
  vPassword                 := vLogin;
  vRestModule               := 'TServerMethods1';
  vRestPooler               := vPassword;
@@ -1466,7 +1478,8 @@ End;
 
 Procedure TRESTClientSQL.Close;
 Begin
- TFDMemTable(Self).Close;
+ vActive := False;
+ Inherited Close;
  If TFDMemTable(Self).Fields.Count = 0 Then
   TFDMemTable(Self).FieldDefs.Clear;
 End;
@@ -1502,7 +1515,16 @@ Begin
       Begin
        Try
         Try
-         If GetData Then
+         If Not vActive Then
+          Begin
+           If GetData Then
+            Begin
+             If Not (csDesigning in ComponentState) Then
+              vActive := True;
+             Inherited OpenCursor(InfoQuery);
+            End;
+          End
+         Else
           Inherited OpenCursor(InfoQuery);
          If Assigned(vOnGetDataError) Then
           vOnGetDataError(True, '');
@@ -1642,10 +1664,14 @@ Begin
  vActive := False;
  if (vRESTDataBase <> Nil) And (Value) Then
   Begin
-   if Not vRESTDataBase.Active then
+   If vRESTDataBase <> Nil Then
+    If Not vRESTDataBase.Active Then
+     vRESTDataBase.Active := True;
+   If Not vRESTDataBase.Active then
     Exit;
    Try
-    vActive := GetData;
+    If Not(vActive) And (Value) Then
+     vActive := GetData;
     If Assigned(vOnGetDataError) Then
      vOnGetDataError(True, '');
    Except
@@ -1657,7 +1683,10 @@ Begin
    End;
   End
  Else
-  Close;
+  Begin
+   vActive := False;
+   Close;
+  End;
 End;
 
 end.

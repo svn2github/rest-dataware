@@ -6,12 +6,16 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
      Data.DBXClient,          Data.DBXDataSnap,      Data.DBXJSON, Datasnap.DSProxy, System.Classes,
      System.SysUtils,         Data.DB, Data.SqlExpr, Data.DBXDBReaders,              Data.DBXCDSReaders,
      Data.FireDACJSONReflect, Data.DBXJSONReflect,   FireDAC.Stan.Param,             Soap.EncdDecd,
-     System.NetEncoding;
+     System.NetEncoding,      uRestCompressTools,    System.ZLib,                    IdGlobal;
+
+Const
+ ZCompressionLevel  = zcDefault; //zcMax; //zcFastest; //zcDefault;
 
  Type
   IDSRestCachedTStringList     = Interface;
   TSMPoolerMethodClient        = Class(TDSAdminRestClient)
   Private
+   vCompression                : Boolean;
    FEchoPoolerCommand,
    FPoolersDataSetCommand,
    FPoolersDataSetCommand_Cache,
@@ -26,7 +30,10 @@ Uses System.JSON,             Datasnap.DSProxyRest,  Datasnap.DSClientRest,     
    FApplyChangesCommand,
    FGetPoolerListCommand,
    FGetPoolerListCommand_Cache          : TDSRestCommand;
+   Function DecompressJSON(Value : String) : TJSONObject;
+   Function CompressJSON  (Value : String) : TJSONObject;
   Public
+   Property Compression                 : Boolean Read vCompression Write vCompression;
    Constructor Create(ARestConnection: TDSRestConnection); Overload;
    Constructor Create(ARestConnection: TDSRestConnection; AInstanceOwner: Boolean); Overload;
    Destructor  Destroy; override;
@@ -251,8 +258,66 @@ Const
     (Name: 'PoolerList'; Direction: 2; DBXType: 26; TypeName: 'String')
   );
 
+Var
+ CompressionEncoding,
+ CompressionDecoding : TEncoding;
 
 implementation
+
+Function ZCompressStr(const s: String; level: TZCompressionLevel = zcMax) : tIdBytes;
+Var
+ Compress   : TzCompressionStream;
+ SrcStream,
+ OutPut     : TStringStream;
+Begin
+ OutPut             := TStringStream.Create('', CompressionDecoding);
+ SrcStream          := TStringStream.Create(s,  CompressionEncoding);
+ OutPut.Position    := 0;
+ Try
+  Compress            := TzCompressionStream.Create(OutPut);
+  Compress.CopyFrom(SrcStream, 0);
+  FreeAndNil(Compress);
+  OutPut.Position := 0;
+  If OutPut.Size > 0 Then
+   ReadTIdBytesFromStream(OutPut, Result, OutPut.Size);
+//  Result          := OutPut.DataString;
+  FreeAndNil(OutPut);
+  FreeAndNil(SrcStream);
+ Except
+  SetLength(Result, 0);
+ End;
+End;
+
+Function ZDecompressStr(Const S : String; Var Value : String) : Boolean;
+Var
+ zipFile : TZDecompressionStream;
+ strInput,
+ strOutput: TStringStream;
+Begin
+ Result := False;
+ Value := '';
+ If S <> '' Then
+  Begin
+   Try
+    strInput          := TStringStream.Create(S, CompressionDecoding);
+    strOutput         := TStringStream.Create('', CompressionEncoding);
+    Try
+     strInput.Position := 0;
+     zipFile := TZDecompressionStream.Create(strInput);
+     zipFile.Position := 0;
+     strOutput.CopyFrom(zipFile, zipFile.Size);
+     strOutput.Position := 0;
+     Value := strOutput.DataString;
+     Result := True;
+    Except
+    End;
+    zipFile.Free;
+   Finally
+    strInput.Free;
+    strOutput.Free;
+   End;
+  End;
+End;
 
 Function EncodeStrings(Value : String) : String;
 Var
@@ -504,7 +569,10 @@ Begin
   FExecuteCommandPureJSONCommand.Execute(ARequestFilter);
   Error := FExecuteCommandPureJSONCommand.Parameters[2].Value.GetBoolean;
   MessageError := FExecuteCommandPureJSONCommand.Parameters[3].Value.GetWideString;
-  Result := TJSONObject(FExecuteCommandPureJSONCommand.Parameters[5].Value.GetJSONValue(FInstanceOwner));
+  If vCompression Then
+   Result := DecompressJSON(FExecuteCommandPureJSONCommand.Parameters[5].Value.GetJSONValue(FInstanceOwner).ToJSON)
+  Else
+   Result := TJSONObject(FExecuteCommandPureJSONCommand.Parameters[5].Value.GetJSONValue(FInstanceOwner));
  Except
   Result := Nil;
   FExecuteCommandPureJSONCommand := Nil;
@@ -549,7 +617,10 @@ Begin
     Begin
      FUnMarshal := TDSRestCommand(FExecuteCommandPureCommand.Parameters[5].ConnectionHandler).GetJSONUnMarshaler;
      Try
-      Result := TFDJSONDataSets(FUnMarshal.UnMarshal(FExecuteCommandPureCommand.Parameters[5].Value.GetJSONValue(True)));
+      If vCompression Then
+       Result := TFDJSONDataSets(FUnMarshal.UnMarshal(DecompressJSON(FExecuteCommandPureCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner).ToJSON)))
+      Else
+       Result := TFDJSONDataSets(FUnMarshal.UnMarshal(FExecuteCommandPureCommand.Parameters[5].Value.GetJSONValue(True)));
       If FInstanceOwner Then
        FExecuteCommandPureCommand.FreeOnExecute(Result);
      Finally
@@ -591,7 +662,10 @@ Begin
   FExecuteCommandJSONCommand.Execute(ARequestFilter);
   Error := FExecuteCommandJSONCommand.Parameters[3].Value.GetBoolean;
   MessageError := FExecuteCommandJSONCommand.Parameters[4].Value.GetWideString;
-  Result := TJSONObject(FExecuteCommandJSONCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner));
+  If vCompression Then
+   Result := DecompressJSON(FExecuteCommandJSONCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner).ToJSON)
+  Else
+   Result := TJSONObject(FExecuteCommandJSONCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner));
  Except
   Result := Nil;
   FExecuteCommandJSONCommand := Nil;
@@ -717,7 +791,10 @@ Begin
     Begin
      FUnMarshal := TDSRestCommand(FExecuteCommandCommand.Parameters[6].ConnectionHandler).GetJSONUnMarshaler;
      Try
-      Result := TFDJSONDataSets(FUnMarshal.UnMarshal(FExecuteCommandCommand.Parameters[6].Value.GetJSONValue(True)));
+      If vCompression Then
+       Result := TFDJSONDataSets(FUnMarshal.UnMarshal(DecompressJSON(FExecuteCommandCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner).ToJSON)))
+      Else
+       Result := TFDJSONDataSets(FUnMarshal.UnMarshal(FExecuteCommandCommand.Parameters[6].Value.GetJSONValue(True)));
       If FInstanceOwner Then
        FExecuteCommandCommand.FreeOnExecute(Result);
      Finally
@@ -795,6 +872,21 @@ Begin
  inherited Create(ARestConnection, AInstanceOwner);
 End;
 
+Function TSMPoolerMethodClient.CompressJSON  (Value : String) : TJSONObject;
+Begin
+ Result := TJSONObject.ParseJSONValue(TBytes(ZCompressStr(Value, ZCompressionLevel)), 0) as TJSONObject;
+End;
+
+Function TSMPoolerMethodClient.DecompressJSON(Value : String) : TJSONObject;
+Var
+ vValue : String;
+Begin
+ If ZDecompressStr(Value, vValue) Then
+  Result := TJSONObject.ParseJSONValue(CompressionDecoding.GetBytes(vValue), 0) as TJSONObject
+ Else
+  Result := Nil;
+End;
+
 Destructor TSMPoolerMethodClient.Destroy;
 Begin
  FEchoPoolerCommand.DisposeOf;
@@ -803,6 +895,10 @@ Begin
  FEchoStringCommand.DisposeOf;
  inherited;
 End;
+
+Initialization
+ CompressionEncoding := TEncoding.UTF8;
+ CompressionDecoding := TEncoding.UTF8;
 
 end.
 
