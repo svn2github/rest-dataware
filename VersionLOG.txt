@@ -5,7 +5,7 @@ Alterações :
 Servidor :
 
  Na Unit ServerMethodsUnit1 foram criadas duas variáveis, UserName e Password, são usadas para Autenticação de Usuário, 
-preencha o valor para cada uma no OnCreate do ServerMethods.
+ preencha o valor para cada uma no OnCreate do ServerMethods.
  
 Client :
  Foi criada a Propriedade RequestTimeOut para você poder definir o timeout da requisição.
@@ -22,3 +22,8 @@ Client :
  Várias correções e melhoria de velocidade, ganho de 60% com relação a versão anterior.
  Início da compressão de dados nativa em andamento.
  Início de autenticação CORS.
+
+Servidor :
+ Alexandre Abade - Adicionado o campos Context e RestContext para que usa alteração no nome do 
+ contexto e foi adicionado a codificação utf8,e ascii  pois quando for utilizado cors deve-se usar 
+ utf8 devido a criptografia das string
