@@ -10,3 +10,15 @@ preencha o valor para cada uma no OnCreate do ServerMethods.
 Client :
  Foi criada a Propriedade RequestTimeOut para você poder definir o timeout da requisição.
  Ajustes da Autenticação para acertar os Bug's de Autenticação.
+
+1.0.1.153 :
+
+Servidor :
+ 
+ Vários BUG's de métodos corrigidos.
+
+Client :
+ 
+ Várias correções e melhoria de velocidade, ganho de 60% com relação a versão anterior.
+ Início da compressão de dados nativa em andamento.
+ Início de autenticação CORS.
