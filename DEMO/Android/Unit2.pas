@@ -9,7 +9,7 @@ uses
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, uRestPoolerDB,
   FMX.StdCtrls, FMX.Edit, FMX.Controls.Presentation, FMX.ListView.Types,
-  FMX.ListView.Appearances, FMX.ListView.Adapters.Base, MultiDetailAppearanceU,
+  FMX.ListView.Appearances, FMX.ListView.Adapters.Base,
   FMX.ListView, System.Rtti, System.Bindings.Outputs, Fmx.Bind.Editors,
   Data.Bind.EngExt, Fmx.Bind.DBEngExt, Data.Bind.Components, Data.Bind.DBScope,
   Data.Bind.Controls, FMX.Layouts, Fmx.Bind.Navigator, FMX.ListBox;
@@ -24,10 +24,20 @@ type
     Edit2: TEdit;
     Label1: TLabel;
     Label2: TLabel;
-    BindSourceDB1: TBindSourceDB;
     BindingsList1: TBindingsList;
+    RESTClientSQLEMP_NO: TSmallintField;
+    RESTClientSQLFIRST_NAME: TStringField;
+    RESTClientSQLLAST_NAME: TStringField;
+    RESTClientSQLPHONE_EXT: TStringField;
+    RESTClientSQLHIRE_DATE: TSQLTimeStampField;
+    RESTClientSQLDEPT_NO: TStringField;
+    RESTClientSQLJOB_CODE: TStringField;
+    RESTClientSQLJOB_GRADE: TSmallintField;
+    RESTClientSQLJOB_COUNTRY: TStringField;
+    RESTClientSQLSALARY: TFloatField;
+    RESTClientSQLFULL_NAME: TStringField;
+    BindSourceDB1: TBindSourceDB;
     ListView1: TListView;
-    RESTClientSQLCAMPO: TWideStringField;
     LinkListControlToField1: TLinkListControlToField;
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseBeforeConnect(Sender: TComponent);

@@ -1,5 +1,5 @@
 // Procurem os comentarios "Criar para retornar o IP do Cliente"
-//para saber os córigos a acrescentar.
+//para saber os códigos a acrescentar.
 //Gilberto Rocha da Silva
 
 unit WebModuleUnit1;

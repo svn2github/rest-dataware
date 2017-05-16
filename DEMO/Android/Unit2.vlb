@@ -1,6 +1,6 @@
 ﻿[RESTClientSQL]
-Coordinates=712,170,91,33
-Visible=True
+Coordinates=590,110,91,33
+Visible=False
 
 [RESTDataBase]
 Coordinates=126,1,88,33
@@ -25,19 +25,49 @@ Coordinates=190,298,47,33
 Visible=True
 
 []
-Coordinates=476,1,161,36
+Coordinates=370,40,89,141
 Visible=True
-
-[BindSourceDB1]
-Coordinates=611,160,92,87
 
 [BindingsList1]
 Coordinates=118,80,82,33
 
-[ListView1]
-Coordinates=275,53,89,231
-Visible=True
+[RESTClientSQLLAST_NAME]
+Coordinates=274,1,154,33
 
-[RESTClientSQLCAMPO]
-Coordinates=402,1,129,33
+[RESTClientSQLJOB_COUNTRY]
+Coordinates=466,1,169,33
+
+[RESTClientSQLSALARY]
+Coordinates=466,53,133,33
+
+[RESTClientSQLJOB_CODE]
+Coordinates=466,151,148,33
+
+[RESTClientSQLFIRST_NAME]
+Coordinates=211,151,157,33
+
+[RESTClientSQLJOB_GRADE]
+Coordinates=0,118,155,33
+
+[RESTClientSQLFULL_NAME]
+Coordinates=719,1,153,33
+
+[RESTClientSQLDEPT_NO]
+Coordinates=719,53,140,33
+
+[RESTClientSQLEMP_NO]
+Coordinates=719,105,135,33
+
+[RESTClientSQLPHONE_EXT]
+Coordinates=719,157,153,33
+
+[RESTClientSQLHIRE_DATE]
+Coordinates=719,209,149,33
+
+[BindSourceDB1]
+Coordinates=670,30,92,267
+
+[ListView1]
+Coordinates=380,50,89,141
+Visible=True
 

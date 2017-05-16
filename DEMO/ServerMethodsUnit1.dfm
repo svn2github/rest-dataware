@@ -29,6 +29,7 @@ object ServerMethods1: TServerMethods1
   end
   object RESTPoolerDB: TRESTPoolerDB
     Database = FDConnectionEMPLOYEE
+    Compression = False
     Left = 88
     Top = 21
   end

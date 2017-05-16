@@ -98,6 +98,13 @@ implementation
 
 uses System.StrUtils, System.Generics.Collections, RestDWServerFormU;
 
+Function GetPoolerName(Value : String) : String;
+Begin
+ Result := Value;
+ If Pos('.', Result) > 0 Then
+  Result := Copy(Result, Pos('.', Result) +1, Length(Result));
+End;
+
 Function TServerMethods1.EchoPooler(Value: String): String;
 Begin
  Result := String(remoteIP);
@@ -130,7 +137,7 @@ Var
  I : Integer;
  vTempPooler : String;
 Begin
- vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
@@ -187,7 +194,7 @@ Var
  I : Integer;
  vTempPooler : String;
 Begin
- vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
@@ -247,7 +254,7 @@ Var
  vTempPooler : String;
 Begin
  Result := Nil;
- vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
@@ -271,7 +278,7 @@ Var
  vTempPooler : String;
 Begin
  Result := Nil;
- vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
@@ -295,7 +302,7 @@ Var
  vTempPooler : String;
 Begin
  Result := -1;
- vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
@@ -318,7 +325,7 @@ Var
  vTempPooler : String;
 Begin
  Result := -1;
- vTempPooler := UpperCase(StringReplace(Pooler, GetUnitClassName + '.', '', [rfReplaceAll, rfIgnoreCase]));
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
