@@ -158,6 +158,7 @@ Type
   vDataCache,                                             //Se usa cache local
   vConnectedOnce,                                         //Verifica se foi conectado ao Servidor
   vCommitUpdates,
+  vCreateDS,
   vErrorBefore,
   vActive              : Boolean;                         //Estado do Dataset
   vSQL                 : TStringList;                     //SQL a ser utilizado na conexão
@@ -185,6 +186,7 @@ Type
   //Métodos
   Procedure   Open; Virtual;                              //Método Open que será utilizado no Componente
   Procedure   Close;Virtual;                              //Método Close que será utilizado no Componente
+  Procedure   CreateDataSet; Virtual;
   Procedure   ExecSQL;                                    //Método ExecSQL que será utilizado no Componente
   Function    InsertMySQLReturnID : Integer;              //Método de ExecSQL com retorno de Incremento
   Function    ParamByName(Value : String) : TParam;       //Retorna o Parametro de Acordo com seu nome
@@ -1222,11 +1224,19 @@ Begin
  if (Value) And Not(vConnected) then
   If Assigned(vOnBeforeConnection) Then
    vOnBeforeConnection(Self);
- vConnected := Value;
- if vConnected then
-  vConnected := TryConnect
- Else
-  vMyIP := '';
+ If Not(vConnected) And (Value) Then
+  Begin
+   vConnected := Value;
+   if vConnected then
+    vConnected := TryConnect
+   Else
+    vMyIP := '';
+  End
+ Else If Not (Value) Then
+  Begin
+   vConnected := Value;
+   vMyIP := '';
+  End;
 End;
 
 Procedure TRESTPoolerList.SetConnection(Value : Boolean);
@@ -1476,6 +1486,14 @@ Begin
   vSQL.Add(Value[I]);
 End;
 
+Procedure TRESTClientSQL.CreateDataSet;
+Begin
+ vCreateDS := True;
+ Inherited CreateDataSet;
+ vCreateDS := False;
+ vActive   := Self.Active;
+End;
+
 Procedure TRESTClientSQL.Close;
 Begin
  vActive := False;
@@ -1515,7 +1533,7 @@ Begin
       Begin
        Try
         Try
-         If Not vActive Then
+         If Not (vActive) And (Not (vCreateDS)) Then
           Begin
            If GetData Then
             Begin
