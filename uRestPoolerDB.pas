@@ -24,6 +24,9 @@ uses System.SysUtils,         System.Classes,
      Datasnap.DSAuth,         Datasnap.DSProxyRest{$ENDIF},
      Soap.EncdDecd,           System.NetEncoding;
 
+type
+   TEncodeSelect = (esASCII, esUtf8);
+
 Type
  TOnEventDB               = Procedure (DataSet : TDataSet)         of Object;
  TExecuteProc             = Reference to Procedure;
@@ -105,6 +108,9 @@ Type
   vOnBeforeConnection  : TOnEventBeforeConnection;   //Evento antes de Connectar o Database
   vAutoCheckData       : TAutoCheckData;             //Autocheck de Conexão
   vTimeOut             : Integer;
+  VEncondig            : TEncodeSelect;              //Enconding se usar CORS usar UTF8 - Alexandre Abade
+  vContentex           : String ;                    //Contexto - Alexandre Abade
+  vRESTContext         : String ;                    //RestContexto - Alexandre Abade
   Procedure SetConnection(Value : Boolean);          //Seta o Estado da Conexão
   Procedure SetRestPooler(Value : String);           //Seta o Restpooler a ser utilizado
   Procedure SetPoolerPort(Value : Integer);          //Seta a Porta do Pooler a ser usada
@@ -147,6 +153,10 @@ Type
   Property RestModule         : String                   Read vRestModule         Write vRestModule;        //Classe do Servidor REST Principal
   Property StateConnection    : TAutoCheckData           Read vAutoCheckData      Write vAutoCheckData;     //Autocheck da Conexão
   Property RequestTimeOut     : Integer                  Read vTimeOut            Write vTimeOut;           //Timeout da Requisição
+  Property Encoding           : TEncodeSelect            Read VEncondig           write VEncondig ;         //Encoding da string
+  Property Context            : string                   Read vContentex          write vContentex ;        //Contexto
+  Property RESTContext        : string                   Read vRESTContext        write vRESTContext ;      //Rest Contexto
+
 End;
 
 Type
@@ -252,6 +262,7 @@ Type
   vFDConnectionBack,
   vFDConnection  : TFDConnection;
   vCompression   : Boolean;
+  vEncoding      : TEncodeSelect;
   Procedure SetConnection(Value : TFDConnection);
   Function  GetConnection : TFDConnection;
  Public
@@ -285,12 +296,22 @@ Type
  Published
   Property    Database    : TFDConnection Read GetConnection Write SetConnection;
   Property    Compression : Boolean       Read vCompression  Write vCompression;
+  Property    Encoding    : TEncodeSelect Read vEncoding     Write vEncoding;
+
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                     //Destroy a Classe
 End;
 {$ENDIF}
 
 implementation
+
+ function GetEncoding(Avalue:TEncodeSelect):TEncoding;
+ begin
+    case Avalue of
+      esUtf8  : result := TEncoding.utf8;
+      esASCII : result := TEncoding.ASCII;
+    end;
+ end;
 
 Function EncodeStrings(Value : String) : String;
 Var
@@ -312,16 +333,16 @@ Begin
  End;
 End;
 
-Function DecodeStrings(Value : String) : String;
+Function DecodeStrings(Value : String;Encoding:TEncoding) : String;
 Var
  Input,
  Output : TStringStream;
 Begin
  If Length(Value) > 0 Then
   Begin
-   Input := TStringStream.Create(Value, TEncoding.ASCII);
+   Input := TStringStream.Create(Value, Encoding);
    Try
-    Output := TStringStream.Create('', TEncoding.ASCII);
+    Output := TStringStream.Create('', Encoding);
     Try
      Soap.EncdDecd.DecodeStream(Input, Output);
      Output.Position := 0;
@@ -402,7 +423,7 @@ Begin
  Try
   fdCommand.Connection := vFDConnection;
   fdCommand.CommandText.Clear;
-  fdCommand.CommandText.Add(DecodeStrings(SQL) + '; SELECT LAST_INSERT_ID()ID');
+  fdCommand.CommandText.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)) + '; SELECT LAST_INSERT_ID()ID');
   fdCommand.Open;
   oTab := fdCommand.Define;
   fdCommand.Fetch(oTab, True);
@@ -453,7 +474,7 @@ Begin
  Try
   fdCommand.Connection := vFDConnection;
   fdCommand.CommandText.Clear;
-  fdCommand.CommandText.Add(DecodeStrings(SQL) + '; SELECT LAST_INSERT_ID()ID');
+  fdCommand.CommandText.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)) + '; SELECT LAST_INSERT_ID()ID');
   If Params <> Nil Then
    Begin
     For I := 0 To Params.Count -1 Do
@@ -503,7 +524,7 @@ Begin
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL));
+  vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
   If Not Execute Then
    Begin
 //    vTempQuery.Active := True;
@@ -565,7 +586,7 @@ Begin
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL));
+  vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
   If Params <> Nil Then
    Begin
     For I := 0 To Params.Count -1 Do
@@ -630,7 +651,7 @@ begin
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL));
+  vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
   vTempQuery.Active := True;
  Except
   On E : Exception do
@@ -686,7 +707,7 @@ begin
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL));
+  vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
   If Params <> Nil Then
    Begin
     For I := 0 To Params.Count -1 Do
@@ -749,6 +770,7 @@ Begin
  Owner        := aOwner;
  FLock        := TCriticalSection.Create;
  vCompression := False;
+ vEncoding    := esASCII;
 End;
 
 Destructor  TRESTPoolerDB.Destroy;
@@ -879,6 +901,9 @@ Begin
  Value.UserName            := vLogin;
  Value.Password            := vPassword;
  Value.HTTP.ConnectTimeout := vTimeOut;
+ Value.RESTContext         := vRESTContext;
+ Value.Context             := vContentex;
+
  If vProxy Then
   Begin
    Value.ProxyHost     := vProxyOptions.vServer;
@@ -1042,6 +1067,7 @@ Var
       Result := Result + ' ' + Value[I];
     End;
  End;
+
 Begin
  Result := Nil;
  if vRestPooler = '' then
@@ -1049,6 +1075,7 @@ Begin
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
  vRESTConnectionDB.Compression := vCompression;
+ vRESTConnectionDB.Encoding    := GetEncoding(VEncondig);
  Try
   If Params.Count > 0 Then
    oJsonObject := vRESTConnectionDB.ExecuteCommandJSON(vRestPooler,
@@ -1137,6 +1164,9 @@ Begin
  vAutoCheckData.vInTime    := 1000;
  vTimeOut                  := 10000;
  vAutoCheckData.vEvent     := CheckConnection;
+ VEncondig                 := esASCII;
+ vContentex                := 'Datasnap';
+ vRESTContext              := 'rest/';
 End;
 
 Destructor  TRESTPoolerList.Destroy;

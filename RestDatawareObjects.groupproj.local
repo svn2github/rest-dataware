@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <Transactions/>
-  <Default.Personality>
-    <Projects ActiveProject="D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\RestDWServerProject.dproj"/>
-  </Default.Personality>
+	<Transactions/>
+	<Default.Personality>
+		<Projects ActiveProject="C:\AMC_Diversos\Componentes\Delphi XE10\RestEasyObjects109\DEMO\RestDWServerProject.dproj"/>
+	</Default.Personality>
 </BorlandProject>

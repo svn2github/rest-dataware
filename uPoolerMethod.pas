@@ -16,6 +16,7 @@ Const
   TSMPoolerMethodClient        = Class(TDSAdminRestClient)
   Private
    vCompression                : Boolean;
+   vEncoding                   : TEncoding;
    FEchoPoolerCommand,
    FPoolersDataSetCommand,
    FPoolersDataSetCommand_Cache,
@@ -33,7 +34,9 @@ Const
    Function DecompressJSON(Value : String) : TJSONObject;
    Function CompressJSON  (Value : String) : TJSONObject;
   Public
-   Property Compression                 : Boolean Read vCompression Write vCompression;
+   Property Compression                 : Boolean   Read vCompression Write vCompression;
+   Property Encoding                    : TEncoding Read vEncoding    Write vEncoding;
+
    Constructor Create(ARestConnection: TDSRestConnection); Overload;
    Constructor Create(ARestConnection: TDSRestConnection; AInstanceOwner: Boolean); Overload;
    Destructor  Destroy; override;
@@ -319,15 +322,15 @@ Begin
   End;
 End;
 
-Function EncodeStrings(Value : String) : String;
+Function EncodeStrings(Value : String;Encoding:TEncoding) : String;
 Var
  Input,
  Output : TStringStream;
 Begin
- Input := TStringStream.Create(Value, TEncoding.ASCII);
+ Input := TStringStream.Create(Value,Encoding);
  Try
   Input.Position := 0;
-  Output := TStringStream.Create('', TEncoding.ASCII);
+  Output := TStringStream.Create('', Encoding);
   Try
    Soap.EncdDecd.EncodeStream(Input, Output);
    Result := Output.DataString;
@@ -339,16 +342,16 @@ Begin
  End;
 End;
 
-Function DecodeStrings(Value : String) : String;
+Function DecodeStrings(Value : String;Encoding:TEncoding) : String;
 Var
  Input,
  Output : TStringStream;
 Begin
  If Length(Value) > 0 Then
   Begin
-   Input := TStringStream.Create(Value, TEncoding.ASCII);
+   Input := TStringStream.Create(Value, Encoding);
    Try
-    Output := TStringStream.Create('', TEncoding.ASCII);
+    Output := TStringStream.Create('', Encoding);
     Try
      Soap.EncdDecd.DecodeStream(Input, Output);
      Output.Position := 0;
@@ -390,7 +393,7 @@ Begin
  FApplyChangesPureCommand.Connection.Password            := Password;
  FApplyChangesPureCommand.Parameters[0].Value.SetWideString(Pooler);
  FApplyChangesPureCommand.Parameters[1].Value.SetWideString(TableName);
- FApplyChangesPureCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL));
+ FApplyChangesPureCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL,self.vEncoding));
  If Not Assigned(ADeltaList) Then
   FApplyChangesPureCommand.Parameters[3].Value.SetNull
  Else
@@ -517,7 +520,7 @@ Begin
  FApplyChangesCommand.Connection.Password            := Password;
  FApplyChangesCommand.Parameters[0].Value.SetWideString(Pooler);
  FApplyChangesCommand.Parameters[1].Value.SetWideString(TableName);
- FApplyChangesCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL));
+ FApplyChangesCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL,self.vEncoding));
  FApplyChangesCommand.Parameters[3].Value.SetDBXReader(TDBXParamsReader.Create(TParams(Params), FInstanceOwner), True);
  If Not Assigned(ADeltaList) Then
   FApplyChangesCommand.Parameters[4].Value.SetNull
@@ -561,7 +564,7 @@ Begin
  FExecuteCommandPureJSONCommand.Connection.UserName            := UserName;
  FExecuteCommandPureJSONCommand.Connection.Password            := Password;
  FExecuteCommandPureJSONCommand.Parameters[0].Value.SetWideString(Pooler);
- FExecuteCommandPureJSONCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
+ FExecuteCommandPureJSONCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL,self.vEncoding));
  FExecuteCommandPureJSONCommand.Parameters[2].Value.SetBoolean(Error);
  FExecuteCommandPureJSONCommand.Parameters[3].Value.SetWideString(MessageError);
  FExecuteCommandPureJSONCommand.Parameters[4].Value.SetBoolean(Execute);
@@ -604,7 +607,7 @@ Begin
  FExecuteCommandPureCommand.Connection.UserName            := UserName;
  FExecuteCommandPureCommand.Connection.Password            := Password;
  FExecuteCommandPureCommand.Parameters[0].Value.SetWideString(Pooler);
- FExecuteCommandPureCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
+ FExecuteCommandPureCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL,vEncoding));
  FExecuteCommandPureCommand.Parameters[2].Value.SetBoolean(Error);
  FExecuteCommandPureCommand.Parameters[3].Value.SetWideString(MessageError);
  FExecuteCommandPureCommand.Parameters[4].Value.SetBoolean(Execute);
@@ -653,7 +656,7 @@ Begin
  FExecuteCommandJSONCommand.Connection.UserName            := UserName;
  FExecuteCommandJSONCommand.Connection.Password            := Password;
  FExecuteCommandJSONCommand.Parameters[0].Value.SetWideString(Pooler);
- FExecuteCommandJSONCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
+ FExecuteCommandJSONCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL,vEncoding));
  FExecuteCommandJSONCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
  FExecuteCommandJSONCommand.Parameters[3].Value.SetBoolean(Error);
  FExecuteCommandJSONCommand.Parameters[4].Value.SetWideString(MessageError);
@@ -695,7 +698,7 @@ begin
  FInsertValueCommandPure.Connection.UserName            := UserName;
  FInsertValueCommandPure.Connection.Password            := Password;
  FInsertValueCommandPure.Parameters[0].Value.SetWideString(Pooler);
- FInsertValueCommandPure.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
+ FInsertValueCommandPure.Parameters[1].Value.SetWideString(EncodeStrings(SQL,vEncoding));
  FInsertValueCommandPure.Parameters[2].Value.SetBoolean(Error);
  FInsertValueCommandPure.Parameters[3].Value.SetWideString(MessageError);
  Try
@@ -735,7 +738,7 @@ begin
  FInsertValueCommand.Connection.UserName            := UserName;
  FInsertValueCommand.Connection.Password            := Password;
  FInsertValueCommand.Parameters[0].Value.SetWideString(Pooler);
- FInsertValueCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
+ FInsertValueCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL,vEncoding));
  FInsertValueCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
  FInsertValueCommand.Parameters[3].Value.SetBoolean(Error);
  FInsertValueCommand.Parameters[4].Value.SetWideString(MessageError);
@@ -777,7 +780,7 @@ Begin
  FExecuteCommandCommand.Connection.UserName            := UserName;
  FExecuteCommandCommand.Connection.Password            := Password;
  FExecuteCommandCommand.Parameters[0].Value.SetWideString(Pooler);
- FExecuteCommandCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL));
+ FExecuteCommandCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL,vEncoding));
  FExecuteCommandCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
  FExecuteCommandCommand.Parameters[3].Value.SetBoolean(Error);
  FExecuteCommandCommand.Parameters[4].Value.SetWideString(MessageError);
