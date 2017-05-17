@@ -311,6 +311,9 @@ object Form1: TForm1
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
     RequestTimeOut = 10000
+    Encoding = esASCII
+    Context = 'Datasnap'
+    RESTContext = 'rest/'
     Left = 224
     Top = 144
   end
