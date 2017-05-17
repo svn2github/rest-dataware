@@ -144,7 +144,7 @@ object Form2: TForm2
   end
   object RESTDataBase: TRESTDataBase
     OnBeforeConnect = RESTDataBaseBeforeConnect
-    Active = False
+    Active = True
     Compression = False
     Login = 'testserver'
     Password = 'testserver'

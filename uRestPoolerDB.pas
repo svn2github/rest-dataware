@@ -1202,7 +1202,7 @@ Begin
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
  Try
   vPoolerList.Clear;
-  vPoolerList.Assign(vRESTConnectionDB.PoolersDataSet(vPoolerPrefix));
+  vPoolerList.Assign(vRESTConnectionDB.PoolersDataSet(vPoolerPrefix, vTempResult, 3000, vLogin, vPassword));
   Result      := True;
  Except
   On E : Exception do
@@ -1271,7 +1271,6 @@ End;
 
 Procedure TRESTPoolerList.SetConnection(Value : Boolean);
 Begin
- If (Value) And Not(vConnected) then
  vConnected := Value;
  If vConnected Then
   vConnected := TryConnect;
