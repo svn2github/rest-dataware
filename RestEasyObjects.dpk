@@ -55,12 +55,14 @@ requires
   Designide,
   bindengine,
   bindcomp,
-  RESTComponents;
+  RESTComponents,
+  vclFireDAC;
 
 contains
   uPoolerMethod in 'uPoolerMethod.pas',
   uComboPoolers in 'uComboPoolers.pas',
   uRestPoolerDB in 'uRestPoolerDB.pas',
-  uRestCompressTools in 'uRestCompressTools.pas';
+  uRestCompressTools in 'uRestCompressTools.pas',
+  URestPoolerDBMethod in 'URestPoolerDBMethod.pas';
 
 end.

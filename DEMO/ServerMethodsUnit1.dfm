@@ -1,8 +1,8 @@
 object ServerMethods1: TServerMethods1
   OldCreateOrder = False
   OnCreate = DataModuleCreate
-  Height = 144
-  Width = 182
+  Height = 259
+  Width = 261
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
     Left = 48
@@ -30,6 +30,7 @@ object ServerMethods1: TServerMethods1
   object RESTPoolerDB: TRESTPoolerDB
     Database = FDConnectionEMPLOYEE
     Compression = False
+    Encoding = esASCII
     Left = 88
     Top = 21
   end

@@ -522,12 +522,14 @@ Begin
  Error  := False;
  vTempQuery               := TFDQuery.Create(Owner);
  Try
+  if not vFDConnection.Connected then
+  vFDConnection.Connected :=true;
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
   vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
   If Not Execute Then
    Begin
-//    vTempQuery.Active := True;
+    vTempQuery.Open   ;
     Result            := TFDJSONDataSets.Create;
     vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
     Try

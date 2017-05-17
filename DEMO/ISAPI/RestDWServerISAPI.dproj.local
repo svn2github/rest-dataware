@@ -1,16 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>2017/05/17 13:46:08.000.311,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\RestDWServerISAPI.dproj</Transaction>
-    <Transaction>2017/05/17 13:46:30.000.363,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\RestDWServerISAPI.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\RestDWServerISAPI.dproj</Transaction>
-    <Transaction>2017/05/17 13:47:27.000.030,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ServerMethodsUnit1.pas</Transaction>
-    <Transaction>2017/05/17 13:47:28.000.991,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WebModuleUnit1.pas</Transaction>
-    <Transaction>2017/05/17 13:47:51.000.035,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ServerMethodsUnit1.dfm=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\ServerMethodsUnit1.dfm</Transaction>
-    <Transaction>2017/05/17 13:47:51.000.035,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ServerMethodsUnit1.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\ServerMethodsUnit1.pas</Transaction>
-    <Transaction>2017/05/17 13:47:57.000.333,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WebModuleUnit1.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\WebModuleUnit1.pas</Transaction>
-    <Transaction>2017/05/17 13:47:57.000.333,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WebModuleUnit1.dfm=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\WebModuleUnit1.dfm</Transaction>
-    <Transaction>2017/05/17 13:48:04.000.693,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\RestDWServerISAPI.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\RestDWServerISAPI.dproj</Transaction>
-    <Transaction>2017/05/17 13:49:07.000.420,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\Unit1.pas</Transaction>
-    <Transaction>2017/05/17 13:49:43.000.994,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\Unit1.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\uConsts.pas</Transaction>
+    <Transaction>2017/05/17 13:46:08.000.311,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\RestDWServerISAPI.dproj=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2017/05/17 13:46:30.000.363,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\RestDWServerISAPI.dproj=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\RestDWServerISAPI.dproj</Transaction>
+    <Transaction>2017/05/17 13:47:51.000.035,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\ServerMethodsUnit1.dfm=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ServerMethodsUnit1.dfm</Transaction>
+    <Transaction>2017/05/17 13:47:51.000.035,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\ServerMethodsUnit1.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ServerMethodsUnit1.pas</Transaction>
+    <Transaction>2017/05/17 13:47:57.000.333,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\WebModuleUnit1.dfm=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WebModuleUnit1.dfm</Transaction>
+    <Transaction>2017/05/17 13:47:57.000.333,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\WebModuleUnit1.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WebModuleUnit1.pas</Transaction>
+    <Transaction>2017/05/17 13:48:04.000.693,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\RestDWServerISAPI.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\RestDWServerISAPI.dproj</Transaction>
+    <Transaction>2017/05/17 13:49:43.000.994,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\uConsts.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\ISAPI\Unit1.pas</Transaction>
   </Transactions>
 </BorlandProject>

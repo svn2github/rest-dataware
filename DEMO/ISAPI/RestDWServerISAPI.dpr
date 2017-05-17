@@ -1,7 +1,7 @@
 library RestDWServerISAPI;
 
 uses
-  FastMM4,
+
   Winapi.ActiveX,
   System.Win.ComObj,
   Web.WebBroker,
