@@ -6,6 +6,7 @@ fácil configuração para que todos tenham acesso as maravilhas dos WebServices RE
 Desenvolvedor Principal : Gilberto Rocha da Silva (XyberX)
 Unit desenvolvida por   : Alexandre Abade
 Empresa : XyberPower Desenvolvimento
+
 }
 unit URestPoolerDBMethod;
 

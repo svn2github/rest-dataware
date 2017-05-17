@@ -27,3 +27,9 @@ Servidor :
  Alexandre Abade - Adicionado o campos Context e RestContext para que usa alteração no nome do 
  contexto e foi adicionado a codificação utf8,e ascii  pois quando for utilizado cors deve-se usar 
  utf8 devido a criptografia das string
+
+Servidor
+  Alexandre Abade - Adicionado unit URestPoolerDBMethod que possue todos os methodos nescessarios 
+  para que o componente possa trabalhar , foi feita essa divisão para deixa o codigo do cliente mais limpo
+  e sempre que adicionar o componente adicionar URestPoolerDBMethod no uses pois nela que esta os methodos
+  do servidor
