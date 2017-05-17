@@ -19,8 +19,7 @@ Uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
  FireDAC.Comp.Client,     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,    FireDAC.Comp.UI,
  FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,
  FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
- Vcl.Dialogs,              TypInfo,
- Vcl.Forms, uRestPoolerDB;
+ Vcl.Dialogs,              TypInfo, Vcl.Forms, uRestPoolerDB, Datasnap.DSSession;
 
  Type
   TModule = Class helper for TDataModule
@@ -128,7 +127,7 @@ End;
 
 Function Tmodule.EchoPooler(Value : String) : String;
 Begin
- Result := String('127.0.0.1');
+ Result := String(TDSSessionManager.GetThreadSession.GetData('RemoteAddr'));
 End;
 
 Function Tmodule.ExecuteCommand(Pooler, SQL: String; Params: TParams;
