@@ -18,6 +18,9 @@
         <Projects Include="ListPoolers.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="ISAPI\RestDWServerISAPI.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -71,14 +74,23 @@
     <Target Name="ListPoolers:Make">
         <MSBuild Projects="ListPoolers.dproj" Targets="Make"/>
     </Target>
+    <Target Name="RestDWServerISAPI">
+        <MSBuild Projects="ISAPI\RestDWServerISAPI.dproj"/>
+    </Target>
+    <Target Name="RestDWServerISAPI:Clean">
+        <MSBuild Projects="ISAPI\RestDWServerISAPI.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RestDWServerISAPI:Make">
+        <MSBuild Projects="ISAPI\RestDWServerISAPI.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestDWServerProject;ClientWin;RestEasyObjects;ClientMobile;ListPoolers"/>
+        <CallTarget Targets="RestDWServerProject;ClientWin;RestEasyObjects;ClientMobile;ListPoolers;RestDWServerISAPI"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestDWServerProject:Clean;ClientWin:Clean;RestEasyObjects:Clean;ClientMobile:Clean;ListPoolers:Clean"/>
+        <CallTarget Targets="RestDWServerProject:Clean;ClientWin:Clean;RestEasyObjects:Clean;ClientMobile:Clean;ListPoolers:Clean;RestDWServerISAPI:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestDWServerProject:Make;ClientWin:Make;RestEasyObjects:Make;ClientMobile:Make;ListPoolers:Make"/>
+        <CallTarget Targets="RestDWServerProject:Make;ClientWin:Make;RestEasyObjects:Make;ClientMobile:Make;ListPoolers:Make;RestDWServerISAPI:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
