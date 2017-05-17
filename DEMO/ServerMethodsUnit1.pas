@@ -50,13 +50,10 @@ implementation
 uses System.StrUtils, System.Generics.Collections, RestDWServerFormU;
 
 procedure TServerMethods1.DataModuleCreate(Sender: TObject);
-begin
+Begin
  UserName := RestDWForm.Username;
  Password := RestDWForm.Password;
-
-end;
-
-
+End;
 
 procedure TServerMethods1.FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
 begin

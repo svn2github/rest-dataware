@@ -18,7 +18,10 @@ object ServerMethods1: TServerMethods1
   end
   object FDConnectionEMPLOYEE: TFDConnection
     Params.Strings = (
-      '')
+      'DriverID=IB'
+      'Database=localhost:.\EMPLOYEE.GDB'
+      'User_Name=sysdba'
+      'password=masterkey')
     UpdateOptions.AssignedValues = [uvCountUpdatedRecords]
     UpdateOptions.CountUpdatedRecords = False
     ConnectedStoredUsage = []
