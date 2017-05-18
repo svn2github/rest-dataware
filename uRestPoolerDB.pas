@@ -1440,9 +1440,7 @@ Begin
  Error        := vMessageError;
  vErrorBefore := vError;
  If Result Then
-  TFDMemTable(Self).ApplyUpdates(-1)
- Else
-  TFDMemTable(Self).Edit;
+  TFDMemTable(Self).ApplyUpdates(-1);
 End;
 
 Function  TRESTClientSQL.ParamByName(Value : String) : TParam;
