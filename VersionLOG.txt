@@ -32,4 +32,12 @@ Servidor
   Alexandre Abade - Adicionado unit URestPoolerDBMethod que possue todos os methodos nescessarios 
   para que o componente possa trabalhar , foi feita essa divisão para deixa o codigo do cliente mais limpo
   e sempre que adicionar o componente adicionar URestPoolerDBMethod no uses pois nela que esta os methodos
-  do servidor
+
+1.0.1.172 :
+  
+ Ambos :
+  Criação do componente como padrão de codificação Utf8, para ganho de velocidade e ajuste de BUG's no ANSI.
+  Ajuste no Delta, para não dar o applyupdates no Delta quando retornar Erro do Servidor.
+  Várias correções de velocidade e de Estabilidade.
+  Adição do DEMO SimpleProject, um cadastro funcional com os comandos básicos para gravação de Dados no DB.
+  Adição do DEMO CGI, para criação de um Servidor DW usando APACHE ou IIS.
