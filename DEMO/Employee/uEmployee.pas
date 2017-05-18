@@ -110,10 +110,16 @@ Var
  vError : String;
 begin
  If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
-  MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
- rEmployee.Close;
- rEmployee.Open;
- rEmployee.Last;
+  Begin
+   MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+   TRESTClientSQL(DataSet).Edit;
+  End
+ Else
+  Begin
+   TRESTClientSQL(DataSet).Close;
+   TRESTClientSQL(DataSet).Open;
+   TRESTClientSQL(DataSet).Last;
+  End;
 end;
 
 procedure TfEmployee.rEmployeeBeforePost(DataSet: TDataSet);
