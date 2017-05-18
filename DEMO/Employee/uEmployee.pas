@@ -110,10 +110,7 @@ Var
  vError : String;
 begin
  If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
-  Begin
-   MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-   TRESTClientSQL(DataSet).Edit;
-  End
+  MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0)
  Else
   Begin
    TRESTClientSQL(DataSet).Close;

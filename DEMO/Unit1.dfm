@@ -238,7 +238,7 @@ object Form1: TForm1
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
-    Active = True
+    Active = False
     Compression = False
     Login = 'testserver'
     Password = 'testserver'

@@ -520,7 +520,7 @@ Begin
  FApplyChangesCommand.Connection.Password            := Password;
  FApplyChangesCommand.Parameters[0].Value.SetWideString(Pooler);
  FApplyChangesCommand.Parameters[1].Value.SetWideString(TableName);
- FApplyChangesCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL,self.vEncoding));
+ FApplyChangesCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL, vEncoding));
  FApplyChangesCommand.Parameters[3].Value.SetDBXReader(TDBXParamsReader.Create(TParams(Params), FInstanceOwner), True);
  If Not Assigned(ADeltaList) Then
   FApplyChangesCommand.Parameters[4].Value.SetNull

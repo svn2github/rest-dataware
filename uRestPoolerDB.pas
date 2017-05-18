@@ -653,7 +653,7 @@ begin
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
+  vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
   vTempQuery.Active := True;
  Except
   On E : Exception do
@@ -1423,7 +1423,6 @@ var
    TFDMemTable(Self).Post;
   Result := TFDJSONDeltas.Create;
   TFDJSONDeltasWriter.ListAdd(Result, vUpdateTableName, TFDMemTable(Self));
-  TFDMemTable(Self).ApplyUpdates(-1);
  End;
 Begin
  LDeltaList := GetDeltas;
@@ -1440,6 +1439,10 @@ Begin
  Result       := Not vError;
  Error        := vMessageError;
  vErrorBefore := vError;
+ If Result Then
+  TFDMemTable(Self).ApplyUpdates(-1)
+ Else
+  TFDMemTable(Self).Edit;
 End;
 
 Function  TRESTClientSQL.ParamByName(Value : String) : TParam;
