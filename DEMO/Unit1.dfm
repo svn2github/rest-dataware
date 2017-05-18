@@ -238,7 +238,7 @@ object Form1: TForm1
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
-    Active = False
+    Active = True
     Compression = False
     Login = 'testserver'
     Password = 'testserver'
@@ -251,7 +251,7 @@ object Form1: TForm1
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
     RequestTimeOut = 10000
-    Encoding = esASCII
+    Encoding = esUtf8
     Context = 'datasnap'
     RESTContext = 'rest/'
     Left = 224

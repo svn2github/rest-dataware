@@ -772,7 +772,7 @@ Begin
  Owner        := aOwner;
  FLock        := TCriticalSection.Create;
  vCompression := False;
- vEncoding    := esASCII;
+ vEncoding    := esUtf8;
 End;
 
 Destructor  TRESTPoolerDB.Destroy;
@@ -1169,7 +1169,7 @@ Begin
  vAutoCheckData.vInTime    := 1000;
  vTimeOut                  := 10000;
  vAutoCheckData.vEvent     := CheckConnection;
- VEncondig                 := esASCII;
+ VEncondig                 := esUtf8;
  vContentex                := 'Datasnap';
  vRESTContext              := 'rest/';
 End;

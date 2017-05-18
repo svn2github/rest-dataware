@@ -3,9 +3,6 @@
         <ProjectGuid>{B9896F08-FBE4-4C46-BDAA-C3C41A03A68E}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="RestDWServerProject.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="ClientWin.dproj">
             <Dependencies/>
         </Projects>
@@ -24,6 +21,9 @@
         <Projects Include="Android\ClientMobile.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="DwServer\RestDWServerProject.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -32,15 +32,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="RestDWServerProject">
-        <MSBuild Projects="RestDWServerProject.dproj"/>
-    </Target>
-    <Target Name="RestDWServerProject:Clean">
-        <MSBuild Projects="RestDWServerProject.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="RestDWServerProject:Make">
-        <MSBuild Projects="RestDWServerProject.dproj" Targets="Make"/>
-    </Target>
     <Target Name="ClientWin">
         <MSBuild Projects="ClientWin.dproj"/>
     </Target>
@@ -95,14 +86,23 @@
     <Target Name="ClientMobile:Make">
         <MSBuild Projects="Android\ClientMobile.dproj" Targets="Make"/>
     </Target>
+    <Target Name="RestDWServerProject">
+        <MSBuild Projects="DwServer\RestDWServerProject.dproj"/>
+    </Target>
+    <Target Name="RestDWServerProject:Clean">
+        <MSBuild Projects="DwServer\RestDWServerProject.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RestDWServerProject:Make">
+        <MSBuild Projects="DwServer\RestDWServerProject.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestDWServerProject;ClientWin;RestEasyObjects;ListPoolers;RestDWServerISAPI;SimpleProject;ClientMobile"/>
+        <CallTarget Targets="ClientWin;RestEasyObjects;ListPoolers;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestDWServerProject:Clean;ClientWin:Clean;RestEasyObjects:Clean;ListPoolers:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean"/>
+        <CallTarget Targets="ClientWin:Clean;RestEasyObjects:Clean;ListPoolers:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestDWServerProject:Make;ClientWin:Make;RestEasyObjects:Make;ListPoolers:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make"/>
+        <CallTarget Targets="ClientWin:Make;RestEasyObjects:Make;ListPoolers:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
