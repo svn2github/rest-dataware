@@ -393,7 +393,7 @@ Begin
  FApplyChangesPureCommand.Connection.Password            := Password;
  FApplyChangesPureCommand.Parameters[0].Value.SetWideString(Pooler);
  FApplyChangesPureCommand.Parameters[1].Value.SetWideString(TableName);
- FApplyChangesPureCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL,self.vEncoding));
+ FApplyChangesPureCommand.Parameters[2].Value.SetWideString(EncodeStrings(SQL, vEncoding));
  If Not Assigned(ADeltaList) Then
   FApplyChangesPureCommand.Parameters[3].Value.SetNull
  Else

@@ -951,6 +951,7 @@ Begin
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
  vRESTConnectionDB.Compression := vCompression;
+ vRESTConnectionDB.Encoding    := GetEncoding(VEncondig);
  Try
   If Params.Count > 0 Then
    vRESTConnectionDB.ApplyChanges(vRestPooler,
@@ -1015,6 +1016,7 @@ Begin
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
  vRESTConnectionDB.Compression := vCompression;
+ vRESTConnectionDB.Encoding    := GetEncoding(VEncondig);
  Try
   If Params.Count > 0 Then
    oJsonObject := vRESTConnectionDB.InsertValue(vRestPooler,
@@ -1117,6 +1119,7 @@ Begin
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
  vRESTConnectionDB.Compression := vCompression;
+ vRESTConnectionDB.Encoding    := GetEncoding(VEncondig);
  Try
   vTempList        := vRESTConnectionDB.PoolersDataSet(vRestModule, '', vTimeOut, vLogin, vPassword);
   Result           := TStringList.Create;
@@ -1201,7 +1204,8 @@ Var
 Begin
  Result := False;
  SetConnectionOptions(vDSRConnection);
- vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
+ vRESTConnectionDB           := TSMPoolerMethodClient.Create(vDSRConnection, True);
+ vRESTConnectionDB.Encoding  := TEncoding.ASCII;
  Try
   vPoolerList.Clear;
   vPoolerList.Assign(vRESTConnectionDB.PoolersDataSet(vPoolerPrefix, vTempResult, 3000, vLogin, vPassword));
@@ -1230,6 +1234,7 @@ Begin
   vTempSend := vRestPooler;
  SetConnectionOptions(vDSRConnection);
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
+ vRESTConnectionDB.Encoding := GetEncoding(VEncondig);
  Try
   vTempResult := vRESTConnectionDB.EchoPooler(vTempSend, vRestModule, '', vTimeOut, vLogin, vPassword);
   vMyIP       := vTempResult;
