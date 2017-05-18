@@ -21,6 +21,9 @@
         <Projects Include="ISAPI\RestDWServerISAPI.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Employee\SimpleProject.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -83,14 +86,23 @@
     <Target Name="RestDWServerISAPI:Make">
         <MSBuild Projects="ISAPI\RestDWServerISAPI.dproj" Targets="Make"/>
     </Target>
+    <Target Name="SimpleProject">
+        <MSBuild Projects="Employee\SimpleProject.dproj"/>
+    </Target>
+    <Target Name="SimpleProject:Clean">
+        <MSBuild Projects="Employee\SimpleProject.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SimpleProject:Make">
+        <MSBuild Projects="Employee\SimpleProject.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestDWServerProject;ClientWin;RestEasyObjects;ClientMobile;ListPoolers;RestDWServerISAPI"/>
+        <CallTarget Targets="RestDWServerProject;ClientWin;RestEasyObjects;ClientMobile;ListPoolers;RestDWServerISAPI;SimpleProject"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestDWServerProject:Clean;ClientWin:Clean;RestEasyObjects:Clean;ClientMobile:Clean;ListPoolers:Clean;RestDWServerISAPI:Clean"/>
+        <CallTarget Targets="RestDWServerProject:Clean;ClientWin:Clean;RestEasyObjects:Clean;ClientMobile:Clean;ListPoolers:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestDWServerProject:Make;ClientWin:Make;RestEasyObjects:Make;ClientMobile:Make;ListPoolers:Make;RestDWServerISAPI:Make"/>
+        <CallTarget Targets="RestDWServerProject:Make;ClientWin:Make;RestEasyObjects:Make;ClientMobile:Make;ListPoolers:Make;RestDWServerISAPI:Make;SimpleProject:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

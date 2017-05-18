@@ -22,7 +22,7 @@ object ServerMethods1: TServerMethods1
       'Database=localhost:.\EMPLOYEE.GDB'
       'User_Name=sysdba'
       'password=masterkey')
-    UpdateOptions.AssignedValues = [uvCountUpdatedRecords]
+    UpdateOptions.AssignedValues = [uvCountUpdatedRecords, uvFetchGeneratorsPoint]
     UpdateOptions.CountUpdatedRecords = False
     ConnectedStoredUsage = []
     LoginPrompt = False

@@ -238,14 +238,14 @@ object Form1: TForm1
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
-    Active = True
+    Active = False
     Compression = False
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
     ProxyOptions.Port = 8888
     PoolerService = '127.0.0.1'
-    PoolerPort = 8070
+    PoolerPort = 8082
     PoolerName = 'ServerMethodsUnit1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
     StateConnection.AutoCheck = False
