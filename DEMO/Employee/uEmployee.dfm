@@ -228,8 +228,8 @@ object fEmployee: TfEmployee
     Encoding = esASCII
     Context = 'datasnap'
     RESTContext = 'rest/'
-    Left = 360
-    Top = 8
+    Left = 392
+    Top = 114
   end
   object rEmployee: TRESTClientSQL
     AfterInsert = rEmployeeAfterInsert
@@ -318,8 +318,8 @@ object fEmployee: TfEmployee
     SQL.Strings = (
       'select * from employee')
     UpdateTableName = 'EMPLOYEE'
-    Left = 360
-    Top = 53
+    Left = 392
+    Top = 157
     object rEmployeeEMP_NO: TSmallintField
       AutoGenerateValue = arAutoInc
       FieldName = 'EMP_NO'
@@ -376,8 +376,8 @@ object fEmployee: TfEmployee
   object dsEmployee: TDataSource
     AutoEdit = False
     DataSet = rEmployee
-    Left = 390
-    Top = 53
+    Left = 422
+    Top = 157
   end
   object rDepartment: TRESTClientSQL
     FieldDefs = <
@@ -432,8 +432,8 @@ object fEmployee: TfEmployee
     DataBase = RESTDataBase
     SQL.Strings = (
       'select * from DEPARTMENT')
-    Left = 360
-    Top = 96
+    Left = 392
+    Top = 200
     object rDepartmentDEPT_NO: TStringField
       FieldName = 'DEPT_NO'
       Required = True
@@ -467,8 +467,8 @@ object fEmployee: TfEmployee
   object dsDepartment: TDataSource
     AutoEdit = False
     DataSet = rDepartment
-    Left = 388
-    Top = 96
+    Left = 420
+    Top = 200
   end
   object fJob: TRESTClientSQL
     FieldDefs = <
@@ -529,8 +529,8 @@ object fEmployee: TfEmployee
     DataBase = RESTDataBase
     SQL.Strings = (
       'select * from job')
-    Left = 360
-    Top = 136
+    Left = 392
+    Top = 244
     object fJobJOB_CODE: TStringField
       FieldName = 'JOB_CODE'
       Required = True
@@ -571,7 +571,7 @@ object fEmployee: TfEmployee
   object dsJob: TDataSource
     AutoEdit = False
     DataSet = fJob
-    Left = 390
-    Top = 136
+    Left = 420
+    Top = 244
   end
 end

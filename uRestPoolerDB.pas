@@ -22,12 +22,10 @@ uses System.SysUtils,         System.Classes,
      uPoolerMethod,           FireDAC.Stan.StorageBin, Data.DBXPlatform,
      FireDAC.Stan.StorageJSON {$IFDEF MSWINDOWS},      Datasnap.DSServer,
      Datasnap.DSAuth,         Datasnap.DSProxyRest{$ENDIF},
-     Soap.EncdDecd,           System.NetEncoding;
-
-type
-   TEncodeSelect = (esASCII, esUtf8);
+     Soap.EncdDecd,           System.NetEncoding,      uMasterDetailData;
 
 Type
+ TEncodeSelect            = (esASCII, esUtf8);
  TOnEventDB               = Procedure (DataSet : TDataSet)         of Object;
  TExecuteProc             = Reference to Procedure;
  TOnEventConnection       = Procedure (Sucess  : Boolean;
@@ -156,14 +154,13 @@ Type
   Property Encoding           : TEncodeSelect            Read VEncondig           write VEncondig ;         //Encoding da string
   Property Context            : string                   Read vContentex          write vContentex ;        //Contexto
   Property RESTContext        : string                   Read vRESTContext        write vRESTContext ;      //Rest Contexto
-
 End;
 
 Type
  TRESTClientSQL   = Class(TFDMemTable)                    //Classe com as funcionalidades de um DBQuery
  Private
-  Owner               : TComponent;
-  vUpdateTableName    : String;                           //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
+  Owner                : TComponent;
+  vUpdateTableName     : String;                          //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
   vBeforeClone,
   vDataCache,                                             //Se usa cache local
   vConnectedOnce,                                         //Verifica se foi conectado ao Servidor
@@ -179,6 +176,7 @@ Type
   vOnAfterDelete,
   vOnAfterPost         : TDataSetNotifyEvent;
   FieldDefsUPD         : TFieldDefs;
+  vMasterDetailList    : TMasterDetailList;               //DataSet MasterDetail Function
   Procedure CloneDefinitions(Source : TFDMemTable;
                              aSelf  : TRESTClientSQL);    //Fields em Definições
   Procedure OnChangingSQL(Sender: TObject);               //Quando Altera o SQL da Lista
@@ -1322,6 +1320,7 @@ Begin
  vUpdateTableName                  := '';
  FieldDefsUPD                      := TFieldDefs.Create(Self);
  FieldDefs                         := FieldDefsUPD;
+ vMasterDetailList                 := TMasterDetailList.Create;
  Inherited AfterPost               := OldAfterPost;
  Inherited AfterDelete             := OldAfterDelete;
 End;
@@ -1331,6 +1330,7 @@ Begin
  vSQL.DisposeOf;
  vParams.DisposeOf;
  FieldDefsUPD.DisposeOf;
+ vMasterDetailList.DisposeOf;
  If vCacheDataDB <> Nil Then
   vCacheDataDB.DisposeOf;
  Inherited;

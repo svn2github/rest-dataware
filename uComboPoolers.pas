@@ -72,4 +72,15 @@ Begin
  Result := [paValueList, paSortList];
 End;
 
+Initialization
+ UnlistPublishedProperty(TRESTClientSQL, 'LocalSQL');
+ UnlistPublishedProperty(TRESTClientSQL, 'DataSetField');
+ UnlistPublishedProperty(TRESTClientSQL, 'DetailFields');
+ UnlistPublishedProperty(TRESTClientSQL, 'Adapter');
+ UnlistPublishedProperty(TRESTClientSQL, 'ChangeAlerter');
+ UnlistPublishedProperty(TRESTClientSQL, 'ChangeAlertName');
+ UnlistPublishedProperty(TRESTClientSQL, 'DataCache');
+ UnlistPublishedProperty(TRESTClientSQL, 'ObjectView');
+ UnlistPublishedProperty(TRESTClientSQL, 'StoreDefs');
+ UnlistPublishedProperty(TRESTClientSQL, 'CachedUpdates');
 end.

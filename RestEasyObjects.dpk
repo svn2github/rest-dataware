@@ -63,6 +63,7 @@ contains
   uComboPoolers in 'uComboPoolers.pas',
   uRestPoolerDB in 'uRestPoolerDB.pas',
   uRestCompressTools in 'uRestCompressTools.pas',
-  URestPoolerDBMethod in 'URestPoolerDBMethod.pas';
+  URestPoolerDBMethod in 'URestPoolerDBMethod.pas',
+  uMasterDetailData in 'uMasterDetailData.pas';
 
 end.

@@ -12,17 +12,17 @@ unit URestPoolerDBMethod;
 Interface
 
 Uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Datasnap.DSAuth,
- FireDAC.Stan.Intf,       FireDAC.Stan.Option,      FireDAC.Stan.Param,
- FireDAC.Stan.Error,      FireDAC.DatS,             FireDAC.Phys.Intf,  FireDAC.DApt.Intf,
- FireDAC.Stan.Async,      FireDAC.DApt,             FireDAC.UI.Intf,    FireDAC.VCLUI.Wait,
- FireDAC.Stan.Def,        FireDAC.Stan.Pool,        FireDAC.Phys,       Data.DB,
- FireDAC.Comp.Client,     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,    FireDAC.Comp.UI,
- FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,
- FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
- Vcl.Dialogs,              TypInfo, Vcl.Forms, uRestPoolerDB, Datasnap.DSSession;
+     FireDAC.Stan.Intf,       FireDAC.Stan.Option,      FireDAC.Stan.Param, TypInfo, Vcl.Forms,
+     FireDAC.Stan.Error,      FireDAC.DatS,             FireDAC.Phys.Intf,  FireDAC.DApt.Intf,
+     FireDAC.Stan.Async,      FireDAC.DApt,             FireDAC.UI.Intf,    FireDAC.VCLUI.Wait,
+     FireDAC.Stan.Def,        FireDAC.Stan.Pool,        FireDAC.Phys,       Data.DB,
+     FireDAC.Comp.Client,     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,    FireDAC.Comp.UI,
+     FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,        Datasnap.DSSession,
+     FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef, Vcl.Dialogs,
+     uRestPoolerDB;
 
  Type
-  TModule = Class helper for TDataModule
+  TModule = Class Helper For TDataModule
   Private
   Published
    Function GetUnitClassName : String;
@@ -179,7 +179,7 @@ Var
 Begin
  Result := Nil;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
- For I := 0 to ComponentCount -1 Do
+ For I := 0 To ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
@@ -215,7 +215,7 @@ Begin
  If PoolerList = Nil Then
   PoolerList := TStringList.Create;
  PoolerList.Clear;
- For I := 0 to ComponentCount -1 Do
+ For I := 0 To ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     PoolerList.Add(GetUnitClassName + '.' + TRESTPoolerDB(Components[i]).Name);
@@ -251,9 +251,9 @@ Var
 Begin
  Result := -1;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
- For I := 0 to ComponentCount -1 Do
+ For I := 0 To ComponentCount -1 Do
   Begin
-   If Components[i] is TRESTPoolerDB Then
+   If Components[i] Is TRESTPoolerDB Then
     Begin
      If UpperCase(Components[i].Name) = vTempPooler Then
       Begin
@@ -273,9 +273,9 @@ Var
 Begin
  Result := -1;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
- For I := 0 to ComponentCount -1 Do
+ For I := 0 To ComponentCount -1 Do
   Begin
-   If Components[i] is TRESTPoolerDB Then
+   If Components[i] Is TRESTPoolerDB Then
     Begin
      If UpperCase(Components[i].Name) = vTempPooler Then
       Begin
@@ -291,9 +291,9 @@ Var
  I : Integer;
 Begin
  Result := '';
- For I := 0 to ComponentCount -1 Do
+ For I := 0 To ComponentCount -1 Do
   Begin
-   If Components[i] is TRESTPoolerDB Then
+   If Components[i] Is TRESTPoolerDB Then
     Begin
      If Result = '' then
       Result := Format('%s.%s', [GetUnitClassName, Components[i].Name])

@@ -24,6 +24,9 @@
         <Projects Include="DwServer\RestDWServerProject.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="MasterDetail\MasterDetail.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -95,14 +98,23 @@
     <Target Name="RestDWServerProject:Make">
         <MSBuild Projects="DwServer\RestDWServerProject.dproj" Targets="Make"/>
     </Target>
+    <Target Name="MasterDetail">
+        <MSBuild Projects="MasterDetail\MasterDetail.dproj"/>
+    </Target>
+    <Target Name="MasterDetail:Clean">
+        <MSBuild Projects="MasterDetail\MasterDetail.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MasterDetail:Make">
+        <MSBuild Projects="MasterDetail\MasterDetail.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ClientWin;RestEasyObjects;ListPoolers;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject"/>
+        <CallTarget Targets="ClientWin;RestEasyObjects;ListPoolers;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ClientWin:Clean;RestEasyObjects:Clean;ListPoolers:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean"/>
+        <CallTarget Targets="ClientWin:Clean;RestEasyObjects:Clean;ListPoolers:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ClientWin:Make;RestEasyObjects:Make;ListPoolers:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make"/>
+        <CallTarget Targets="ClientWin:Make;RestEasyObjects:Make;ListPoolers:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
