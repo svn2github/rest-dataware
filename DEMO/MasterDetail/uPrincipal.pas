@@ -47,10 +47,13 @@ type
     DBGrid3: TDBGrid;
     procedure FormCreate(Sender: TObject);
     procedure RESTClientSQL1AfterDelete(DataSet: TDataSet);
+    procedure RESTClientSQL2AfterInsert(DataSet: TDataSet);
   private
     { Private declarations }
   public
     { Public declarations }
+   Function GetGenID(GenName  : String;
+                     DataBase : TRESTDataBase): Integer;
   end;
 
 var
@@ -59,6 +62,24 @@ var
 implementation
 
 {$R *.dfm}
+
+Function TForm4.GetGenID(GenName  : String;
+                         DataBase : TRESTDataBase): Integer;
+Var
+ vTempClient : TRESTClientSQL;
+Begin
+ vTempClient := TRESTClientSQL.Create(Nil);
+ Result      := -1;
+ Try
+  vTempClient.DataBase := DataBase;
+  vTempClient.SQL.Add(Format('select gen_id(%s, 1)GenID From rdb$database', [GenName]));
+  vTempClient.Active := True;
+  Result := vTempClient.FindField('GenID').AsInteger;
+ Except
+
+ End;
+ vTempClient.Free;
+End;
 
 procedure TForm4.FormCreate(Sender: TObject);
 begin
@@ -71,6 +92,11 @@ Var
 begin
  If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
   MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+end;
+
+procedure TForm4.RESTClientSQL2AfterInsert(DataSet: TDataSet);
+begin
+ RESTClientSQL2EMP_NO.AsInteger := GetGenID('EMP_NO_GEN', RESTClientSQL2.DataBase);
 end;
 
 end.

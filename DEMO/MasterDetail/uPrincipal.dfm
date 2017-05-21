@@ -129,6 +129,7 @@ object Form4: TForm4
     end
   end
   object RESTClientSQL2: TRESTClientSQL
+    AfterInsert = RESTClientSQL2AfterInsert
     AfterPost = RESTClientSQL1AfterDelete
     AfterDelete = RESTClientSQL1AfterDelete
     FieldDefs = <>
@@ -162,6 +163,7 @@ object Form4: TForm4
     Top = 104
     object RESTClientSQL2EMP_NO: TSmallintField
       FieldName = 'EMP_NO'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
     object RESTClientSQL2FIRST_NAME: TStringField
