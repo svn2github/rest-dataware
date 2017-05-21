@@ -225,7 +225,6 @@ Type
   Procedure   Open; Virtual;                              //Método Open que será utilizado no Componente
   Procedure   Close;Virtual;                              //Método Close que será utilizado no Componente
   Procedure   CreateDataSet; Virtual;
-//  Property    MasterFields : String Read vMasterFields Write SetMasterFields;Virtual;
   Procedure   ExecSQL;                                    //Método ExecSQL que será utilizado no Componente
   Function    InsertMySQLReturnID : Integer;              //Método de ExecSQL com retorno de Incremento
   Function    ParamByName(Value : String) : TParam;       //Retorna o Parametro de Acordo com seu nome

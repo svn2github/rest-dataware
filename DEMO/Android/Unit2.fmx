@@ -85,6 +85,7 @@ object Form2: TForm2
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
     StoreDefs = True
+    MasterCascadeDelete = True
     DataCache = False
     Params = <>
     DataBase = RESTDataBase
