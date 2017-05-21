@@ -29,6 +29,7 @@ Type
  TOnEventDB               = Procedure (DataSet : TDataSet)         of Object;
  TOnAfterScroll           = Procedure (DataSet : TDataSet)         of Object;
  TOnAfterOpen             = Procedure (DataSet : TDataSet)         of Object;
+ TOnAfterClose            = Procedure (DataSet : TDataSet)         of Object;
  TOnAfterInsert           = Procedure (DataSet : TDataSet)         of Object;
  TOnBeforeDelete          = Procedure (DataSet : TDataSet)         of Object;
  TExecuteProc             = Reference to Procedure;
@@ -166,6 +167,7 @@ Type
   vDataSource          : TDataSource;
   vOnAfterScroll       : TOnAfterScroll;
   vOnAfterOpen         : TOnAfterOpen;
+  vOnAfterClose        : TOnAfterClose;
   vOnAfterInsert       : TOnAfterInsert;
   vOnBeforeDelete      : TOnBeforeDelete;
   Owner                : TComponent;
@@ -216,6 +218,7 @@ Type
   Property  MasterSource;
   Procedure ProcAfterScroll (DataSet: TDataSet);
   Procedure ProcAfterOpen   (DataSet: TDataSet);
+  Procedure ProcAfterClose  (DataSet: TDataSet);
   Procedure ProcAfterInsert (DataSet: TDataSet);
   Procedure ProcBeforeDelete(DataSet: TDataSet);
  Protected
@@ -241,6 +244,7 @@ Type
   Property OnGetDataError  : TOnEventConnection  Read vOnGetDataError           Write vOnGetDataError;         //Recebe os Erros de ExecSQL ou de GetData
   Property AfterScroll     : TOnAfterScroll      Read vOnAfterScroll            Write vOnAfterScroll;
   Property AfterOpen       : TOnAfterOpen        Read vOnAfterOpen              Write vOnAfterOpen;
+  Property AfterClose      : TOnAfterClose       Read vOnAfterClose             Write vOnAfterClose;
   Property AfterInsert     : TOnAfterInsert      Read vOnAfterInsert            Write vOnAfterInsert;
   Property BeforeDelete    : TOnBeforeDelete     Read vOnBeforeDelete           Write vOnBeforeDelete;
   Property Active          : Boolean             Read vActive                   Write SetActiveDB;             //Estado do Dataset
@@ -1428,6 +1432,7 @@ Begin
  TFDMemTable(Self).AfterOpen       := ProcAfterOpen;
  TFDMemTable(Self).AfterInsert     := ProcAfterInsert;
  TFDMemTable(Self).BeforeDelete    := ProcBeforeDelete;
+ TFDMemTable(Self).AfterClose      := ProcAfterClose;
  Inherited AfterPost               := OldAfterPost;
  Inherited AfterDelete             := OldAfterDelete;
 End;
@@ -1508,8 +1513,14 @@ Var
  I         : Integer;
  ParamList : TStringList;
  Procedure CreateParam(Value : String);
+ Var
+  FieldDef : TField;
  Begin
-  vParams.CreateParam(ftUnknown, Value, ptUnknown);
+  FieldDef := FindField(Value);
+  If FieldDef <> Nil Then
+   vParams.CreateParam(FieldDef.DataType, Value, ptUnknown)
+  Else
+   vParams.CreateParam(ftUnknown, Value, ptUnknown);
  End;
 Begin
  vParams.Clear;
@@ -1555,6 +1566,25 @@ Begin
        While Not vDetailClient.Eof Do
         vDetailClient.Delete;
       End;
+    End;
+  End;
+End;
+
+Procedure TRESTClientSQL.ProcAfterClose(DataSet: TDataSet);
+Var
+ I : Integer;
+ vDetailClient : TRESTClientSQL;
+Begin
+ If Assigned(vOnAfterClose) then
+  vOnAfterClose(Dataset);
+ If vCascadeDelete Then
+  Begin
+   For I := 0 To vMasterDetailList.Count -1 Do
+    Begin
+     vMasterDetailList.Items[I].ParseFields(TRESTClientSQL(vMasterDetailList.Items[I].DataSet).MasterFields);
+     vDetailClient        := TRESTClientSQL(vMasterDetailList.Items[I].DataSet);
+     If vDetailClient <> Nil Then
+      vDetailClient.Close;
     End;
   End;
 End;
@@ -1665,14 +1695,6 @@ Var
   FinalStr  := 1;
   {$ENDIF}
   Result := Value1 = Value2;
-  {
-  For I := InitStr To Length(Value1) - FinalStr Do
-   Begin
-    Result := Value1[I] = Value2[I];
-    If Not Result Then
-     Break;
-   End;
-   }
  End;
 Begin
  Result := Nil;
@@ -1723,6 +1745,7 @@ Begin
  vSQL.Clear;
  For I := 0 To Value.Count -1 do
   vSQL.Add(Value[I]);
+
 End;
 
 Procedure TRESTClientSQL.CreateDataSet;
@@ -1828,10 +1851,6 @@ End;
 Procedure TRESTClientSQL.Loaded;
 Begin
  Inherited Loaded;
-{
- If (csDesigning in ComponentState) then
-    RebuildTabs;
- }
 End;
 
 Procedure ExecMethod(Execute : TExecuteProc = Nil);
