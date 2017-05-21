@@ -1442,6 +1442,8 @@ Begin
  vSQL.DisposeOf;
  vParams.DisposeOf;
  FieldDefsUPD.DisposeOf;
+ If (vMasterDataSet <> Nil) Then
+  TRESTClientSQL(vMasterDataSet).vMasterDetailList.DeleteDS(TRESTClient(Self));
  vMasterDetailList.DisposeOf;
  vDataSource.DisposeOf;
  If vCacheDataDB <> Nil Then
