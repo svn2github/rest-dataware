@@ -200,6 +200,7 @@ Type
   Procedure OldAfterDelete(DataSet: TDataSet);            //Eventos do Dataset para realizar o AfterDelete
   Procedure SetMasterDataSet(Value : TRESTClientSQL);
   Procedure PrepareDetails(ActiveMode : Boolean);
+  Procedure PrepareDetailsNew;
   Property  LocalSQL;
   Property  DataSetField;
   Property  DetailFields;
@@ -1504,7 +1505,9 @@ Begin
  If State = dsBrowse Then
   PrepareDetails(True)
  Else If State = dsInactive Then
-  PrepareDetails(False);
+  PrepareDetails(False)
+ Else If State = dsInsert Then
+  PrepareDetailsNew;
  If Assigned(vOnAfterScroll) Then
   vOnAfterScroll(Dataset);
 End;
@@ -1554,7 +1557,7 @@ Begin
    vFields.DisposeOf;
   End;
  If Assigned(vOnAfterInsert) Then
-  vOnAfterOpen(Dataset);
+  vOnAfterInsert(Dataset);
 End;
 
 Procedure TRESTClientSQL.ProcAfterOpen(DataSet: TDataSet);
@@ -1827,6 +1830,19 @@ Begin
   End;
  If aSelf.FieldDefs.Count > 0 Then
   aSelf.CreateDataSet;
+End;
+
+Procedure TRESTClientSQL.PrepareDetailsNew;
+Var
+ I : Integer;
+ vDetailClient : TRESTClientSQL;
+Begin
+ For I := 0 To vMasterDetailList.Count -1 Do
+  Begin
+   vMasterDetailList.Items[I].ParseFields(TRESTClientSQL(vMasterDetailList.Items[I].DataSet).MasterFields);
+   vDetailClient        := TRESTClientSQL(vMasterDetailList.Items[I].DataSet);
+   vDetailClient.EmptyDataSet;
+  End;
 End;
 
 Procedure TRESTClientSQL.PrepareDetails(ActiveMode : Boolean);
