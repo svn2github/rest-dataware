@@ -27,6 +27,8 @@ uses System.SysUtils,         System.Classes,
 Type
  TEncodeSelect            = (esASCII, esUtf8);
  TOnEventDB               = Procedure (DataSet : TDataSet)         of Object;
+ TOnAfterScroll           = Procedure (DataSet : TDataSet)         of Object;
+ TOnAfterOpen             = Procedure (DataSet : TDataSet)         of Object;
  TExecuteProc             = Reference to Procedure;
  TOnEventConnection       = Procedure (Sucess  : Boolean;
                                        Const Error : String)       of Object;
@@ -159,7 +161,11 @@ End;
 Type
  TRESTClientSQL   = Class(TFDMemTable)                    //Classe com as funcionalidades de um DBQuery
  Private
+  vDataSource          : TDataSource;
+  vOnAfterScroll       : TOnAfterScroll;
+  vOnAfterOpen         : TOnAfterOpen;
   Owner                : TComponent;
+  vMasterFields,
   vUpdateTableName     : String;                          //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
   vBeforeClone,
   vDataCache,                                             //Se usa cache local
@@ -176,7 +182,9 @@ Type
   vOnAfterDelete,
   vOnAfterPost         : TDataSetNotifyEvent;
   FieldDefsUPD         : TFieldDefs;
+  vMasterDataSet       : TRESTClientSQL;
   vMasterDetailList    : TMasterDetailList;               //DataSet MasterDetail Function
+  Procedure SetMasterFields(Value : String);
   Procedure CloneDefinitions(Source : TFDMemTable;
                              aSelf  : TRESTClientSQL);    //Fields em Definições
   Procedure OnChangingSQL(Sender: TObject);               //Quando Altera o SQL da Lista
@@ -188,13 +196,28 @@ Type
   Procedure SetUpdateTableName(Value : String);           //Diz qual a tabela que será feito Update no Banco
   Procedure OldAfterPost(DataSet: TDataSet);              //Eventos do Dataset para realizar o AfterPost
   Procedure OldAfterDelete(DataSet: TDataSet);            //Eventos do Dataset para realizar o AfterDelete
+  Procedure SetMasterDataSet(Value : TRESTClientSQL);
+  Procedure PrepareDetails(ActiveMode : Boolean);
+  Property  LocalSQL;
+  Property  DataSetField;
+  Property  DetailFields;
+  Property  Adapter;
+  Property  ChangeAlerter;
+  Property  ChangeAlertName;
+  Property  ObjectView;
+  Property  StoreDefs;
+  Property  CachedUpdates;
+  Property  MasterSource;
+  Procedure ProcAfterScroll(DataSet: TDataSet);
+  Procedure ProcAfterOpen  (DataSet: TDataSet);
  Protected
-  Function CanObserve(const ID: Integer): Boolean; Override;
+  Function  CanObserve(const ID: Integer): Boolean; Override;
  Public
   //Métodos
   Procedure   Open; Virtual;                              //Método Open que será utilizado no Componente
   Procedure   Close;Virtual;                              //Método Close que será utilizado no Componente
   Procedure   CreateDataSet; Virtual;
+//  Property    MasterFields : String Read vMasterFields Write SetMasterFields;Virtual;
   Procedure   ExecSQL;                                    //Método ExecSQL que será utilizado no Componente
   Function    InsertMySQLReturnID : Integer;              //Método de ExecSQL com retorno de Incremento
   Function    ParamByName(Value : String) : TParam;       //Retorna o Parametro de Acordo com seu nome
@@ -204,9 +227,12 @@ Type
   Procedure   Loaded; Override;
   procedure   OpenCursor(InfoQuery: Boolean); Override;   //Subscrevendo o OpenCursor para não ter erros de ADD Fields em Tempo de Design
  Published
+  Property MasterDataSet   : TRESTClientSQL      Read vMasterDataSet            Write SetMasterDataSet;
   Property AfterDelete     : TDataSetNotifyEvent Read vOnAfterDelete            Write vOnAfterDelete;
   Property AfterPost       : TDataSetNotifyEvent Read vOnAfterPost              Write vOnAfterPost;
   Property OnGetDataError  : TOnEventConnection  Read vOnGetDataError           Write vOnGetDataError;         //Recebe os Erros de ExecSQL ou de GetData
+  Property AfterScroll     : TOnAfterScroll      Read vOnAfterScroll            Write vOnAfterScroll;
+  Property AfterOpen       : TOnAfterOpen        Read vOnAfterOpen              Write vOnAfterOpen;
   Property Active          : Boolean             Read vActive                   Write SetActiveDB;             //Estado do Dataset
   Property DataCache       : Boolean             Read vDataCache                Write vDataCache;              //Diz se será salvo o último Stream do Dataset
   Property Params          : TParams             Read vParams                   Write vParams;                 //Parametros de Dataset
@@ -589,6 +615,7 @@ Begin
   vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
   If Params <> Nil Then
    Begin
+    vTempQuery.Prepare;
     For I := 0 To Params.Count -1 Do
      Begin
       If vTempQuery.ParamCount > I Then
@@ -596,7 +623,18 @@ Begin
         vParamName := Copy(StringReplace(Params[I].Name, ',', '', []), 1, Length(Params[I].Name));
         A          := GetParamIndex(vTempQuery.Params, vParamName);
         If A > -1 Then//vTempQuery.ParamByName(vParamName) <> Nil Then
-         vTempQuery.Params[A].Value := Params[I].Value;
+         Begin
+          If vTempQuery.Params[A].DataType in [ftFixedChar, ftFixedWideChar,
+                                               ftString,    ftWideString]    Then
+           Begin
+            If vTempQuery.Params[A].Size > 0 Then
+             vTempQuery.Params[A].Value := Copy(Params[I].AsString, 1, vTempQuery.Params[A].Size)
+            Else
+             vTempQuery.Params[A].Value := Params[I].AsString;
+           End
+          Else
+           vTempQuery.Params[A].Value    := Params[I].Value;
+         End;
        End
       Else
        Break;
@@ -1304,6 +1342,46 @@ Begin
   vRESTDataBase := Nil;
 End;
 
+Procedure TRESTClientSQL.SetMasterDataSet(Value : TRESTClientSQL);
+Var
+ MasterDetailItem : TMasterDetailItem;
+Begin
+ If (vMasterDataSet <> Nil) Then
+  TRESTClientSQL(vMasterDataSet).vMasterDetailList.DeleteDS(TRESTClient(Self));
+ If (Value = Self) And (Value <> Nil) Then
+  Begin
+   vMasterDataSet := Nil;
+   MasterSource   := Nil;
+   MasterFields   := '';
+   Exit;
+  End;
+ vMasterDataSet := Value;
+ If (vMasterDataSet <> Nil) Then
+  Begin
+   MasterDetailItem         := TMasterDetailItem.Create;
+   MasterDetailItem.DataSet := TRESTClient(Self);
+   TRESTClientSQL(vMasterDataSet).vMasterDetailList.Add(MasterDetailItem);
+   vDataSource.DataSet := Value;
+   Try
+    MasterSource := vDataSource;
+   Except
+    vMasterDataSet := Nil;
+    MasterSource   := Nil;
+    MasterFields   := '';
+   End;
+  End
+ Else
+  Begin
+   MasterSource := Nil;
+   MasterFields := '';
+  End;
+End;
+
+Procedure TRESTClientSQL.SetMasterFields(Value: String);
+Begin
+
+End;
+
 Constructor TRESTClientSQL.Create(AOwner : TComponent);
 Begin
  Inherited;
@@ -1321,6 +1399,10 @@ Begin
  FieldDefsUPD                      := TFieldDefs.Create(Self);
  FieldDefs                         := FieldDefsUPD;
  vMasterDetailList                 := TMasterDetailList.Create;
+ vMasterDataSet                    := Nil;
+ vDataSource                       := TDataSource.Create(Nil);
+ TFDMemTable(Self).AfterScroll     := ProcAfterScroll;
+ TFDMemTable(Self).AfterOpen       := ProcAfterOpen;
  Inherited AfterPost               := OldAfterPost;
  Inherited AfterDelete             := OldAfterDelete;
 End;
@@ -1331,6 +1413,7 @@ Begin
  vParams.DisposeOf;
  FieldDefsUPD.DisposeOf;
  vMasterDetailList.DisposeOf;
+ vDataSource.DisposeOf;
  If vCacheDataDB <> Nil Then
   vCacheDataDB.DisposeOf;
  Inherited;
@@ -1409,6 +1492,22 @@ Begin
  If ParamList <> Nil Then
  For I := 0 to ParamList.Count -1 Do
   CreateParam(ParamList[I]);
+End;
+
+Procedure TRESTClientSQL.ProcAfterScroll(DataSet: TDataSet);
+Begin
+ If State = dsBrowse Then
+  PrepareDetails(True)
+ Else If State = dsInactive Then
+  PrepareDetails(False);
+ If Assigned(vOnAfterScroll) Then
+  vOnAfterScroll(Dataset);
+End;
+
+Procedure TRESTClientSQL.ProcAfterOpen(DataSet: TDataSet);
+Begin
+ If Assigned(vOnAfterOpen) Then
+  vOnAfterOpen(Dataset);
 End;
 
 Function  TRESTClientSQL.ApplyUpdates(Var Error : String) : Boolean;
@@ -1677,6 +1776,35 @@ Begin
   aSelf.CreateDataSet;
 End;
 
+Procedure TRESTClientSQL.PrepareDetails(ActiveMode : Boolean);
+Var
+ I : Integer;
+ vDetailClient : TRESTClientSQL;
+ Procedure CloneDetails(Value : TRESTClientSQL);
+ Var
+  I : Integer;
+ Begin
+  For I := 0 To Value.Params.Count -1 Do
+   Begin
+    If FindField(Value.Params[I].Name) <> Nil Then
+     Begin
+      Value.Params[I].DataType := FindField(Value.Params[I].Name).DataType;
+      Value.Params[I].Size     := FindField(Value.Params[I].Name).Size;
+      Value.Params[I].Value    := FindField(Value.Params[I].Name).Value;
+     End;
+   End;
+ End;
+Begin
+ For I := 0 To vMasterDetailList.Count -1 Do
+  Begin
+   vMasterDetailList.Items[I].ParseFields(TRESTClientSQL(vMasterDetailList.Items[I].DataSet).MasterFields);
+   vDetailClient        := TRESTClientSQL(vMasterDetailList.Items[I].DataSet);
+   vDetailClient.Active := False;
+   CloneDetails(vDetailClient);
+   vDetailClient.Active := ActiveMode;
+  End;
+End;
+
 Function TRESTClientSQL.GetData : Boolean;
 Var
  LDataSetList  : TFDJSONDataSets;
@@ -1729,6 +1857,10 @@ Begin
      vActive := GetData;
     If Assigned(vOnGetDataError) Then
      vOnGetDataError(True, '');
+    If State = dsBrowse Then
+     PrepareDetails(True)
+    Else If State = dsInactive Then
+     PrepareDetails(False);
    Except
     On E : Exception do
      Begin

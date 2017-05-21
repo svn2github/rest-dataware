@@ -5,17 +5,19 @@ Interface
 Uses System.SysUtils, System.Classes, Datasnap.DSServer;
 
 Type
- TRESTClientSQL    = Class End;
+ TRESTClient = Class End;
+
+Type
  TMasterDetailItem = Class
  Private
-  vDataSet : TRESTClientSQL;
+  vDataSet : TRESTClient;
   vFields  : TStringList;
  Protected
  Public
   Constructor Create;
   Destructor  Free;
   Procedure   ParseFields(Value : String);
-  Property    DataSet : TRESTClientSQL Read vDataSet Write vDataSet;
+  Property    DataSet : TRESTClient    Read vDataSet Write vDataSet;
   Property    Fields  : TStringList    Read vFields  Write vFields;
 End;
 
@@ -26,13 +28,16 @@ Type
   Procedure PutRec(Index    : Integer; Item : TMasterDetailItem); Overload;
  Protected
  Public
+  Function  GetItem(Value: TRESTClient)       : TMasterDetailItem;
   Procedure Delete(Index : Integer);                              Overload;
-  Procedure Delete(Value : TRESTClientSQL);                       Overload;
+  Procedure DeleteDS(Value : TRESTClient);
   Function  Add   (Item  : TMasterDetailItem) : Integer;          Overload;
   Property  Items[Index  : Integer]           : TMasterDetailItem   Read GetRec Write PutRec; Default;
 End;
 
 Implementation
+
+Uses uRestPoolerDB;
 
 { TMasterDetailList }
 
@@ -55,7 +60,23 @@ Begin
   End;
 End;
 
-Procedure TMasterDetailList.Delete(Value : TRESTClientSQL);
+Function TMasterDetailList.GetItem(Value : TRESTClient) : TMasterDetailItem;
+Var
+ I : Integer;
+Begin
+ Result := Nil;
+ For I := 0 To Self.Count -1 Do
+  Begin
+   If (TMasterDetailItem(TList(Self).Items[I]^)          <> Nil)   And
+      (TMasterDetailItem(TList(Self).Items[I]^).vDataSet =  Value) Then
+    Begin
+     Result := TMasterDetailItem(TList(Self).Items[I]^);
+     Break;
+    End;
+  End;
+End;
+
+Procedure TMasterDetailList.DeleteDS(Value : TRESTClient);
 Var
  I : Integer;
 Begin
@@ -98,8 +119,25 @@ Begin
 End;
 
 Procedure TMasterDetailItem.ParseFields(Value : String);
+Var
+ vTempFields : String;
 Begin
-// vFields
+ vFields.Clear;
+ vTempFields := Value;
+ While (vTempFields <> '') Do
+  Begin
+   If Pos(';', vTempFields) > 0 Then
+    Begin
+     vFields.Add(Trim(Copy(vTempFields, 1, Pos(';', vTempFields) -1)));
+     Delete(vTempFields, 1, Pos(';', vTempFields));
+    End
+   Else
+    Begin
+     vFields.Add(Trim(vTempFields));
+     vTempFields := '';
+    End;
+   vTempFields := Trim(vTempFields);
+  End;
 End;
 
 end.

@@ -83,4 +83,5 @@ Initialization
  UnlistPublishedProperty(TRESTClientSQL, 'ObjectView');
  UnlistPublishedProperty(TRESTClientSQL, 'StoreDefs');
  UnlistPublishedProperty(TRESTClientSQL, 'CachedUpdates');
+ UnlistPublishedProperty(TRESTClientSQL, 'MasterSource');
 end.

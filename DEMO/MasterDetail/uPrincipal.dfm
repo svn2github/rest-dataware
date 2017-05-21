@@ -2,8 +2,8 @@ object Form4: TForm4
   Left = 0
   Top = 0
   Caption = 'Form4'
-  ClientHeight = 201
-  ClientWidth = 447
+  ClientHeight = 340
+  ClientWidth = 614
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,10 +11,37 @@ object Form4: TForm4
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object DBGrid1: TDBGrid
+    Left = 8
+    Top = 8
+    Width = 598
+    Height = 169
+    DataSource = DataSource1
+    TabOrder = 0
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+  end
+  object DBGrid2: TDBGrid
+    Left = 8
+    Top = 183
+    Width = 598
+    Height = 152
+    DataSource = DataSource2
+    TabOrder = 1
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+  end
   object RESTDataBase: TRESTDataBase
-    Active = False
+    Active = True
     Compression = False
     Login = 'testserver'
     Password = 'testserver'
@@ -27,14 +54,74 @@ object Form4: TForm4
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
     RequestTimeOut = 10000
-    Encoding = esASCII
+    Encoding = esUtf8
     Context = 'datasnap'
     RESTContext = 'rest/'
     Left = 56
     Top = 34
   end
   object RESTClientSQL1: TRESTClientSQL
-    FieldDefs = <>
+    FieldDefs = <
+      item
+        Name = 'EMP_NO'
+        Attributes = [faRequired]
+        DataType = ftSmallint
+      end
+      item
+        Name = 'FIRST_NAME'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 15
+      end
+      item
+        Name = 'LAST_NAME'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'PHONE_EXT'
+        DataType = ftString
+        Size = 4
+      end
+      item
+        Name = 'HIRE_DATE'
+        Attributes = [faRequired]
+        DataType = ftTimeStamp
+      end
+      item
+        Name = 'DEPT_NO'
+        Attributes = [faRequired, faFixed]
+        DataType = ftFixedChar
+        Size = 3
+      end
+      item
+        Name = 'JOB_CODE'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 5
+      end
+      item
+        Name = 'JOB_GRADE'
+        Attributes = [faRequired]
+        DataType = ftSmallint
+      end
+      item
+        Name = 'JOB_COUNTRY'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 15
+      end
+      item
+        Name = 'SALARY'
+        Attributes = [faRequired]
+        DataType = ftFloat
+      end
+      item
+        Name = 'FULL_NAME'
+        DataType = ftString
+        Size = 37
+      end>
     IndexDefs = <>
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
@@ -48,7 +135,126 @@ object Form4: TForm4
     DataCache = False
     Params = <>
     DataBase = RESTDataBase
+    SQL.Strings = (
+      'select * from employee')
     Left = 152
     Top = 40
+    object RESTClientSQL1EMP_NO: TSmallintField
+      FieldName = 'EMP_NO'
+      Required = True
+    end
+    object RESTClientSQL1FIRST_NAME: TStringField
+      FieldName = 'FIRST_NAME'
+      Required = True
+      Size = 15
+    end
+    object RESTClientSQL1LAST_NAME: TStringField
+      FieldName = 'LAST_NAME'
+      Required = True
+    end
+    object RESTClientSQL1PHONE_EXT: TStringField
+      FieldName = 'PHONE_EXT'
+      Size = 4
+    end
+    object RESTClientSQL1HIRE_DATE: TSQLTimeStampField
+      FieldName = 'HIRE_DATE'
+      Required = True
+    end
+    object RESTClientSQL1DEPT_NO: TStringField
+      FieldName = 'DEPT_NO'
+      Required = True
+      FixedChar = True
+      Size = 3
+    end
+    object RESTClientSQL1JOB_CODE: TStringField
+      FieldName = 'JOB_CODE'
+      Required = True
+      Size = 5
+    end
+    object RESTClientSQL1JOB_GRADE: TSmallintField
+      FieldName = 'JOB_GRADE'
+      Required = True
+    end
+    object RESTClientSQL1JOB_COUNTRY: TStringField
+      FieldName = 'JOB_COUNTRY'
+      Required = True
+      Size = 15
+    end
+    object RESTClientSQL1SALARY: TFloatField
+      FieldName = 'SALARY'
+      Required = True
+    end
+    object RESTClientSQL1FULL_NAME: TStringField
+      FieldName = 'FULL_NAME'
+      Size = 37
+    end
+  end
+  object RESTClientSQL2: TRESTClientSQL
+    FieldDefs = <>
+    IndexDefs = <>
+    MasterFields = 'DEPT_NO'
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCountUpdatedRecords, uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CountUpdatedRecords = False
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    StoreDefs = True
+    MasterDataSet = RESTClientSQL1
+    DataCache = False
+    Params = <
+      item
+        DataType = ftString
+        Name = 'DEPT_NO'
+        ParamType = ptUnknown
+        Value = '000'
+      end>
+    DataBase = RESTDataBase
+    SQL.Strings = (
+      'select * from DEPARTMENT'
+      'where DEPT_NO = :DEPT_NO')
+    Left = 152
+    Top = 104
+    object RESTClientSQL2DEPT_NO: TStringField
+      FieldName = 'DEPT_NO'
+      Required = True
+      FixedChar = True
+      Size = 3
+    end
+    object RESTClientSQL2DEPARTMENT: TStringField
+      FieldName = 'DEPARTMENT'
+      Required = True
+      Size = 25
+    end
+    object RESTClientSQL2HEAD_DEPT: TStringField
+      FieldName = 'HEAD_DEPT'
+      FixedChar = True
+      Size = 3
+    end
+    object RESTClientSQL2MNGR_NO: TSmallintField
+      FieldName = 'MNGR_NO'
+    end
+    object RESTClientSQL2BUDGET: TFloatField
+      FieldName = 'BUDGET'
+    end
+    object RESTClientSQL2LOCATION: TStringField
+      FieldName = 'LOCATION'
+      Size = 15
+    end
+    object RESTClientSQL2PHONE_NO: TStringField
+      FieldName = 'PHONE_NO'
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = RESTClientSQL1
+    Left = 180
+    Top = 40
+  end
+  object DataSource2: TDataSource
+    DataSet = RESTClientSQL2
+    Left = 180
+    Top = 104
   end
 end
