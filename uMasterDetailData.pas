@@ -2,7 +2,7 @@ unit uMasterDetailData;
 
 Interface
 
-Uses System.SysUtils, System.Classes, Datasnap.DSServer;
+Uses System.SysUtils, System.Classes;
 
 Type
  TRESTClient = Class End;

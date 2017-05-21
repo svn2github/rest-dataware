@@ -214,9 +214,9 @@ Type
   Property  StoreDefs;
   Property  CachedUpdates;
   Property  MasterSource;
-  Procedure ProcAfterScroll(DataSet: TDataSet);
-  Procedure ProcAfterOpen  (DataSet: TDataSet);
-  Procedure ProcAfterInsert(DataSet: TDataSet);
+  Procedure ProcAfterScroll (DataSet: TDataSet);
+  Procedure ProcAfterOpen   (DataSet: TDataSet);
+  Procedure ProcAfterInsert (DataSet: TDataSet);
   Procedure ProcBeforeDelete(DataSet: TDataSet);
  Protected
   Function  CanObserve(const ID: Integer): Boolean; Override;
@@ -1523,7 +1523,12 @@ End;
 Procedure TRESTClientSQL.ProcAfterScroll(DataSet: TDataSet);
 Begin
  If State = dsBrowse Then
-  PrepareDetails(True)
+  Begin
+   If RecordCount = 0 Then
+    PrepareDetailsNew
+   Else
+    PrepareDetails(True)
+  End
  Else If State = dsInactive Then
   PrepareDetails(False)
  Else If State = dsInsert Then
@@ -1885,7 +1890,10 @@ Begin
    vMasterDetailList.Items[I].ParseFields(TRESTClientSQL(vMasterDetailList.Items[I].DataSet).MasterFields);
    vDetailClient        := TRESTClientSQL(vMasterDetailList.Items[I].DataSet);
    If vDetailClient <> Nil Then
-    vDetailClient.EmptyDataSet;
+    Begin
+     vDetailClient.EmptyDataSet;
+     vDetailClient.ProcAfterScroll(vDetailClient);
+    End;
   End;
 End;
 
