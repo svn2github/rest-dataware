@@ -2,8 +2,8 @@ object Form4: TForm4
   Left = 0
   Top = 0
   Caption = 'Form4'
-  ClientHeight = 340
-  ClientWidth = 1083
+  ClientHeight = 499
+  ClientWidth = 613
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -42,9 +42,9 @@ object Form4: TForm4
     TitleFont.Style = []
   end
   object DBGrid3: TDBGrid
-    Left = 612
-    Top = 183
-    Width = 461
+    Left = 8
+    Top = 341
+    Width = 598
     Height = 152
     DataSource = DataSource3
     TabOrder = 2
@@ -55,7 +55,7 @@ object Form4: TForm4
     TitleFont.Style = []
   end
   object RESTDataBase: TRESTDataBase
-    Active = True
+    Active = False
     Compression = False
     Login = 'testserver'
     Password = 'testserver'
@@ -149,11 +149,9 @@ object Form4: TForm4
     DataCache = False
     Params = <
       item
-        DataType = ftString
+        DataType = ftUnknown
         Name = 'DEPT_NO'
         ParamType = ptUnknown
-        Size = 3
-        Value = '000'
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
@@ -243,10 +241,9 @@ object Form4: TForm4
     DataCache = False
     Params = <
       item
-        DataType = ftSmallint
+        DataType = ftUnknown
         Name = 'EMP_NO'
         ParamType = ptUnknown
-        Value = 12
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
