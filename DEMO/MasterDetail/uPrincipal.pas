@@ -37,6 +37,7 @@ type
     RESTClientSQL2SALARY: TFloatField;
     RESTClientSQL2FULL_NAME: TStringField;
     procedure FormCreate(Sender: TObject);
+    procedure RESTClientSQL1AfterDelete(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -53,6 +54,14 @@ implementation
 procedure TForm4.FormCreate(Sender: TObject);
 begin
  RESTClientSQL1.Open;
+end;
+
+procedure TForm4.RESTClientSQL1AfterDelete(DataSet: TDataSet);
+Var
+ vError : String;
+begin
+ If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
+  MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
 end;
 
 end.

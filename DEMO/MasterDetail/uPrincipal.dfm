@@ -11,6 +11,7 @@ object Form4: TForm4
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -61,7 +62,10 @@ object Form4: TForm4
     Top = 34
   end
   object RESTClientSQL1: TRESTClientSQL
+    AfterPost = RESTClientSQL1AfterDelete
+    AfterDelete = RESTClientSQL1AfterDelete
     FieldDefs = <>
+    CachedUpdates = True
     IndexDefs = <>
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
@@ -77,6 +81,7 @@ object Form4: TForm4
     DataBase = RESTDataBase
     SQL.Strings = (
       'select * from DEPARTMENT')
+    UpdateTableName = 'DEPARTMENT'
     Left = 152
     Top = 40
     object RESTClientSQL1DEPT_NO: TStringField
@@ -110,6 +115,8 @@ object Form4: TForm4
     end
   end
   object RESTClientSQL2: TRESTClientSQL
+    AfterPost = RESTClientSQL1AfterDelete
+    AfterDelete = RESTClientSQL1AfterDelete
     FieldDefs = <
       item
         Name = 'EMP_NO'
@@ -171,6 +178,7 @@ object Form4: TForm4
         DataType = ftString
         Size = 37
       end>
+    CachedUpdates = True
     IndexDefs = <>
     MasterFields = 'DEPT_NO'
     FetchOptions.AssignedValues = [evMode]
@@ -194,6 +202,7 @@ object Form4: TForm4
     SQL.Strings = (
       'select * from employee'
       'where dept_no = :dept_no')
+    UpdateTableName = 'employee'
     Left = 152
     Top = 104
     object RESTClientSQL2EMP_NO: TSmallintField

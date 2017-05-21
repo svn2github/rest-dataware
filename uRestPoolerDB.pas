@@ -30,6 +30,7 @@ Type
  TOnAfterScroll           = Procedure (DataSet : TDataSet)         of Object;
  TOnAfterOpen             = Procedure (DataSet : TDataSet)         of Object;
  TOnAfterInsert           = Procedure (DataSet : TDataSet)         of Object;
+ TOnBeforeDelete          = Procedure (DataSet : TDataSet)         of Object;
  TExecuteProc             = Reference to Procedure;
  TOnEventConnection       = Procedure (Sucess  : Boolean;
                                        Const Error : String)       of Object;
@@ -166,9 +167,11 @@ Type
   vOnAfterScroll       : TOnAfterScroll;
   vOnAfterOpen         : TOnAfterOpen;
   vOnAfterInsert       : TOnAfterInsert;
+  vOnBeforeDelete      : TOnBeforeDelete;
   Owner                : TComponent;
   vMasterFields,
   vUpdateTableName     : String;                          //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
+  vCascadeDelete,
   vBeforeClone,
   vDataCache,                                             //Se usa cache local
   vConnectedOnce,                                         //Verifica se foi conectado ao Servidor
@@ -214,6 +217,7 @@ Type
   Procedure ProcAfterScroll(DataSet: TDataSet);
   Procedure ProcAfterOpen  (DataSet: TDataSet);
   Procedure ProcAfterInsert(DataSet: TDataSet);
+  Procedure ProcBeforeDelete(DataSet: TDataSet);
  Protected
   Function  CanObserve(const ID: Integer): Boolean; Override;
  Public
@@ -232,12 +236,14 @@ Type
   procedure   OpenCursor(InfoQuery: Boolean); Override;   //Subscrevendo o OpenCursor para não ter erros de ADD Fields em Tempo de Design
  Published
   Property MasterDataSet   : TRESTClientSQL      Read vMasterDataSet            Write SetMasterDataSet;
+  Property MasterCascadeDelete : Boolean         Read vCascadeDelete            Write vCascadeDelete;
   Property AfterDelete     : TDataSetNotifyEvent Read vOnAfterDelete            Write vOnAfterDelete;
   Property AfterPost       : TDataSetNotifyEvent Read vOnAfterPost              Write vOnAfterPost;
   Property OnGetDataError  : TOnEventConnection  Read vOnGetDataError           Write vOnGetDataError;         //Recebe os Erros de ExecSQL ou de GetData
   Property AfterScroll     : TOnAfterScroll      Read vOnAfterScroll            Write vOnAfterScroll;
   Property AfterOpen       : TOnAfterOpen        Read vOnAfterOpen              Write vOnAfterOpen;
   Property AfterInsert     : TOnAfterInsert      Read vOnAfterInsert            Write vOnAfterInsert;
+  Property BeforeDelete    : TOnBeforeDelete     Read vOnBeforeDelete           Write vOnBeforeDelete;
   Property Active          : Boolean             Read vActive                   Write SetActiveDB;             //Estado do Dataset
   Property DataCache       : Boolean             Read vDataCache                Write vDataCache;              //Diz se será salvo o último Stream do Dataset
   Property Params          : TParams             Read vParams                   Write vParams;                 //Parametros de Dataset
@@ -753,12 +759,24 @@ begin
   vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
   If Params <> Nil Then
    Begin
+    vTempQuery.Prepare;
     For I := 0 To Params.Count -1 Do
      Begin
       If vTempQuery.ParamCount > I Then
        Begin
         If vTempQuery.ParamByName(Params[I].Name) <> Nil Then
-         vTempQuery.ParamByName(Params[I].Name).Value := Params[I].Value;
+         Begin
+          If vTempQuery.ParamByName(Params[I].Name).DataType in [ftFixedChar, ftFixedWideChar,
+                                               ftString,    ftWideString]    Then
+           Begin
+            If vTempQuery.ParamByName(Params[I].Name).Size > 0 Then
+             vTempQuery.ParamByName(Params[I].Name).Value := Copy(Params[I].AsString, 1, vTempQuery.ParamByName(Params[I].Name).Size)
+            Else
+             vTempQuery.ParamByName(Params[I].Name).Value := Params[I].AsString;
+           End
+          Else
+           vTempQuery.ParamByName(Params[I].Name).Value    := Params[I].Value;
+         End;
        End
       Else
        Break;
@@ -1396,6 +1414,7 @@ Begin
  vActive                           := False;
  UpdateOptions.CountUpdatedRecords := False;
  vBeforeClone                      := False;
+ vCascadeDelete                    := True;
  vSQL                              := TStringList.Create;
  vSQL.OnChange                     := OnChangingSQL;
  vParams                           := TParams.Create;
@@ -1409,6 +1428,7 @@ Begin
  TFDMemTable(Self).AfterScroll     := ProcAfterScroll;
  TFDMemTable(Self).AfterOpen       := ProcAfterOpen;
  TFDMemTable(Self).AfterInsert     := ProcAfterInsert;
+ TFDMemTable(Self).BeforeDelete    := ProcBeforeDelete;
  Inherited AfterPost               := OldAfterPost;
  Inherited AfterDelete             := OldAfterDelete;
 End;
@@ -1512,6 +1532,29 @@ Begin
   vOnAfterScroll(Dataset);
 End;
 
+Procedure TRESTClientSQL.ProcBeforeDelete(DataSet: TDataSet);
+Var
+ I : Integer;
+ vDetailClient : TRESTClientSQL;
+Begin
+ If Assigned(vOnBeforeDelete) Then
+  vOnBeforeDelete(DataSet);
+ If vCascadeDelete Then
+  Begin
+   For I := 0 To vMasterDetailList.Count -1 Do
+    Begin
+     vMasterDetailList.Items[I].ParseFields(TRESTClientSQL(vMasterDetailList.Items[I].DataSet).MasterFields);
+     vDetailClient        := TRESTClientSQL(vMasterDetailList.Items[I].DataSet);
+     If vDetailClient <> Nil Then
+      Begin
+       vDetailClient.First;
+       While Not vDetailClient.Eof Do
+        vDetailClient.Delete;
+      End;
+    End;
+  End;
+End;
+
 Procedure TRESTClientSQL.ProcAfterInsert(DataSet: TDataSet);
 Var
  I : Integer;
@@ -1594,7 +1637,7 @@ Begin
  Result       := Not vError;
  Error        := vMessageError;
  vErrorBefore := vError;
- If Result Then
+ If (Result) And (Not(vError)) Then
   TFDMemTable(Self).ApplyUpdates(-1);
 End;
 
@@ -1841,7 +1884,8 @@ Begin
   Begin
    vMasterDetailList.Items[I].ParseFields(TRESTClientSQL(vMasterDetailList.Items[I].DataSet).MasterFields);
    vDetailClient        := TRESTClientSQL(vMasterDetailList.Items[I].DataSet);
-   vDetailClient.EmptyDataSet;
+   If vDetailClient <> Nil Then
+    vDetailClient.EmptyDataSet;
   End;
 End;
 
@@ -1868,9 +1912,12 @@ Begin
   Begin
    vMasterDetailList.Items[I].ParseFields(TRESTClientSQL(vMasterDetailList.Items[I].DataSet).MasterFields);
    vDetailClient        := TRESTClientSQL(vMasterDetailList.Items[I].DataSet);
-   vDetailClient.Active := False;
-   CloneDetails(vDetailClient);
-   vDetailClient.Active := ActiveMode;
+   If vDetailClient <> Nil Then
+    Begin
+     vDetailClient.Active := False;
+     CloneDetails(vDetailClient);
+     vDetailClient.Active := ActiveMode;
+    End;
   End;
 End;
 
