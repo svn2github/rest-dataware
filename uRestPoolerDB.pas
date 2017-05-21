@@ -171,6 +171,7 @@ Type
   vOnAfterInsert       : TOnAfterInsert;
   vOnBeforeDelete      : TOnBeforeDelete;
   Owner                : TComponent;
+  vAutoIncFields,
   vMasterFields,
   vUpdateTableName     : String;                          //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
   vCascadeDelete,
@@ -253,6 +254,7 @@ Type
   Property DataBase        : TRESTDataBase       Read vRESTDataBase             Write SetDataBase;             //Database REST do Dataset
   Property SQL             : TStringList         Read vSQL                      Write SetSQL;                  //SQL a ser Executado
   Property UpdateTableName : String              Read vUpdateTableName          Write SetUpdateTableName;      //Tabela que será usada para Reflexão de Dados
+//  Property AutoIncFields   : String              Read vAutoIncFields            Write vAutoIncFields;
 End;
 
 
@@ -305,16 +307,16 @@ Type
   Function  GetConnection : TFDConnection;
  Public
   Procedure ApplyChanges(TableName,
-                         SQL        : String;
-                         Params     : TParams;
-                         Var Error  : Boolean;
-                         Var MessageError : String;
-                         Const ADeltaList: TFDJSONDeltas);Overload;
+                         SQL               : String;
+                         Params            : TParams;
+                         Var Error         : Boolean;
+                         Var MessageError  : String;
+                         Const ADeltaList  : TFDJSONDeltas);Overload;
   Procedure ApplyChanges(TableName,
-                         SQL        : String;
-                         Var Error  : Boolean;
-                         Var MessageError : String;
-                         Const ADeltaList: TFDJSONDeltas);Overload;
+                         SQL               : String;
+                         Var Error         : Boolean;
+                         Var MessageError  : String;
+                         Const ADeltaList  : TFDJSONDeltas);Overload;
   Function ExecuteCommand(SQL        : String;
                           Var Error  : Boolean;
                           Var MessageError : String;
@@ -689,10 +691,10 @@ Begin
 End;
 
 Procedure TRESTPoolerDB.ApplyChanges(TableName,
-                                     SQL              : String;
-                                     Var Error        : Boolean;
-                                     Var MessageError : String;
-                                     Const ADeltaList : TFDJSONDeltas);
+                                     SQL               : String;
+                                     Var Error         : Boolean;
+                                     Var MessageError  : String;
+                                     Const ADeltaList  : TFDJSONDeltas);
 Var
  vTempQuery : TFDQuery;
  LApply     : IFDJSONDeltasApplyUpdates;
@@ -743,15 +745,16 @@ begin
 end;
 
 Procedure TRESTPoolerDB.ApplyChanges(TableName,
-                                     SQL              : String;
-                                     Params           : TParams;
-                                     Var Error        : Boolean;
-                                     Var MessageError : String;
-                                     Const ADeltaList : TFDJSONDeltas);
+                                     SQL               : String;
+                                     Params            : TParams;
+                                     Var Error         : Boolean;
+                                     Var MessageError  : String;
+                                     Const ADeltaList  : TFDJSONDeltas);
 Var
- I          : Integer;
- vTempQuery : TFDQuery;
- LApply     : IFDJSONDeltasApplyUpdates;
+ I            : Integer;
+ vTempQuery   : TFDQuery;
+ LApply       : IFDJSONDeltasApplyUpdates;
+ vTempWriter  : TFDJSONDeltasWriter;
 begin
  Error  := False;
  vTempQuery               := TFDQuery.Create(Owner);
@@ -770,7 +773,7 @@ begin
         If vTempQuery.ParamByName(Params[I].Name) <> Nil Then
          Begin
           If vTempQuery.ParamByName(Params[I].Name).DataType in [ftFixedChar, ftFixedWideChar,
-                                               ftString,    ftWideString]    Then
+                                                                 ftString,    ftWideString]    Then
            Begin
             If vTempQuery.ParamByName(Params[I].Name).Size > 0 Then
              vTempQuery.ParamByName(Params[I].Name).Value := Copy(Params[I].AsString, 1, vTempQuery.ParamByName(Params[I].Name).Size)
@@ -798,11 +801,8 @@ begin
  LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
  vTempQuery.UpdateOptions.UpdateTableName := TableName;
  Try
-//  If Database.Transaction <> Nil Then
-//   Database.Transaction.StartTransaction;
   LApply.ApplyUpdates(0,  vTempQuery.Command);
  Except
-
  End;
  If LApply.Errors.Count > 0 then
   Begin
@@ -810,16 +810,10 @@ begin
    MessageError := LApply.Errors.Strings.Text;
   End;
  Try
- // If Database.Transaction <> Nil Then
-//   Database.Transaction.Commit
-//  Else
   Database.CommitRetaining;
  Except
   On E : Exception do
    Begin
- //   If Database.Transaction <> Nil Then
- //    Database.Transaction.Rollback
- //   Else
     Database.RollbackRetaining;
     Error := True;
     MessageError := E.Message;

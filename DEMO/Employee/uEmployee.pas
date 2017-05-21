@@ -74,6 +74,8 @@ type
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
+   Function GetGenID(GenName  : String;
+                     DataBase : TRESTDataBase): Integer;
   public
     { Public declarations }
   end;
@@ -84,6 +86,24 @@ var
 implementation
 
 {$R *.dfm}
+
+Function TfEmployee.GetGenID(GenName  : String;
+                             DataBase : TRESTDataBase): Integer;
+Var
+ vTempClient : TRESTClientSQL;
+Begin
+ vTempClient := TRESTClientSQL.Create(Nil);
+ Result      := -1;
+ Try
+  vTempClient.DataBase := DataBase;
+  vTempClient.SQL.Add(Format('select gen_id(%s, 1)GenID From rdb$database', [GenName]));
+  vTempClient.Active := True;
+  Result := vTempClient.FindField('GenID').AsInteger;
+ Except
+
+ End;
+ vTempClient.Free;
+End;
 
 procedure TfEmployee.FormCreate(Sender: TObject);
 begin
@@ -102,6 +122,7 @@ end;
 
 procedure TfEmployee.rEmployeeAfterInsert(DataSet: TDataSet);
 begin
+ rEmployeeEMP_NO.AsInteger     := GetGenID('EMP_NO_GEN', rEmployee.DataBase);
  rEmployeeHIRE_DATE.AsDateTime := Now;
 end;
 
@@ -113,12 +134,6 @@ begin
   Begin
    MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
    Dataset.Edit;
-  End
- Else
-  Begin
-   TRESTClientSQL(DataSet).Close;
-   TRESTClientSQL(DataSet).Open;
-   TRESTClientSQL(DataSet).Last;
   End;
 end;
 
