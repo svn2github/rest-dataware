@@ -61,6 +61,55 @@ object Form4: TForm4
     Top = 34
   end
   object RESTClientSQL1: TRESTClientSQL
+    FieldDefs = <>
+    IndexDefs = <>
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCountUpdatedRecords, uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CountUpdatedRecords = False
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    StoreDefs = True
+    DataCache = False
+    Params = <>
+    DataBase = RESTDataBase
+    SQL.Strings = (
+      'select * from DEPARTMENT')
+    Left = 152
+    Top = 40
+    object RESTClientSQL1DEPT_NO: TStringField
+      FieldName = 'DEPT_NO'
+      Required = True
+      FixedChar = True
+      Size = 3
+    end
+    object RESTClientSQL1DEPARTMENT: TStringField
+      FieldName = 'DEPARTMENT'
+      Required = True
+      Size = 25
+    end
+    object RESTClientSQL1HEAD_DEPT: TStringField
+      FieldName = 'HEAD_DEPT'
+      FixedChar = True
+      Size = 3
+    end
+    object RESTClientSQL1MNGR_NO: TSmallintField
+      FieldName = 'MNGR_NO'
+    end
+    object RESTClientSQL1BUDGET: TFloatField
+      FieldName = 'BUDGET'
+    end
+    object RESTClientSQL1LOCATION: TStringField
+      FieldName = 'LOCATION'
+      Size = 15
+    end
+    object RESTClientSQL1PHONE_NO: TStringField
+      FieldName = 'PHONE_NO'
+    end
+  end
+  object RESTClientSQL2: TRESTClientSQL
     FieldDefs = <
       item
         Name = 'EMP_NO'
@@ -123,75 +172,6 @@ object Form4: TForm4
         Size = 37
       end>
     IndexDefs = <>
-    FetchOptions.AssignedValues = [evMode]
-    FetchOptions.Mode = fmAll
-    ResourceOptions.AssignedValues = [rvSilentMode]
-    ResourceOptions.SilentMode = True
-    UpdateOptions.AssignedValues = [uvCountUpdatedRecords, uvCheckRequired, uvAutoCommitUpdates]
-    UpdateOptions.CountUpdatedRecords = False
-    UpdateOptions.CheckRequired = False
-    UpdateOptions.AutoCommitUpdates = True
-    StoreDefs = True
-    DataCache = False
-    Params = <>
-    DataBase = RESTDataBase
-    SQL.Strings = (
-      'select * from employee')
-    Left = 152
-    Top = 40
-    object RESTClientSQL1EMP_NO: TSmallintField
-      FieldName = 'EMP_NO'
-      Required = True
-    end
-    object RESTClientSQL1FIRST_NAME: TStringField
-      FieldName = 'FIRST_NAME'
-      Required = True
-      Size = 15
-    end
-    object RESTClientSQL1LAST_NAME: TStringField
-      FieldName = 'LAST_NAME'
-      Required = True
-    end
-    object RESTClientSQL1PHONE_EXT: TStringField
-      FieldName = 'PHONE_EXT'
-      Size = 4
-    end
-    object RESTClientSQL1HIRE_DATE: TSQLTimeStampField
-      FieldName = 'HIRE_DATE'
-      Required = True
-    end
-    object RESTClientSQL1DEPT_NO: TStringField
-      FieldName = 'DEPT_NO'
-      Required = True
-      FixedChar = True
-      Size = 3
-    end
-    object RESTClientSQL1JOB_CODE: TStringField
-      FieldName = 'JOB_CODE'
-      Required = True
-      Size = 5
-    end
-    object RESTClientSQL1JOB_GRADE: TSmallintField
-      FieldName = 'JOB_GRADE'
-      Required = True
-    end
-    object RESTClientSQL1JOB_COUNTRY: TStringField
-      FieldName = 'JOB_COUNTRY'
-      Required = True
-      Size = 15
-    end
-    object RESTClientSQL1SALARY: TFloatField
-      FieldName = 'SALARY'
-      Required = True
-    end
-    object RESTClientSQL1FULL_NAME: TStringField
-      FieldName = 'FULL_NAME'
-      Size = 37
-    end
-  end
-  object RESTClientSQL2: TRESTClientSQL
-    FieldDefs = <>
-    IndexDefs = <>
     MasterFields = 'DEPT_NO'
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
@@ -206,45 +186,64 @@ object Form4: TForm4
     DataCache = False
     Params = <
       item
-        DataType = ftString
-        Name = 'DEPT_NO'
+        DataType = ftUnknown
+        Name = 'dept_no'
         ParamType = ptUnknown
-        Value = '000'
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
-      'select * from DEPARTMENT'
-      'where DEPT_NO = :DEPT_NO')
+      'select * from employee'
+      'where dept_no = :dept_no')
     Left = 152
     Top = 104
+    object RESTClientSQL2EMP_NO: TSmallintField
+      FieldName = 'EMP_NO'
+      Required = True
+    end
+    object RESTClientSQL2FIRST_NAME: TStringField
+      FieldName = 'FIRST_NAME'
+      Required = True
+      Size = 15
+    end
+    object RESTClientSQL2LAST_NAME: TStringField
+      FieldName = 'LAST_NAME'
+      Required = True
+    end
+    object RESTClientSQL2PHONE_EXT: TStringField
+      FieldName = 'PHONE_EXT'
+      Size = 4
+    end
+    object RESTClientSQL2HIRE_DATE: TSQLTimeStampField
+      FieldName = 'HIRE_DATE'
+      Required = True
+    end
     object RESTClientSQL2DEPT_NO: TStringField
       FieldName = 'DEPT_NO'
       Required = True
       FixedChar = True
       Size = 3
     end
-    object RESTClientSQL2DEPARTMENT: TStringField
-      FieldName = 'DEPARTMENT'
+    object RESTClientSQL2JOB_CODE: TStringField
+      FieldName = 'JOB_CODE'
       Required = True
-      Size = 25
+      Size = 5
     end
-    object RESTClientSQL2HEAD_DEPT: TStringField
-      FieldName = 'HEAD_DEPT'
-      FixedChar = True
-      Size = 3
+    object RESTClientSQL2JOB_GRADE: TSmallintField
+      FieldName = 'JOB_GRADE'
+      Required = True
     end
-    object RESTClientSQL2MNGR_NO: TSmallintField
-      FieldName = 'MNGR_NO'
-    end
-    object RESTClientSQL2BUDGET: TFloatField
-      FieldName = 'BUDGET'
-    end
-    object RESTClientSQL2LOCATION: TStringField
-      FieldName = 'LOCATION'
+    object RESTClientSQL2JOB_COUNTRY: TStringField
+      FieldName = 'JOB_COUNTRY'
+      Required = True
       Size = 15
     end
-    object RESTClientSQL2PHONE_NO: TStringField
-      FieldName = 'PHONE_NO'
+    object RESTClientSQL2SALARY: TFloatField
+      FieldName = 'SALARY'
+      Required = True
+    end
+    object RESTClientSQL2FULL_NAME: TStringField
+      FieldName = 'FULL_NAME'
+      Size = 37
     end
   end
   object DataSource1: TDataSource

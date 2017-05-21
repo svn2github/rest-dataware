@@ -128,12 +128,12 @@ Begin
   Begin
    If Pos(';', vTempFields) > 0 Then
     Begin
-     vFields.Add(Trim(Copy(vTempFields, 1, Pos(';', vTempFields) -1)));
+     vFields.Add(UpperCase(Trim(Copy(vTempFields, 1, Pos(';', vTempFields) -1))));
      Delete(vTempFields, 1, Pos(';', vTempFields));
     End
    Else
     Begin
-     vFields.Add(Trim(vTempFields));
+     vFields.Add(UpperCase(Trim(vTempFields)));
      vTempFields := '';
     End;
    vTempFields := Trim(vTempFields);

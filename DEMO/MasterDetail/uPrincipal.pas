@@ -13,29 +13,29 @@ type
   TForm4 = class(TForm)
     RESTDataBase: TRESTDataBase;
     RESTClientSQL1: TRESTClientSQL;
-    RESTClientSQL1EMP_NO: TSmallintField;
-    RESTClientSQL1FIRST_NAME: TStringField;
-    RESTClientSQL1LAST_NAME: TStringField;
-    RESTClientSQL1PHONE_EXT: TStringField;
-    RESTClientSQL1HIRE_DATE: TSQLTimeStampField;
-    RESTClientSQL1DEPT_NO: TStringField;
-    RESTClientSQL1JOB_CODE: TStringField;
-    RESTClientSQL1JOB_GRADE: TSmallintField;
-    RESTClientSQL1JOB_COUNTRY: TStringField;
-    RESTClientSQL1SALARY: TFloatField;
-    RESTClientSQL1FULL_NAME: TStringField;
     RESTClientSQL2: TRESTClientSQL;
-    RESTClientSQL2DEPT_NO: TStringField;
-    RESTClientSQL2DEPARTMENT: TStringField;
-    RESTClientSQL2HEAD_DEPT: TStringField;
-    RESTClientSQL2MNGR_NO: TSmallintField;
-    RESTClientSQL2BUDGET: TFloatField;
-    RESTClientSQL2LOCATION: TStringField;
-    RESTClientSQL2PHONE_NO: TStringField;
     DataSource1: TDataSource;
     DataSource2: TDataSource;
     DBGrid1: TDBGrid;
     DBGrid2: TDBGrid;
+    RESTClientSQL1DEPT_NO: TStringField;
+    RESTClientSQL1DEPARTMENT: TStringField;
+    RESTClientSQL1HEAD_DEPT: TStringField;
+    RESTClientSQL1MNGR_NO: TSmallintField;
+    RESTClientSQL1BUDGET: TFloatField;
+    RESTClientSQL1LOCATION: TStringField;
+    RESTClientSQL1PHONE_NO: TStringField;
+    RESTClientSQL2EMP_NO: TSmallintField;
+    RESTClientSQL2FIRST_NAME: TStringField;
+    RESTClientSQL2LAST_NAME: TStringField;
+    RESTClientSQL2PHONE_EXT: TStringField;
+    RESTClientSQL2HIRE_DATE: TSQLTimeStampField;
+    RESTClientSQL2DEPT_NO: TStringField;
+    RESTClientSQL2JOB_CODE: TStringField;
+    RESTClientSQL2JOB_GRADE: TSmallintField;
+    RESTClientSQL2JOB_COUNTRY: TStringField;
+    RESTClientSQL2SALARY: TFloatField;
+    RESTClientSQL2FULL_NAME: TStringField;
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }

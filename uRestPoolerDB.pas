@@ -29,6 +29,7 @@ Type
  TOnEventDB               = Procedure (DataSet : TDataSet)         of Object;
  TOnAfterScroll           = Procedure (DataSet : TDataSet)         of Object;
  TOnAfterOpen             = Procedure (DataSet : TDataSet)         of Object;
+ TOnAfterInsert           = Procedure (DataSet : TDataSet)         of Object;
  TExecuteProc             = Reference to Procedure;
  TOnEventConnection       = Procedure (Sucess  : Boolean;
                                        Const Error : String)       of Object;
@@ -164,6 +165,7 @@ Type
   vDataSource          : TDataSource;
   vOnAfterScroll       : TOnAfterScroll;
   vOnAfterOpen         : TOnAfterOpen;
+  vOnAfterInsert       : TOnAfterInsert;
   Owner                : TComponent;
   vMasterFields,
   vUpdateTableName     : String;                          //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
@@ -210,6 +212,7 @@ Type
   Property  MasterSource;
   Procedure ProcAfterScroll(DataSet: TDataSet);
   Procedure ProcAfterOpen  (DataSet: TDataSet);
+  Procedure ProcAfterInsert(DataSet: TDataSet);
  Protected
   Function  CanObserve(const ID: Integer): Boolean; Override;
  Public
@@ -233,6 +236,7 @@ Type
   Property OnGetDataError  : TOnEventConnection  Read vOnGetDataError           Write vOnGetDataError;         //Recebe os Erros de ExecSQL ou de GetData
   Property AfterScroll     : TOnAfterScroll      Read vOnAfterScroll            Write vOnAfterScroll;
   Property AfterOpen       : TOnAfterOpen        Read vOnAfterOpen              Write vOnAfterOpen;
+  Property AfterInsert     : TOnAfterInsert      Read vOnAfterInsert            Write vOnAfterInsert;
   Property Active          : Boolean             Read vActive                   Write SetActiveDB;             //Estado do Dataset
   Property DataCache       : Boolean             Read vDataCache                Write vDataCache;              //Diz se será salvo o último Stream do Dataset
   Property Params          : TParams             Read vParams                   Write vParams;                 //Parametros de Dataset
@@ -1403,6 +1407,7 @@ Begin
  vDataSource                       := TDataSource.Create(Nil);
  TFDMemTable(Self).AfterScroll     := ProcAfterScroll;
  TFDMemTable(Self).AfterOpen       := ProcAfterOpen;
+ TFDMemTable(Self).AfterInsert     := ProcAfterInsert;
  Inherited AfterPost               := OldAfterPost;
  Inherited AfterDelete             := OldAfterDelete;
 End;
@@ -1502,6 +1507,54 @@ Begin
   PrepareDetails(False);
  If Assigned(vOnAfterScroll) Then
   vOnAfterScroll(Dataset);
+End;
+
+Procedure TRESTClientSQL.ProcAfterInsert(DataSet: TDataSet);
+Var
+ I : Integer;
+ vFields       : TStringList;
+ vDetailClient : TRESTClientSQL;
+ Procedure CloneDetails(Value : TRESTClientSQL; FieldName : String);
+ Begin
+  If (FindField(FieldName) <> Nil) And (Value.FindField(FieldName) <> Nil) Then
+   FindField(FieldName).Value := Value.FindField(FieldName).Value;
+ End;
+ Procedure ParseFields(Value : String);
+ Var
+  vTempFields : String;
+ Begin
+  vFields.Clear;
+  vTempFields := Value;
+  While (vTempFields <> '') Do
+   Begin
+    If Pos(';', vTempFields) > 0 Then
+     Begin
+      vFields.Add(UpperCase(Trim(Copy(vTempFields, 1, Pos(';', vTempFields) -1))));
+      System.Delete(vTempFields, 1, Pos(';', vTempFields));
+     End
+    Else
+     Begin
+      vFields.Add(UpperCase(Trim(vTempFields)));
+      vTempFields := '';
+     End;
+    vTempFields := Trim(vTempFields);
+   End;
+ End;
+Begin
+ vDetailClient := vMasterDataSet;
+ If (vDetailClient <> Nil) And (Fields.Count > 0) Then
+  Begin
+   vFields     := TStringList.Create;
+   ParseFields(MasterFields);
+   For I := 0 To vFields.Count -1 Do
+    Begin
+     If vDetailClient.FindField(vFields[I]) <> Nil Then
+      CloneDetails(vDetailClient, vFields[I]);
+    End;
+   vFields.DisposeOf;
+  End;
+ If Assigned(vOnAfterInsert) Then
+  vOnAfterOpen(Dataset);
 End;
 
 Procedure TRESTClientSQL.ProcAfterOpen(DataSet: TDataSet);
