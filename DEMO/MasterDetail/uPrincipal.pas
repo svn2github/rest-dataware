@@ -36,6 +36,15 @@ type
     RESTClientSQL2JOB_COUNTRY: TStringField;
     RESTClientSQL2SALARY: TFloatField;
     RESTClientSQL2FULL_NAME: TStringField;
+    RESTClientSQL3: TRESTClientSQL;
+    DataSource3: TDataSource;
+    RESTClientSQL3EMP_NO: TSmallintField;
+    RESTClientSQL3CHANGE_DATE: TSQLTimeStampField;
+    RESTClientSQL3UPDATER_ID: TStringField;
+    RESTClientSQL3OLD_SALARY: TFloatField;
+    RESTClientSQL3PERCENT_CHANGE: TFloatField;
+    RESTClientSQL3NEW_SALARY: TFloatField;
+    DBGrid3: TDBGrid;
     procedure FormCreate(Sender: TObject);
     procedure RESTClientSQL1AfterDelete(DataSet: TDataSet);
   private

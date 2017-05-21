@@ -3,7 +3,7 @@ object Form4: TForm4
   Top = 0
   Caption = 'Form4'
   ClientHeight = 340
-  ClientWidth = 614
+  ClientWidth = 1083
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -35,6 +35,19 @@ object Form4: TForm4
     Height = 152
     DataSource = DataSource2
     TabOrder = 1
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+  end
+  object DBGrid3: TDBGrid
+    Left = 612
+    Top = 183
+    Width = 461
+    Height = 152
+    DataSource = DataSource3
+    TabOrder = 2
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
@@ -264,5 +277,95 @@ object Form4: TForm4
     DataSet = RESTClientSQL2
     Left = 180
     Top = 104
+  end
+  object RESTClientSQL3: TRESTClientSQL
+    AfterPost = RESTClientSQL1AfterDelete
+    AfterDelete = RESTClientSQL1AfterDelete
+    FieldDefs = <
+      item
+        Name = 'EMP_NO'
+        Attributes = [faRequired]
+        DataType = ftSmallint
+      end
+      item
+        Name = 'CHANGE_DATE'
+        Attributes = [faRequired]
+        DataType = ftTimeStamp
+      end
+      item
+        Name = 'UPDATER_ID'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'OLD_SALARY'
+        Attributes = [faRequired]
+        DataType = ftFloat
+      end
+      item
+        Name = 'PERCENT_CHANGE'
+        Attributes = [faRequired]
+        DataType = ftFloat
+      end
+      item
+        Name = 'NEW_SALARY'
+        DataType = ftFloat
+      end>
+    CachedUpdates = True
+    IndexDefs = <>
+    MasterFields = 'EMP_NO'
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCountUpdatedRecords, uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CountUpdatedRecords = False
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    StoreDefs = True
+    MasterDataSet = RESTClientSQL2
+    DataCache = False
+    Params = <
+      item
+        DataType = ftUnknown
+        Name = 'EMP_NO'
+        ParamType = ptUnknown
+      end>
+    DataBase = RESTDataBase
+    SQL.Strings = (
+      'select * from SALARY_HISTORY'
+      'Where EMP_NO = :EMP_NO')
+    UpdateTableName = 'SALARY_HISTORY'
+    Left = 152
+    Top = 160
+    object RESTClientSQL3EMP_NO: TSmallintField
+      FieldName = 'EMP_NO'
+      Required = True
+    end
+    object RESTClientSQL3CHANGE_DATE: TSQLTimeStampField
+      FieldName = 'CHANGE_DATE'
+      Required = True
+    end
+    object RESTClientSQL3UPDATER_ID: TStringField
+      FieldName = 'UPDATER_ID'
+      Required = True
+    end
+    object RESTClientSQL3OLD_SALARY: TFloatField
+      FieldName = 'OLD_SALARY'
+      Required = True
+    end
+    object RESTClientSQL3PERCENT_CHANGE: TFloatField
+      FieldName = 'PERCENT_CHANGE'
+      Required = True
+    end
+    object RESTClientSQL3NEW_SALARY: TFloatField
+      FieldName = 'NEW_SALARY'
+    end
+  end
+  object DataSource3: TDataSource
+    DataSet = RESTClientSQL3
+    Left = 180
+    Top = 160
   end
 end
