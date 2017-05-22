@@ -61,7 +61,7 @@ object Form4: TForm4
     Password = 'testserver'
     Proxy = False
     ProxyOptions.Port = 8888
-    PoolerService = '208.110.80.194'
+    PoolerService = '127.0.0.1'
     PoolerPort = 8082
     PoolerName = 'ServerMethodsUnit1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
