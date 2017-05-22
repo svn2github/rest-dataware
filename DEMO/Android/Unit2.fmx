@@ -2,7 +2,7 @@ object Form2: TForm2
   Left = 0
   Top = 0
   Caption = 'Form2'
-  ClientHeight = 480
+  ClientHeight = 501
   ClientWidth = 640
   FormFactor.Width = 320
   FormFactor.Height = 480
@@ -24,7 +24,7 @@ object Form2: TForm2
     object Edit1: TEdit
       Touch.InteractiveGestures = [LongTap, DoubleTap]
       TabOrder = 3
-      Text = '192.168.20.111'
+      Text = '192.168.1.7'
       Position.X = 32.000000000000000000
       Position.Y = 34.000000000000000000
       Size.Width = 129.000000000000000000
@@ -63,11 +63,23 @@ object Form2: TForm2
     ItemEditAppearanceClassName = 'TListItemShowCheckAppearance'
     HeaderAppearanceClassName = 'TListHeaderObjects'
     FooterAppearanceClassName = 'TListHeaderObjects'
-    Align = Client
+    Align = Top
+    Position.Y = 78.000000000000000000
     Size.Width = 640.000000000000000000
-    Size.Height = 402.000000000000000000
+    Size.Height = 179.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 22
+  end
+  object ListView2: TListView
+    ItemAppearanceClassName = 'TListItemAppearance'
+    ItemEditAppearanceClassName = 'TListItemShowCheckAppearance'
+    HeaderAppearanceClassName = 'TListHeaderObjects'
+    FooterAppearanceClassName = 'TListHeaderObjects'
+    Align = Client
+    Size.Width = 640.000000000000000000
+    Size.Height = 244.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 27
   end
   object RESTClientSQL: TRESTClientSQL
     FieldDefs = <>
@@ -178,11 +190,80 @@ object Form2: TForm2
       FillHeaderExpressions = <>
       FillBreakGroups = <>
     end
+    object LinkListControlToField2: TLinkListControlToField
+      Category = 'Quick Bindings'
+      DataSource = BindSourceDB2
+      FieldName = 'NEW_SALARY'
+      Control = ListView2
+      FillExpressions = <>
+      FillHeaderExpressions = <>
+      FillBreakGroups = <>
+    end
   end
   object BindSourceDB1: TBindSourceDB
     DataSet = RESTClientSQL
     ScopeMappings = <>
     Left = 296
     Top = 134
+  end
+  object RESTClientSQL3: TRESTClientSQL
+    FieldDefs = <>
+    CachedUpdates = True
+    IndexDefs = <>
+    MasterFields = 'EMP_NO'
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCountUpdatedRecords, uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CountUpdatedRecords = False
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    StoreDefs = True
+    MasterDataSet = RESTClientSQL
+    MasterCascadeDelete = True
+    DataCache = False
+    Params = <
+      item
+        DataType = ftUnknown
+        Name = 'EMP_NO'
+        ParamType = ptUnknown
+      end>
+    DataBase = RESTDataBase
+    SQL.Strings = (
+      'select * from SALARY_HISTORY'
+      'where EMP_NO = :EMP_NO')
+    UpdateTableName = 'SALARY_HISTORY'
+    Left = 152
+    Top = 160
+    object RESTClientSQL3EMP_NO: TSmallintField
+      FieldName = 'EMP_NO'
+      Required = True
+    end
+    object RESTClientSQL3CHANGE_DATE: TSQLTimeStampField
+      FieldName = 'CHANGE_DATE'
+      Required = True
+    end
+    object RESTClientSQL3UPDATER_ID: TStringField
+      FieldName = 'UPDATER_ID'
+      Required = True
+    end
+    object RESTClientSQL3OLD_SALARY: TFloatField
+      FieldName = 'OLD_SALARY'
+      Required = True
+    end
+    object RESTClientSQL3PERCENT_CHANGE: TFloatField
+      FieldName = 'PERCENT_CHANGE'
+      Required = True
+    end
+    object RESTClientSQL3NEW_SALARY: TFloatField
+      FieldName = 'NEW_SALARY'
+    end
+  end
+  object BindSourceDB2: TBindSourceDB
+    DataSet = RESTClientSQL3
+    ScopeMappings = <>
+    Left = 304
+    Top = 240
   end
 end

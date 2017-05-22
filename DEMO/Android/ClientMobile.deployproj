@@ -64,10 +64,10 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ClientMobile\res\drawable-xxhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon144</DeployClass>
+        <DeployFile Include="Android\Debug\AndroidManifest.xml" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ClientMobile\</RemoteDir>
+            <RemoteName>AndroidManifest.xml</RemoteName>
+            <DeployClass>ProjectAndroidManifest</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -91,10 +91,19 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Android\Debug\AndroidManifest.xml" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ClientMobile\</RemoteDir>
-            <RemoteName>AndroidManifest.xml</RemoteName>
-            <DeployClass>ProjectAndroidManifest</DeployClass>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ClientMobile\res\drawable-large\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage640</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ClientMobile\res\drawable-xxhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon144</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -109,10 +118,10 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ClientMobile\res\drawable-large\</RemoteDir>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ClientMobile\res\drawable-normal\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage640</DeployClass>
+            <DeployClass>Android_SplashImage470</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -122,15 +131,6 @@
             <RemoteDir>ClientMobile\res\drawable-small\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage426</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ClientMobile\res\drawable-normal\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage470</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>

@@ -39,6 +39,16 @@ type
     BindSourceDB1: TBindSourceDB;
     ListView1: TListView;
     LinkListControlToField1: TLinkListControlToField;
+    ListView2: TListView;
+    RESTClientSQL3: TRESTClientSQL;
+    RESTClientSQL3EMP_NO: TSmallintField;
+    RESTClientSQL3CHANGE_DATE: TSQLTimeStampField;
+    RESTClientSQL3UPDATER_ID: TStringField;
+    RESTClientSQL3OLD_SALARY: TFloatField;
+    RESTClientSQL3PERCENT_CHANGE: TFloatField;
+    RESTClientSQL3NEW_SALARY: TFloatField;
+    BindSourceDB2: TBindSourceDB;
+    LinkListControlToField2: TLinkListControlToField;
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseBeforeConnect(Sender: TComponent);
   private

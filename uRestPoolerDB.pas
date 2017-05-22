@@ -1541,10 +1541,15 @@ Procedure TRESTClientSQL.ProcAfterScroll(DataSet: TDataSet);
 Begin
  If State = dsBrowse Then
   Begin
-   If RecordCount = 0 Then
+   If Not Active Then
     PrepareDetailsNew
    Else
-    PrepareDetails(True)
+    Begin
+     If RecordCount = 0 Then
+      PrepareDetailsNew
+     Else
+      PrepareDetails(True)
+    End;
   End
  Else If State = dsInactive Then
   PrepareDetails(False)
@@ -1970,8 +1975,11 @@ Begin
    vDetailClient        := TRESTClientSQL(vMasterDetailList.Items[I].DataSet);
    If vDetailClient <> Nil Then
     Begin
-     vDetailClient.EmptyDataSet;
-     vDetailClient.ProcAfterScroll(vDetailClient);
+     If vDetailClient.Active Then
+      Begin
+       vDetailClient.EmptyDataSet;
+       vDetailClient.ProcAfterScroll(vDetailClient);
+      End;
     End;
   End;
 End;
