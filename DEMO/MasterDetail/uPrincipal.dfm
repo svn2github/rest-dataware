@@ -283,4 +283,8 @@ object Form4: TForm4
     Left = 180
     Top = 160
   end
+  object FDStanStorageBinLink1: TFDStanStorageBinLink
+    Left = 280
+    Top = 32
+  end
 end

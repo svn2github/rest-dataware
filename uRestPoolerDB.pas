@@ -32,6 +32,7 @@ Type
  TOnAfterClose            = Procedure (DataSet : TDataSet)         of Object;
  TOnAfterInsert           = Procedure (DataSet : TDataSet)         of Object;
  TOnBeforeDelete          = Procedure (DataSet : TDataSet)         of Object;
+ TOnBeforePost            = Procedure (DataSet : TDataSet)         of Object;
  TExecuteProc             = Reference to Procedure;
  TOnEventConnection       = Procedure (Sucess  : Boolean;
                                        Const Error : String)       of Object;
@@ -164,13 +165,17 @@ End;
 Type
  TRESTClientSQL   = Class(TFDMemTable)                    //Classe com as funcionalidades de um DBQuery
  Private
+  vOldStatus           : TDatasetState;
   vDataSource          : TDataSource;
   vOnAfterScroll       : TOnAfterScroll;
   vOnAfterOpen         : TOnAfterOpen;
   vOnAfterClose        : TOnAfterClose;
   vOnAfterInsert       : TOnAfterInsert;
   vOnBeforeDelete      : TOnBeforeDelete;
+  vOnBeforePost        : TOnBeforePost;
   Owner                : TComponent;
+  OldData              : TMemoryStream;
+  vActualRec           : Integer;
   vAutoIncFields,
   vMasterFields,
   vUpdateTableName     : String;                          //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
@@ -217,11 +222,12 @@ Type
   Property  StoreDefs;
   Property  CachedUpdates;
   Property  MasterSource;
-  Procedure ProcAfterScroll (DataSet: TDataSet);
-  Procedure ProcAfterOpen   (DataSet: TDataSet);
-  Procedure ProcAfterClose  (DataSet: TDataSet);
-  Procedure ProcAfterInsert (DataSet: TDataSet);
-  Procedure ProcBeforeDelete(DataSet: TDataSet);
+  Procedure ProcAfterScroll (DataSet : TDataSet);
+  Procedure ProcAfterOpen   (DataSet : TDataSet);
+  Procedure ProcAfterClose  (DataSet : TDataSet);
+  Procedure ProcAfterInsert (DataSet : TDataSet);
+  Procedure ProcBeforeDelete(DataSet : TDataSet);
+  Procedure ProcBeforePost  (DataSet : TDataSet);
  Protected
   Function  CanObserve(const ID: Integer): Boolean; Override;
  Public
@@ -237,6 +243,7 @@ Type
   Destructor  Destroy;Override;                           //Destroy a Classe
   Procedure   Loaded; Override;
   procedure   OpenCursor(InfoQuery: Boolean); Override;   //Subscrevendo o OpenCursor para não ter erros de ADD Fields em Tempo de Design
+  Procedure   GotoRec(Const RecNo : Integer);
  Published
   Property MasterDataSet   : TRESTClientSQL      Read vMasterDataSet            Write SetMasterDataSet;
   Property MasterCascadeDelete : Boolean         Read vCascadeDelete            Write vCascadeDelete;
@@ -248,6 +255,7 @@ Type
   Property AfterClose      : TOnAfterClose       Read vOnAfterClose             Write vOnAfterClose;
   Property AfterInsert     : TOnAfterInsert      Read vOnAfterInsert            Write vOnAfterInsert;
   Property BeforeDelete    : TOnBeforeDelete     Read vOnBeforeDelete           Write vOnBeforeDelete;
+  Property BeforePost      : TOnBeforePost       Read vOnBeforePost             Write vOnBeforePost;
   Property Active          : Boolean             Read vActive                   Write SetActiveDB;             //Estado do Dataset
   Property DataCache       : Boolean             Read vDataCache                Write vDataCache;              //Diz se será salvo o último Stream do Dataset
   Property Params          : TParams             Read vParams                   Write vParams;                 //Parametros de Dataset
@@ -345,13 +353,13 @@ End;
 
 implementation
 
- function GetEncoding(Avalue:TEncodeSelect):TEncoding;
- begin
-    case Avalue of
-      esUtf8  : result := TEncoding.utf8;
-      esASCII : result := TEncoding.ASCII;
-    end;
- end;
+Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;
+Begin
+ Case Avalue of
+  esUtf8  : Result := TEncoding.utf8;
+  esASCII : Result := TEncoding.ASCII;
+ End;
+End;
 
 Function EncodeStrings(Value : String) : String;
 Var
@@ -1420,6 +1428,7 @@ Begin
  FieldDefsUPD                      := TFieldDefs.Create(Self);
  FieldDefs                         := FieldDefsUPD;
  vMasterDetailList                 := TMasterDetailList.Create;
+ OldData                           := TMemoryStream.Create;
  vMasterDataSet                    := Nil;
  vDataSource                       := TDataSource.Create(Nil);
  TFDMemTable(Self).AfterScroll     := ProcAfterScroll;
@@ -1427,6 +1436,7 @@ Begin
  TFDMemTable(Self).AfterInsert     := ProcAfterInsert;
  TFDMemTable(Self).BeforeDelete    := ProcBeforeDelete;
  TFDMemTable(Self).AfterClose      := ProcAfterClose;
+ TFDMemTable(Self).BeforePost      := ProcBeforePost;
  Inherited AfterPost               := OldAfterPost;
  Inherited AfterDelete             := OldAfterDelete;
 End;
@@ -1442,6 +1452,7 @@ Begin
  vDataSource.DisposeOf;
  If vCacheDataDB <> Nil Then
   vCacheDataDB.DisposeOf;
+ OldData.DisposeOf;
  Inherited;
 End;
 
@@ -1543,11 +1554,40 @@ Begin
   vOnAfterScroll(Dataset);
 End;
 
+Procedure TRESTClientSQL.GotoRec(Const RecNo: Integer);
+Var
+ ActiveRecNo,
+ Distance     : Integer;
+Begin
+ If (RecNo > 0) Then
+  Begin
+   ActiveRecNo := Self.RecNo;
+   If (RecNo <> ActiveRecNo) Then
+    Begin
+     Self.DisableControls;
+     Try
+      Distance := RecNo - ActiveRecNo;
+      Self.MoveBy(Distance);
+     Finally
+      Self.EnableControls;
+     End;
+    End;
+  End;
+End;
+
 Procedure TRESTClientSQL.ProcBeforeDelete(DataSet: TDataSet);
 Var
  I : Integer;
  vDetailClient : TRESTClientSQL;
 Begin
+ vOldStatus   := State;
+ Try
+  vActualRec   := RecNo;
+ Except
+  vActualRec   := -1;
+ End;
+ OldData.Clear;
+ SaveToStream(OldData, TFDStorageFormat.sfBinary);
  If Assigned(vOnBeforeDelete) Then
   vOnBeforeDelete(DataSet);
  If vCascadeDelete Then
@@ -1564,6 +1604,20 @@ Begin
       End;
     End;
   End;
+End;
+
+procedure TRESTClientSQL.ProcBeforePost(DataSet: TDataSet);
+Begin
+ vOldStatus   := State;
+ Try
+  vActualRec   := RecNo;
+ Except
+  vActualRec   := -1;
+ End;
+ OldData.Clear;
+ SaveToStream(OldData, TFDStorageFormat.sfBinary);
+ If Assigned(vOnBeforePost) Then
+  vOnBeforePost(DataSet);
 End;
 
 Procedure TRESTClientSQL.ProcAfterClose(DataSet: TDataSet);
@@ -1668,7 +1722,18 @@ Begin
  Error        := vMessageError;
  vErrorBefore := vError;
  If (Result) And (Not(vError)) Then
-  TFDMemTable(Self).ApplyUpdates(-1);
+  TFDMemTable(Self).ApplyUpdates(-1)
+ Else If vError Then
+  Begin
+   TFDMemTable(Self).Close;
+   OldData.Position := 0;
+   LoadFromStream(OldData, TFDStorageFormat.sfBinary);
+   Try
+    If vActualRec > -1 Then
+     GoToRec(vActualRec);
+   Except
+   End;
+  End;
 End;
 
 Function  TRESTClientSQL.ParamByName(Value : String) : TParam;

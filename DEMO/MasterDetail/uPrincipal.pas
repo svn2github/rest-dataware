@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uRestPoolerDB, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids;
+  FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.StorageBin;
 
 type
   TForm4 = class(TForm)
@@ -45,6 +45,7 @@ type
     RESTClientSQL3PERCENT_CHANGE: TFloatField;
     RESTClientSQL3NEW_SALARY: TFloatField;
     DBGrid3: TDBGrid;
+    FDStanStorageBinLink1: TFDStanStorageBinLink;
     procedure FormCreate(Sender: TObject);
     procedure RESTClientSQL1AfterDelete(DataSet: TDataSet);
     procedure RESTClientSQL2AfterInsert(DataSet: TDataSet);
@@ -91,7 +92,10 @@ Var
  vError : String;
 begin
  If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
-  MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+  Begin
+   MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+   Abort;
+  End;
 end;
 
 procedure TForm4.RESTClientSQL2AfterInsert(DataSet: TDataSet);
