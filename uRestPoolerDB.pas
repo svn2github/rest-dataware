@@ -1138,12 +1138,23 @@ Var
       Result := Result + ' ' + Value[I];
     End;
  End;
-
+ Procedure ParseParams;
+ Var
+  I : Integer;
+ Begin
+  If Params <> Nil Then
+   For I := 0 To Params.Count -1 Do
+    Begin
+     If Params[I].DataType = ftUnknown then
+      Params[I].DataType := ftString;
+    End;
+ End;
 Begin
  Result := Nil;
  if vRestPooler = '' then
   Exit;
  SetConnectionOptions(vDSRConnection);
+ ParseParams;
  vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
  vRESTConnectionDB.Compression := vCompression;
  vRESTConnectionDB.Encoding    := GetEncoding(VEncondig);

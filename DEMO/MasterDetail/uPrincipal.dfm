@@ -55,7 +55,7 @@ object Form4: TForm4
     TitleFont.Style = []
   end
   object RESTDataBase: TRESTDataBase
-    Active = False
+    Active = True
     Compression = False
     Login = 'testserver'
     Password = 'testserver'
@@ -132,7 +132,67 @@ object Form4: TForm4
     BeforePost = RESTClientSQL2BeforePost
     AfterPost = RESTClientSQL1AfterDelete
     AfterDelete = RESTClientSQL1AfterDelete
-    FieldDefs = <>
+    FieldDefs = <
+      item
+        Name = 'EMP_NO'
+        Attributes = [faRequired]
+        DataType = ftSmallint
+      end
+      item
+        Name = 'FIRST_NAME'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 15
+      end
+      item
+        Name = 'LAST_NAME'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'PHONE_EXT'
+        DataType = ftString
+        Size = 4
+      end
+      item
+        Name = 'HIRE_DATE'
+        Attributes = [faRequired]
+        DataType = ftTimeStamp
+      end
+      item
+        Name = 'DEPT_NO'
+        Attributes = [faRequired, faFixed]
+        DataType = ftFixedChar
+        Size = 3
+      end
+      item
+        Name = 'JOB_CODE'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 5
+      end
+      item
+        Name = 'JOB_GRADE'
+        Attributes = [faRequired]
+        DataType = ftSmallint
+      end
+      item
+        Name = 'JOB_COUNTRY'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 15
+      end
+      item
+        Name = 'SALARY'
+        Attributes = [faRequired]
+        DataType = ftFloat
+      end
+      item
+        Name = 'FULL_NAME'
+        DataType = ftString
+        Size = 37
+      end>
     CachedUpdates = True
     IndexDefs = <>
     MasterFields = 'DEPT_NO'
@@ -150,7 +210,7 @@ object Form4: TForm4
     DataCache = False
     Params = <
       item
-        DataType = ftUnknown
+        DataType = ftString
         Name = 'DEPT_NO'
         ParamType = ptUnknown
       end>
@@ -163,7 +223,6 @@ object Form4: TForm4
     Top = 104
     object RESTClientSQL2EMP_NO: TSmallintField
       FieldName = 'EMP_NO'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
     object RESTClientSQL2FIRST_NAME: TStringField
