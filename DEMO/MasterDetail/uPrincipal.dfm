@@ -132,67 +132,7 @@ object Form4: TForm4
     BeforePost = RESTClientSQL2BeforePost
     AfterPost = RESTClientSQL1AfterDelete
     AfterDelete = RESTClientSQL1AfterDelete
-    FieldDefs = <
-      item
-        Name = 'EMP_NO'
-        Attributes = [faRequired]
-        DataType = ftSmallint
-      end
-      item
-        Name = 'FIRST_NAME'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 15
-      end
-      item
-        Name = 'LAST_NAME'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'PHONE_EXT'
-        DataType = ftString
-        Size = 4
-      end
-      item
-        Name = 'HIRE_DATE'
-        Attributes = [faRequired]
-        DataType = ftTimeStamp
-      end
-      item
-        Name = 'DEPT_NO'
-        Attributes = [faRequired, faFixed]
-        DataType = ftFixedChar
-        Size = 3
-      end
-      item
-        Name = 'JOB_CODE'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 5
-      end
-      item
-        Name = 'JOB_GRADE'
-        Attributes = [faRequired]
-        DataType = ftSmallint
-      end
-      item
-        Name = 'JOB_COUNTRY'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 15
-      end
-      item
-        Name = 'SALARY'
-        Attributes = [faRequired]
-        DataType = ftFloat
-      end
-      item
-        Name = 'FULL_NAME'
-        DataType = ftString
-        Size = 37
-      end>
+    FieldDefs = <>
     CachedUpdates = True
     IndexDefs = <>
     MasterFields = 'DEPT_NO'
@@ -213,6 +153,8 @@ object Form4: TForm4
         DataType = ftString
         Name = 'DEPT_NO'
         ParamType = ptUnknown
+        Size = 3
+        Value = '000'
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
@@ -302,9 +244,10 @@ object Form4: TForm4
     DataCache = False
     Params = <
       item
-        DataType = ftUnknown
+        DataType = ftSmallint
         Name = 'EMP_NO'
         ParamType = ptUnknown
+        Value = 12
       end>
     DataBase = RESTDataBase
     SQL.Strings = (

@@ -10,9 +10,7 @@ uses
   System.SysUtils, System.Classes, Web.HTTPApp, Datasnap.DSHTTPCommon,
   Datasnap.DSHTTPWebBroker, Datasnap.DSServer,
   Datasnap.DSAuth, IPPeerServer, Datasnap.DSCommonServer, Datasnap.DSHTTP,
-  Datasnap.DSSession, Datasnap.DSProxyJavaScript, Datasnap.DSMetadata,
-  Datasnap.DSServerMetadata, Datasnap.DSClientMetadata,
-  Datasnap.DSProxyDispatcher;
+  Datasnap.DSSession, Web.HTTPProd, URestPoolerDBMethod;
 
 type
   TWebModule1 = class(TWebModule)
@@ -20,10 +18,8 @@ type
     DSServer1: TDSServer;
     DSServerClass1: TDSServerClass;
     DSAuthenticationManager1: TDSAuthenticationManager;
-    DSProxyDispatcher1: TDSProxyDispatcher;
+    ServerFunctionInvoker: TPageProducer;
     WebFileDispatcher1: TWebFileDispatcher;
-    DSProxyGenerator1: TDSProxyGenerator;
-    DSServerMetaDataProvider1: TDSServerMetaDataProvider;
     DSRESTWebDispatcher1: TDSRESTWebDispatcher;
     procedure DSServerClass1GetClass(DSServerClass: TDSServerClass;
       var PersistentClass: TPersistentClass);
@@ -36,9 +32,11 @@ type
     procedure DSAuthenticationManager1UserAuthenticate(Sender: TObject;
       const Protocol, Context, User, Password: string; var valid: Boolean;
       UserRoles: TStrings);
-    procedure WebModuleCreate(Sender: TObject);
+    procedure ServerFunctionInvokerHTMLTag(Sender: TObject; Tag: TTag;
+      const TagString: string; TagParams: TStrings; var ReplaceText: string);
   private
     { Private declarations }
+   function AllowServerFunctionInvoker: Boolean;
   public
     { Public declarations }
   end;
@@ -56,7 +54,10 @@ uses ServerMethodsUnit1, Web.WebReq;
 procedure TWebModule1.WebModule1DefaultHandlerAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
-  Response.Content := '<html><heading/><body>DataSnap Server</body></html>';
+  if (Request.InternalPathInfo = '') or (Request.InternalPathInfo = '/') then
+   Response.Content := ServerFunctionInvoker.Content
+  Else
+   Response.SendRedirect(Request.InternalScriptName + '/');
 end;
 
 //Criar para retornar o IP do Cliente
@@ -66,17 +67,10 @@ begin
  remoteIP := Request.RemoteAddr;
 end;
 
-procedure TWebModule1.WebModuleCreate(Sender: TObject);
+function TWebModule1.AllowServerFunctionInvoker: Boolean;
 begin
-  DSServer1.Start;
-  DSServerMetaDataProvider1.Server := DSServer1;
-  DSRESTWebDispatcher1.Server := DSServer1;
-  if DSServer1.Started then
-  begin
-    DSRESTWebDispatcher1.DbxContext := DSServer1.DbxContext;
-    DSRESTWebDispatcher1.Start;
-  end;
-  DSRESTWebDispatcher1.AuthenticationManager := DSAuthenticationManager1;
+  Result := (Request.RemoteAddr = '127.0.0.1') or
+    (Request.RemoteAddr = '0:0:0:0:0:0:0:1') or (Request.RemoteAddr = '::1');
 end;
 
 procedure TWebModule1.DSAuthenticationManager1UserAuthenticate(Sender: TObject;
@@ -110,6 +104,35 @@ procedure TWebModule1.DSServerClass1GetClass(
   DSServerClass: TDSServerClass; var PersistentClass: TPersistentClass);
 begin
   PersistentClass := ServerMethodsUnit1.TServerMethods1;
+end;
+
+procedure TWebModule1.ServerFunctionInvokerHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+begin
+  if SameText(TagString, 'urlpath') then
+    ReplaceText := string(Request.InternalScriptName)
+  else if SameText(TagString, 'port') then
+    ReplaceText := IntToStr(Request.ServerPort)
+  else if SameText(TagString, 'host') then
+    ReplaceText := string(Request.Host)
+  else if SameText(TagString, 'classname') then
+    ReplaceText := ServerMethodsUnit1.TServerMethods1.ClassName
+  else if SameText(TagString, 'loginrequired') then
+    if DSRESTWebDispatcher1.AuthenticationManager <> nil then
+      ReplaceText := 'true'
+    else
+      ReplaceText := 'false'
+  else if SameText(TagString, 'serverfunctionsjs') then
+    ReplaceText := string(Request.InternalScriptName) + '/js/serverfunctions.js'
+  else if SameText(TagString, 'servertime') then
+    ReplaceText := DateTimeToStr(Now)
+  else if SameText(TagString, 'serverfunctioninvoker') then
+    if AllowServerFunctionInvoker then
+      ReplaceText :=
+      '<div><a href="' + string(Request.InternalScriptName) +
+      '/ServerFunctionInvoker" target="_blank">Server Functions</a></div>'
+    else
+      ReplaceText := '';
 end;
 
 initialization

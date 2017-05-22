@@ -1,12 +1,16 @@
 object WebModule1: TWebModule1
   OldCreateOrder = False
-  OnCreate = WebModuleCreate
   Actions = <
     item
       Default = True
       Name = 'DefaultHandler'
       PathInfo = '/'
       OnAction = WebModule1DefaultHandlerAction
+    end
+    item
+      Name = 'ServerFunctionInvokerAction'
+      PathInfo = '/ServerFunctionInvoker'
+      Producer = ServerFunctionInvoker
     end>
   BeforeDispatch = WebModuleBeforeDispatch
   Height = 230
@@ -35,13 +39,14 @@ object WebModule1: TWebModule1
   object DSAuthenticationManager1: TDSAuthenticationManager
     OnUserAuthenticate = DSAuthenticationManager1UserAuthenticate
     Roles = <>
-    Left = 248
-    Top = 80
+    Left = 192
+    Top = 72
   end
-  object DSProxyDispatcher1: TDSProxyDispatcher
-    DSProxyGenerator = DSProxyGenerator1
-    Left = 178
-    Top = 135
+  object ServerFunctionInvoker: TPageProducer
+    HTMLFile = 'Templates\ServerFunctionInvoker.html'
+    OnHTMLTag = ServerFunctionInvokerHTMLTag
+    Left = 194
+    Top = 127
   end
   object WebFileDispatcher1: TWebFileDispatcher
     WebFileExtensions = <
@@ -79,25 +84,14 @@ object WebModule1: TWebModule1
         DirectoryMask = '\templates\*'
       end>
     RootDirectory = '.'
-    Left = 106
-    Top = 151
-  end
-  object DSProxyGenerator1: TDSProxyGenerator
-    ExcludeClasses = 'DSMetadata'
-    MetaDataProvider = DSServerMetaDataProvider1
-    Writer = 'Java Script REST'
-    Left = 282
-    Top = 135
-  end
-  object DSServerMetaDataProvider1: TDSServerMetaDataProvider
-    Server = DSServer1
-    Left = 338
-    Top = 135
+    Left = 82
+    Top = 167
   end
   object DSRESTWebDispatcher1: TDSRESTWebDispatcher
+    Server = DSServer1
     AuthenticationManager = DSAuthenticationManager1
     WebDispatch.PathInfo = 'datasnap*'
-    Left = 178
-    Top = 66
+    Left = 82
+    Top = 122
   end
 end

@@ -78,6 +78,11 @@ Uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
    //Get All Poolers
   Procedure GetPoolerList(Var PoolerList : TStringList);
  End;
+{$METHODINFO ON}
+ Type
+  TModuleDM = Class(TDataModule)
+ End;
+{$METHODINFO OFF}
 
 Implementation
 
