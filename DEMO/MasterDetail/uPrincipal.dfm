@@ -129,7 +129,7 @@ object Form4: TForm4
     end
   end
   object RESTClientSQL2: TRESTClientSQL
-    AfterInsert = RESTClientSQL2AfterInsert
+    BeforePost = RESTClientSQL2BeforePost
     AfterPost = RESTClientSQL1AfterDelete
     AfterDelete = RESTClientSQL1AfterDelete
     FieldDefs = <>

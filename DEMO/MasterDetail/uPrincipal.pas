@@ -47,7 +47,7 @@ type
     DBGrid3: TDBGrid;
     procedure FormCreate(Sender: TObject);
     procedure RESTClientSQL1AfterDelete(DataSet: TDataSet);
-    procedure RESTClientSQL2AfterInsert(DataSet: TDataSet);
+    procedure RESTClientSQL2BeforePost(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -97,7 +97,7 @@ begin
   End;
 end;
 
-procedure TForm4.RESTClientSQL2AfterInsert(DataSet: TDataSet);
+procedure TForm4.RESTClientSQL2BeforePost(DataSet: TDataSet);
 begin
  RESTClientSQL2EMP_NO.AsInteger := GetGenID('EMP_NO_GEN', RESTClientSQL2.DataBase);
 end;

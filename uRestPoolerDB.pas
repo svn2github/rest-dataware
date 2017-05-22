@@ -1611,9 +1611,13 @@ Begin
        vDetailClient        := TRESTClientSQL(vMasterDetailList.Items[I].DataSet);
        If vDetailClient <> Nil Then
         Begin
-         vDetailClient.First;
-         While Not vDetailClient.Eof Do
-          vDetailClient.Delete;
+         Try
+          vDetailClient.First;
+          While Not vDetailClient.Eof Do
+           vDetailClient.Delete;
+         Finally
+          vReadData := False;
+         End;
         End;
       End;
     End;
@@ -1622,18 +1626,26 @@ Begin
 End;
 
 procedure TRESTClientSQL.ProcBeforePost(DataSet: TDataSet);
+Var
+ vOldState : TDatasetState;
 Begin
  If Not vReadData Then
   Begin
-   vReadData := True;
+   vActualRec := -1;
+   vReadData  := True;
+   vOldState  := State;
+   OldData.Clear;
+   SaveToStream(OldData, TFDStorageFormat.sfBinary);
    vOldStatus   := State;
    Try
-    vActualRec   := RecNo;
+    If vOldState = dsInsert then
+     vActualRec  := RecNo + 1
+    Else
+     vActualRec  := RecNo;
    Except
     vActualRec   := -1;
    End;
-   OldData.Clear;
-   SaveToStream(OldData, TFDStorageFormat.sfBinary);
+   Edit;
    vReadData     := False;
    If Assigned(vOnBeforePost) Then
     vOnBeforePost(DataSet);
@@ -1762,12 +1774,13 @@ Begin
    TFDMemTable(Self).Close;
    OldData.Position := 0;
    LoadFromStream(OldData, TFDStorageFormat.sfBinary);
-   Try
-    If vActualRec > -1 Then
-     GoToRec(vActualRec);
-   Except
-   End;
+   vReadData  := False;
   End;
+ Try
+  If vActualRec > -1 Then
+   GoToRec(vActualRec);
+ Except
+ End;
 End;
 
 Function  TRESTClientSQL.ParamByName(Value : String) : TParam;
@@ -1933,10 +1946,14 @@ End;
 Procedure TRESTClientSQL.OldAfterDelete(DataSet: TDataSet);
 Begin
  vErrorBefore := False;
- If Assigned(vOnAfterDelete) Then
-  vOnAfterDelete(Self);
- If Not vErrorBefore Then
-  TFDMemTable(Self).CommitUpdates;
+ Try
+  If Assigned(vOnAfterDelete) Then
+   vOnAfterDelete(Self);
+  If Not vErrorBefore Then
+   TFDMemTable(Self).CommitUpdates;
+ Finally
+  vReadData := False;
+ End;
 End;
 
 Procedure TRESTClientSQL.SetUpdateTableName(Value : String);
