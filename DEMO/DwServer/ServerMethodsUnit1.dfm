@@ -18,8 +18,8 @@ object ServerMethods1: TServerMethods1
   end
   object FDConnectionEMPLOYEE: TFDConnection
     Params.Strings = (
-      'DriverID=IB'
-      'Database=localhost:..\EMPLOYEE.GDB'
+      'DriverID=FB'
+      'Database=..\EMPLOYEE.FDB'
       'User_Name=sysdba'
       'password=masterkey')
     UpdateOptions.AssignedValues = [uvCountUpdatedRecords, uvFetchGeneratorsPoint]
@@ -36,5 +36,9 @@ object ServerMethods1: TServerMethods1
     Encoding = esUtf8
     Left = 88
     Top = 21
+  end
+  object FDPhysFBDriverLink1: TFDPhysFBDriverLink
+    Left = 132
+    Top = 67
   end
 end

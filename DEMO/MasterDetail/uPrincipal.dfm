@@ -150,9 +150,11 @@ object Form4: TForm4
     DataCache = False
     Params = <
       item
-        DataType = ftUnknown
+        DataType = ftString
         Name = 'DEPT_NO'
         ParamType = ptUnknown
+        Size = 3
+        Value = '000'
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
@@ -243,9 +245,10 @@ object Form4: TForm4
     DataCache = False
     Params = <
       item
-        DataType = ftUnknown
+        DataType = ftSmallint
         Name = 'EMP_NO'
         ParamType = ptUnknown
+        Value = 12
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
@@ -282,9 +285,5 @@ object Form4: TForm4
     DataSet = RESTClientSQL3
     Left = 180
     Top = 160
-  end
-  object FDStanStorageBinLink1: TFDStanStorageBinLink
-    Left = 280
-    Top = 32
   end
 end

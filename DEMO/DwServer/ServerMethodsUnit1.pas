@@ -15,7 +15,8 @@ uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
      FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,
      FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
      WebModuleUnit1,          Vcl.Dialogs,              TypInfo,
-     Vcl.Forms, uRestPoolerDB,URestPoolerDBMethod;
+     Vcl.Forms, uRestPoolerDB,URestPoolerDBMethod, FireDAC.Phys.FBDef,
+  FireDAC.Phys.FB;
 
 type
 {$METHODINFO ON}
@@ -25,6 +26,7 @@ type
     FDStanStorageJSONLink1 : TFDStanStorageJSONLink;
     FDConnectionEMPLOYEE   : TFDConnection;
     RESTPoolerDB: TRESTPoolerDB;
+    FDPhysFBDriverLink1: TFDPhysFBDriverLink;
     procedure FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
     procedure DataModuleCreate(Sender: TObject);
   private
@@ -58,8 +60,8 @@ End;
 procedure TServerMethods1.FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
 begin
  FDConnectionEMPLOYEE.Params.Clear;
- FDConnectionEMPLOYEE.Params.Add('DriverID=IB');
- FDConnectionEMPLOYEE.Params.Add('Database=localhost:' + ExtractFilePath(ParamSTR(0)) + '..\EMPLOYEE.GDB');
+ FDConnectionEMPLOYEE.Params.Add('DriverID=FB');
+ FDConnectionEMPLOYEE.Params.Add('Database=127.0.0.1:' + ExtractFilePath(ParamSTR(0)) + '..\EMPLOYEE.FDB');
  FDConnectionEMPLOYEE.Params.Add('User_Name=sysdba');
  FDConnectionEMPLOYEE.Params.Add('password=masterkey');
  FDConnectionEMPLOYEE.UpdateOptions.CountUpdatedRecords := False;

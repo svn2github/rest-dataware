@@ -45,7 +45,6 @@ type
     RESTClientSQL3PERCENT_CHANGE: TFloatField;
     RESTClientSQL3NEW_SALARY: TFloatField;
     DBGrid3: TDBGrid;
-    FDStanStorageBinLink1: TFDStanStorageBinLink;
     procedure FormCreate(Sender: TObject);
     procedure RESTClientSQL1AfterDelete(DataSet: TDataSet);
     procedure RESTClientSQL2AfterInsert(DataSet: TDataSet);
