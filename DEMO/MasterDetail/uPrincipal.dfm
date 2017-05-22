@@ -61,7 +61,7 @@ object Form4: TForm4
     Password = 'testserver'
     Proxy = False
     ProxyOptions.Port = 8888
-    PoolerService = '127.0.0.1'
+    PoolerService = '208.110.80.194'
     PoolerPort = 8082
     PoolerName = 'ServerMethodsUnit1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
@@ -150,11 +150,9 @@ object Form4: TForm4
     DataCache = False
     Params = <
       item
-        DataType = ftString
+        DataType = ftUnknown
         Name = 'DEPT_NO'
         ParamType = ptUnknown
-        Size = 3
-        Value = '000'
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
@@ -245,10 +243,9 @@ object Form4: TForm4
     DataCache = False
     Params = <
       item
-        DataType = ftSmallint
+        DataType = ftUnknown
         Name = 'EMP_NO'
         ParamType = ptUnknown
-        Value = 12
       end>
     DataBase = RESTDataBase
     SQL.Strings = (

@@ -33,6 +33,7 @@ Type
  TOnAfterInsert           = Procedure (DataSet : TDataSet)         of Object;
  TOnBeforeDelete          = Procedure (DataSet : TDataSet)         of Object;
  TOnBeforePost            = Procedure (DataSet : TDataSet)         of Object;
+ TOnAfterPost             = Procedure (DataSet : TDataSet)         of Object;
  TExecuteProc             = Reference to Procedure;
  TOnEventConnection       = Procedure (Sucess  : Boolean;
                                        Const Error : String)       of Object;
@@ -173,12 +174,14 @@ Type
   vOnAfterInsert       : TOnAfterInsert;
   vOnBeforeDelete      : TOnBeforeDelete;
   vOnBeforePost        : TOnBeforePost;
+  vOnAfterPost         : TOnAfterPost;
   Owner                : TComponent;
   OldData              : TMemoryStream;
   vActualRec           : Integer;
   vAutoIncFields,
   vMasterFields,
   vUpdateTableName     : String;                          //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
+  vReadData,
   vCascadeDelete,
   vBeforeClone,
   vDataCache,                                             //Se usa cache local
@@ -192,8 +195,7 @@ Type
   vCacheDataDB         : TFDDataset;                      //O Cache de Dados Salvo para utilização rápida
   vOnGetDataError      : TOnEventConnection;              //Se deu erro na hora de receber os dados ou não
   vRESTDataBase        : TRESTDataBase;                   //RESTDataBase do Dataset
-  vOnAfterDelete,
-  vOnAfterPost         : TDataSetNotifyEvent;
+  vOnAfterDelete       : TDataSetNotifyEvent;
   FieldDefsUPD         : TFieldDefs;
   vMasterDataSet       : TRESTClientSQL;
   vMasterDetailList    : TMasterDetailList;               //DataSet MasterDetail Function
@@ -228,6 +230,7 @@ Type
   Procedure ProcAfterInsert (DataSet : TDataSet);
   Procedure ProcBeforeDelete(DataSet : TDataSet);
   Procedure ProcBeforePost  (DataSet : TDataSet);
+  Procedure ProcAfterPost   (DataSet : TDataSet);
  Protected
   Function  CanObserve(const ID: Integer): Boolean; Override;
  Public
@@ -248,7 +251,6 @@ Type
   Property MasterDataSet   : TRESTClientSQL      Read vMasterDataSet            Write SetMasterDataSet;
   Property MasterCascadeDelete : Boolean         Read vCascadeDelete            Write vCascadeDelete;
   Property AfterDelete     : TDataSetNotifyEvent Read vOnAfterDelete            Write vOnAfterDelete;
-  Property AfterPost       : TDataSetNotifyEvent Read vOnAfterPost              Write vOnAfterPost;
   Property OnGetDataError  : TOnEventConnection  Read vOnGetDataError           Write vOnGetDataError;         //Recebe os Erros de ExecSQL ou de GetData
   Property AfterScroll     : TOnAfterScroll      Read vOnAfterScroll            Write vOnAfterScroll;
   Property AfterOpen       : TOnAfterOpen        Read vOnAfterOpen              Write vOnAfterOpen;
@@ -256,6 +258,7 @@ Type
   Property AfterInsert     : TOnAfterInsert      Read vOnAfterInsert            Write vOnAfterInsert;
   Property BeforeDelete    : TOnBeforeDelete     Read vOnBeforeDelete           Write vOnBeforeDelete;
   Property BeforePost      : TOnBeforePost       Read vOnBeforePost             Write vOnBeforePost;
+  Property AfterPost       : TOnAfterPost        Read vOnAfterPost              Write vOnAfterPost;
   Property Active          : Boolean             Read vActive                   Write SetActiveDB;             //Estado do Dataset
   Property DataCache       : Boolean             Read vDataCache                Write vDataCache;              //Diz se será salvo o último Stream do Dataset
   Property Params          : TParams             Read vParams                   Write vParams;                 //Parametros de Dataset
@@ -1419,6 +1422,7 @@ Begin
  vActive                           := False;
  UpdateOptions.CountUpdatedRecords := False;
  vBeforeClone                      := False;
+ vReadData                         := False;
  vCascadeDelete                    := True;
  vSQL                              := TStringList.Create;
  vSQL.OnChange                     := OnChangingSQL;
@@ -1437,6 +1441,7 @@ Begin
  TFDMemTable(Self).BeforeDelete    := ProcBeforeDelete;
  TFDMemTable(Self).AfterClose      := ProcAfterClose;
  TFDMemTable(Self).BeforePost      := ProcBeforePost;
+ TFDMemTable(Self).AfterPost       := ProcAfterPost;
  Inherited AfterPost               := OldAfterPost;
  Inherited AfterDelete             := OldAfterDelete;
 End;
@@ -1585,44 +1590,54 @@ Var
  I : Integer;
  vDetailClient : TRESTClientSQL;
 Begin
- vOldStatus   := State;
- Try
-  vActualRec   := RecNo;
- Except
-  vActualRec   := -1;
- End;
- OldData.Clear;
- SaveToStream(OldData, TFDStorageFormat.sfBinary);
- If Assigned(vOnBeforeDelete) Then
-  vOnBeforeDelete(DataSet);
- If vCascadeDelete Then
+ If Not vReadData Then
   Begin
-   For I := 0 To vMasterDetailList.Count -1 Do
+   vReadData := True;
+   vOldStatus   := State;
+   Try
+    vActualRec   := RecNo;
+   Except
+    vActualRec   := -1;
+   End;
+   OldData.Clear;
+   SaveToStream(OldData, TFDStorageFormat.sfBinary);
+   If Assigned(vOnBeforeDelete) Then
+    vOnBeforeDelete(DataSet);
+   If vCascadeDelete Then
     Begin
-     vMasterDetailList.Items[I].ParseFields(TRESTClientSQL(vMasterDetailList.Items[I].DataSet).MasterFields);
-     vDetailClient        := TRESTClientSQL(vMasterDetailList.Items[I].DataSet);
-     If vDetailClient <> Nil Then
+     For I := 0 To vMasterDetailList.Count -1 Do
       Begin
-       vDetailClient.First;
-       While Not vDetailClient.Eof Do
-        vDetailClient.Delete;
+       vMasterDetailList.Items[I].ParseFields(TRESTClientSQL(vMasterDetailList.Items[I].DataSet).MasterFields);
+       vDetailClient        := TRESTClientSQL(vMasterDetailList.Items[I].DataSet);
+       If vDetailClient <> Nil Then
+        Begin
+         vDetailClient.First;
+         While Not vDetailClient.Eof Do
+          vDetailClient.Delete;
+        End;
       End;
     End;
+   vReadData := False;
   End;
 End;
 
 procedure TRESTClientSQL.ProcBeforePost(DataSet: TDataSet);
 Begin
- vOldStatus   := State;
- Try
-  vActualRec   := RecNo;
- Except
-  vActualRec   := -1;
- End;
- OldData.Clear;
- SaveToStream(OldData, TFDStorageFormat.sfBinary);
- If Assigned(vOnBeforePost) Then
-  vOnBeforePost(DataSet);
+ If Not vReadData Then
+  Begin
+   vReadData := True;
+   vOldStatus   := State;
+   Try
+    vActualRec   := RecNo;
+   Except
+    vActualRec   := -1;
+   End;
+   OldData.Clear;
+   SaveToStream(OldData, TFDStorageFormat.sfBinary);
+   vReadData     := False;
+   If Assigned(vOnBeforePost) Then
+    vOnBeforePost(DataSet);
+  End;
 End;
 
 Procedure TRESTClientSQL.ProcAfterClose(DataSet: TDataSet);
@@ -1698,6 +1713,15 @@ Begin
   vOnAfterOpen(Dataset);
 End;
 
+Procedure TRESTClientSQL.ProcAfterPost(DataSet : TDataSet);
+Begin
+ If Not vReadData Then
+  Begin
+   If Assigned(vOnAfterPost) Then
+    vOnAfterPost(Dataset);
+  End;
+End;
+
 Function  TRESTClientSQL.ApplyUpdates(Var Error : String) : Boolean;
 var
  LDeltaList    : TFDJSONDeltas;
@@ -1705,13 +1729,18 @@ var
  vMessageError : String;
  Function GetDeltas : TFDJSONDeltas;
  Begin
-  TFDMemTable(Self).UpdateOptions.CountUpdatedRecords := False;
-  If TFDMemTable(Self).State In [dsEdit, dsInsert] Then
-   TFDMemTable(Self).Post;
+  UpdateOptions.CountUpdatedRecords := False;
+  If State In [dsEdit, dsInsert] Then
+   Post;
   Result := TFDJSONDeltas.Create;
   TFDJSONDeltasWriter.ListAdd(Result, vUpdateTableName, TFDMemTable(Self));
  End;
 Begin
+ If vReadData Then
+  Begin
+   Result := True;
+   Exit;
+  End;
  LDeltaList := GetDeltas;
  If Assigned(vRESTDataBase) And (Trim(UpdateTableName) <> '') Then
   vRESTDataBase.ApplyUpdates(vSQL, vParams, LDeltaList, Trim(vUpdateTableName), vError, vMessageError)
@@ -1892,10 +1921,13 @@ End;
 Procedure TRESTClientSQL.OldAfterPost(DataSet: TDataSet);
 Begin
  vErrorBefore := False;
- if Assigned(vOnAfterPost) then
-  vOnAfterPost(Self);
- if Not vErrorBefore then
-  TFDMemTable(Self).CommitUpdates;
+ If Not vReadData Then
+  Begin
+   If Assigned(vOnAfterPost) Then
+    vOnAfterPost(Self);
+   If Not (vErrorBefore)     Then
+    TFDMemTable(Self).CommitUpdates;
+  End;
 End;
 
 Procedure TRESTClientSQL.OldAfterDelete(DataSet: TDataSet);
