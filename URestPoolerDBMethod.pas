@@ -295,7 +295,8 @@ Begin
  LDataSets := ExecuteCommand(Pooler, SQL, Params, Error, MessageError, Execute);
  Try
   Result := TJSONObject.Create;
-  TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
+  If LDataSets <> Nil Then
+   TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
  Finally
   LDataSets.Free;
  End;
@@ -357,7 +358,8 @@ Begin
  LDataSets := ExecuteCommandPure(Pooler, SQL, Error, MessageError, Execute);
  Try
   Result := TJSONObject.Create;
-  TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
+  If LDataSets <> Nil Then
+   TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
  Finally
   LDataSets.Free;
  End;
@@ -373,7 +375,8 @@ Begin
  LDataSets := ExecuteCommandPure(Pooler, SQL, Error, MessageError, Execute);
  Try
   Result := TJSONObject.Create;
-  TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
+  If LDataSets <> Nil Then
+   TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
  Finally
   LDataSets.Free;
  End;
