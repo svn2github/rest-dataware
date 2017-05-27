@@ -212,7 +212,7 @@ object fEmployee: TfEmployee
     TabOrder = 7
   end
   object RESTDataBase: TRESTDataBase
-    Active = False
+    Active = True
     Compression = False
     Login = 'testserver'
     Password = 'testserver'

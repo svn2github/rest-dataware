@@ -120,6 +120,7 @@ end;
 procedure TForm1.Button2Click(Sender: TObject);
 Var
  vTempList : TStringList;
+ vError    : String;
 Begin
  if ListBox1.Items.Count = 0 then
   Begin
@@ -140,7 +141,8 @@ Begin
    RESTClientSQL.SQL.Add(Edit1.Text);
    If RESTClientSQL.ParamByName(Edit3.Text) <> Nil Then
     RESTClientSQL.ParamByName(Edit3.Text).AsString := Edit2.Text;
-   RESTClientSQL.ExecSQL;
+   If Not RESTClientSQL.ExecSQL(vError) Then
+    Showmessage(vError);
   End;
 end;
 

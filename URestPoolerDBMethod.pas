@@ -35,48 +35,93 @@ Uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
                            Params               : TParams;
                            Var Error            : Boolean;
                            Var MessageError     : String): Integer;
+   Function    updateInsertValue(Pooler,
+                                 SQL                  : String;
+                                 Params               : TParams;
+                                 Var Error            : Boolean;
+                                 Var MessageError     : String): Integer;
    Function ExecuteCommandPure(Pooler     : String;
                                SQL        : String;
                                Var Error  : Boolean;
                                Var MessageError : String;
                                Execute    : Boolean = False) : TFDJSONDataSets;
+   Function updateExecuteCommandPure(Pooler     : String;
+                                     SQL        : String;
+                                     Var Error  : Boolean;
+                                     Var MessageError : String;
+                                     Execute    : Boolean = False) : TFDJSONDataSets;
    Function ExecuteCommandPureJSON(Pooler     : String;
                                    SQL        : String;
                                    Var Error  : Boolean;
                                    Var MessageError : String;
                                    Execute    : Boolean = False) : TJSONObject;
+   Function updateExecuteCommandPureJSON(Pooler     : String;
+                                         SQL        : String;
+                                         Var Error  : Boolean;
+                                         Var MessageError : String;
+                                         Execute    : Boolean = False) : TJSONObject;
    Function ExecuteCommand(Pooler     : String;
                            SQL        : String;
                            Params     : TParams;
                            Var Error  : Boolean;
                            Var MessageError : String;
                            Execute    : Boolean = False) : TFDJSONDataSets;
+   Function updateExecuteCommand(Pooler     : String;
+                                 SQL        : String;
+                                 Params     : TParams;
+                                 Var Error  : Boolean;
+                                 Var MessageError : String;
+                                 Execute    : Boolean = False) : TFDJSONDataSets;
    Function ExecuteCommandJSON(Pooler     : String;
                                SQL        : String;
                                Params     : TParams;
                                Var Error  : Boolean;
                                Var MessageError : String;
                                Execute    : Boolean = False) : TJSONObject;
+   Function updateExecuteCommandJSON(Pooler     : String;
+                                     SQL        : String;
+                                     Params     : TParams;
+                                     Var Error  : Boolean;
+                                     Var MessageError : String;
+                                     Execute    : Boolean = False) : TJSONObject;
    Function  InsertValuePure(Pooler,
                              SQL                  : String;
                              Var Error            : Boolean;
                              Var MessageError     : String) : Integer;
+   Function  updateInsertValuePure(Pooler,
+                                   SQL                  : String;
+                                   Var Error            : Boolean;
+                                   Var MessageError     : String) : Integer;
    //Apply Changes on DB
    Procedure ApplyChangesPure(Pooler           : String;
                               TableName        : String;
                               SQL              : String;
                               Const ADeltaList : TFDJSONDeltas;
                               Var Error        : Boolean;
-                              Var MessageError : String);Overload;
+                              Var MessageError : String);
+   Procedure updateApplyChangesPure(Pooler           : String;
+                                    TableName        : String;
+                                    SQL              : String;
+                                    Const ADeltaList : TFDJSONDeltas;
+                                    Var Error        : Boolean;
+                                    Var MessageError : String);
    Procedure ApplyChanges(Pooler           : String;
                           TableName        : String;
                           SQL              : String;
                           Params           : TParams;
                           Const ADeltaList : TFDJSONDeltas;
                           Var Error        : Boolean;
-                          Var MessageError : String);Overload;
+                          Var MessageError : String);
+   Procedure updateApplyChanges(Pooler           : String;
+                                TableName        : String;
+                                SQL              : String;
+                                Params           : TParams;
+                                Const ADeltaList : TFDJSONDeltas;
+                                Var Error        : Boolean;
+                                Var MessageError : String);
    //Get All Poolers
   Procedure GetPoolerList(Var PoolerList : TStringList);
+  Procedure updateGetPoolerList(Var PoolerList : TStringList);
  End;
 {$METHODINFO ON}
  Type
@@ -109,7 +154,49 @@ Begin
   End;
 End;
 
+Procedure Tmodule.updateApplyChanges(Pooler, TableName, SQL: String; Params: TParams;
+                               const ADeltaList: TFDJSONDeltas; var Error: Boolean;
+                               var MessageError: String);
+Var
+ I : Integer;
+ vTempPooler : String;
+Begin
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
+ For I := 0 to ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       TRESTPoolerDB(Components[i]).ApplyChanges(TableName, SQL, Params, Error, MessageError, ADeltaList);
+       Break;
+      End;
+    End;
+  End;
+End;
+
 Procedure Tmodule.ApplyChangesPure(Pooler, TableName, SQL: String;
+                                   const ADeltaList: TFDJSONDeltas; var Error: Boolean;
+                                   var MessageError: String);
+Var
+ I : Integer;
+ vTempPooler : String;
+Begin
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
+ For I := 0 to ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       TRESTPoolerDB(Components[i]).ApplyChanges(TableName, SQL, Error, MessageError, ADeltaList);
+       Break;
+      End;
+    End;
+  End;
+End;
+
+Procedure Tmodule.updateApplyChangesPure(Pooler, TableName, SQL: String;
                                    const ADeltaList: TFDJSONDeltas; var Error: Boolean;
                                    var MessageError: String);
 Var
@@ -157,7 +244,47 @@ Begin
   End;
 End;
 
+Function Tmodule.updateExecuteCommand(Pooler, SQL: String; Params: TParams;
+                                var Error: Boolean; var MessageError: String;
+                                Execute: Boolean): TFDJSONDataSets;
+Var
+ I : Integer;
+ vTempPooler : String;
+Begin
+ Result := Nil;
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
+ For I := 0 to ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Params, Error, MessageError, Execute);;
+       Break;
+      End;
+    End;
+  End;
+End;
+
 Function Tmodule.ExecuteCommandJSON(Pooler, SQL: String;
+                                    Params: TParams;
+                                    var Error: Boolean;
+                                    var MessageError:
+                                    String; Execute: Boolean): TJSONObject;
+Var
+ LDataSets : TFDJSONDataSets;
+Begin
+ LDataSets := ExecuteCommand(Pooler, SQL, Params, Error, MessageError, Execute);
+ Try
+  Result := TJSONObject.Create;
+  If LDataSets <> Nil Then
+   TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
+ Finally
+  LDataSets.Free;
+ End;
+End;
+
+Function Tmodule.updateExecuteCommandJSON(Pooler, SQL: String;
                                     Params: TParams;
                                     var Error: Boolean;
                                     var MessageError:
@@ -197,6 +324,29 @@ Begin
   End;
 End;
 
+Function Tmodule.updateExecuteCommandPure(Pooler, SQL: String;
+                                    var Error: Boolean;
+                                    var MessageError: String;
+                                    Execute: Boolean): TFDJSONDataSets;
+Var
+ I : Integer;
+ vTempPooler : String;
+Begin
+ Result := Nil;
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
+ For I := 0 To ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Error, MessageError, Execute);
+       Break;
+      End;
+    End;
+  End;
+End;
+
 Function Tmodule.ExecuteCommandPureJSON(Pooler, SQL: String;
                                         var Error: Boolean;
                                         var MessageError: String;
@@ -213,7 +363,37 @@ Begin
  End;
 End;
 
+Function Tmodule.updateExecuteCommandPureJSON(Pooler, SQL: String;
+                                        var Error: Boolean;
+                                        var MessageError: String;
+                                        Execute: Boolean): TJSONObject;
+Var
+ LDataSets : TFDJSONDataSets;
+Begin
+ LDataSets := ExecuteCommandPure(Pooler, SQL, Error, MessageError, Execute);
+ Try
+  Result := TJSONObject.Create;
+  TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
+ Finally
+  LDataSets.Free;
+ End;
+End;
+
 Procedure Tmodule.GetPoolerList(var PoolerList: TStringList);
+Var
+ I : Integer;
+Begin
+ If PoolerList = Nil Then
+  PoolerList := TStringList.Create;
+ PoolerList.Clear;
+ For I := 0 To ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    PoolerList.Add(GetUnitClassName + '.' + TRESTPoolerDB(Components[i]).Name);
+  End;
+End;
+
+Procedure Tmodule.updateGetPoolerList(var PoolerList: TStringList);
 Var
  I : Integer;
 Begin
@@ -269,7 +449,52 @@ Begin
   End;
 End;
 
+Function Tmodule.updateInsertValue(Pooler, SQL: String;
+                                   Params: TParams;
+                                   var Error: Boolean;
+                                   var MessageError: String): Integer;
+Var
+ I           : Integer;
+ vTempPooler : String;
+Begin
+ Result := -1;
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
+ For I := 0 To ComponentCount -1 Do
+  Begin
+   If Components[i] Is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Params, Error, MessageError);
+       Break;
+      End;
+    End;
+  End;
+End;
+
 Function Tmodule.InsertValuePure(Pooler, SQL: String;
+                                 var Error: Boolean;
+                                 var MessageError: String): Integer;
+Var
+ I : Integer;
+ vTempPooler : String;
+Begin
+ Result := -1;
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
+ For I := 0 To ComponentCount -1 Do
+  Begin
+   If Components[i] Is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Error, MessageError);
+       Break;
+      End;
+    End;
+  End;
+End;
+
+Function Tmodule.updateInsertValuePure(Pooler, SQL: String;
                                  var Error: Boolean;
                                  var MessageError: String): Integer;
 Var

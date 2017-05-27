@@ -607,11 +607,11 @@ Begin
  End;
 End;
 
-Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
-                                      Params     : TParams;
-                                      Var Error  : Boolean;
+Function TRESTPoolerDB.ExecuteCommand(SQL              : String;
+                                      Params           : TParams;
+                                      Var Error        : Boolean;
                                       Var MessageError : String;
-                                      Execute    : Boolean = False) : TFDJSONDataSets;
+                                      Execute          : Boolean = False) : TFDJSONDataSets;
 Var
  vTempQuery  : TFDQuery;
  A, I        : Integer;
@@ -690,12 +690,6 @@ Begin
     vFDConnection.RollbackRetaining;
     Error := True;
     MessageError := E.Message;
-{
-    vLogErro := TStringList.Create;
-    vLogErro.Add(MessageError);
-    vLogErro.SaveToFile(ExtractFilePath(ParamSTR(0)) + '..\LogErr.Text');
-    vLogErro.DisposeOf;
-}
    End;
  End;
  GetInvocationMetaData.CloseSession := True;

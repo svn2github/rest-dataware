@@ -179,6 +179,7 @@ object Form1: TForm1
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
     StoreDefs = True
+    MasterCascadeDelete = True
     DataCache = False
     Params = <>
     DataBase = RESTDataBase
