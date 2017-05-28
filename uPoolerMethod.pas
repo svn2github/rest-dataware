@@ -306,7 +306,7 @@ Begin
     strOutput         := TStringStream.Create('', CompressionEncoding);
     Try
      strInput.Position := 0;
-     zipFile := TZDecompressionStream.Create(strInput);
+     zipFile := TZDecompressionStream.Create(strInput, 31);
      zipFile.Position := 0;
      strOutput.CopyFrom(zipFile, zipFile.Size);
      strOutput.Position := 0;
@@ -572,10 +572,7 @@ Begin
   FExecuteCommandPureJSONCommand.Execute(ARequestFilter);
   Error := FExecuteCommandPureJSONCommand.Parameters[2].Value.GetBoolean;
   MessageError := FExecuteCommandPureJSONCommand.Parameters[3].Value.GetWideString;
-  If vCompression Then
-   Result := DecompressJSON(FExecuteCommandPureJSONCommand.Parameters[5].Value.GetJSONValue(FInstanceOwner).ToJSON)
-  Else
-   Result := TJSONObject(FExecuteCommandPureJSONCommand.Parameters[5].Value.GetJSONValue(FInstanceOwner));
+  Result := TJSONObject(FExecuteCommandPureJSONCommand.Parameters[5].Value.GetJSONValue(FInstanceOwner));
  Except
   Result := Nil;
   FExecuteCommandPureJSONCommand := Nil;
@@ -665,10 +662,12 @@ Begin
   FExecuteCommandJSONCommand.Execute(ARequestFilter);
   Error := FExecuteCommandJSONCommand.Parameters[3].Value.GetBoolean;
   MessageError := FExecuteCommandJSONCommand.Parameters[4].Value.GetWideString;
+{
   If vCompression Then
    Result := DecompressJSON(FExecuteCommandJSONCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner).ToJSON)
   Else
-   Result := TJSONObject(FExecuteCommandJSONCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner));
+}
+  Result := TJSONObject(FExecuteCommandJSONCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner));
  Except
   Result := Nil;
   FExecuteCommandJSONCommand := Nil;
@@ -819,6 +818,10 @@ Begin
    FEchoPoolerCommand.RequestType := 'GET';
    FEchoPoolerCommand.Text := Method_Prefix + '.EchoPooler';
    FEchoPoolerCommand.Prepare(TSMPoolerMethodClient_EchoPooler);
+   {
+   If vCompression Then
+    FEchoPoolerCommand.Connection.HTTP.se
+    }
   End;
  FEchoPoolerCommand.Connection.HTTP.ConnectTimeout := TimeOut;
  FEchoPoolerCommand.Connection.UserName            := UserName;

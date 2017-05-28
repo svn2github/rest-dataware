@@ -32,7 +32,7 @@ object ServerMethods1: TServerMethods1
   end
   object RESTPoolerDB: TRESTPoolerDB
     Database = FDConnectionEMPLOYEE
-    Compression = False
+    Compression = True
     Encoding = esUtf8
     Left = 88
     Top = 21

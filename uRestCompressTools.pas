@@ -9,7 +9,7 @@ Uses
  Type // protected mode work around
   TProtectedRESTResponse = Class(TRESTResponse)
   Public
-   class Procedure DecodeRestResponse(ARestResponse: TRESTResponse);
+   Class Procedure DecodeRestResponse(ARestResponse: TRESTResponse);
  End;
 
 Implementation

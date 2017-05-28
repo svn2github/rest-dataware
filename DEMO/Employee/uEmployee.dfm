@@ -212,8 +212,8 @@ object fEmployee: TfEmployee
     TabOrder = 7
   end
   object RESTDataBase: TRESTDataBase
-    Active = True
-    Compression = False
+    Active = False
+    Compression = True
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False

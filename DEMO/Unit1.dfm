@@ -240,7 +240,7 @@ object Form1: TForm1
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
     Active = False
-    Compression = False
+    Compression = True
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
@@ -255,7 +255,7 @@ object Form1: TForm1
     Encoding = esUtf8
     Context = 'datasnap'
     RESTContext = 'rest/'
-    Left = 224
+    Left = 226
     Top = 144
   end
 end

@@ -22,7 +22,8 @@ uses System.SysUtils,         System.Classes,
      uPoolerMethod,           FireDAC.Stan.StorageBin, Data.DBXPlatform,
      FireDAC.Stan.StorageJSON {$IFDEF MSWINDOWS},      Datasnap.DSServer,
      Datasnap.DSAuth,         Datasnap.DSProxyRest{$ENDIF},
-     Soap.EncdDecd,           System.NetEncoding,      uMasterDetailData;
+     Soap.EncdDecd,           System.NetEncoding,      uMasterDetailData,
+     DbxCompressionFilter,    uRestCompressTools,      System.ZLib;
 
 Type
  TEncodeSelect            = (esASCII, esUtf8);
@@ -315,7 +316,7 @@ Type
   vCompression   : Boolean;
   vEncoding      : TEncodeSelect;
   Procedure SetConnection(Value : TFDConnection);
-  Function  GetConnection : TFDConnection;
+  Function  GetConnection  : TFDConnection;
  Public
   Procedure ApplyChanges(TableName,
                          SQL               : String;
@@ -355,6 +356,32 @@ End;
 {$ENDIF}
 
 implementation
+
+Procedure doGZIP(Input, gZipped : TMemoryStream);//helper function
+Const
+ GZIP = 31;//very important because gzip is a linux zip format
+Var
+ CompactadorGZip : TZCompressionStream;
+Begin
+ Input.Position   := 0;
+ CompactadorGZip  := TZCompressionStream.Create(gZipped, zcMax, GZIP);
+ CompactadorGZip.CopyFrom(Input, Input.Size);
+ CompactadorGZip.Free;
+ gZipped.Position := 0;
+End;
+
+Procedure doUnGZIP(Input, gZipped : TMemoryStream);//helper function
+Const
+ GZIP = 31;//very important because gzip is a linux zip format
+Var
+ CompactadorGZip : TZDecompressionStream;
+Begin
+ Input.Position   := 0;
+ CompactadorGZip  := TZDecompressionStream.Create(Input, GZIP);
+ gZipped.CopyFrom(CompactadorGZip, CompactadorGZip.Size);
+ CompactadorGZip.Free;
+ gZipped.Position := 0;
+End;
 
 Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;
 Begin
@@ -566,8 +593,14 @@ Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
                                       Var MessageError : String;
                                       Execute    : Boolean = False) : TFDJSONDataSets;
 Var
- vTempQuery  : TFDQuery;
- vTempWriter : TFDJSONDataSetsWriter;
+ vTempQuery   : TFDQuery;
+ vTempWriter  : TFDJSONDataSetsWriter;
+ Original,
+ gZIPStream   : TMemoryStream;
+ oString      : String;
+ Len          : Integer;
+ tempDataSets : TFDJSONDataSets;
+ MemTable     : TFDMemTable;
 Begin
  Result := Nil;
  Error  := False;
@@ -580,14 +613,34 @@ Begin
   vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
   If Not Execute Then
    Begin
-    vTempQuery.Open   ;
+    vTempQuery.Open;
     Result            := TFDJSONDataSets.Create;
     vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
     Try
-     vTempWriter.ListAdd(Result, vTempQuery);
+     If vCompression Then
+      Begin
+       tempDataSets := TFDJSONDataSets.Create;
+       MemTable     := TFDMemTable.Create(Nil);
+       Original     := TStringStream.Create;
+       gZIPStream   := TMemoryStream.Create;
+       Try
+        vTempQuery.SaveToStream(Original, sfJSON);
+        //make it gzip
+        doGZIP(Original, gZIPStream);
+        MemTable.FieldDefs.Add('compress', ftBlob);
+        MemTable.CreateDataSet;
+        MemTable.Insert;
+        TBlobField(MemTable.FieldByName('compress')).LoadFromStream(gZIPStream);
+        MemTable.Post;
+        vTempWriter.ListAdd(Result, MemTable);
+       Finally
+        Original.DisposeOf;
+        gZIPStream.DisposeOf;
+       End;
+      End
+     Else
+      vTempWriter.ListAdd(Result, vTempQuery);
     Finally
-//     If vCompression Then
-//      Result.ToString
      vTempWriter := Nil;
      vTempWriter.DisposeOf;
     End;
@@ -617,7 +670,12 @@ Var
  A, I        : Integer;
  vTempWriter : TFDJSONDataSetsWriter;
  vParamName  : String;
-// vLogErro    : TStringList;
+ Original     : TStringStream;
+ gZIPStream   : TMemoryStream;
+ oString      : String;
+ Len          : Integer;
+ tempDataSets : TFDJSONDataSets;
+ MemTable     : TFDMemTable;
  Function GetParamIndex(Params : TFDParams; ParamName : String) : Integer;
  Var
   I : Integer;
@@ -673,7 +731,30 @@ Begin
     Result            := TFDJSONDataSets.Create;
     vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
     Try
-     vTempWriter.ListAdd(Result, vTempQuery);
+     If vCompression Then
+      Begin
+       tempDataSets := TFDJSONDataSets.Create;
+       MemTable     := TFDMemTable.Create(Nil);
+       Original     := TStringStream.Create;
+       gZIPStream   := TMemoryStream.Create;
+       Try
+        vTempQuery.Open;
+        vTempQuery.SaveToStream(Original, sfJSON);
+        //make it gzip
+        doGZIP(Original, gZIPStream);
+        MemTable.FieldDefs.Add('compress', ftBlob);
+        MemTable.CreateDataSet;
+        MemTable.Insert;
+        TBlobField(MemTable.FieldByName('compress')).LoadFromStream(gZIPStream);
+        MemTable.Post;
+        vTempWriter.ListAdd(Result, MemTable);
+       Finally
+        Original.DisposeOf;
+        gZIPStream.DisposeOf;
+       End;
+      End
+     Else
+      vTempWriter.ListAdd(Result, vTempQuery);
     Finally
      vTempWriter := Nil;
      vTempWriter.DisposeOf;
@@ -1118,6 +1199,11 @@ Var
  vDSRConnection    : TDSRestConnection;
  vRESTConnectionDB : TSMPoolerMethodClient;
  oJsonObject       : TJSONObject;
+ Original,
+ gZIPStream        : TMemoryStream;
+ MemTable          : TFDMemTable;
+ LDataSetList      : TFDJSONDataSets;
+ vTempWriter       : TFDJSONDataSetsWriter;
  Function GetLineSQL(Value : TStringList) : String;
  Var
   I : Integer;
@@ -1165,7 +1251,35 @@ Begin
                                                            MessageError, Execute, '', vTimeOut, vLogin, vPassword);
   Result := TFDJSONDataSets.Create;
   If (oJsonObject <> Nil) Then
-   TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, Result);
+   Begin
+    If vCompression Then
+     Begin
+      Original     := TMemoryStream.Create;
+      gZIPStream   := TMemoryStream.Create;
+      MemTable     := TFDMemTable.Create(Nil);
+      LDataSetList := TFDJSONDataSets.Create;
+      Try
+       TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, LDataSetList);
+       Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
+       MemTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
+       MemTable.First;
+       TBlobField(MemTable.FieldByName('compress')).SaveToStream(Original);
+       MemTable.Close;
+       Original.Position := 0;
+       doUnGZIP(Original, gZIPStream);
+       MemTable.LoadFromStream(gZIPStream, sfJSON);
+       vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
+       vTempWriter.ListAdd(Result, MemTable);
+      Finally
+       Original.DisposeOf;
+       gZIPStream.DisposeOf;
+       vTempWriter.DisposeOf;
+       LDataSetList.DisposeOf;
+      End;
+     End
+    Else
+     TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, Result);
+   End;
   If Assigned(vOnEventConnection) Then
    vOnEventConnection(True, 'ExecuteCommand Ok');
  Except

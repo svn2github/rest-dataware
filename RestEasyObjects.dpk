@@ -56,7 +56,8 @@ requires
   bindengine,
   bindcomp,
   RESTComponents,
-  vclFireDAC;
+  vclFireDAC,
+  IndyIPServer;
 
 contains
   uPoolerMethod in 'uPoolerMethod.pas',
@@ -64,6 +65,7 @@ contains
   uRestPoolerDB in 'uRestPoolerDB.pas',
   uRestCompressTools in 'uRestCompressTools.pas',
   URestPoolerDBMethod in 'URestPoolerDBMethod.pas',
-  uMasterDetailData in 'uMasterDetailData.pas';
+  uMasterDetailData in 'uMasterDetailData.pas',
+  uWebModuleMethod in 'uWebModuleMethod.pas';
 
 end.

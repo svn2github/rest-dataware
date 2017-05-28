@@ -16,7 +16,7 @@ uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
      FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
      WebModuleUnit1,          Vcl.Dialogs,              TypInfo,
      Vcl.Forms, uRestPoolerDB,URestPoolerDBMethod, FireDAC.Phys.FBDef,
-  FireDAC.Phys.FB;
+     FireDAC.Phys.FB,         Web.WebReq;
 
 type
 {$METHODINFO ON}
@@ -49,10 +49,11 @@ implementation
 
 {$R *.dfm}
 
-uses System.StrUtils, System.Generics.Collections, RestDWServerFormU;
+uses System.StrUtils, System.Generics.Collections, RestDWServerFormU, uWebModuleMethod;
 
 procedure TServerMethods1.DataModuleCreate(Sender: TObject);
 Begin
+ Inherited;
  UserName := RestDWForm.Username;
  Password := RestDWForm.Password;
 End;

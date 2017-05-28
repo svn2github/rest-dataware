@@ -55,8 +55,8 @@ object Form4: TForm4
     TitleFont.Style = []
   end
   object RESTDataBase: TRESTDataBase
-    Active = True
-    Compression = False
+    Active = False
+    Compression = True
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
@@ -150,11 +150,9 @@ object Form4: TForm4
     DataCache = False
     Params = <
       item
-        DataType = ftString
+        DataType = ftUnknown
         Name = 'DEPT_NO'
         ParamType = ptUnknown
-        Size = 3
-        Value = '000'
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
@@ -244,10 +242,9 @@ object Form4: TForm4
     DataCache = False
     Params = <
       item
-        DataType = ftSmallint
+        DataType = ftUnknown
         Name = 'EMP_NO'
         ParamType = ptUnknown
-        Value = 12
       end>
     DataBase = RESTDataBase
     SQL.Strings = (
