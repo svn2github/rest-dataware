@@ -1,21 +1,9 @@
 object WebModule1: TWebModule1
   OldCreateOrder = False
-  OnCreate = WebModuleCreate
-  Actions = <
-    item
-      Default = True
-      Name = 'DefaultHandler'
-      PathInfo = '/'
-      OnAction = WebModule1DefaultHandlerAction
-    end
-    item
-      Name = 'ServerFunctionInvokerAction'
-      PathInfo = '/ServerFunctionInvoker'
-      Producer = ServerFunctionInvoker
-    end>
+  Actions = <>
   BeforeDispatch = WebModuleBeforeDispatch
-  Height = 230
-  Width = 415
+  Height = 277
+  Width = 402
   object DSServer1: TDSServer
     OnConnect = DSServer1Connect
     OnDisconnect = DSServer1Disconnect

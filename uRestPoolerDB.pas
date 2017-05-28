@@ -782,8 +782,14 @@ Procedure TRESTPoolerDB.ApplyChanges(TableName,
                                      Var MessageError  : String;
                                      Const ADeltaList  : TFDJSONDeltas);
 Var
- vTempQuery : TFDQuery;
- LApply     : IFDJSONDeltasApplyUpdates;
+ vTempQuery   : TFDQuery;
+ LApply       : IFDJSONDeltasApplyUpdates;
+ vTempWriter  : TFDJSONDataSetsWriter;
+ Original,
+ gZIPStream   : TStringStream;
+ LDataSetList : TFDJSONDataSets;
+ oJsonObject  : TJSONObject;
+ bDeltaList   : TFDJSONDeltas;
 begin
  Error                    := False;
  vTempQuery               := TFDQuery.Create(Owner);
@@ -802,7 +808,36 @@ begin
     Exit;
    End;
  End;
- LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
+ If vCompression Then
+  Begin
+   LDataSetList := TFDJSONDataSets.Create;
+   oJsonObject  := TJSONObject.Create;
+   Try
+    TFDJSONInterceptor.DataSetsToJSONObject(ADeltaList, oJsonObject);
+    TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, ADeltaList);
+    LApply       := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
+    Original     := TStringStream.Create;
+    gZIPStream   := TStringStream.Create;
+    bDeltaList   := TFDJSONDeltas.Create;
+    If LApply.Values[0].RecordCount > 0 Then
+     Begin
+      LApply.Values[0].First;
+      (LApply.Values[0].Fields[0] as TBlobField).SaveToStream(Original);
+      Original.Position := 0;
+      doUnGZIP(Original, gZIPStream);
+      gZIPStream.Position := 0;
+      oJsonObject  := TJSONObject.ParseJSONValue(GetEncoding(vEncoding).GetBytes(gZIPStream.DataString), 0) as TJSONObject;
+      TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, bDeltaList);
+     End;
+   Finally
+    Original.DisposeOf;
+    gZIPStream.DisposeOf;
+    oJsonObject.DisposeOf;
+   End;
+   LApply := TFDJSONDeltasApplyUpdates.Create(bDeltaList);
+  End
+ Else
+  LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
  vTempQuery.UpdateOptions.UpdateTableName := TableName;
  Try
   LApply.ApplyUpdates(0,  vTempQuery.Command);
@@ -841,6 +876,11 @@ Var
  vTempQuery   : TFDQuery;
  LApply       : IFDJSONDeltasApplyUpdates;
  vTempWriter  : TFDJSONDeltasWriter;
+ LDataSetList : TFDJSONDataSets;
+ oJsonObject  : TJSONObject;
+ Original,
+ gZIPStream   : TStringStream;
+ bDeltaList   : TFDJSONDeltas;
 begin
  Error  := False;
  vTempQuery               := TFDQuery.Create(Owner);
@@ -884,7 +924,36 @@ begin
     Exit;
    End;
  End;
- LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
+ If vCompression Then
+  Begin
+   LDataSetList := TFDJSONDataSets.Create;
+   oJsonObject  := TJSONObject.Create;
+   Try
+    TFDJSONInterceptor.DataSetsToJSONObject(ADeltaList, oJsonObject);
+    TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, ADeltaList);
+    LApply       := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
+    Original     := TStringStream.Create;
+    gZIPStream   := TStringStream.Create;
+    bDeltaList   := TFDJSONDeltas.Create;
+    If LApply.Values[0].RecordCount > 0 Then
+     Begin
+      LApply.Values[0].First;
+      (LApply.Values[0].Fields[0] as TBlobField).SaveToStream(Original);
+      Original.Position := 0;
+      doUnGZIP(Original, gZIPStream);
+      gZIPStream.Position := 0;
+      oJsonObject  := TJSONObject.ParseJSONValue(GetEncoding(vEncoding).GetBytes(gZIPStream.DataString), 0) as TJSONObject;
+      TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, bDeltaList);
+     End;
+   Finally
+    Original.DisposeOf;
+    gZIPStream.DisposeOf;
+    oJsonObject.DisposeOf;
+   End;
+   LApply := TFDJSONDeltasApplyUpdates.Create(bDeltaList);
+  End
+ Else
+  LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
  vTempQuery.UpdateOptions.UpdateTableName := TableName;
  Try
   LApply.ApplyUpdates(0,  vTempQuery.Command);
@@ -1858,6 +1927,10 @@ var
  LDeltaList    : TFDJSONDeltas;
  vError        : Boolean;
  vMessageError : String;
+ oJsonObject   : TJSONObject;
+ MemTable      : TFDMemTable;
+ Original      : TStringStream;
+ gZIPStream    : TMemoryStream;
  Function GetDeltas : TFDJSONDeltas;
  Begin
   UpdateOptions.CountUpdatedRecords := False;
@@ -1873,6 +1946,34 @@ Begin
    Exit;
   End;
  LDeltaList := GetDeltas;
+ If vRESTDataBase <> Nil Then
+  Begin
+   If vRESTDataBase.vCompression Then
+    Begin
+     oJsonObject   := TJSONObject.Create;
+     Try
+      TFDJSONInterceptor.DataSetsToJSONObject(LDeltaList, oJsonObject);
+      LDeltaList.DisposeOf;
+      LDeltaList   := TFDJSONDeltas.Create;
+      MemTable     := TFDMemTable.Create(Nil);
+      Original     := TStringStream.Create(oJsonObject.ToString);
+      gZIPStream   := TMemoryStream.Create;
+       //make it gzip
+      doGZIP(Original, gZIPStream);
+      MemTable.FieldDefs.Add('compress', ftBlob);
+      MemTable.CreateDataSet;
+      MemTable.CachedUpdates := True;
+      MemTable.Insert;
+      TBlobField(MemTable.FieldByName('compress')).LoadFromStream(gZIPStream);
+      MemTable.Post;
+      TFDJSONDeltasWriter.ListAdd(LDeltaList, 'TempTable', MemTable);
+     Finally
+      MemTable.DisposeOf;
+      Original.DisposeOf;
+      gZIPStream.DisposeOf;
+     End;
+    End;
+  End;
  If Assigned(vRESTDataBase) And (Trim(UpdateTableName) <> '') Then
   vRESTDataBase.ApplyUpdates(vSQL, vParams, LDeltaList, Trim(vUpdateTableName), vError, vMessageError)
  Else

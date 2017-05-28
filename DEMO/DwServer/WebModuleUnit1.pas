@@ -13,7 +13,7 @@ uses
   Datasnap.DSSession, Web.HTTPProd, URestPoolerDBMethod;
 
 type
-  TWebModule1 = class(TDWModule)
+  TWebModule1 = class(TWebModule)
     DSHTTPWebDispatcher1: TDSHTTPWebDispatcher;
     DSServer1: TDSServer;
     DSServerClass1: TDSServerClass;
@@ -34,7 +34,6 @@ type
       UserRoles: TStrings);
     procedure ServerFunctionInvokerHTMLTag(Sender: TObject; Tag: TTag;
       const TagString: string; TagParams: TStrings; var ReplaceText: string);
-    procedure WebModuleCreate(Sender: TObject);
   private
     { Private declarations }
    function AllowServerFunctionInvoker: Boolean;
@@ -66,11 +65,6 @@ procedure TWebModule1.WebModuleBeforeDispatch(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
  remoteIP := Request.RemoteAddr;
-end;
-
-procedure TWebModule1.WebModuleCreate(Sender: TObject);
-begin
- Compression := True;
 end;
 
 function TWebModule1.AllowServerFunctionInvoker: Boolean;
