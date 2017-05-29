@@ -27,6 +27,9 @@
         <Projects Include="MasterDetail\MasterDetail.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Apache_Module\mod_webbroker.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -107,14 +110,23 @@
     <Target Name="MasterDetail:Make">
         <MSBuild Projects="MasterDetail\MasterDetail.dproj" Targets="Make"/>
     </Target>
+    <Target Name="mod_webbroker">
+        <MSBuild Projects="Apache_Module\mod_webbroker.dproj"/>
+    </Target>
+    <Target Name="mod_webbroker:Clean">
+        <MSBuild Projects="Apache_Module\mod_webbroker.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="mod_webbroker:Make">
+        <MSBuild Projects="Apache_Module\mod_webbroker.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ClientWin;RestEasyObjects;ListPoolers;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail"/>
+        <CallTarget Targets="ClientWin;RestEasyObjects;ListPoolers;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ClientWin:Clean;RestEasyObjects:Clean;ListPoolers:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean"/>
+        <CallTarget Targets="ClientWin:Clean;RestEasyObjects:Clean;ListPoolers:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ClientWin:Make;RestEasyObjects:Make;ListPoolers:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make"/>
+        <CallTarget Targets="ClientWin:Make;RestEasyObjects:Make;ListPoolers:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
