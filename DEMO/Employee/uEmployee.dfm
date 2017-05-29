@@ -225,7 +225,7 @@ object fEmployee: TfEmployee
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
     RequestTimeOut = 10000
-    Encoding = esASCII
+    Encoding = esUtf8
     Context = 'datasnap'
     RESTContext = 'rest/'
     Left = 392

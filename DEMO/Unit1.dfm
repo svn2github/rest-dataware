@@ -246,8 +246,7 @@ object Form1: TForm1
     Proxy = False
     ProxyOptions.Port = 8888
     PoolerService = '127.0.0.1'
-    PoolerURL = 'service'
-    PoolerPort = 8070
+    PoolerPort = 8082
     PoolerName = 'ServerMethodsUnit1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
     StateConnection.AutoCheck = False
