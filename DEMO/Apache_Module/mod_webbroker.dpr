@@ -3,7 +3,6 @@ library mod_webbroker;
 {$R *.dres}
 
 uses
-  FastMM4,
   Winapi.ActiveX,
   System.Win.ComObj,
   Web.WebBroker,
