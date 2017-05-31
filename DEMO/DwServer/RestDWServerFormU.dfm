@@ -45,7 +45,6 @@ object RestDWForm: TRestDWForm
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    Visible = False
   end
   object Label3: TLabel
     Left = 175
@@ -60,7 +59,6 @@ object RestDWForm: TRestDWForm
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    Visible = False
   end
   object Label4: TLabel
     Left = 13
