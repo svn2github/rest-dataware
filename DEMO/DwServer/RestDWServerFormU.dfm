@@ -4,7 +4,7 @@ object RestDWForm: TRestDWForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Servidor RestDW'
-  ClientHeight = 337
+  ClientHeight = 282
   ClientWidth = 574
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object RestDWForm: TRestDWForm
   TextHeight = 13
   object Label1: TLabel
     Left = 13
-    Top = 103
+    Top = 47
     Width = 31
     Height = 13
     AutoSize = False
@@ -34,7 +34,7 @@ object RestDWForm: TRestDWForm
   end
   object Label2: TLabel
     Left = 65
-    Top = 103
+    Top = 47
     Width = 43
     Height = 13
     AutoSize = False
@@ -48,7 +48,7 @@ object RestDWForm: TRestDWForm
   end
   object Label3: TLabel
     Left = 175
-    Top = 103
+    Top = 47
     Width = 35
     Height = 13
     AutoSize = False
@@ -60,23 +60,9 @@ object RestDWForm: TRestDWForm
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Label4: TLabel
-    Left = 13
-    Top = 16
-    Width = 140
-    Height = 13
-    AutoSize = False
-    Caption = 'Adaptadores Dispon'#237'veis'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
   object Label7: TLabel
     Left = 13
-    Top = 75
+    Top = 19
     Width = 196
     Height = 13
     Caption = 'CONFIGURA'#199#195'O SERVIDOR RestDW'
@@ -100,8 +86,8 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label9: TLabel
-    Left = 140
-    Top = 184
+    Left = 201
+    Top = 129
     Width = 31
     Height = 13
     AutoSize = False
@@ -114,8 +100,8 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label10: TLabel
-    Left = 192
-    Top = 184
+    Left = 253
+    Top = 129
     Width = 43
     Height = 13
     AutoSize = False
@@ -128,8 +114,8 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label11: TLabel
-    Left = 302
-    Top = 184
+    Left = 363
+    Top = 129
     Width = 35
     Height = 13
     AutoSize = False
@@ -143,7 +129,7 @@ object RestDWForm: TRestDWForm
   end
   object Label13: TLabel
     Left = 13
-    Top = 159
+    Top = 103
     Width = 206
     Height = 13
     Caption = 'CONFIGURA'#199#195'O DO BANCO DE DADOS'
@@ -156,21 +142,21 @@ object RestDWForm: TRestDWForm
   end
   object Bevel1: TBevel
     Left = 14
-    Top = 94
+    Top = 38
     Width = 400
     Height = 2
     Shape = bsTopLine
   end
   object Bevel2: TBevel
     Left = 14
-    Top = 178
+    Top = 122
     Width = 554
     Height = 2
     Shape = bsTopLine
   end
   object Label12: TLabel
     Left = 13
-    Top = 229
+    Top = 173
     Width = 32
     Height = 13
     AutoSize = False
@@ -184,7 +170,7 @@ object RestDWForm: TRestDWForm
   end
   object Label14: TLabel
     Left = 178
-    Top = 229
+    Top = 173
     Width = 15
     Height = 13
     AutoSize = False
@@ -198,14 +184,14 @@ object RestDWForm: TRestDWForm
   end
   object Bevel3: TBevel
     Left = 9
-    Top = 292
+    Top = 236
     Width = 554
     Height = 2
     Shape = bsTopLine
   end
   object Label6: TLabel
     Left = 13
-    Top = 274
+    Top = 218
     Width = 554
     Height = 13
     AutoSize = False
@@ -1067,7 +1053,7 @@ object RestDWForm: TRestDWForm
   end
   object Label5: TLabel
     Left = 13
-    Top = 184
+    Top = 128
     Width = 12
     Height = 13
     AutoSize = False
@@ -1081,7 +1067,7 @@ object RestDWForm: TRestDWForm
   end
   object ButtonStart: TButton
     Left = 317
-    Top = 303
+    Top = 247
     Width = 121
     Height = 25
     Caption = 'Iniciar'
@@ -1091,12 +1077,12 @@ object RestDWForm: TRestDWForm
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 10
+    TabOrder = 9
     OnClick = ButtonStartClick
   end
   object ButtonStop: TButton
     Left = 444
-    Top = 303
+    Top = 247
     Width = 121
     Height = 25
     Caption = 'Parar'
@@ -1106,12 +1092,12 @@ object RestDWForm: TRestDWForm
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 11
+    TabOrder = 10
     OnClick = ButtonStopClick
   end
   object edPortaDW: TEdit
     Left = 13
-    Top = 121
+    Top = 65
     Width = 40
     Height = 21
     TabOrder = 1
@@ -1119,7 +1105,7 @@ object RestDWForm: TRestDWForm
   end
   object edUserNameDW: TEdit
     Left = 65
-    Top = 121
+    Top = 65
     Width = 100
     Height = 21
     TabOrder = 2
@@ -1127,7 +1113,7 @@ object RestDWForm: TRestDWForm
   end
   object edPasswordDW: TEdit
     Left = 175
-    Top = 121
+    Top = 65
     Width = 100
     Height = 21
     PasswordChar = '*'
@@ -1135,8 +1121,8 @@ object RestDWForm: TRestDWForm
     Text = 'testserver'
   end
   object cbAdaptadores: TComboBox
-    Left = 13
-    Top = 35
+    Left = 14
+    Top = 147
     Width = 182
     Height = 21
     TabOrder = 0
@@ -1144,55 +1130,47 @@ object RestDWForm: TRestDWForm
     OnChange = cbAdaptadoresChange
   end
   object edPortaBD: TEdit
-    Left = 140
-    Top = 202
+    Left = 201
+    Top = 147
     Width = 40
     Height = 21
-    TabOrder = 5
+    TabOrder = 4
     Text = '3050'
   end
   object edUserNameBD: TEdit
-    Left = 192
-    Top = 202
+    Left = 253
+    Top = 147
     Width = 100
     Height = 21
-    TabOrder = 6
+    TabOrder = 5
     Text = 'sysdba'
   end
   object edPasswordBD: TEdit
-    Left = 302
-    Top = 202
+    Left = 363
+    Top = 147
     Width = 100
     Height = 21
     PasswordChar = '*'
-    TabOrder = 7
+    TabOrder = 6
     Text = 'masterkey'
   end
   object edPasta: TEdit
     Left = 14
-    Top = 247
+    Top = 191
     Width = 157
     Height = 21
-    TabOrder = 8
+    TabOrder = 7
   end
   object edBD: TEdit
     Left = 179
-    Top = 247
+    Top = 191
     Width = 119
     Height = 21
-    TabOrder = 9
-  end
-  object edIP: TEdit
-    Left = 14
-    Top = 202
-    Width = 119
-    Height = 21
-    TabOrder = 4
-    Text = '127.0.0.1'
+    TabOrder = 8
   end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
-    Left = 264
-    Top = 11
+    Left = 448
+    Top = 139
   end
 end

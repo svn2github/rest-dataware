@@ -22,7 +22,6 @@ type
     edPasswordDW: TEdit;
     Label3: TLabel;
     cbAdaptadores: TComboBox;
-    Label4: TLabel;
     Label7: TLabel;
     Label8: TLabel;
     Label9: TLabel;
@@ -41,7 +40,6 @@ type
     Bevel3: TBevel;
     Label6: TLabel;
     Image1: TImage;
-    edIP: TEdit;
     Label5: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
@@ -52,14 +50,16 @@ type
   private
     FServer    : TIdHTTPWebBrokerBridge;
     FCfgName,
+    vDatabaseIP,
     vUsername,
     vPassword  : String;
     procedure StartServer;
     { Private declarations }
   public
     { Public declarations }
-   Property Username : String Read vUsername Write vUsername;
-   Property Password : String Read vPassword Write vPassword;
+   Property Username   : String Read vUsername   Write vUsername;
+   Property Password   : String Read vPassword   Write vPassword;
+   Property DatabaseIP : String Read vDatabaseIP Write vDatabaseIP;
   end;
 
 var
@@ -83,7 +83,6 @@ Begin
  edPortaBD.Enabled     := ButtonStart.Enabled;
  edPasta.Enabled       := ButtonStart.Enabled;
  edBD.Enabled          := ButtonStart.Enabled;
- edIP.Enabled          := ButtonStart.Enabled;
  edUserNameBD.Enabled  := ButtonStart.Enabled;
  edPasswordBD.Enabled  := ButtonStart.Enabled;
 End;
@@ -95,7 +94,7 @@ Begin
  If FileExists(FCfgName) Then
   DeleteFile(FCfgName);
  ini       := TIniFile.Create(FCfgName);
- ini.WriteString('BancoDados', 'Servidor',  RestDWForm.edIP.Text);//  '127.0.0.1');
+ ini.WriteString('BancoDados', 'Servidor',  RestDWForm.cbAdaptadores.Text);//  '127.0.0.1');
  ini.WriteString('BancoDados', 'BD',        RestDWForm.edBD.Text);
  ini.WriteString('BancoDados', 'Pasta',     RestDWForm.edPasta.Text);
  ini.WriteString('BancoDados', 'PortaDB',   RestDWForm.edPortaBD.Text);
@@ -125,7 +124,7 @@ end;
 
 Procedure TRestDWForm.cbAdaptadoresChange(Sender: TObject);
 Begin
- edIP.Text := Trim(Copy(cbAdaptadores.Text, Pos('-' , cbAdaptadores.Text ) + 1 , 100));
+ vDatabaseIP := Trim(Copy(cbAdaptadores.Text, Pos('-' , cbAdaptadores.Text ) + 1 , 100));
 End;
 
 Procedure TRestDWForm.FormCreate(Sender: TObject);
@@ -150,10 +149,24 @@ Var
  usuarioBD,
  senhaBD           : String;
  ini               : TIniFile;
- i                 : Integer;
+ vTag, i           : Integer;
  aNetInterfaceList : tNetworkInterfaceList;
+ Function ServerIpIndex(Items : TStrings; ChooseIP : String) : Integer;
+ Var
+  I : Integer;
+ Begin
+  Result := -1;
+  For I := 0 To Items.Count -1 Do
+   Begin
+    If Pos(ChooseIP, Items[I]) > 0 Then
+     Begin
+      Result := I;
+      Break;
+     End;
+   End;
+ End;
 Begin
- //Alguns Clientes tem 2 placas de rede ou tem WIFI e CABEADO
+ vTag := 0;
  If (GetNetworkInterfaces(aNetInterfaceList)) THen
   Begin
    cbAdaptadores.Items.Clear;
@@ -162,14 +175,15 @@ Begin
      cbAdaptadores.Items.Add( 'Placa #' + IntToStr( i ) + ' - ' + aNetInterfaceList[i].AddrIP);
      If ( i <= 1 ) or ( Pos( '127.0.0.1' , aNetInterfaceList[i].AddrIP ) > 0 ) then
       Begin
-       edIP.Text := aNetInterfaceList[i].AddrIP;
-       edIP.Tag := i;
+       vDatabaseIP := aNetInterfaceList[i].AddrIP;
+       vTag        := 1;
       End;
     End;
-   cbAdaptadores.ItemIndex := edIP.Tag;
+   cbAdaptadores.ItemIndex := vTag;
   End;
  ini               := TIniFile.Create(FCfgName);
- edIP.Text         := ini.ReadString('BancoDados', 'Servidor', 'localhost');
+ cbAdaptadores.ItemIndex := ServerIpIndex(cbAdaptadores.Items,
+                                          ini.ReadString('BancoDados', 'Servidor', '127.0.0.1'));
  edBD.Text         := ini.ReadString('BancoDados', 'BD', 'EMPLOYEE.FDB');
  edPasta.Text      := ini.ReadString('BancoDados', 'Pasta', ExtractFilePath(ParamSTR(0)) + '..\');
  edPortaBD.Text    := ini.ReadString('BancoDados', 'PortaBD', '3050');

@@ -85,7 +85,7 @@ Var
 
 begin
 
-  servidor   := RestDWForm.edIP.Text ;
+  servidor   := RestDWForm.DatabaseIP;
   database   := RestDWForm.edBD.Text;
   pasta      := RestDWForm.edPasta.Text;
 
