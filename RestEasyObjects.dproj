@@ -167,10 +167,10 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_UnitSearchPath>.\$(Platform)\$(Config);$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_BplOutput>.\$(Platform)\$(Config)</DCC_BplOutput>
-        <VerInfo_Build>202</VerInfo_Build>
+        <VerInfo_Build>203</VerInfo_Build>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Release>1</VerInfo_Release>
-        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=Pacote de Componentes REST para usuários de Dataset;FileVersion=1.0.1.202;InternalName=RestEasyObjects;LegalCopyright=;LegalTrademarks=;OriginalFilename=RestEasyObjects.dpk;ProductName=RestEasyObjects;ProductVersion=1.0.1.1;Comments=Criado por : Gilberto Rocha da Silva;ProgramID=com.embarcadero.$(ModuleName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=Pacote de Componentes REST para usuários de Dataset;FileVersion=1.0.1.203;InternalName=RestEasyObjects;LegalCopyright=;LegalTrademarks=;OriginalFilename=RestEasyObjects.dpk;ProductName=RestEasyObjects;ProductVersion=1.0.1.1;Comments=Criado por : Gilberto Rocha da Silva;ProgramID=com.embarcadero.$(ModuleName)</VerInfo_Keys>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
     </PropertyGroup>
     <ItemGroup>
@@ -258,7 +258,7 @@
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">True</Platform>
             </Platforms>
-            <Deployment Version="2">
+            <Deployment Version="3">
                 <DeployFile LocalName="Win32\Debug\RestEasyObjects.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>RestEasyObjects.bpl</RemoteName>
@@ -311,16 +311,19 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Required="true" Name="ProjectOutput">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
-                    <Platform Name="OSX32">
+                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
-                    <Platform Name="iOSDevice32">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                    </Platform>
+                    <Platform Name="Linux64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="OSX32">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="Android">
@@ -380,12 +383,7 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="AndroidLibnativeX86File">
-                    <Platform Name="Android">
-                        <RemoteDir>library\lib\x86</RemoteDir>
-                        <Operation>1</Operation>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="AndroidLibnativeX86File"/>
                 <DeployClass Name="iPhone_Launch320">
                     <Platform Name="iOSSimulator">
                         <Operation>1</Operation>

@@ -822,10 +822,6 @@ Begin
    FEchoPoolerCommand.RequestType := 'GET';
    FEchoPoolerCommand.Text := Method_Prefix + '.EchoPooler';
    FEchoPoolerCommand.Prepare(TSMPoolerMethodClient_EchoPooler);
-   {
-   If vCompression Then
-    FEchoPoolerCommand.Connection.HTTP.se
-    }
   End;
  FEchoPoolerCommand.Connection.HTTP.ConnectTimeout := TimeOut;
  FEchoPoolerCommand.Connection.UserName            := UserName;

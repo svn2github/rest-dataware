@@ -236,8 +236,8 @@ Type
   Function  CanObserve(const ID: Integer): Boolean; Override;
  Public
   //Métodos
-  Procedure   Open;overload; Virtual;                    //Método Open que será utilizado no Componente
-  procedure   Open(SQL: String);overload;virtual;         //Método Open que será utilizado no Componente
+  Procedure   Open;Overload; Virtual;                     //Método Open que será utilizado no Componente
+  Procedure   Open(SQL: String);Overload; Virtual;        //Método Open que será utilizado no Componente
   Procedure   Close;Virtual;                              //Método Close que será utilizado no Componente
   Procedure   CreateDataSet; Virtual;
   Function    ExecSQL(Var Error : String) : Boolean;      //Método ExecSQL que será utilizado no Componente
@@ -2113,19 +2113,17 @@ Begin
   Inherited Open;
 End;
 
-procedure TRESTClientSQL.Open(SQL: String);
-begin
-  If Not vActive Then
-  begin
-    close;
-    self.vSQL.Clear;
-    self.vSQL.Add(SQL);
-    SetActiveDB(True);
-    Inherited Open;
-  end;
-end;
-
-
+Procedure TRESTClientSQL.Open(SQL : String);
+Begin
+ If Not vActive Then
+  Begin
+   Close;
+   vSQL.Clear;
+   vSQL.Add(SQL);
+   SetActiveDB(True);
+   Inherited Open;
+  End;
+End;
 
 Procedure TRESTClientSQL.OpenCursor(InfoQuery: Boolean);
 Begin
