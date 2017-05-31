@@ -1,44 +1,43 @@
 object ServerMethods1: TServerMethods1
   OldCreateOrder = False
   OnCreate = DataModuleCreate
-  Height = 144
-  Width = 222
+  Height = 196
+  Width = 400
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
-    Left = 56
-    Top = 75
-  end
-  object FDPhysIBDriverLink1: TFDPhysIBDriverLink
-    Left = 112
-    Top = 75
+    Left = 312
+    Top = 19
   end
   object FDStanStorageJSONLink1: TFDStanStorageJSONLink
-    Left = 84
-    Top = 75
+    Left = 313
+    Top = 130
   end
-  object FDConnectionEMPLOYEE: TFDConnection
+  object Server_FDConnection: TFDConnection
     Params.Strings = (
-      'DriverID=FB'
-      'Database=..\EMPLOYEE.FDB'
-      'User_Name=sysdba'
-      'password=masterkey')
-    UpdateOptions.AssignedValues = [uvCountUpdatedRecords, uvFetchGeneratorsPoint]
+      'Database=C:\mkmDados\MKMDATAFILE.FDB'
+      'User_Name=SYSDBA'
+      'Password=masterkey'
+      'Server=localhost'
+      'Port=3050'
+      'CharacterSet='
+      'DriverID=FB')
+    UpdateOptions.AssignedValues = [uvCountUpdatedRecords]
     UpdateOptions.CountUpdatedRecords = False
     ConnectedStoredUsage = []
     LoginPrompt = False
-    BeforeConnect = FDConnectionEMPLOYEEBeforeConnect
-    Left = 68
-    Top = 29
+    BeforeConnect = Server_FDConnectionBeforeConnect
+    Left = 99
+    Top = 18
   end
   object RESTPoolerDB: TRESTPoolerDB
-    Database = FDConnectionEMPLOYEE
+    Database = Server_FDConnection
     Compression = True
     Encoding = esUtf8
-    Left = 96
-    Top = 29
+    Left = 100
+    Top = 72
   end
   object FDPhysFBDriverLink1: TFDPhysFBDriverLink
-    Left = 140
+    Left = 312
     Top = 75
   end
 end
