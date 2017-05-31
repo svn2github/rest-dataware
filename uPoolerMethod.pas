@@ -654,7 +654,11 @@ Begin
  FExecuteCommandJSONCommand.Connection.Password            := Password;
  FExecuteCommandJSONCommand.Parameters[0].Value.SetWideString(Pooler);
  FExecuteCommandJSONCommand.Parameters[1].Value.SetWideString(EncodeStrings(SQL,vEncoding));
- FExecuteCommandJSONCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(Params, FInstanceOwner), True);
+ try
+ FExecuteCommandJSONCommand.Parameters[2].Value.SetDBXReader(TDBXParamsReader.Create(TParams(Params), FInstanceOwner), True);
+ except
+
+ end;
  FExecuteCommandJSONCommand.Parameters[3].Value.SetBoolean(Error);
  FExecuteCommandJSONCommand.Parameters[4].Value.SetWideString(MessageError);
  FExecuteCommandJSONCommand.Parameters[5].Value.SetBoolean(Execute);
