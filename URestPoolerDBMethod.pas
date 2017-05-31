@@ -361,7 +361,8 @@ Begin
   If LDataSets <> Nil Then
    TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
  Finally
-  LDataSets.Free;
+  If LDataSets <> Nil Then
+   LDataSets.Free;
  End;
 End;
 
@@ -378,7 +379,8 @@ Begin
   If LDataSets <> Nil Then
    TFDJSONInterceptor.DataSetsToJSONObject(LDataSets, Result)
  Finally
-  LDataSets.Free;
+  If LDataSets <> Nil Then
+   LDataSets.Free;
  End;
 End;
 
