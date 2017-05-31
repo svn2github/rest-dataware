@@ -33,12 +33,10 @@ type
     { Private declarations }
    vUserName,
    vPassword : String;
-
-  public
+  Public
     { Public declarations }
     //Echo Commands
-
-  end;
+  End;
 {$METHODINFO OFF}
 
 Var

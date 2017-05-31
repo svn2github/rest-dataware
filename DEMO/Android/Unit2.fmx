@@ -11,7 +11,7 @@ object Form2: TForm2
   object Panel1: TPanel
     Align = Top
     Size.Width = 640.000000000000000000
-    Size.Height = 78.000000000000000000
+    Size.Height = 105.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 5
     object Button1: TButton
@@ -57,6 +57,25 @@ object Form2: TForm2
       Size.PlatformDefault = False
       Text = 'Port'
     end
+    object Edit3: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 5
+      Text = 'Robert%'
+      Position.X = 107.000000000000000000
+      Position.Y = 67.000000000000000000
+      Size.Width = 214.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+    end
+    object Label3: TLabel
+      AutoSize = True
+      Position.X = 33.000000000000000000
+      Position.Y = 69.000000000000000000
+      Size.Width = 72.000000000000000000
+      Size.Height = 16.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'First Name :'
+    end
   end
   object ListView1: TListView
     ItemAppearanceClassName = 'TListItemAppearance'
@@ -64,7 +83,7 @@ object Form2: TForm2
     HeaderAppearanceClassName = 'TListHeaderObjects'
     FooterAppearanceClassName = 'TListHeaderObjects'
     Align = Top
-    Position.Y = 78.000000000000000000
+    Position.Y = 105.000000000000000000
     Size.Width = 640.000000000000000000
     Size.Height = 179.000000000000000000
     Size.PlatformDefault = False
@@ -77,7 +96,7 @@ object Form2: TForm2
     FooterAppearanceClassName = 'TListHeaderObjects'
     Align = Client
     Size.Width = 640.000000000000000000
-    Size.Height = 244.000000000000000000
+    Size.Height = 217.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 27
   end
@@ -99,10 +118,15 @@ object Form2: TForm2
     StoreDefs = True
     MasterCascadeDelete = True
     DataCache = False
-    Params = <>
+    Params = <
+      item
+        DataType = ftString
+        Name = 'FIRST_NAME'
+        ParamType = ptUnknown
+      end>
     DataBase = RESTDataBase
     SQL.Strings = (
-      'SELECT * FROM employee')
+      'SELECT * FROM EMPLOYEE WHERE FIRST_NAME like :FIRST_NAME')
     Left = 220
     Top = 192
     object RESTClientSQLEMP_NO: TSmallintField

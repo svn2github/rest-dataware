@@ -49,6 +49,8 @@ type
     RESTClientSQL3NEW_SALARY: TFloatField;
     BindSourceDB2: TBindSourceDB;
     LinkListControlToField2: TLinkListControlToField;
+    Edit3: TEdit;
+    Label3: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseBeforeConnect(Sender: TComponent);
   private
@@ -70,6 +72,7 @@ Begin
  If RESTDataBase.Active Then
   Begin
    RESTClientSQL.Active       := False;
+   RESTClientSQL.ParamByName('FIRST_NAME').AsString := Edit3.Text;
    RESTClientSQL.Active       := True;
   End;
 end;

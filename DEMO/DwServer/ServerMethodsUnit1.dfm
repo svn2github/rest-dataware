@@ -1,20 +1,20 @@
 object ServerMethods1: TServerMethods1
   OldCreateOrder = False
   OnCreate = DataModuleCreate
-  Height = 259
-  Width = 261
+  Height = 144
+  Width = 222
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
-    Left = 48
-    Top = 67
+    Left = 56
+    Top = 75
   end
   object FDPhysIBDriverLink1: TFDPhysIBDriverLink
-    Left = 104
-    Top = 67
+    Left = 112
+    Top = 75
   end
   object FDStanStorageJSONLink1: TFDStanStorageJSONLink
-    Left = 76
-    Top = 67
+    Left = 84
+    Top = 75
   end
   object FDConnectionEMPLOYEE: TFDConnection
     Params.Strings = (
@@ -27,18 +27,18 @@ object ServerMethods1: TServerMethods1
     ConnectedStoredUsage = []
     LoginPrompt = False
     BeforeConnect = FDConnectionEMPLOYEEBeforeConnect
-    Left = 60
-    Top = 21
+    Left = 68
+    Top = 29
   end
   object RESTPoolerDB: TRESTPoolerDB
     Database = FDConnectionEMPLOYEE
     Compression = True
     Encoding = esUtf8
-    Left = 88
-    Top = 21
+    Left = 96
+    Top = 29
   end
   object FDPhysFBDriverLink1: TFDPhysFBDriverLink
-    Left = 132
-    Top = 67
+    Left = 140
+    Top = 75
   end
 end

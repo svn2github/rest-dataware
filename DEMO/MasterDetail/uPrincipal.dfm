@@ -71,8 +71,8 @@ object Form4: TForm4
     Encoding = esUtf8
     Context = 'datasnap'
     RESTContext = 'rest/'
-    Left = 56
-    Top = 34
+    Left = 124
+    Top = 40
   end
   object RESTClientSQL1: TRESTClientSQL
     AfterPost = RESTClientSQL1AfterDelete
@@ -160,7 +160,7 @@ object Form4: TForm4
       'where DEPT_NO = :DEPT_NO')
     UpdateTableName = 'employee'
     Left = 152
-    Top = 104
+    Top = 85
     object RESTClientSQL2EMP_NO: TSmallintField
       FieldName = 'EMP_NO'
       Required = True
@@ -219,7 +219,7 @@ object Form4: TForm4
   object DataSource2: TDataSource
     DataSet = RESTClientSQL2
     Left = 180
-    Top = 104
+    Top = 85
   end
   object RESTClientSQL3: TRESTClientSQL
     AfterPost = RESTClientSQL1AfterDelete
@@ -252,7 +252,7 @@ object Form4: TForm4
       'where EMP_NO = :EMP_NO')
     UpdateTableName = 'SALARY_HISTORY'
     Left = 152
-    Top = 160
+    Top = 130
     object RESTClientSQL3EMP_NO: TSmallintField
       FieldName = 'EMP_NO'
       Required = True
@@ -280,6 +280,6 @@ object Form4: TForm4
   object DataSource3: TDataSource
     DataSet = RESTClientSQL3
     Left = 180
-    Top = 160
+    Top = 130
   end
 end

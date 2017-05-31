@@ -1649,63 +1649,60 @@ Begin
  Inherited;
 End;
 
-Function ReturnParams(SQL : String) : TStringList;
+Function ScanParams(SQL : String) : TStringList;
 Var
- InitStr,
- FinalStr    : Integer;
- vTempString : String;
- Function CreateParamS(Var Value : String) : String;
- Var
-  I      : Integer;
-  vTempS : String;
+ vTemp        : String;
+ FCurrentPos,
+ FTokenStart  : PChar;
+ vOldChar     : Char;
+ vParamName   : String;
+ Function GetParamName : String;
  Begin
-  I      := InitStr;
-  vTempS := Value;
   Result := '';
-  While (vTempS <> '') Do
+  Inc(FCurrentPos);
+  If vOldChar In [' ', '=', '-', '+', '<', '>', '(', ')'] Then
    Begin
-    If vTempS[I] in ['0'..'9', 'a'..'z', 'A'..'Z', '_'] then
-     Result := Result + vTempS[I]
-    Else
-     Break;
-    {$IFDEF MSWINDOWS}
-    If I = Length(Value) Then
-     Break;
-    {$ELSE}
-    If I = Length(Value) -1 Then
-     Break;
-    {$ENDIF}
-    Inc(I);
+    While Not (FCurrentPos^ = #0) Do
+     Begin
+      If FCurrentPos^ In ['0'..'9', 'A'..'Z',
+                          'a'..'z', '_'] Then
+       Result := Result + FCurrentPos^
+      Else
+       Break;
+      Inc(FCurrentPos);
+     End;
    End;
-  If (I = Length(Value)) Or (Length(Value) = 1) Then
-   Value := ''
-  Else
-   Value := Copy(Value, Length(Result) + 1, Length(Value));
  End;
 Begin
- {$IFDEF MSWINDOWS}
- InitStr   := 1;
- FinalStr  := 0;
- {$ELSE}
- InitStr   := 0;
- FinalStr  := 1;
- {$ENDIF}
- Result := Nil;
- vTempString := StringReplace(SQL, #12, '', [rfReplaceAll]);
- If Pos(':', SQL) > 0 Then
+ Result := TStringList.Create;
+ vTemp  := SQL;
+ FCurrentPos := PChar(vTemp);
+ While Not (FCurrentPos^ = #0) do
   Begin
-   vTempString := Copy(vTempString, Pos(':', vTempString) + 1, Length(vTempString));
-   Result := TStringList.Create;
-   While vTempString <> '' Do
+   If Not(FCurrentPos^ In [#0..' ', ',',
+                           '''', '"',
+                           '0'..'9', 'A'..'Z',
+                           'a'..'z', '_',
+                           '$', #127..#255]) Then
     Begin
-     Result.Add(CreateParamS(vTempString));
-     vTempString := Copy(vTempString, Pos(':', vTempString), Length(vTempString));
-     If Pos(':', vTempString) = 0 Then
-      Break
-     Else
-      vTempString := Copy(vTempString, Pos(':', vTempString) + 1, Length(vTempString));
+     vParamName := GetParamName;
+     If Trim(vParamName) <> '' Then
+      Begin
+       Result.Add(vParamName);
+       Inc(FCurrentPos);
+      End;
+    End
+   Else
+    Begin
+     vOldChar := FCurrentPos^;
+     Inc(FCurrentPos);
     End;
   End;
+End;
+
+Function ReturnParams(SQL : String) : TStringList;
+Begin
+ Result := ScanParams(SQL);
 End;
 
 Procedure TRESTClientSQL.CreateParams;
@@ -2076,7 +2073,6 @@ Begin
  vSQL.Clear;
  For I := 0 To Value.Count -1 do
   vSQL.Add(Value[I]);
-
 End;
 
 Procedure TRESTClientSQL.CreateDataSet;
