@@ -66,6 +66,7 @@ Client :
  Melhorias na transferência de dados.
  Correções de BUG's.
  Adição da compressão de Dados Nativa no Database. 
+ Fix no ParamSQL Parser, ajuste para melhor identificação de Parâmetros dentro de um SQL
 
 Demos :
  
