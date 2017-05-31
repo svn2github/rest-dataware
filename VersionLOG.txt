@@ -60,6 +60,7 @@ Servidor :
  
  Vários BUG's de métodos corrigidos, Melhorias no Master/Detail.
  Adição da compressão de Dados Nativa no Pooler.
+ Adição do Servidor Re Estilizado Fornecido pelo Flavio Motta usuário do REST Dataware e uploader do Projeto.
 
 Client :
  
