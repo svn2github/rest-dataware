@@ -1323,33 +1323,37 @@ Begin
   Result := TFDJSONDataSets.Create;
   If (oJsonObject <> Nil) Then
    Begin
-    If vCompression Then
+    If (Trim(oJsonObject.ToString) <> '{}') And
+       (Trim(oJsonObject.ToString) <> '')   Then
      Begin
-      Original     := TMemoryStream.Create;
-      gZIPStream   := TMemoryStream.Create;
-      MemTable     := TFDMemTable.Create(Nil);
-      LDataSetList := TFDJSONDataSets.Create;
-      Try
-       TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, LDataSetList);
-       Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
-       MemTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
-       MemTable.First;
-       TBlobField(MemTable.FieldByName('compress')).SaveToStream(Original);
-       MemTable.Close;
-       Original.Position := 0;
-       doUnGZIP(Original, gZIPStream);
-       MemTable.LoadFromStream(gZIPStream, sfJSON);
-       vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
-       vTempWriter.ListAdd(Result, MemTable);
-      Finally
-       Original.DisposeOf;
-       gZIPStream.DisposeOf;
-       vTempWriter.DisposeOf;
-       LDataSetList.DisposeOf;
-      End;
-     End
-    Else
-     TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, Result);
+      If vCompression Then
+       Begin
+        Original     := TMemoryStream.Create;
+        gZIPStream   := TMemoryStream.Create;
+        MemTable     := TFDMemTable.Create(Nil);
+        LDataSetList := TFDJSONDataSets.Create;
+        Try
+         TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, LDataSetList);
+         Assert(TFDJSONDataSetsReader.GetListCount(LDataSetList) = 1);
+         MemTable.AppendData(TFDJSONDataSetsReader.GetListValue(LDataSetList, 0));
+         MemTable.First;
+         TBlobField(MemTable.FieldByName('compress')).SaveToStream(Original);
+         MemTable.Close;
+         Original.Position := 0;
+         doUnGZIP(Original, gZIPStream);
+         MemTable.LoadFromStream(gZIPStream, sfJSON);
+         vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
+         vTempWriter.ListAdd(Result, MemTable);
+        Finally
+         Original.DisposeOf;
+         gZIPStream.DisposeOf;
+         vTempWriter.DisposeOf;
+         LDataSetList.DisposeOf;
+        End;
+       End
+      Else
+       TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, Result);
+     End;
    End;
   If Assigned(vOnEventConnection) Then
    vOnEventConnection(True, 'ExecuteCommand Ok');
@@ -2106,7 +2110,6 @@ end;
 
 Procedure TRESTClientSQL.Open;
 Begin
-
  If Not vActive Then
   SetActiveDB(True);
  If vActive Then
