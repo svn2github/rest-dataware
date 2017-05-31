@@ -23,8 +23,6 @@ type
     Label3: TLabel;
     cbAdaptadores: TComboBox;
     Label4: TLabel;
-    Label5: TLabel;
-    edIP: TEdit;
     Label7: TLabel;
     Label8: TLabel;
     Label9: TLabel;
@@ -43,6 +41,8 @@ type
     Bevel3: TBevel;
     Label6: TLabel;
     Image1: TImage;
+    edIP: TEdit;
+    Label5: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);
@@ -74,53 +74,37 @@ uses
 
 procedure TRestDWForm.ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
 Begin
-
-   ButtonStart.Enabled   := Not FServer.Active;
-   ButtonStop.Enabled    := FServer.Active;
-
-   edPortaDW.Enabled     := ButtonStart.Enabled;
-   edUserNameDW.Enabled  := ButtonStart.Enabled;
-   edPasswordDW.Enabled  := ButtonStart.Enabled;
-
-   cbAdaptadores.Enabled := ButtonStart.Enabled;
-   edPortaBD.Enabled     := ButtonStart.Enabled;
-   edPasta.Enabled       := ButtonStart.Enabled;
-   edBD.Enabled          := ButtonStart.Enabled;
-   edIP.Enabled          := ButtonStart.Enabled;
-   edUserNameBD.Enabled  := ButtonStart.Enabled;
-   edPasswordBD.Enabled  := ButtonStart.Enabled;
-
+ ButtonStart.Enabled   := Not FServer.Active;
+ ButtonStop.Enabled    := FServer.Active;
+ edPortaDW.Enabled     := ButtonStart.Enabled;
+ edUserNameDW.Enabled  := ButtonStart.Enabled;
+ edPasswordDW.Enabled  := ButtonStart.Enabled;
+ cbAdaptadores.Enabled := ButtonStart.Enabled;
+ edPortaBD.Enabled     := ButtonStart.Enabled;
+ edPasta.Enabled       := ButtonStart.Enabled;
+ edBD.Enabled          := ButtonStart.Enabled;
+ edIP.Enabled          := ButtonStart.Enabled;
+ edUserNameBD.Enabled  := ButtonStart.Enabled;
+ edPasswordBD.Enabled  := ButtonStart.Enabled;
 End;
 
 procedure TRestDWForm.ButtonStartClick(Sender: TObject);
-
-var
+Var
  ini       : TIniFile;
-
 Begin
-
-  If FileExists(FCfgName) Then
-     DeleteFile( FCfgName );
-
-  //If not FileExists(fname) Then
-  Begin
-
-     ini       := TIniFile.Create(FCfgName);
-
-     ini.WriteString( 'BancoDados', 'Servidor',  RestDWForm.edIP.Text );//  '127.0.0.1');
-     ini.WriteString( 'BancoDados', 'BD',        RestDWForm.edBD.Text );
-     ini.WriteString( 'BancoDados', 'Pasta',     RestDWForm.edPasta.Text );
-     ini.WriteString( 'BancoDados', 'PortaDB',   RestDWForm.edPortaBD.Text );
-     ini.WriteString( 'BancoDados', 'PortaDW',   RestDWForm.edPortaDW.Text );
-     ini.WriteString( 'BancoDados', 'UsuarioBD', RestDWForm.edUserNameBD.Text );
-     ini.WriteString( 'BancoDados', 'SenhaBD',   RestDWForm.edPasswordBD.Text );
-     ini.WriteString( 'BancoDados', 'UsuarioDW', RestDWForm.edUserNameDW.Text );
-     ini.WriteString( 'BancoDados', 'SenhaDW',   RestDWForm.edPasswordDW.Text );
-
-     ini.Free;
-
-  End;
-
+ If FileExists(FCfgName) Then
+  DeleteFile(FCfgName);
+ ini       := TIniFile.Create(FCfgName);
+ ini.WriteString('BancoDados', 'Servidor',  RestDWForm.edIP.Text);//  '127.0.0.1');
+ ini.WriteString('BancoDados', 'BD',        RestDWForm.edBD.Text);
+ ini.WriteString('BancoDados', 'Pasta',     RestDWForm.edPasta.Text);
+ ini.WriteString('BancoDados', 'PortaDB',   RestDWForm.edPortaBD.Text);
+ ini.WriteString('BancoDados', 'PortaDW',   RestDWForm.edPortaDW.Text);
+ ini.WriteString('BancoDados', 'UsuarioBD', RestDWForm.edUserNameBD.Text);
+ ini.WriteString('BancoDados', 'SenhaBD',   RestDWForm.edPasswordBD.Text);
+ ini.WriteString('BancoDados', 'UsuarioDW', RestDWForm.edUserNameDW.Text);
+ ini.WriteString('BancoDados', 'SenhaDW',   RestDWForm.edPasswordDW.Text);
+ ini.Free;
  vUsername := edUserNameDW.Text;
  vPassword := edPasswordDW.Text;
  StartServer;
@@ -139,22 +123,20 @@ begin
  FServer.Bindings.Clear;
 end;
 
-procedure TRestDWForm.cbAdaptadoresChange(Sender: TObject);
-begin
+Procedure TRestDWForm.cbAdaptadoresChange(Sender: TObject);
+Begin
+ edIP.Text := Trim(Copy(cbAdaptadores.Text, Pos('-' , cbAdaptadores.Text ) + 1 , 100));
+End;
 
-     edIP.Text := Trim( Copy( cbAdaptadores.Text, Pos( '-' , cbAdaptadores.Text ) + 1 , 100 ) );
-
-end;
-
-procedure TRestDWForm.FormCreate(Sender: TObject);
-begin
+Procedure TRestDWForm.FormCreate(Sender: TObject);
+Begin
  FServer := TIdHTTPWebBrokerBridge.Create(Self);
  // define o nome do .ini de acordo c o EXE
  // dessa forma se quiser testar várias instâncias do servidor em
  // portas diferentes os arquivos não irão conflitar
  FCfgName := StringReplace(ExtractFileName(ParamStr(0) ), '.exe' , '' , [rfReplaceAll]);
  FCfgName := ExtractFilePath(ParamSTR(0)) + 'Config_' + FCfgName + '.ini' ;
-end;
+End;
 
 procedure TRestDWForm.FormShow(Sender: TObject);
 Var
@@ -172,7 +154,7 @@ Var
  aNetInterfaceList : tNetworkInterfaceList;
 Begin
  //Alguns Clientes tem 2 placas de rede ou tem WIFI e CABEADO
- If (GetNetworkInterfaces (aNetInterfaceList)) THen
+ If (GetNetworkInterfaces(aNetInterfaceList)) THen
   Begin
    cbAdaptadores.Items.Clear;
    For i := 0 to High (aNetInterfaceList) do

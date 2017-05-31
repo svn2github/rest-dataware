@@ -4,7 +4,7 @@ object RestDWForm: TRestDWForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Servidor RestDW'
-  ClientHeight = 327
+  ClientHeight = 337
   ClientWidth = 574
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -76,20 +76,6 @@ object RestDWForm: TRestDWForm
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Label5: TLabel
-    Left = 278
-    Top = 103
-    Width = 12
-    Height = 13
-    AutoSize = False
-    Caption = 'IP'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
   object Label7: TLabel
     Left = 13
     Top = 75
@@ -116,8 +102,8 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label9: TLabel
-    Left = 13
-    Top = 187
+    Left = 140
+    Top = 184
     Width = 31
     Height = 13
     AutoSize = False
@@ -130,8 +116,8 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label10: TLabel
-    Left = 65
-    Top = 187
+    Left = 192
+    Top = 184
     Width = 43
     Height = 13
     AutoSize = False
@@ -144,8 +130,8 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label11: TLabel
-    Left = 175
-    Top = 187
+    Left = 302
+    Top = 184
     Width = 35
     Height = 13
     AutoSize = False
@@ -185,8 +171,8 @@ object RestDWForm: TRestDWForm
     Shape = bsTopLine
   end
   object Label12: TLabel
-    Left = 278
-    Top = 187
+    Left = 13
+    Top = 229
     Width = 32
     Height = 13
     AutoSize = False
@@ -199,8 +185,8 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label14: TLabel
-    Left = 443
-    Top = 187
+    Left = 178
+    Top = 229
     Width = 15
     Height = 13
     AutoSize = False
@@ -214,14 +200,14 @@ object RestDWForm: TRestDWForm
   end
   object Bevel3: TBevel
     Left = 9
-    Top = 277
+    Top = 292
     Width = 554
     Height = 2
     Shape = bsTopLine
   end
   object Label6: TLabel
     Left = 13
-    Top = 259
+    Top = 274
     Width = 554
     Height = 13
     AutoSize = False
@@ -1081,9 +1067,23 @@ object RestDWForm: TRestDWForm
       78A2C7BA508FC03148832468101C83D42D0D826390BAA541700C52B7F4BFB752
       4E92F100CAA80000000049454E44AE426082}
   end
+  object Label5: TLabel
+    Left = 13
+    Top = 184
+    Width = 12
+    Height = 13
+    AutoSize = False
+    Caption = 'IP'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object ButtonStart: TButton
     Left = 317
-    Top = 292
+    Top = 303
     Width = 121
     Height = 25
     Caption = 'Iniciar'
@@ -1093,12 +1093,12 @@ object RestDWForm: TRestDWForm
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 10
     OnClick = ButtonStartClick
   end
   object ButtonStop: TButton
     Left = 444
-    Top = 292
+    Top = 303
     Width = 121
     Height = 25
     Caption = 'Parar'
@@ -1108,7 +1108,7 @@ object RestDWForm: TRestDWForm
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 11
     OnClick = ButtonStopClick
   end
   object edPortaDW: TEdit
@@ -1116,7 +1116,7 @@ object RestDWForm: TRestDWForm
     Top = 121
     Width = 40
     Height = 21
-    TabOrder = 0
+    TabOrder = 1
     Text = '8082'
   end
   object edUserNameDW: TEdit
@@ -1124,7 +1124,7 @@ object RestDWForm: TRestDWForm
     Top = 121
     Width = 100
     Height = 21
-    TabOrder = 1
+    TabOrder = 2
     Text = 'testserver'
   end
   object edPasswordDW: TEdit
@@ -1133,7 +1133,7 @@ object RestDWForm: TRestDWForm
     Width = 100
     Height = 21
     PasswordChar = '*'
-    TabOrder = 2
+    TabOrder = 3
     Text = 'testserver'
   end
   object cbAdaptadores: TComboBox
@@ -1141,56 +1141,56 @@ object RestDWForm: TRestDWForm
     Top = 35
     Width = 182
     Height = 21
-    TabOrder = 3
+    TabOrder = 0
     Text = 'cbAdaptadores'
     OnChange = cbAdaptadoresChange
   end
+  object edPortaBD: TEdit
+    Left = 140
+    Top = 202
+    Width = 40
+    Height = 21
+    TabOrder = 5
+    Text = '3050'
+  end
+  object edUserNameBD: TEdit
+    Left = 192
+    Top = 202
+    Width = 100
+    Height = 21
+    TabOrder = 6
+    Text = 'sysdba'
+  end
+  object edPasswordBD: TEdit
+    Left = 302
+    Top = 202
+    Width = 100
+    Height = 21
+    PasswordChar = '*'
+    TabOrder = 7
+    Text = 'masterkey'
+  end
+  object edPasta: TEdit
+    Left = 14
+    Top = 247
+    Width = 157
+    Height = 21
+    TabOrder = 8
+  end
+  object edBD: TEdit
+    Left = 179
+    Top = 247
+    Width = 119
+    Height = 21
+    TabOrder = 9
+  end
   object edIP: TEdit
-    Left = 279
-    Top = 121
+    Left = 14
+    Top = 202
     Width = 119
     Height = 21
     TabOrder = 4
     Text = '127.0.0.1'
-  end
-  object edPortaBD: TEdit
-    Left = 13
-    Top = 205
-    Width = 40
-    Height = 21
-    TabOrder = 7
-    Text = '3050'
-  end
-  object edUserNameBD: TEdit
-    Left = 65
-    Top = 205
-    Width = 100
-    Height = 21
-    TabOrder = 8
-    Text = 'sysdba'
-  end
-  object edPasswordBD: TEdit
-    Left = 175
-    Top = 205
-    Width = 100
-    Height = 21
-    PasswordChar = '*'
-    TabOrder = 9
-    Text = 'masterkey'
-  end
-  object edPasta: TEdit
-    Left = 279
-    Top = 205
-    Width = 157
-    Height = 21
-    TabOrder = 10
-  end
-  object edBD: TEdit
-    Left = 444
-    Top = 205
-    Width = 119
-    Height = 21
-    TabOrder = 11
   end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
