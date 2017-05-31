@@ -3,13 +3,7 @@
         <ProjectGuid>{B9896F08-FBE4-4C46-BDAA-C3C41A03A68E}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="ClientWin.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="..\RestEasyObjects.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="ListPoolers.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="ISAPI\RestDWServerISAPI.dproj">
@@ -30,6 +24,12 @@
         <Projects Include="Apache_Module\mod_webbroker.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="ClientWin\ClientWin.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="ListPoolers\ListPoolers.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -38,15 +38,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="ClientWin">
-        <MSBuild Projects="ClientWin.dproj"/>
-    </Target>
-    <Target Name="ClientWin:Clean">
-        <MSBuild Projects="ClientWin.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="ClientWin:Make">
-        <MSBuild Projects="ClientWin.dproj" Targets="Make"/>
-    </Target>
     <Target Name="RestEasyObjects">
         <MSBuild Projects="..\RestEasyObjects.dproj"/>
     </Target>
@@ -55,15 +46,6 @@
     </Target>
     <Target Name="RestEasyObjects:Make">
         <MSBuild Projects="..\RestEasyObjects.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="ListPoolers">
-        <MSBuild Projects="ListPoolers.dproj"/>
-    </Target>
-    <Target Name="ListPoolers:Clean">
-        <MSBuild Projects="ListPoolers.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="ListPoolers:Make">
-        <MSBuild Projects="ListPoolers.dproj" Targets="Make"/>
     </Target>
     <Target Name="RestDWServerISAPI">
         <MSBuild Projects="ISAPI\RestDWServerISAPI.dproj"/>
@@ -119,14 +101,32 @@
     <Target Name="mod_webbroker:Make">
         <MSBuild Projects="Apache_Module\mod_webbroker.dproj" Targets="Make"/>
     </Target>
+    <Target Name="ClientWin">
+        <MSBuild Projects="ClientWin\ClientWin.dproj"/>
+    </Target>
+    <Target Name="ClientWin:Clean">
+        <MSBuild Projects="ClientWin\ClientWin.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ClientWin:Make">
+        <MSBuild Projects="ClientWin\ClientWin.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ListPoolers">
+        <MSBuild Projects="ListPoolers\ListPoolers.dproj"/>
+    </Target>
+    <Target Name="ListPoolers:Clean">
+        <MSBuild Projects="ListPoolers\ListPoolers.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ListPoolers:Make">
+        <MSBuild Projects="ListPoolers\ListPoolers.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ClientWin;RestEasyObjects;ListPoolers;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker"/>
+        <CallTarget Targets="RestEasyObjects;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker;ClientWin;ListPoolers"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ClientWin:Clean;RestEasyObjects:Clean;ListPoolers:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean"/>
+        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean;ClientWin:Clean;ListPoolers:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ClientWin:Make;RestEasyObjects:Make;ListPoolers:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make"/>
+        <CallTarget Targets="RestEasyObjects:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make;ClientWin:Make;ListPoolers:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

@@ -169,7 +169,7 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label14: TLabel
-    Left = 178
+    Left = 256
     Top = 173
     Width = 15
     Height = 13
@@ -1157,12 +1157,12 @@ object RestDWForm: TRestDWForm
   object edPasta: TEdit
     Left = 14
     Top = 191
-    Width = 157
+    Width = 227
     Height = 21
     TabOrder = 7
   end
   object edBD: TEdit
-    Left = 179
+    Left = 254
     Top = 191
     Width = 119
     Height = 21
