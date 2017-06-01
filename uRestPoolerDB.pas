@@ -1668,7 +1668,7 @@ Var
   If FCurrentPos^ = ':' Then
    Begin
     Inc(FCurrentPos);
-    If vOldChar In [' ', '=', '-', '+', '<', '>', '(', ')', ':'] Then
+    If vOldChar In [' ', '=', '-', '+', '<', '>', '(', ')', ':', '|'] Then
      Begin
       While Not (FCurrentPos^ = #0) Do
        Begin
