@@ -1665,19 +1665,25 @@ Var
  Function GetParamName : String;
  Begin
   Result := '';
-  Inc(FCurrentPos);
-  If vOldChar In [' ', '=', '-', '+', '<', '>', '(', ')'] Then
+  If FCurrentPos^ = ':' Then
    Begin
-    While Not (FCurrentPos^ = #0) Do
+    Inc(FCurrentPos);
+    If vOldChar In [' ', '=', '-', '+', '<', '>', '(', ')', ':'] Then
      Begin
-      If FCurrentPos^ In ['0'..'9', 'A'..'Z',
-                          'a'..'z', '_'] Then
-       Result := Result + FCurrentPos^
-      Else
-       Break;
-      Inc(FCurrentPos);
+      While Not (FCurrentPos^ = #0) Do
+       Begin
+        If FCurrentPos^ In ['0'..'9', 'A'..'Z',
+                            'a'..'z', '_'] Then
+         Result := Result + FCurrentPos^
+        Else
+         Break;
+        Inc(FCurrentPos);
+       End;
      End;
-   End;
+   End
+  Else
+   Inc(FCurrentPos);
+  vOldChar := FCurrentPos^;
  End;
 Begin
  Result := TStringList.Create;
