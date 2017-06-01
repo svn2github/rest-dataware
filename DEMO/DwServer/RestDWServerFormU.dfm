@@ -5,7 +5,7 @@ object RestDWForm: TRestDWForm
   BorderStyle = bsSingle
   Caption = 'Servidor RestDW'
   ClientHeight = 282
-  ClientWidth = 574
+  ClientWidth = 518
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -86,7 +86,7 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label9: TLabel
-    Left = 201
+    Left = 234
     Top = 129
     Width = 31
     Height = 13
@@ -100,7 +100,7 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label10: TLabel
-    Left = 253
+    Left = 283
     Top = 129
     Width = 43
     Height = 13
@@ -114,7 +114,7 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label11: TLabel
-    Left = 363
+    Left = 390
     Top = 129
     Width = 35
     Height = 13
@@ -143,14 +143,14 @@ object RestDWForm: TRestDWForm
   object Bevel1: TBevel
     Left = 14
     Top = 38
-    Width = 400
+    Width = 344
     Height = 2
     Shape = bsTopLine
   end
   object Bevel2: TBevel
     Left = 14
     Top = 122
-    Width = 554
+    Width = 495
     Height = 2
     Shape = bsTopLine
   end
@@ -169,7 +169,7 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Label14: TLabel
-    Left = 256
+    Left = 390
     Top = 173
     Width = 15
     Height = 13
@@ -183,9 +183,9 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Bevel3: TBevel
-    Left = 9
+    Left = 13
     Top = 236
-    Width = 554
+    Width = 496
     Height = 2
     Shape = bsTopLine
   end
@@ -197,7 +197,7 @@ object RestDWForm: TRestDWForm
     AutoSize = False
     Caption = 
       'Obs: A porta do servidor RestDW deve estar adicionada nas regras' +
-      ' do FIREWALL do windows / antiv'#237'rus'
+      ' do FIREWALL do Windows/Antiv'#237'rus'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -11
@@ -206,8 +206,8 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object Image1: TImage
-    Left = 432
-    Top = 9
+    Left = 376
+    Top = 10
     Width = 133
     Height = 100
     Picture.Data = {
@@ -1066,8 +1066,8 @@ object RestDWForm: TRestDWForm
     ParentFont = False
   end
   object ButtonStart: TButton
-    Left = 317
-    Top = 247
+    Left = 261
+    Top = 244
     Width = 121
     Height = 25
     Caption = 'Iniciar'
@@ -1081,8 +1081,8 @@ object RestDWForm: TRestDWForm
     OnClick = ButtonStartClick
   end
   object ButtonStop: TButton
-    Left = 444
-    Top = 247
+    Left = 388
+    Top = 244
     Width = 121
     Height = 25
     Caption = 'Parar'
@@ -1123,14 +1123,14 @@ object RestDWForm: TRestDWForm
   object cbAdaptadores: TComboBox
     Left = 14
     Top = 147
-    Width = 182
+    Width = 212
     Height = 21
     TabOrder = 0
     Text = 'cbAdaptadores'
     OnChange = cbAdaptadoresChange
   end
   object edPortaBD: TEdit
-    Left = 201
+    Left = 234
     Top = 147
     Width = 40
     Height = 21
@@ -1138,7 +1138,7 @@ object RestDWForm: TRestDWForm
     Text = '3050'
   end
   object edUserNameBD: TEdit
-    Left = 253
+    Left = 283
     Top = 147
     Width = 100
     Height = 21
@@ -1146,9 +1146,9 @@ object RestDWForm: TRestDWForm
     Text = 'sysdba'
   end
   object edPasswordBD: TEdit
-    Left = 363
+    Left = 390
     Top = 147
-    Width = 100
+    Width = 119
     Height = 21
     PasswordChar = '*'
     TabOrder = 6
@@ -1157,12 +1157,12 @@ object RestDWForm: TRestDWForm
   object edPasta: TEdit
     Left = 14
     Top = 191
-    Width = 227
+    Width = 369
     Height = 21
     TabOrder = 7
   end
   object edBD: TEdit
-    Left = 254
+    Left = 390
     Top = 191
     Width = 119
     Height = 21
@@ -1170,7 +1170,7 @@ object RestDWForm: TRestDWForm
   end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
-    Left = 448
-    Top = 139
+    Left = 509
+    Top = 123
   end
 end
