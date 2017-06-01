@@ -46,6 +46,7 @@ type
     procedure RESTClientSQLAfterPost(DataSet: TDataSet);
     procedure RESTClientSQLAfterOpen(DataSet: TDataSet);
     procedure RESTClientSQLAfterDelete(DataSet: TDataSet);
+    procedure RESTClientSQLGetDataError(Sucess: Boolean; const Error: string);
   private
     { Private declarations }
   public
@@ -78,6 +79,12 @@ Var
 begin
  If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
   MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+end;
+
+procedure TForm1.RESTClientSQLGetDataError(Sucess: Boolean;
+  const Error: string);
+begin
+ Showmessage(Error);
 end;
 
 procedure TForm1.RESTDataBaseConnection(Sucess: Boolean; const Error: string);

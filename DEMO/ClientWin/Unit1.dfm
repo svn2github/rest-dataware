@@ -180,6 +180,7 @@ object Form1: TForm1
     UpdateOptions.AutoCommitUpdates = True
     StoreDefs = True
     MasterCascadeDelete = True
+    OnGetDataError = RESTClientSQLGetDataError
     DataCache = False
     Params = <>
     DataBase = RESTDataBase

@@ -655,7 +655,10 @@ Begin
  Except
   On E : Exception do
    Begin
-    vFDConnection.RollbackRetaining;
+    Try
+     vFDConnection.RollbackRetaining;
+    Except
+    End;
     Error := True;
     MessageError := E.Message;
    End;
@@ -770,7 +773,10 @@ Begin
  Except
   On E : Exception do
    Begin
-    vFDConnection.RollbackRetaining;
+    Try
+     vFDConnection.RollbackRetaining;
+    Except
+    End;
     Error := True;
     MessageError := E.Message;
    End;
@@ -2157,8 +2163,6 @@ Begin
           End
          Else
           Inherited OpenCursor(InfoQuery);
-         If Assigned(vOnGetDataError) Then
-          vOnGetDataError(True, '');
         Except
          On E : Exception do
           Begin
@@ -2323,7 +2327,7 @@ Begin
   Begin
    Try
     LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, False);
-    If LDataSetList <> Nil Then
+    If (LDataSetList <> Nil) And (Not (vError)) Then
      Begin
       vTempTable := TFDMemTable.Create(Nil);
       vTempTable.UpdateOptions.CountUpdatedRecords := False;
@@ -2344,6 +2348,11 @@ Begin
     If LDataSetList <> Nil Then
      LDataSetList.DisposeOf;
    End;
+   If vError Then
+    Begin
+     If Assigned(vOnGetDataError) Then
+      vOnGetDataError(Not(vError), vMessageError);
+    End;
   End;
 End;
 
@@ -2360,8 +2369,6 @@ Begin
    Try
     If Not(vActive) And (Value) Then
      vActive := GetData;
-    If Assigned(vOnGetDataError) Then
-     vOnGetDataError(True, '');
     If State = dsBrowse Then
      PrepareDetails(True)
     Else If State = dsInactive Then
