@@ -2,14 +2,14 @@ object ServerMethods1: TServerMethods1
   OldCreateOrder = False
   OnCreate = DataModuleCreate
   Height = 196
-  Width = 400
+  Width = 293
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
-    Left = 312
+    Left = 176
     Top = 19
   end
   object FDStanStorageJSONLink1: TFDStanStorageJSONLink
-    Left = 313
+    Left = 177
     Top = 130
   end
   object Server_FDConnection: TFDConnection
@@ -37,7 +37,7 @@ object ServerMethods1: TServerMethods1
     Top = 72
   end
   object FDPhysFBDriverLink1: TFDPhysFBDriverLink
-    Left = 312
+    Left = 176
     Top = 75
   end
 end
