@@ -72,3 +72,15 @@ Client :
 Demos :
  
  Novo DEMO Adicionado, Apache WebBroker Modulo.
+
+1.0.1.205 :
+
+ Adicionados novos métodos para maior compatibilidade na conversão de outros sistemas usando outros componentes
+DataAccess.
+
+ Database
+  Close;
+  Open;
+
+ RestClient
+  ParamCount

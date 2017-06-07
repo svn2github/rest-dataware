@@ -138,10 +138,14 @@ Type
                                Var Params       : TParams;
                                Var Error        : Boolean;
                                Var MessageError : String) : Integer;
+  Function GetStateDB : Boolean;
  Public
   Function    GetRestPoolers : TStringList;          //Retorna a Lista de DataSet Sources do Pooler
   Constructor Create(AOwner  : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                      //Destroy a Classe
+  Procedure   Close;
+  Procedure   Open;
+  Property    Connected       : Boolean                  Read GetStateDB          Write SetConnection;
  Published
   Property OnConnection       : TOnEventConnection       Read vOnEventConnection  Write vOnEventConnection; //Evento relativo a tudo que acontece quando tenta conectar ao Servidor
   Property OnBeforeConnect    : TOnEventBeforeConnection Read vOnBeforeConnection Write vOnBeforeConnection; //Evento antes de Connectar o Database
@@ -249,6 +253,7 @@ Type
   Procedure   Loaded; Override;
   procedure   OpenCursor(InfoQuery: Boolean); Override;   //Subscrevendo o OpenCursor para não ter erros de ADD Fields em Tempo de Design
   Procedure   GotoRec(Const RecNo : Integer);
+  Function    ParamCount : Integer;
  Published
   Property MasterDataSet   : TRESTClientSQL      Read vMasterDataSet            Write SetMasterDataSet;
   Property MasterCascadeDelete : Boolean         Read vCascadeDelete            Write vCascadeDelete;
@@ -1267,6 +1272,11 @@ Begin
  vRESTConnectionDB.DisposeOf;
 End;
 
+Procedure TRESTDataBase.Open;
+Begin
+ SetConnection(True);
+End;
+
 Function TRESTDataBase.ExecuteCommand(Var SQL    : TStringList;
                                       Var Params : TParams;
                                       Var Error  : Boolean;
@@ -1406,6 +1416,11 @@ Begin
  vRESTConnectionDB.DisposeOf;
 End;
 
+Function TRESTDataBase.GetStateDB: Boolean;
+Begin
+ Result := vConnected;
+End;
+
 Constructor TRESTPoolerList.Create(AOwner : TComponent);
 Begin
  Inherited;
@@ -1460,6 +1475,11 @@ End;
 Procedure TRESTDataBase.CheckConnection;
 Begin
  vConnected := TryConnect;
+End;
+
+Procedure TRESTDataBase.Close;
+Begin
+ SetConnection(False);
 End;
 
 Function  TRESTPoolerList.TryConnect : Boolean;
@@ -2051,6 +2071,11 @@ Begin
      Break;
     End;
   End;
+End;
+
+Function TRESTClientSQL.ParamCount: Integer;
+Begin
+ Result := vParams.Count;
 End;
 
 Function TRESTClientSQL.ExecSQL(Var Error : String) : Boolean;
