@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2017/06/08 10:25:56.000.710,C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor RestDW\RemovePropDFM.dproj=C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor RestDW\ConversorRestDW.dproj</Transaction>
+    <Transaction>2017/06/08 10:27:18.000.747,C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor RestDW\Unit1.pas=</Transaction>
+    <Transaction>2017/06/08 10:27:43.000.586,C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor RestDW\untRemoveProp.dfm=C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor RestDW\untMain.dfm</Transaction>
+    <Transaction>2017/06/08 10:27:43.000.586,C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor RestDW\untRemoveProp.pas=C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor RestDW\untMain.pas</Transaction>
+    <Transaction>2017/06/08 12:46:18.935,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\Conversor de Componentes para RestDW\ConversorRestDWZeos.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\Conversor de Componentes para RestDW\ConversorRestDW.dproj</Transaction>
+  </Transactions>
+</BorlandProject>
