@@ -159,10 +159,10 @@ Begin
  //procura pelo primeiro programa
  For t := 1 To 2 Do
   Begin
-   FindFirst( edPastaOriginal.text + aArqs[ t ] , faAnyFile, SearchRec);   //dfm e pas
+   FindFirst(edPastaOriginal.text + aArqs[t], faAnyFile, SearchRec);   //dfm e pas
    labArq.Caption := SearchRec.Name;
    Application.ProcessMessages;
-   Filename    := edPastaOriginal.text + SearchRec.Name;
+   Filename    := edPastaOriginal.text    + SearchRec.Name;
    NewFileName := edPastaConvertido.text  + SearchRec.Name;
    memo1.Lines.Clear;
    memo2.lines.clear;
@@ -170,7 +170,7 @@ Begin
     Begin
      DeleteFile(NewFileName);
      //carrega arq. original
-     memo2.Lines.LoadFromFile( Filename );
+     memo2.Lines.LoadFromFile(Filename);
      linha := '';
      If (Pos('.dfm', labArq.Caption) > 0) Then
       Begin
