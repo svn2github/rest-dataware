@@ -84,3 +84,6 @@ DataAccess.
 
  RestClient
   ParamCount
+
+ Bug fix para uso de mais de um Pooler, foi relatado o BUG e já corrigido.
+ Início do desenvolvimento dos ServerMethods do Próprio REST Dataware.
