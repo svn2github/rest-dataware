@@ -66,6 +66,7 @@ contains
   uRestCompressTools in 'uRestCompressTools.pas',
   URestPoolerDBMethod in 'URestPoolerDBMethod.pas',
   uMasterDetailData in 'uMasterDetailData.pas',
-  uWebModuleMethod in 'uWebModuleMethod.pas';
+  uWebModuleMethod in 'uWebModuleMethod.pas',
+  uPoolerServerMethods in 'uPoolerServerMethods.pas';
 
 end.

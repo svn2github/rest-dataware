@@ -23,7 +23,8 @@ uses System.SysUtils,         System.Classes,
      FireDAC.Stan.StorageJSON {$IFDEF MSWINDOWS},      Datasnap.DSServer,
      Datasnap.DSAuth,         Datasnap.DSProxyRest{$ENDIF},
      Soap.EncdDecd,           System.NetEncoding,      uMasterDetailData,
-     DbxCompressionFilter,    uRestCompressTools,      System.ZLib;
+     DbxCompressionFilter,    uRestCompressTools,      System.ZLib,
+     uPoolerServerMethods;
 
 Type
  TEncodeSelect            = (esASCII, esUtf8);

@@ -857,7 +857,7 @@ Begin
    if Pos('|', vTempString) > 0 then
     Begin
      Result.Add(Copy(vTempString, 1, Pos('|', vTempString) -1));
-     Delete(vTempString, 1, Pos('|', vTempString) -1);
+     Delete(vTempString, 1, Pos('|', vTempString));
     End
    Else
     Begin

@@ -212,6 +212,7 @@
         <DCCReference Include="URestPoolerDBMethod.pas"/>
         <DCCReference Include="uMasterDetailData.pas"/>
         <DCCReference Include="uWebModuleMethod.pas"/>
+        <DCCReference Include="uPoolerServerMethods.pas"/>
         <RcItem Include="TRESTClientSQL.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TRESTClientSQL</ResourceId>

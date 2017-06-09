@@ -5,12 +5,12 @@ object ServerMethods1: TServerMethods1
   Width = 293
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
-    Left = 176
+    Left = 200
     Top = 19
   end
   object FDStanStorageJSONLink1: TFDStanStorageJSONLink
-    Left = 177
-    Top = 130
+    Left = 201
+    Top = 125
   end
   object Server_FDConnection: TFDConnection
     Params.Strings = (
@@ -26,18 +26,25 @@ object ServerMethods1: TServerMethods1
     ConnectedStoredUsage = []
     LoginPrompt = False
     BeforeConnect = Server_FDConnectionBeforeConnect
-    Left = 99
+    Left = 83
     Top = 18
   end
   object RESTPoolerDB: TRESTPoolerDB
     Database = Server_FDConnection
     Compression = True
     Encoding = esUtf8
-    Left = 100
+    Left = 116
     Top = 72
   end
   object FDPhysFBDriverLink1: TFDPhysFBDriverLink
-    Left = 176
-    Top = 75
+    Left = 200
+    Top = 72
+  end
+  object RESTPoolerDB_Backup: TRESTPoolerDB
+    Database = Server_FDConnection
+    Compression = True
+    Encoding = esUtf8
+    Left = 52
+    Top = 72
   end
 end

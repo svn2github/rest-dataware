@@ -25,6 +25,7 @@ type
     Server_FDConnection: TFDConnection;
     RESTPoolerDB: TRESTPoolerDB;
     FDPhysFBDriverLink1: TFDPhysFBDriverLink;
+    RESTPoolerDB_Backup: TRESTPoolerDB;
     procedure Server_FDConnectionBeforeConnect(Sender: TObject);
     procedure DataModuleCreate(Sender: TObject);
   private
