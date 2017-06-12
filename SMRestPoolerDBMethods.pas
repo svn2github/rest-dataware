@@ -1,28 +1,25 @@
-{
- Esse pacote de Componentes foi desenhado com o Objetivo de ajudar as pessoas a desenvolverem
- com WebServices REST o mais próximo possível do desenvolvimento local DB, com componentes de
- fácil configuração para que todos tenham acesso as maravilhas dos WebServices REST/JSON DataSnap.
- Desenvolvedor Principal : Gilberto Rocha da Silva (XyberX)
- Unit desenvolvida por   : Alexandre Abade
- Empresa : XyberPower Desenvolvimento
-}
+unit SMRestPoolerDBMethods;
 
-unit URestPoolerDBMethod;
+{
+  Class Helper para ajudar quem utiliza TServerModules
+  Autor: Giovani Da Cruz
+}
 
 Interface
 
-Uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Datasnap.DSAuth,
-     FireDAC.Stan.Intf,       FireDAC.Stan.Option,      FireDAC.Stan.Param, TypInfo, Vcl.Forms,
-     FireDAC.Stan.Error,      FireDAC.DatS,             FireDAC.Phys.Intf,  FireDAC.DApt.Intf,
-     FireDAC.Stan.Async,      FireDAC.DApt,             FireDAC.UI.Intf,    FireDAC.VCLUI.Wait,
-     FireDAC.Stan.Def,        FireDAC.Stan.Pool,        FireDAC.Phys,       Data.DB,
-     FireDAC.Comp.Client,     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,    FireDAC.Comp.UI,
-     FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,        Datasnap.DSSession,
-     FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef, Vcl.Dialogs,
-     uRestPoolerDB;
+Uses
+ System.SysUtils,         System.Classes,           Datasnap.DSServer,  Datasnap.DSAuth,
+ FireDAC.Stan.Intf,       FireDAC.Stan.Option,      FireDAC.Stan.Param, TypInfo,
+ FireDAC.Stan.Error,      FireDAC.DatS,             FireDAC.Phys.Intf,  FireDAC.DApt.Intf,
+ FireDAC.Stan.Async,      FireDAC.DApt,             FireDAC.UI.Intf,    FireDAC.VCLUI.Wait,
+ FireDAC.Stan.Def,        FireDAC.Stan.Pool,        FireDAC.Phys,       Data.DB,
+ FireDAC.Comp.Client,     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,    FireDAC.Comp.UI,
+ FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,        Datasnap.DSSession,
+ FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef, Datasnap.DSProviderDataModuleAdapter,
+ uRestPoolerDB;
 
- Type
-  TModule = Class Helper For TDataModule
+Type
+  TModule = Class Helper For TDSServerModule
   Private
   Published
    Function GetUnitClassName : String;
@@ -125,7 +122,7 @@ Uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
  End;
 {$METHODINFO ON}
  Type
-  TModuleDM = Class(TDataModule)
+  TModuleDM = Class(TDSServerModule)
  End;
 {$METHODINFO OFF}
 
@@ -133,9 +130,13 @@ Implementation
 
 { Tmodule }
 
-Procedure Tmodule.ApplyChanges(Pooler, TableName, SQL: String; Params: TParams;
-                               const ADeltaList: TFDJSONDeltas; var Error: Boolean;
-                               var MessageError: String);
+Procedure Tmodule.ApplyChanges(Pooler,
+                               TableName,
+                               SQL              : String;
+                               Params           : TParams;
+                               Const ADeltaList : TFDJSONDeltas;
+                               Var Error        : Boolean;
+                               var MessageError : String);
 Var
  I : Integer;
  vTempPooler : String;
@@ -154,9 +155,13 @@ Begin
   End;
 End;
 
-Procedure Tmodule.updateApplyChanges(Pooler, TableName, SQL: String; Params: TParams;
-                               const ADeltaList: TFDJSONDeltas; var Error: Boolean;
-                               var MessageError: String);
+Procedure Tmodule.updateApplyChanges(Pooler,
+                                     TableName,
+                                     SQL              : String;
+                                     Params           : TParams;
+                                     Const ADeltaList : TFDJSONDeltas;
+                                     Var Error        : Boolean;
+                                     Var MessageError : String);
 Var
  I : Integer;
  vTempPooler : String;
@@ -175,9 +180,12 @@ Begin
   End;
 End;
 
-Procedure Tmodule.ApplyChangesPure(Pooler, TableName, SQL: String;
-                                   const ADeltaList: TFDJSONDeltas; var Error: Boolean;
-                                   var MessageError: String);
+Procedure Tmodule.ApplyChangesPure(Pooler,
+                                   TableName,
+                                   SQL              : String;
+                                   Const ADeltaList : TFDJSONDeltas;
+                                   Var Error        : Boolean;
+                                   Var MessageError : String);
 Var
  I : Integer;
  vTempPooler : String;
@@ -196,9 +204,12 @@ Begin
   End;
 End;
 
-Procedure Tmodule.updateApplyChangesPure(Pooler, TableName, SQL: String;
-                                   const ADeltaList: TFDJSONDeltas; var Error: Boolean;
-                                   var MessageError: String);
+Procedure Tmodule.updateApplyChangesPure(Pooler,
+                                         TableName,
+                                         SQL              : String;
+                                         Const ADeltaList : TFDJSONDeltas;
+                                         Var Error        : Boolean;
+                                         Var MessageError : String);
 Var
  I : Integer;
  vTempPooler : String;
@@ -222,9 +233,12 @@ Begin
  Result := String(TDSSessionManager.GetThreadSession.GetData('RemoteAddr'));
 End;
 
-Function Tmodule.ExecuteCommand(Pooler, SQL: String; Params: TParams;
-                                var Error: Boolean; var MessageError: String;
-                                Execute: Boolean): TFDJSONDataSets;
+Function Tmodule.ExecuteCommand(Pooler,
+                                SQL              : String;
+                                Params           : TParams;
+                                Var Error        : Boolean;
+                                Var MessageError : String;
+                                Execute          : Boolean) : TFDJSONDataSets;
 Var
  I : Integer;
  vTempPooler : String;
@@ -244,9 +258,12 @@ Begin
   End;
 End;
 
-Function Tmodule.updateExecuteCommand(Pooler, SQL: String; Params: TParams;
-                                var Error: Boolean; var MessageError: String;
-                                Execute: Boolean): TFDJSONDataSets;
+Function Tmodule.updateExecuteCommand(Pooler,
+                                      SQL              : String;
+                                      Params           : TParams;
+                                      Var Error        : Boolean;
+                                      Var MessageError : String;
+                                      Execute          : Boolean) : TFDJSONDataSets;
 Var
  I : Integer;
  vTempPooler : String;
@@ -266,11 +283,12 @@ Begin
   End;
 End;
 
-Function Tmodule.ExecuteCommandJSON(Pooler, SQL: String;
-                                    Params: TParams;
-                                    var Error: Boolean;
-                                    var MessageError:
-                                    String; Execute: Boolean): TJSONObject;
+Function Tmodule.ExecuteCommandJSON(Pooler,
+                                    SQL              : String;
+                                    Params           : TParams;
+                                    Var Error        : Boolean;
+                                    Var MessageError : String;
+                                    Execute          : Boolean) : TJSONObject;
 Var
  LDataSets : TFDJSONDataSets;
 Begin
@@ -285,11 +303,12 @@ Begin
  End;
 End;
 
-Function Tmodule.updateExecuteCommandJSON(Pooler, SQL: String;
-                                    Params: TParams;
-                                    var Error: Boolean;
-                                    var MessageError:
-                                    String; Execute: Boolean): TJSONObject;
+Function Tmodule.updateExecuteCommandJSON(Pooler,
+                                          SQL              : String;
+                                          Params           : TParams;
+                                          Var Error        : Boolean;
+                                          Var MessageError : String;
+                                          Execute          : Boolean) : TJSONObject;
 Var
  LDataSets : TFDJSONDataSets;
 Begin
@@ -303,10 +322,11 @@ Begin
  End;
 End;
 
-Function Tmodule.ExecuteCommandPure(Pooler, SQL: String;
-                                    var Error: Boolean;
-                                    var MessageError: String;
-                                    Execute: Boolean): TFDJSONDataSets;
+Function Tmodule.ExecuteCommandPure(Pooler,
+                                    SQL              : String;
+                                    Var Error        : Boolean;
+                                    Var MessageError : String;
+                                    Execute          : Boolean) : TFDJSONDataSets;
 Var
  I : Integer;
  vTempPooler : String;
@@ -326,10 +346,11 @@ Begin
   End;
 End;
 
-Function Tmodule.updateExecuteCommandPure(Pooler, SQL: String;
-                                    var Error: Boolean;
-                                    var MessageError: String;
-                                    Execute: Boolean): TFDJSONDataSets;
+Function Tmodule.updateExecuteCommandPure(Pooler,
+                                          SQL              : String;
+                                          Var Error        : Boolean;
+                                          Var MessageError : String;
+                                          Execute          : Boolean) : TFDJSONDataSets;
 Var
  I : Integer;
  vTempPooler : String;
@@ -349,10 +370,11 @@ Begin
   End;
 End;
 
-Function Tmodule.ExecuteCommandPureJSON(Pooler, SQL: String;
-                                        var Error: Boolean;
-                                        var MessageError: String;
-                                        Execute: Boolean): TJSONObject;
+Function Tmodule.ExecuteCommandPureJSON(Pooler,
+                                        SQL              : String;
+                                        Var Error        : Boolean;
+                                        Var MessageError : String;
+                                        Execute          : Boolean) : TJSONObject;
 Var
  LDataSets : TFDJSONDataSets;
 Begin
@@ -367,10 +389,11 @@ Begin
  End;
 End;
 
-Function Tmodule.updateExecuteCommandPureJSON(Pooler, SQL: String;
-                                        var Error: Boolean;
-                                        var MessageError: String;
-                                        Execute: Boolean): TJSONObject;
+Function Tmodule.updateExecuteCommandPureJSON(Pooler,
+                                              SQL              : String;
+                                              Var Error        : Boolean;
+                                              Var MessageError : String;
+                                              Execute          : Boolean) : TJSONObject;
 Var
  LDataSets : TFDJSONDataSets;
 Begin
@@ -385,7 +408,7 @@ Begin
  End;
 End;
 
-Procedure Tmodule.GetPoolerList(var PoolerList: TStringList);
+Procedure Tmodule.GetPoolerList(Var PoolerList : TStringList);
 Var
  I : Integer;
 Begin
@@ -399,7 +422,7 @@ Begin
   End;
 End;
 
-Procedure Tmodule.updateGetPoolerList(var PoolerList: TStringList);
+Procedure Tmodule.updateGetPoolerList(Var PoolerList : TStringList);
 Var
  I : Integer;
 Begin
@@ -413,11 +436,11 @@ Begin
   End;
 End;
 
-Function Tmodule.GetPoolerName(Value: String): String;
+Function Tmodule.GetPoolerName(Value : String) : String;
 Begin
  Result := Value;
  While Pos('.', Result) > 0 Do
-  Result := Copy(Result, Pos('.', Result) + 1, Length(Result));
+  Result := Copy(Result, Pos('.', Result) +1, Length(Result));
 End;
 
 Function Tmodule.GetUnitClassName : String;
@@ -432,10 +455,11 @@ Begin
   Result := GetTypeData(P).UnitName;
 End;
 
-Function Tmodule.InsertValue(Pooler, SQL: String;
-                             Params: TParams;
-                             var Error: Boolean;
-                             var MessageError: String): Integer;
+Function Tmodule.InsertValue(Pooler,
+                             SQL              : String;
+                             Params           : TParams;
+                             Var Error        : Boolean;
+                             Var MessageError : String) : Integer;
 Var
  I           : Integer;
  vTempPooler : String;
@@ -455,10 +479,11 @@ Begin
   End;
 End;
 
-Function Tmodule.updateInsertValue(Pooler, SQL: String;
-                                   Params: TParams;
-                                   var Error: Boolean;
-                                   var MessageError: String): Integer;
+Function Tmodule.updateInsertValue(Pooler,
+                                   SQL              : String;
+                                   Params           : TParams;
+                                   Var Error        : Boolean;
+                                   Var MessageError : String) : Integer;
 Var
  I           : Integer;
  vTempPooler : String;
@@ -478,9 +503,10 @@ Begin
   End;
 End;
 
-Function Tmodule.InsertValuePure(Pooler, SQL: String;
-                                 var Error: Boolean;
-                                 var MessageError: String): Integer;
+Function Tmodule.InsertValuePure(Pooler,
+                                 SQL              : String;
+                                 Var Error        : Boolean;
+                                 Var MessageError : String) : Integer;
 Var
  I : Integer;
  vTempPooler : String;
@@ -500,9 +526,10 @@ Begin
   End;
 End;
 
-Function Tmodule.updateInsertValuePure(Pooler, SQL: String;
-                                 var Error: Boolean;
-                                 var MessageError: String): Integer;
+Function Tmodule.updateInsertValuePure(Pooler,
+                                       SQL              : String;
+                                       Var Error        : Boolean;
+                                       Var MessageError : String) : Integer;
 Var
  I : Integer;
  vTempPooler : String;
@@ -522,7 +549,7 @@ Begin
   End;
 End;
 
-Function Tmodule.PoolersDataSet: String;
+Function Tmodule.PoolersDataSet : String;
 Var
  I : Integer;
 Begin

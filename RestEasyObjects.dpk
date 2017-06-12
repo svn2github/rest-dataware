@@ -67,6 +67,7 @@ contains
   URestPoolerDBMethod in 'URestPoolerDBMethod.pas',
   uMasterDetailData in 'uMasterDetailData.pas',
   uWebModuleMethod in 'uWebModuleMethod.pas',
-  uPoolerServerMethods in 'uPoolerServerMethods.pas';
+  uPoolerServerMethods in 'uPoolerServerMethods.pas',
+  SMRestPoolerDBMethods in 'SMRestPoolerDBMethods.pas';
 
 end.
