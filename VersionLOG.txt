@@ -87,3 +87,7 @@ DataAccess.
 
  Bug fix para uso de mais de um Pooler, foi relatado o BUG e já corrigido.
  Início do desenvolvimento dos ServerMethods do Próprio REST Dataware.
+
+1.0.1.218 :
+
+ Adicionados Eventos de Erro do componente em Tempo de Design.

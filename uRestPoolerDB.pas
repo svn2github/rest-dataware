@@ -509,7 +509,7 @@ Begin
  Try
   fdCommand.Connection := vFDConnection;
   fdCommand.CommandText.Clear;
-  fdCommand.CommandText.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)) + '; SELECT LAST_INSERT_ID()ID');
+  fdCommand.CommandText.Add(DecodeStrings(SQL, GetEncoding(vEncoding)) + '; SELECT LAST_INSERT_ID()ID');
   fdCommand.Open;
   oTab := fdCommand.Define;
   fdCommand.Fetch(oTab, True);
@@ -560,7 +560,7 @@ Begin
  Try
   fdCommand.Connection := vFDConnection;
   fdCommand.CommandText.Clear;
-  fdCommand.CommandText.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)) + '; SELECT LAST_INSERT_ID()ID');
+  fdCommand.CommandText.Add(DecodeStrings(SQL, GetEncoding(vEncoding)) + '; SELECT LAST_INSERT_ID()ID');
   If Params <> Nil Then
    Begin
     For I := 0 To Params.Count -1 Do
@@ -618,7 +618,7 @@ Begin
   vFDConnection.Connected :=true;
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
+  vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
   If Not Execute Then
    Begin
     vTempQuery.Open;
@@ -708,7 +708,7 @@ Begin
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
+  vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
   If Params <> Nil Then
    Begin
     vTempQuery.Prepare;
@@ -902,7 +902,7 @@ begin
  Try
   vTempQuery.Connection   := vFDConnection;
   vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL,GetEncoding(self.vEncoding)));
+  vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
   If Params <> Nil Then
    Begin
     vTempQuery.Prepare;
@@ -1526,17 +1526,21 @@ Begin
  Try
   vTempResult := vRESTConnectionDB.EchoPooler(vTempSend, vRestModule, '', vTimeOut, vLogin, vPassword);
   vMyIP       := vTempResult;
-  Result      := True;
-  If Assigned(vOnEventConnection) Then
-   vOnEventConnection(True, 'TryConnect Ok');
+  If csDesigning in ComponentState Then
+   If Trim(vTempResult) = '' Then Raise Exception.Create(PChar('Error : ' + #13 + 'Server Not Found...'));
+//  If Assigned(vOnEventConnection) Then
+//   vOnEventConnection(Result, 'TryConnect Ok');
  Except
   On E : Exception do
    Begin
+    If csDesigning in ComponentState Then
+     Raise Exception.Create(PChar('Error : ' + #13 + E.Message));
     vDSRConnection.SessionID := '';
     if Assigned(vOnEventConnection) then
      vOnEventConnection(False, E.Message);
    End;
  End;
+ Result      := Trim(vTempResult) <> '';
  vDSRConnection.DisposeOf;
  vRESTConnectionDB.DisposeOf;
 End;
@@ -1551,8 +1555,7 @@ Begin
    vOnBeforeConnection(Self);
  If Not(vConnected) And (Value) Then
   Begin
-   vConnected := Value;
-   if vConnected then
+   If Value then
     vConnected := TryConnect
    Else
     vMyIP := '';
@@ -2192,6 +2195,8 @@ Begin
         Except
          On E : Exception do
           Begin
+           If csDesigning in ComponentState Then
+            Raise Exception.Create(PChar('Error : ' + #13 + E.Message));
            If Assigned(vOnGetDataError) Then
             vOnGetDataError(False, E.Message);
           End;
@@ -2376,6 +2381,8 @@ Begin
    End;
    If vError Then
     Begin
+     If csDesigning in ComponentState Then
+      Raise Exception.Create(PChar('Error : ' + #13 + vMessageError));
      If Assigned(vOnGetDataError) Then
       vOnGetDataError(Not(vError), vMessageError);
     End;
@@ -2402,7 +2409,9 @@ Begin
    Except
     On E : Exception do
      Begin
-      if Assigned(vOnGetDataError) then
+      If csDesigning in ComponentState Then
+       Raise Exception.Create(PChar('Error : ' + #13 + E.Message));
+      If Assigned(vOnGetDataError) then
        vOnGetDataError(False, E.Message);
      End;
    End;
