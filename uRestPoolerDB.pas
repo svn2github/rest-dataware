@@ -1534,7 +1534,7 @@ Begin
   On E : Exception do
    Begin
     If csDesigning in ComponentState Then
-     Raise Exception.Create(PChar('Error : ' + #13 + E.Message));
+     Raise Exception.Create(PChar(E.Message));
     vDSRConnection.SessionID := '';
     if Assigned(vOnEventConnection) then
      vOnEventConnection(False, E.Message);
@@ -2196,7 +2196,7 @@ Begin
          On E : Exception do
           Begin
            If csDesigning in ComponentState Then
-            Raise Exception.Create(PChar('Error : ' + #13 + E.Message));
+            Raise Exception.Create(PChar(E.Message));
            If Assigned(vOnGetDataError) Then
             vOnGetDataError(False, E.Message);
           End;
@@ -2382,7 +2382,7 @@ Begin
    If vError Then
     Begin
      If csDesigning in ComponentState Then
-      Raise Exception.Create(PChar('Error : ' + #13 + vMessageError));
+      Raise Exception.Create(PChar(vMessageError));
      If Assigned(vOnGetDataError) Then
       vOnGetDataError(Not(vError), vMessageError);
     End;
@@ -2410,7 +2410,7 @@ Begin
     On E : Exception do
      Begin
       If csDesigning in ComponentState Then
-       Raise Exception.Create(PChar('Error : ' + #13 + E.Message));
+       Raise Exception.Create(PChar(E.Message));
       If Assigned(vOnGetDataError) then
        vOnGetDataError(False, E.Message);
      End;
