@@ -1527,9 +1527,10 @@ Begin
   vTempResult := vRESTConnectionDB.EchoPooler(vTempSend, vRestModule, '', vTimeOut, vLogin, vPassword);
   vMyIP       := vTempResult;
   If csDesigning in ComponentState Then
-   If Trim(vTempResult) = '' Then Raise Exception.Create(PChar('Error : ' + #13 + 'Server Not Found...'));
-//  If Assigned(vOnEventConnection) Then
-//   vOnEventConnection(Result, 'TryConnect Ok');
+   If Trim(vTempResult) = '' Then Raise Exception.Create(PChar('Error : ' + #13 + 'Authentication Error...'));
+  If Trim(vMyIP) = '' Then
+   If Assigned(vOnEventConnection) Then
+    vOnEventConnection(False, 'Authentication Error...');
  Except
   On E : Exception do
    Begin

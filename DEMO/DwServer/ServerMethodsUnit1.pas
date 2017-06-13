@@ -30,8 +30,6 @@ type
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
-   vUserName,
-   vPassword : String;
   public
     { Public declarations }
   end;
@@ -39,7 +37,7 @@ type
 
 Var
  UserName,
- Password : String;
+ Password      : String;
  vDatabaseName : String;
 
 
@@ -51,8 +49,8 @@ uses System.StrUtils, System.Generics.Collections, RestDWServerFormU;
 
 procedure TServerMethods1.DataModuleCreate(Sender: TObject);
 begin
- UserName := vUsername;
- Password := vPassword;
+ UserName := RestDWForm.Username;
+ Password := RestDWForm.Password;
 end;
 
 procedure TServerMethods1.Server_FDConnectionBeforeConnect(Sender: TObject);

@@ -91,3 +91,6 @@ DataAccess.
 1.0.1.218 :
 
  Adicionados Eventos de Erro do componente em Tempo de Design.
+ 
+ Class Helper para ajudar quem utiliza TServerModules
+ Autor: Giovani Da Cruz

@@ -57,7 +57,8 @@ requires
   bindcomp,
   RESTComponents,
   vclFireDAC,
-  IndyIPServer;
+  IndyIPServer,
+  DataSnapServerMidas;
 
 contains
   uPoolerMethod in 'uPoolerMethod.pas',

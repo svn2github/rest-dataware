@@ -34,6 +34,9 @@ type
       UserRoles: TStrings);
     procedure ServerFunctionInvokerHTMLTag(Sender: TObject; Tag: TTag;
       const TagString: string; TagParams: TStrings; var ReplaceText: string);
+    procedure DSAuthenticationManager1UserAuthorize(Sender: TObject;
+      AuthorizeEventObject: TDSAuthorizeEventObject; var valid: Boolean);
+    procedure WebModuleCreate(Sender: TObject);
   private
     { Private declarations }
    function AllowServerFunctionInvoker: Boolean;
@@ -47,7 +50,7 @@ var
 
 implementation
 
-uses ServerMethodsUnit1, Web.WebReq;
+uses ServerMethodsUnit1, Web.WebReq, RestDWServerFormU;
 
 {$R *.dfm}
 
@@ -67,6 +70,12 @@ begin
  remoteIP := Request.RemoteAddr;
 end;
 
+procedure TWebModule1.WebModuleCreate(Sender: TObject);
+begin
+ DSHTTPWebDispatcher1.DSAuthUser     := RestDWForm.UserName;
+ DSHTTPWebDispatcher1.DSAuthPassword := RestDWForm.Password;
+end;
+
 function TWebModule1.AllowServerFunctionInvoker: Boolean;
 begin
   Result := (Request.RemoteAddr = '127.0.0.1') or
@@ -78,12 +87,16 @@ procedure TWebModule1.DSAuthenticationManager1UserAuthenticate(Sender: TObject;
   UserRoles: TStrings);
 begin
  //Adicionada Autenticação de Usuário
- valid := (((User = ServerMethodsUnit1.UserName)     And
-            (ServerMethodsUnit1.UserName <> ''))     And
-           ((Password = ServerMethodsUnit1.Password) And
-            (ServerMethodsUnit1.Password <> '')))    Or
-          ((ServerMethodsUnit1.UserName = '')        And
-           (ServerMethodsUnit1.Password = ''));
+ valid := (((User = RestDWForm.UserName)     And
+            (RestDWForm.UserName <> ''))     And
+           ((Password = RestDWForm.Password) And
+            (RestDWForm.Password <> '')));
+end;
+
+procedure TWebModule1.DSAuthenticationManager1UserAuthorize(Sender: TObject;
+  AuthorizeEventObject: TDSAuthorizeEventObject; var valid: Boolean);
+begin
+
 end;
 
 //Criar para retornar o IP do Cliente
