@@ -321,6 +321,9 @@ Type
   FLock          : TCriticalSection;
   vFDConnectionBack,
   vFDConnection  : TFDConnection;
+  vStrsTrim,
+  vStrsEmpty2Null,
+  vStrsTrim2Len,
   vCompression   : Boolean;
   vEncoding      : TEncodeSelect;
   Procedure SetConnection(Value : TFDConnection);
@@ -354,10 +357,12 @@ Type
                                Var Error        : Boolean;
                                Var MessageError : String) : Integer;Overload;
  Published
-  Property    Database    : TFDConnection Read GetConnection Write SetConnection;
-  Property    Compression : Boolean       Read vCompression  Write vCompression;
-  Property    Encoding    : TEncodeSelect Read vEncoding     Write vEncoding;
-
+  Property    Database       : TFDConnection Read GetConnection    Write SetConnection;
+  Property    Compression    : Boolean       Read vCompression     Write vCompression;
+  Property    Encoding       : TEncodeSelect Read vEncoding        Write vEncoding;
+  Property    StrsTrim       : Boolean       Read vStrsTrim        Write vStrsTrim;
+  Property    StrsEmpty2Null : Boolean       Read vStrsEmpty2Null  Write vStrsEmpty2Null;
+  Property    StrsTrim2Len   : Boolean       Read vStrsTrim2Len    Write vStrsTrim2Len;
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                     //Destroy a Classe
 End;
@@ -617,6 +622,9 @@ Begin
   if not vFDConnection.Connected then
   vFDConnection.Connected :=true;
   vTempQuery.Connection   := vFDConnection;
+  vTempQuery.FormatOptions.StrsTrim       := vStrsTrim;
+  vTempQuery.FormatOptions.StrsEmpty2Null := vStrsEmpty2Null;
+  vTempQuery.FormatOptions.StrsTrim2Len   := vStrsTrim2Len;
   vTempQuery.SQL.Clear;
   vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
   If Not Execute Then
@@ -707,6 +715,9 @@ Begin
  vTempQuery               := TFDQuery.Create(Owner);
  Try
   vTempQuery.Connection   := vFDConnection;
+  vTempQuery.FormatOptions.StrsTrim       := vStrsTrim;
+  vTempQuery.FormatOptions.StrsEmpty2Null := vStrsEmpty2Null;
+  vTempQuery.FormatOptions.StrsTrim2Len   := vStrsTrim2Len;
   vTempQuery.SQL.Clear;
   vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
   If Params <> Nil Then
@@ -810,6 +821,9 @@ begin
  vTempQuery.CachedUpdates := True;
  Try
   vTempQuery.Connection   := vFDConnection;
+  vTempQuery.FormatOptions.StrsTrim       := vStrsTrim;
+  vTempQuery.FormatOptions.StrsEmpty2Null := vStrsEmpty2Null;
+  vTempQuery.FormatOptions.StrsTrim2Len   := vStrsTrim2Len;
   vTempQuery.SQL.Clear;
   vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
   vTempQuery.Active := True;
@@ -901,6 +915,9 @@ begin
  vTempQuery.CachedUpdates := True;
  Try
   vTempQuery.Connection   := vFDConnection;
+  vTempQuery.FormatOptions.StrsTrim       := vStrsTrim;
+  vTempQuery.FormatOptions.StrsEmpty2Null := vStrsEmpty2Null;
+  vTempQuery.FormatOptions.StrsTrim2Len   := vStrsTrim2Len;
   vTempQuery.SQL.Clear;
   vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
   If Params <> Nil Then
@@ -994,10 +1011,13 @@ end;
 Constructor TRESTPoolerDB.Create(AOwner : TComponent);
 Begin
  Inherited;
- Owner        := aOwner;
- FLock        := TCriticalSection.Create;
- vCompression := False;
- vEncoding    := esUtf8;
+ Owner           := aOwner;
+ FLock           := TCriticalSection.Create;
+ vCompression    := False;
+ vStrsTrim       := False;
+ vStrsEmpty2Null := False;
+ vStrsTrim2Len   := True;
+ vEncoding       := esUtf8;
 End;
 
 Destructor  TRESTPoolerDB.Destroy;

@@ -91,6 +91,9 @@ DataAccess.
 1.0.1.218 :
 
  Adicionados Eventos de Erro do componente em Tempo de Design.
- 
+ Novas propriedades para o Pooler :
+ StrsTrim, StrsEmpty2Null, StrsTrim2Len
+ Ajustes na Autenticação, favor consutarem o arquivo "Correcao de Servidor DW Para Autenticacao.txt". 
+
  Class Helper para ajudar quem utiliza TServerModules
  Autor: Giovani Da Cruz
