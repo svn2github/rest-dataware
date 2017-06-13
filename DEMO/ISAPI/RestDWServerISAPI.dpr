@@ -1,7 +1,6 @@
 library RestDWServerISAPI;
 
 uses
-
   Winapi.ActiveX,
   System.Win.ComObj,
   Web.WebBroker,
@@ -11,7 +10,7 @@ uses
   Datasnap.DSSession,
   ServerMethodsUnit1 in 'ServerMethodsUnit1.pas' {ServerMethods1: TDataModule},
   WebModuleUnit1 in 'WebModuleUnit1.pas' {WebModule1: TWebModule},
-  uConsts in 'uConsts.pas';
+  uConsts in '..\Apache_Module\uConsts.pas';
 
 {$R *.res}
 

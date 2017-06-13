@@ -34,8 +34,6 @@ type
       UserRoles: TStrings);
     procedure ServerFunctionInvokerHTMLTag(Sender: TObject; Tag: TTag;
       const TagString: string; TagParams: TStrings; var ReplaceText: string);
-    procedure DSAuthenticationManager1UserAuthorize(Sender: TObject;
-      AuthorizeEventObject: TDSAuthorizeEventObject; var valid: Boolean);
     procedure WebModuleCreate(Sender: TObject);
   private
     { Private declarations }
@@ -91,12 +89,6 @@ begin
             (RestDWForm.UserName <> ''))     And
            ((Password = RestDWForm.Password) And
             (RestDWForm.Password <> '')));
-end;
-
-procedure TWebModule1.DSAuthenticationManager1UserAuthorize(Sender: TObject;
-  AuthorizeEventObject: TDSAuthorizeEventObject; var valid: Boolean);
-begin
-
 end;
 
 //Criar para retornar o IP do Cliente

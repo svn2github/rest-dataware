@@ -29,12 +29,8 @@ type
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
-   vUserName,
-   vPassword : String;
-
   public
     { Public declarations }
-
   end;
 {$METHODINFO OFF}
 
@@ -53,7 +49,6 @@ begin
  UserName := vUsername;
  Password := vPassword;
 end;
-
 
 procedure TServerMethods1.FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
 begin

@@ -16,7 +16,7 @@ uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
      FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
      WebModuleUnit1,          Vcl.Dialogs,              TypInfo,
      Vcl.Forms, uRestPoolerDB,URestPoolerDBMethod, FireDAC.Phys.FBDef,
-     FireDAC.Phys.FB,         Web.WebReq;
+     FireDAC.Phys.FB,         Web.WebReq, uConsts;
 
 type
 {$METHODINFO ON}
@@ -31,13 +31,8 @@ type
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
-   vUserName,
-   vPassword : String;
-
   public
     { Public declarations }
-    //Echo Commands
-
   end;
 {$METHODINFO OFF}
 
@@ -54,8 +49,8 @@ uses System.StrUtils, System.Generics.Collections, uWebModuleMethod;
 procedure TServerMethods1.DataModuleCreate(Sender: TObject);
 Begin
  Inherited;
- UserName := 'testserver';
- Password := 'testserver';
+ UserName := vUsername;
+ Password := vPassword;
 End;
 
 procedure TServerMethods1.FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);

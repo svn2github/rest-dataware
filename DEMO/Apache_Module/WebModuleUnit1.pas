@@ -10,7 +10,7 @@ uses
   System.SysUtils, System.Classes, Web.HTTPApp, Datasnap.DSHTTPCommon,
   Datasnap.DSHTTPWebBroker, Datasnap.DSServer,
   Datasnap.DSAuth, IPPeerServer, Datasnap.DSCommonServer, Datasnap.DSHTTP,
-  Datasnap.DSSession, Web.HTTPProd, URestPoolerDBMethod;
+  Datasnap.DSSession, Web.HTTPProd, URestPoolerDBMethod, uConsts;
 
 type
   TWebModule1 = class(TWebModule)
@@ -78,12 +78,10 @@ procedure TWebModule1.DSAuthenticationManager1UserAuthenticate(Sender: TObject;
   UserRoles: TStrings);
 begin
  //Adicionada Autenticação de Usuário
- valid := (((User = ServerMethodsUnit1.UserName)     And
-            (ServerMethodsUnit1.UserName <> ''))     And
-           ((Password = ServerMethodsUnit1.Password) And
-            (ServerMethodsUnit1.Password <> '')))    Or
-          ((ServerMethodsUnit1.UserName = '')        And
-           (ServerMethodsUnit1.Password = ''));
+  valid := (((User = vUsername)     And
+            (vUsername <> ''))     And
+           ((Password = vPassword) And
+            (vPassword <> '')));
 end;
 
 //Criar para retornar o IP do Cliente
