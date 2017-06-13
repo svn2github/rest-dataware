@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2017/06/09 05:55:40.000.221,=C:\Users\mikro\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2017/06/09 05:58:28.000.918,C:\mkmFONTES\CONVERTER Zeos para RestDW\RestDW Query Converter\untMain.dfm=C:\Users\mikro\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2017/06/09 05:58:28.000.918,C:\mkmFONTES\CONVERTER Zeos para RestDW\RestDW Query Converter\untMain.pas=C:\Users\mikro\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2017/06/09 05:58:48.000.145,C:\mkmFONTES\CONVERTER Zeos para RestDW\RestDW Query Converter\RestDW_QryConv.dproj=C:\Users\mikro\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2017/06/09 10:28:02.000.146,C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\RestDW_QryConv.dproj=C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\RestDW_QryConv_MKM.dproj</Transaction>
+    <Transaction>2017/06/11 16:04:31.000.656,=C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\Unit1.pas</Transaction>
+    <Transaction>2017/06/11 16:04:44.000.982,C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\Unit1.pas=C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\Win32\Debug\original\Unit1.pas</Transaction>
+    <Transaction>2017/06/11 16:05:07.000.076,C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\Win32\Debug\original\Unit1.pas=</Transaction>
+    <Transaction>2017/06/11 16:32:18.000.982,=C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\Unit1.pas</Transaction>
+    <Transaction>2017/06/11 16:32:47.000.850,C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\Unit1.pas=C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\Win32\Debug\original\Unit1.pas</Transaction>
+    <Transaction>2017/06/11 16:32:47.000.850,C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\Unit1.dfm=C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\Win32\Debug\original\Unit1.dfm</Transaction>
+    <Transaction>2017/06/11 16:33:03.000.000,C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\Win32\Debug\original\Unit1.pas=</Transaction>
+    <Transaction>2017/06/11 19:08:45.000.604,C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\RestDW_QryConv_MKM.dproj=C:\mkmFONTES\CONVERTER Zeos para RestDW\Conversor DFM PAS Mikromundo\mkmDfmPasReplace.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

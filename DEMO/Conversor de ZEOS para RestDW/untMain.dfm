@@ -1,21 +1,137 @@
 object frmMain: TfrmMain
-  Left = 189
-  Top = 201
-  Caption = 'Converte QUERYs para RestDW'
-  ClientHeight = 591
-  ClientWidth = 837
+  Left = 0
+  Top = 0
+  Caption = 'RestDW Query Converter ( by Fl'#225'vio Motta )'
+  ClientHeight = 587
+  ClientWidth = 834
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Position = poScreenCenter
   OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object Label2: TLabel
+    Left = 13
+    Top = 13
+    Width = 191
+    Height = 13
+    Caption = 'CONFIGURA'#199#195'O PARA CONVERS'#195'O'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Bevel1: TBevel
+    Left = 14
+    Top = 32
+    Width = 649
+    Height = 2
+    Shape = bsTopLine
+  end
+  object Label1: TLabel
+    Left = 13
+    Top = 41
+    Width = 126
+    Height = 13
+    AutoSize = False
+    Caption = 'Pasta ORIGINAL'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Label3: TLabel
+    Left = 13
+    Top = 157
+    Width = 55
+    Height = 13
+    Caption = 'ORIGINAL'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Label4: TLabel
+    Left = 421
+    Top = 160
+    Width = 71
+    Height = 13
+    Caption = 'CONVERTIDO'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Bevel2: TBevel
+    Left = 14
+    Top = 175
+    Width = 395
+    Height = 2
+    Shape = bsTopLine
+  end
+  object Bevel3: TBevel
+    Left = 422
+    Top = 175
+    Width = 395
+    Height = 2
+    Shape = bsTopLine
+  end
+  object labTotArqs: TLabel
+    Left = -2
+    Top = 504
+    Width = 836
+    Height = 13
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'Arquivos( 1 / 1 )'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object labArq: TLabel
+    Left = -2
+    Top = 522
+    Width = 836
+    Height = 13
+    Alignment = taCenter
+    AutoSize = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label7: TLabel
+    Left = 343
+    Top = 41
+    Width = 111
+    Height = 13
+    AutoSize = False
+    Caption = 'Pasta CONVERTIDO'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object Image1: TImage
     Left = 688
     Top = 10
@@ -862,33 +978,29 @@ object frmMain: TfrmMain
       78A2C7BA508FC03148832468101C83D42D0D826390BAA541700C52B7F4BFB752
       4E92F100CAA80000000049454E44AE426082}
   end
-  object Label2: TLabel
-    Left = 13
-    Top = 19
-    Width = 166
+  object Label6: TLabel
+    Left = 621
+    Top = 119
+    Width = 213
     Height = 13
-    Caption = 'LOCALIZA'#199#195'O DOS ARQUIVOS'
+    AutoSize = False
+    Caption = 'Processar apenas um arquivo'
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
+    Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
+    Visible = False
   end
-  object Bevel1: TBevel
-    Left = 14
-    Top = 38
-    Width = 649
-    Height = 2
-    Shape = bsTopLine
-  end
-  object Label1: TLabel
-    Left = 13
-    Top = 47
-    Width = 126
+  object Label8: TLabel
+    Left = 218
+    Top = 550
+    Width = 400
     Height = 13
+    Alignment = taCenter
     AutoSize = False
-    Caption = 'Pasta ORIGINAL'
+    Caption = 'Progresso Geral'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -896,97 +1008,20 @@ object frmMain: TfrmMain
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Label3: TLabel
-    Left = 13
-    Top = 133
-    Width = 55
-    Height = 13
-    Caption = 'ORIGINAL'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Label4: TLabel
-    Left = 421
-    Top = 136
-    Width = 71
-    Height = 13
-    Caption = 'CONVERTIDO'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Bevel2: TBevel
+  object Bevel4: TBevel
     Left = 14
-    Top = 151
-    Width = 395
-    Height = 2
-    Shape = bsTopLine
-  end
-  object Bevel3: TBevel
-    Left = 422
-    Top = 151
-    Width = 395
+    Top = 544
+    Width = 806
     Height = 2
     Shape = bsTopLine
   end
   object Label5: TLabel
-    Left = 0
-    Top = 521
-    Width = 836
-    Height = 13
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'Progresso'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object labTotArqs: TLabel
-    Left = 0
-    Top = 557
-    Width = 836
-    Height = 13
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'Arquivos( 1 / 1 )'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object labArq: TLabel
-    Left = -2
-    Top = 572
-    Width = 836
-    Height = 13
-    Alignment = taCenter
-    AutoSize = False
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Label7: TLabel
-    Left = 343
-    Top = 47
-    Width = 111
+    Left = 13
+    Top = 89
+    Width = 126
     Height = 13
     AutoSize = False
-    Caption = 'Pasta CONVERTIDO'
+    Caption = 'Engine de Acesso'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -996,17 +1031,17 @@ object frmMain: TfrmMain
   end
   object edPastaOriginal: TEdit
     Left = 13
-    Top = 64
+    Top = 58
     Width = 321
     Height = 21
     TabOrder = 0
     Text = 'C:\mkmFONTES\CONVERTER Zeos para RestDW\originais'
   end
-  object Memo1: TMemo
+  object memo_Convertido: TMemo
     Left = 422
-    Top = 158
+    Top = 183
     Width = 400
-    Height = 350
+    Height = 313
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -9
@@ -1017,19 +1052,20 @@ object frmMain: TfrmMain
     TabOrder = 1
   end
   object pg: TProgressBar
-    Left = 342
-    Top = 537
-    Width = 150
+    Left = 218
+    Top = 569
+    Width = 400
     Height = 17
     Smooth = True
+    MarqueeInterval = 1
     Step = 1
     TabOrder = 2
   end
-  object Memo2: TMemo
+  object memo_Original: TMemo
     Left = 13
-    Top = 158
+    Top = 183
     Width = 400
-    Height = 350
+    Height = 313
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -9
@@ -1040,9 +1076,9 @@ object frmMain: TfrmMain
     TabOrder = 3
   end
   object ButtonStart: TButton
-    Left = 12
-    Top = 91
-    Width = 121
+    Left = 344
+    Top = 103
+    Width = 85
     Height = 25
     Caption = 'Iniciar'
     Font.Charset = DEFAULT_CHARSET
@@ -1056,14 +1092,51 @@ object frmMain: TfrmMain
   end
   object edPastaConvertido: TEdit
     Left = 343
-    Top = 64
+    Top = 58
     Width = 321
     Height = 21
     TabOrder = 5
     Text = 'C:\mkmFONTES\CONVERTER Zeos para RestDW\Convertido'
   end
+  object Button1: TButton
+    Left = 434
+    Top = 103
+    Width = 85
+    Height = 25
+    Caption = 'Info'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 6
+    OnClick = Button1Click
+  end
+  object Edit1: TEdit
+    Left = 513
+    Top = 136
+    Width = 321
+    Height = 21
+    TabOrder = 7
+    Text = 'C:\mkmFONTES\CONVERTER Zeos para RestDW\originais'
+    Visible = False
+  end
+  object cbxEngine: TComboBox
+    Left = 12
+    Top = 105
+    Width = 322
+    Height = 21
+    ItemIndex = 0
+    TabOrder = 8
+    Text = 'Zeos'
+    Items.Strings = (
+      'Zeos'
+      'FireDac( a desenvolver )'
+      'IBX( a desenvolver )')
+  end
   object OpenDialog1: TOpenDialog
     Left = 555
-    Top = 9
+    Top = 3
   end
 end
