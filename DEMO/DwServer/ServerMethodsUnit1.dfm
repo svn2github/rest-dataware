@@ -33,6 +33,9 @@ object ServerMethods1: TServerMethods1
     Database = Server_FDConnection
     Compression = True
     Encoding = esUtf8
+    StrsTrim = False
+    StrsEmpty2Null = False
+    StrsTrim2Len = True
     Left = 116
     Top = 72
   end
@@ -44,6 +47,9 @@ object ServerMethods1: TServerMethods1
     Database = Server_FDConnection
     Compression = True
     Encoding = esUtf8
+    StrsTrim = False
+    StrsEmpty2Null = False
+    StrsTrim2Len = True
     Left = 52
     Top = 72
   end
