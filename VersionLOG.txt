@@ -97,3 +97,9 @@ DataAccess.
 
  Class Helper para ajudar quem utiliza TServerModules
  Autor: Giovani Da Cruz
+
+1.0.1.229
+
+ Novo Servidor Baseado em Serviço do Windows enviado pelo Alexandre e Alterado por Mim.
+ Adicionado SSL no Servidor de Exemplos.
+ Várias correções de BUG.
