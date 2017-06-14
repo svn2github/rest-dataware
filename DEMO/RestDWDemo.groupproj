@@ -33,6 +33,9 @@
         <Projects Include="Conversor de ZEOS para RestDW\mkmDfmPasReplace.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="WindowsService\WindowsDWService.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -131,14 +134,23 @@
     <Target Name="mkmDfmPasReplace:Make">
         <MSBuild Projects="Conversor de ZEOS para RestDW\mkmDfmPasReplace.dproj" Targets="Make"/>
     </Target>
+    <Target Name="WindowsDWService">
+        <MSBuild Projects="WindowsService\WindowsDWService.dproj"/>
+    </Target>
+    <Target Name="WindowsDWService:Clean">
+        <MSBuild Projects="WindowsService\WindowsDWService.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="WindowsDWService:Make">
+        <MSBuild Projects="WindowsService\WindowsDWService.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestEasyObjects;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker;ClientWin;ListPoolers;mkmDfmPasReplace"/>
+        <CallTarget Targets="RestEasyObjects;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker;ClientWin;ListPoolers;mkmDfmPasReplace;WindowsDWService"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean;ClientWin:Clean;ListPoolers:Clean;mkmDfmPasReplace:Clean"/>
+        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean;ClientWin:Clean;ListPoolers:Clean;mkmDfmPasReplace:Clean;WindowsDWService:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestEasyObjects:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make;ClientWin:Make;ListPoolers:Make;mkmDfmPasReplace:Make"/>
+        <CallTarget Targets="RestEasyObjects:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make;ClientWin:Make;ListPoolers:Make;mkmDfmPasReplace:Make;WindowsDWService:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
