@@ -21,7 +21,7 @@ uses System.SysUtils,         System.Classes,
      IPPeerClient,            Datasnap.DSClientRest,   System.SyncObjs,
      uPoolerMethod,           FireDAC.Stan.StorageBin, Data.DBXPlatform,
      FireDAC.Stan.StorageJSON {$IFDEF MSWINDOWS},      Datasnap.DSServer,
-     Datasnap.DSAuth,         Datasnap.DSProxyRest{$ENDIF},
+     Datasnap.DSAuth,         Datasnap.DSProxyRest     {$ENDIF},
      Soap.EncdDecd,           System.NetEncoding,      uMasterDetailData,
      DbxCompressionFilter,    uRestCompressTools,      System.ZLib,
      uPoolerServerMethods;
@@ -313,6 +313,7 @@ Type
 End;
 
 {$IFDEF MSWINDOWS}
+//PoolerDB Control
 Type
  TRESTPoolerDBP = ^TComponent;
  TRESTPoolerDB  = Class(TComponent)
@@ -2071,8 +2072,7 @@ Var
  Function CompareValue(Value1, Value2 : String) : Boolean;
  Var
   InitStr,
-  FinalStr,
-  I         : Integer;
+  FinalStr  : Integer;
  Begin
   Result := False;
   {$IFDEF MSWINDOWS}

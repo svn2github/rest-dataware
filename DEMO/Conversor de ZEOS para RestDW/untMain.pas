@@ -498,9 +498,10 @@ begin
              //if Pos( aRestDw[ 1 ] , memo_Convertido.Lines.Text ) > 0 then
              begin
                  s := Pos( 'uses'+#13#10 , memo_Convertido.Lines.Text ) - 1;
-                 memo_Convertido.Lines.Text := Copy( memo_Convertido.Lines.Text , 1, s + 4) + #13#10 +
-                                               '  ' + aUses[ 1 ] + ', ' +
-                                               Copy( memo_Convertido.Lines.Text , s + 5, Length( memo_Convertido.Lines.Text ) );
+                 If s > 0 Then
+                  memo_Convertido.Lines.Text := Copy( memo_Convertido.Lines.Text , 1, s + 4) + #13#10 +
+                                                '  ' + aUses[ 1 ] + ', ' +
+                                                Copy( memo_Convertido.Lines.Text , s + 5, Length( memo_Convertido.Lines.Text ) );
 
              end;
              //

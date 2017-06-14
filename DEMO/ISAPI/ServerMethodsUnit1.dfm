@@ -34,6 +34,9 @@ object ServerMethods1: TServerMethods1
     Database = FDConnectionEMPLOYEE
     Compression = True
     Encoding = esUtf8
+    StrsTrim = False
+    StrsEmpty2Null = False
+    StrsTrim2Len = True
     Left = 88
     Top = 21
   end

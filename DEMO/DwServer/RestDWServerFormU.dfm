@@ -4,8 +4,8 @@ object RestDWForm: TRestDWForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Servidor RestDW'
-  ClientHeight = 282
-  ClientWidth = 518
+  ClientHeight = 380
+  ClientWidth = 520
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -184,14 +184,14 @@ object RestDWForm: TRestDWForm
   end
   object Bevel3: TBevel
     Left = 13
-    Top = 236
+    Top = 341
     Width = 496
     Height = 2
     Shape = bsTopLine
   end
   object Label6: TLabel
     Left = 13
-    Top = 218
+    Top = 323
     Width = 554
     Height = 13
     AutoSize = False
@@ -1065,9 +1065,81 @@ object RestDWForm: TRestDWForm
     Font.Style = [fsBold]
     ParentFont = False
   end
+  object Bevel4: TBevel
+    Left = 14
+    Top = 236
+    Width = 495
+    Height = 2
+    Shape = bsTopLine
+  end
+  object Label4: TLabel
+    Left = 13
+    Top = 217
+    Width = 128
+    Height = 13
+    Caption = 'CONFIGURA'#199#195'O DE SSL'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object lSeguro: TLabel
+    Left = 14
+    Top = 354
+    Width = 70
+    Height = 13
+    Caption = 'Seguro : N'#227'o'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Label15: TLabel
+    Left = 13
+    Top = 238
+    Width = 87
+    Height = 13
+    Caption = 'Private Key File'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Label16: TLabel
+    Left = 363
+    Top = 238
+    Width = 122
+    Height = 13
+    Caption = 'Private Key Password'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Label17: TLabel
+    Left = 13
+    Top = 280
+    Width = 49
+    Height = 13
+    Caption = 'Cert. File'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object ButtonStart: TButton
     Left = 261
-    Top = 244
+    Top = 349
     Width = 121
     Height = 25
     Caption = 'Iniciar'
@@ -1082,7 +1154,7 @@ object RestDWForm: TRestDWForm
   end
   object ButtonStop: TButton
     Left = 388
-    Top = 244
+    Top = 349
     Width = 121
     Height = 25
     Caption = 'Parar'
@@ -1167,6 +1239,29 @@ object RestDWForm: TRestDWForm
     Width = 119
     Height = 21
     TabOrder = 8
+  end
+  object ePrivKeyFile: TEdit
+    Left = 14
+    Top = 256
+    Width = 344
+    Height = 21
+    TabOrder = 11
+  end
+  object eCertFile: TEdit
+    Left = 14
+    Top = 298
+    Width = 344
+    Height = 21
+    TabOrder = 12
+  end
+  object ePrivKeyPass: TMaskEdit
+    Left = 364
+    Top = 256
+    Width = 145
+    Height = 21
+    PasswordChar = '*'
+    TabOrder = 13
+    Text = ''
   end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle

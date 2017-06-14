@@ -53,6 +53,7 @@ Var
  I      : Integer;
 Begin
  //Provide a list of Poolers
+ vLista := Nil;
  With GetComponent(0) as TRESTDataBase Do
   Begin
    Try

@@ -120,7 +120,7 @@ object Form2: TForm2
     DataCache = False
     Params = <
       item
-        DataType = ftString
+        DataType = ftUnknown
         Name = 'FIRST_NAME'
         ParamType = ptUnknown
       end>
@@ -187,7 +187,7 @@ object Form2: TForm2
     Password = 'testserver'
     Proxy = False
     ProxyOptions.Port = 8888
-    PoolerService = '192.168.20.111'
+    PoolerService = '127.0.0.1'
     PoolerPort = 8082
     PoolerName = 'ServerMethods1.RESTPoolerDB'
     RestModule = 'TServerMethods1'

@@ -1,14 +1,12 @@
 unit RestDWServerFormU;
 
-interface
+Interface
 
-uses Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-
-  winsock,  Winapi.iphlpapi, Winapi.IpTypes,  uSock,   System.IniFiles,
-
-  Vcl.AppEvnts, Vcl.StdCtrls, IdHTTPWebBrokerBridge, Web.HTTPApp, Vcl.ExtCtrls,
-  Vcl.Imaging.jpeg, Vcl.Imaging.pngimage;
+Uses Winapi.Windows, Winapi.Messages, System.SysUtils,         System.Variants,
+     System.Classes,    Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+     winsock,        Winapi.iphlpapi, Winapi.IpTypes, uSock,   System.IniFiles,
+     Vcl.AppEvnts,      Vcl.StdCtrls, Web.HTTPApp,    uRESTBridge,
+     Vcl.ExtCtrls,  Vcl.Imaging.jpeg, Vcl.Imaging.pngimage, Vcl.Mask;
 
 type
   TRestDWForm = class(TForm)
@@ -41,26 +39,34 @@ type
     Label6: TLabel;
     Image1: TImage;
     Label5: TLabel;
+    Bevel4: TBevel;
+    Label4: TLabel;
+    lSeguro: TLabel;
+    ePrivKeyFile: TEdit;
+    Label15: TLabel;
+    Label16: TLabel;
+    eCertFile: TEdit;
+    Label17: TLabel;
+    ePrivKeyPass: TMaskEdit;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);
     procedure ButtonStopClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cbAdaptadoresChange(Sender: TObject);
-  private
-    FServer    : TIdHTTPWebBrokerBridge;
-    FCfgName,
-    vDatabaseIP,
-    vUsername,
-    vPassword  : String;
-    procedure StartServer;
-    { Private declarations }
-  public
-    { Public declarations }
+  Private
+   {Private declarations}
+   FCfgName,
+   vDatabaseIP,
+   vUsername,
+   vPassword  : String;
+   Procedure StartServer;
+  Public
+   {Public declarations}
    Property Username   : String Read vUsername   Write vUsername;
    Property Password   : String Read vPassword   Write vPassword;
    Property DatabaseIP : String Read vDatabaseIP Write vDatabaseIP;
-  end;
+  End;
 
 var
   RestDWForm : TRestDWForm;
@@ -70,9 +76,9 @@ implementation
 {$R *.dfm}
 
 uses
-  Winapi.ShellApi, Datasnap.DSSession;
+  Winapi.ShellApi;
 
-procedure TRestDWForm.ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
+Procedure TRestDWForm.ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
 Begin
  ButtonStart.Enabled   := Not FServer.Active;
  ButtonStop.Enabled    := FServer.Active;
@@ -85,6 +91,9 @@ Begin
  edBD.Enabled          := ButtonStart.Enabled;
  edUserNameBD.Enabled  := ButtonStart.Enabled;
  edPasswordBD.Enabled  := ButtonStart.Enabled;
+ ePrivKeyFile.Enabled  := ButtonStart.Enabled;
+ ePrivKeyPass.Enabled  := ButtonStart.Enabled;
+ eCertFile.Enabled     := ButtonStart.Enabled;
 End;
 
 procedure TRestDWForm.ButtonStartClick(Sender: TObject);
@@ -94,32 +103,27 @@ Begin
  If FileExists(FCfgName) Then
   DeleteFile(FCfgName);
  ini       := TIniFile.Create(FCfgName);
- ini.WriteString('BancoDados', 'Servidor',  RestDWForm.cbAdaptadores.Text);//  '127.0.0.1');
- ini.WriteString('BancoDados', 'BD',        RestDWForm.edBD.Text);
- ini.WriteString('BancoDados', 'Pasta',     RestDWForm.edPasta.Text);
- ini.WriteString('BancoDados', 'PortaDB',   RestDWForm.edPortaBD.Text);
- ini.WriteString('BancoDados', 'PortaDW',   RestDWForm.edPortaDW.Text);
- ini.WriteString('BancoDados', 'UsuarioBD', RestDWForm.edUserNameBD.Text);
- ini.WriteString('BancoDados', 'SenhaBD',   RestDWForm.edPasswordBD.Text);
- ini.WriteString('BancoDados', 'UsuarioDW', RestDWForm.edUserNameDW.Text);
- ini.WriteString('BancoDados', 'SenhaDW',   RestDWForm.edPasswordDW.Text);
+ ini.WriteString('BancoDados', 'Servidor',  cbAdaptadores.Text);//  '127.0.0.1');
+ ini.WriteString('BancoDados', 'BD',        edBD.Text);
+ ini.WriteString('BancoDados', 'Pasta',     edPasta.Text);
+ ini.WriteString('BancoDados', 'PortaDB',   edPortaBD.Text);
+ ini.WriteString('BancoDados', 'PortaDW',   edPortaDW.Text);
+ ini.WriteString('BancoDados', 'UsuarioBD', edUserNameBD.Text);
+ ini.WriteString('BancoDados', 'SenhaBD',   edPasswordBD.Text);
+ ini.WriteString('BancoDados', 'UsuarioDW', edUserNameDW.Text);
+ ini.WriteString('BancoDados', 'SenhaDW',   edPasswordDW.Text);
+ ini.WriteString('SSL',        'PKF',       ePrivKeyFile.Text);
+ ini.WriteString('SSL',        'PKP',       ePrivKeyPass.Text);
+ ini.WriteString('SSL',        'CF',        eCertFile.Text);
  ini.Free;
  vUsername := edUserNameDW.Text;
  vPassword := edPasswordDW.Text;
  StartServer;
 End;
 
-procedure TerminateThreads;
-Begin
- If TDSSessionManager.Instance <> Nil Then
-  TDSSessionManager.Instance.TerminateAllSessions;
-End;
-
 procedure TRestDWForm.ButtonStopClick(Sender: TObject);
 begin
- TerminateThreads;
  FServer.Active := False;
- FServer.Bindings.Clear;
 end;
 
 Procedure TRestDWForm.cbAdaptadoresChange(Sender: TObject);
@@ -129,7 +133,6 @@ End;
 
 Procedure TRestDWForm.FormCreate(Sender: TObject);
 Begin
- FServer := TIdHTTPWebBrokerBridge.Create(Self);
  // define o nome do .ini de acordo c o EXE
  // dessa forma se quiser testar várias instâncias do servidor em
  // portas diferentes os arquivos não irão conflitar
@@ -181,17 +184,20 @@ Begin
     End;
    cbAdaptadores.ItemIndex := vTag;
   End;
- ini               := TIniFile.Create(FCfgName);
+ ini                     := TIniFile.Create(FCfgName);
  cbAdaptadores.ItemIndex := ServerIpIndex(cbAdaptadores.Items,
-                                          ini.ReadString('BancoDados', 'Servidor', '127.0.0.1'));
- edBD.Text         := ini.ReadString('BancoDados', 'BD', 'EMPLOYEE.FDB');
- edPasta.Text      := ini.ReadString('BancoDados', 'Pasta', ExtractFilePath(ParamSTR(0)) + '..\');
- edPortaBD.Text    := ini.ReadString('BancoDados', 'PortaBD', '3050');
- edPortaDW.Text    := ini.ReadString('BancoDados', 'PortaDW', '8082' );
- edUserNameBD.Text := ini.ReadString('BancoDados', 'UsuarioBD', 'SYSDBA');
- edPasswordBD.Text := ini.ReadString('BancoDados', 'SenhaBD', 'masterkey');
- edUserNameDW.Text := ini.ReadString('BancoDados', 'UsuarioDW', 'testserver');
- edPasswordDW.Text := ini.ReadString('BancoDados', 'SenhaDW', 'testserver');
+                            ini.ReadString('BancoDados', 'Servidor',  '127.0.0.1'));
+ edBD.Text               := ini.ReadString('BancoDados', 'BD',        'EMPLOYEE.FDB');
+ edPasta.Text            := ini.ReadString('BancoDados', 'Pasta',     ExtractFilePath(ParamSTR(0)) + '..\');
+ edPortaBD.Text          := ini.ReadString('BancoDados', 'PortaBD',   '3050');
+ edPortaDW.Text          := ini.ReadString('BancoDados', 'PortaDW',   '8082' );
+ edUserNameBD.Text       := ini.ReadString('BancoDados', 'UsuarioBD', 'SYSDBA');
+ edPasswordBD.Text       := ini.ReadString('BancoDados', 'SenhaBD',   'masterkey');
+ edUserNameDW.Text       := ini.ReadString('BancoDados', 'UsuarioDW', 'testserver');
+ edPasswordDW.Text       := ini.ReadString('BancoDados', 'SenhaDW',   'testserver');
+ ePrivKeyFile.Text       := ini.ReadString('SSL',        'PKF',       '');
+ ePrivKeyPass.Text       := ini.ReadString('SSL',        'PKP',       '');
+ eCertFile.Text          := ini.ReadString('SSL',        'CF',        '');
  ini.Free;
 End;
 
@@ -199,9 +205,21 @@ procedure TRestDWForm.StartServer;
 begin
  If Not FServer.Active Then
   Begin
-   FServer.Bindings.Clear;
-   FServer.DefaultPort := StrToInt( edPortaDW.Text);
-   FServer.Active      := True;
+   FServer.ServicePort           := StrToInt(edPortaDW.Text);
+   FServer.SSLPrivateKeyFile     := ePrivKeyFile.Text;
+   FServer.SSLPrivateKeyPassword := ePrivKeyPass.Text;
+   FServer.SSLCertFile           := eCertFile.Text;
+   FServer.Active                := True;
+  End;
+ If FServer.Secure Then
+  Begin
+   lSeguro.Font.Color := clBlue;
+   lSeguro.Caption    := 'Seguro : Sim';
+  End
+ Else
+  Begin
+   lSeguro.Font.Color := clRed;
+   lSeguro.Caption    := 'Seguro : Não';
   End;
 end;
 

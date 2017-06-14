@@ -7,7 +7,8 @@ uses
   IdHTTPWebBrokerBridge,
   RestDWServerFormU in 'RestDWServerFormU.pas' {RestDWForm},
   ServerMethodsUnit1 in 'ServerMethodsUnit1.pas' {ServerMethods1: TDataModule},
-  WebModuleUnit1 in 'WebModuleUnit1.pas' {WebModule1: TWebModule};
+  WebModuleUnit1 in 'WebModuleUnit1.pas' {WebModule1: TWebModule},
+  uRESTBridge in '..\..\uRESTBridge.pas';
 
 {$R *.res}
 

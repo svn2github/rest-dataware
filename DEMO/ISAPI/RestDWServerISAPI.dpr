@@ -10,7 +10,7 @@ uses
   Datasnap.DSSession,
   ServerMethodsUnit1 in 'ServerMethodsUnit1.pas' {ServerMethods1: TDataModule},
   WebModuleUnit1 in 'WebModuleUnit1.pas' {WebModule1: TWebModule},
-  uConsts in '..\Apache_Module\uConsts.pas';
+  uConsts in 'uConsts.pas';
 
 {$R *.res}
 
