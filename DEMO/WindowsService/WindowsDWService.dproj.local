@@ -1,26 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>2017/06/14 12:37:07.000.780,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\srvModBaseDados.pas</Transaction>
-    <Transaction>2017/06/14 12:40:17.000.601,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\Apache_Module\uConsts.pas</Transaction>
-    <Transaction>2017/06/14 12:40:28.000.344,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\uConsts.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\Apache_Module\uConsts.pas</Transaction>
-    <Transaction>2017/06/14 14:11:31.000.537,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\srvModBaseDados.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ServerMethods1.pas</Transaction>
     <Transaction>2017/06/14 14:11:31.000.537,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\srvModBaseDados.dfm=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ServerMethods1.dfm</Transaction>
-    <Transaction>2017/06/14 14:12:49.000.684,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ServerMethods1.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ServerMethods1Unit.pas</Transaction>
+    <Transaction>2017/06/14 14:11:31.000.537,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\srvModBaseDados.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ServerMethods1.pas</Transaction>
     <Transaction>2017/06/14 14:12:49.000.684,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ServerMethods1.dfm=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ServerMethods1Unit.dfm</Transaction>
-    <Transaction>2017/06/14 14:32:06.000.857,d:\meus dados\projetos\sugv\componentes\xyberpower\rest_controls\demo\windowsservice\modelsupport_servidorrest\default.txapackage=</Transaction>
-    <Transaction>2017/06/14 14:32:06.000.877,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\default.txaPackage</Transaction>
     <Transaction>2017/06/14 14:32:06.000.792,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ServidorREST.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\WindowsDWService.dproj</Transaction>
-    <Transaction>2017/06/14 14:32:07.000.932,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\uConsts\default.txvpck</Transaction>
-    <Transaction>2017/06/14 14:32:07.000.695,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\Server\Containner\default.txvpck</Transaction>
-    <Transaction>2017/06/14 14:32:07.000.162,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\WindowsDWService\default.txvpck</Transaction>
-    <Transaction>2017/06/14 14:32:07.000.610,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\Server\default.txvpck</Transaction>
-    <Transaction>2017/06/14 14:32:07.000.116,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\default.txvpck</Transaction>
-    <Transaction>2017/06/14 14:32:07.000.281,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\ServerMethods1Unit\default.txvpck</Transaction>
-    <Transaction>2017/06/14 14:32:08.000.237,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\WindowsDWService\default.txaPackage</Transaction>
-    <Transaction>2017/06/14 14:32:08.000.106,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\ServerMethods1Unit\default.txaPackage</Transaction>
-    <Transaction>2017/06/14 14:32:08.000.069,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\Server\Containner\default.txaPackage</Transaction>
-    <Transaction>2017/06/14 14:32:08.000.143,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\Server\default.txaPackage</Transaction>
-    <Transaction>2017/06/14 14:32:08.000.193,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\WindowsService\ModelSupport_WindowsDWService\uConsts\default.txaPackage</Transaction>
   </Transactions>
 </BorlandProject>

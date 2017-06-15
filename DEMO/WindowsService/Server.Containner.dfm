@@ -1,7 +1,7 @@
 object RESTDWServer: TRESTDWServer
   OldCreateOrder = False
   OnCreate = ServiceCreate
-  DisplayName = 'Server RESTDataware'
+  DisplayName = 'REST Dataware - Server'
   Height = 231
   Width = 349
   object DSServer: TDSServer

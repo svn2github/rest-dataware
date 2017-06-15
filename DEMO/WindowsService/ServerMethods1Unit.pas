@@ -2,18 +2,16 @@ unit ServerMethods1Unit;
 
 interface
 
-uses
-  System.SysUtils,         System.Classes,           Datasnap.DSServer,  Datasnap.DSAuth,
-     FireDAC.Stan.Intf,       FireDAC.Stan.Option,      FireDAC.Stan.Param,
-     FireDAC.Stan.Error,      FireDAC.DatS,             FireDAC.Phys.Intf,  FireDAC.DApt.Intf,
-     FireDAC.Stan.Async,      FireDAC.DApt,             FireDAC.UI.Intf,    FireDAC.VCLUI.Wait,
-     FireDAC.Stan.Def,        FireDAC.Stan.Pool,        FireDAC.Phys,       Data.DB,
-     FireDAC.Comp.Client,     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,    FireDAC.Comp.UI,
-     FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,
-     FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
-     Vcl.Dialogs,        Vcl.Forms,System.TypInfo,
-     FireDAC.Phys.PG, FireDAC.Phys.PGDef, Datasnap.Provider, Datasnap.DBClient,
-     uRestPoolerDB, URestPoolerDBMethod, FireDAC.Phys.FB, FireDAC.Phys.FBDef, uConsts;
+uses System.SysUtils,          System.Classes,           Datasnap.DSServer,  Datasnap.DSAuth,
+     FireDAC.Stan.Intf,        FireDAC.Stan.Option,      FireDAC.Stan.Param, FireDAC.Stan.Error,
+     FireDAC.DatS,             FireDAC.Phys.Intf,        FireDAC.DApt.Intf,  FireDAC.Stan.Async,
+     FireDAC.DApt,             FireDAC.UI.Intf,          FireDAC.VCLUI.Wait, FireDAC.Stan.Def,
+     FireDAC.Stan.Pool,        FireDAC.Phys,             Data.DB,            FireDAC.Comp.Client,
+     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,          FireDAC.Comp.UI,    FireDAC.Comp.DataSet,
+     Data.FireDACJSONReflect,  System.JSON,              FireDAC.Stan.StorageBin,
+     FireDAC.Stan.StorageJSON, Vcl.Dialogs,              Vcl.Forms,          System.TypInfo,
+     Datasnap.Provider,        Datasnap.DBClient,        uRestPoolerDB,      URestPoolerDBMethod,
+     FireDAC.Phys.FB,          FireDAC.Phys.FBDef,       uConsts;
 
 type
 {$METHODINFO ON}
