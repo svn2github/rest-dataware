@@ -8,45 +8,32 @@ uses
   Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.ImgList,
-  Data.DBXCommon;
+  Data.DBXCommon, Vcl.Imaging.pngimage, Vcl.ExtCtrls;
 
 type
   TForm1 = class(TForm)
     DataSource1: TDataSource;
-    Edit1: TEdit;
     RESTClientSQL: TRESTClientSQL;
     RESTDataBase: TRESTDataBase;
-    Edit2: TEdit;
-    Edit3: TEdit;
-    ListBox1: TListBox;
     Button2: TButton;
     Edit4: TEdit;
     Edit5: TEdit;
-    Label4: TLabel;
     Label5: TLabel;
-    Edit6: TEdit;
-    Label7: TLabel;
     DBGrid1: TDBGrid;
-    RESTClientSQLEMP_NO: TSmallintField;
-    RESTClientSQLFIRST_NAME: TStringField;
-    RESTClientSQLLAST_NAME: TStringField;
-    RESTClientSQLPHONE_EXT: TStringField;
-    RESTClientSQLHIRE_DATE: TSQLTimeStampField;
-    RESTClientSQLDEPT_NO: TStringField;
-    RESTClientSQLJOB_CODE: TStringField;
-    RESTClientSQLJOB_GRADE: TSmallintField;
-    RESTClientSQLJOB_COUNTRY: TStringField;
-    RESTClientSQLSALARY: TFloatField;
-    RESTClientSQLFULL_NAME: TStringField;
+    Image1: TImage;
+    cbxPooler: TComboBox;
+    Bevel1: TBevel;
+    Label2: TLabel;
+    Bevel2: TBevel;
+    Label4: TLabel;
+    mComando: TMemo;
+    Button3: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseConnection(Sucess: Boolean; const Error: string);
-    procedure ListBox1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure RESTClientSQLAfterPost(DataSet: TDataSet);
-    procedure RESTClientSQLAfterOpen(DataSet: TDataSet);
-    procedure RESTClientSQLAfterDelete(DataSet: TDataSet);
     procedure RESTClientSQLGetDataError(Sucess: Boolean; const Error: string);
+    procedure Button3Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -60,27 +47,6 @@ implementation
 
 {$R *.dfm}
 
-procedure TForm1.RESTClientSQLAfterDelete(DataSet: TDataSet);
-Var
- vError : String;
-begin
- If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
-  MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-end;
-
-procedure TForm1.RESTClientSQLAfterOpen(DataSet: TDataSet);
-begin
- RESTClientSQL.UpdateTableName := Edit6.Text;
-end;
-
-procedure TForm1.RESTClientSQLAfterPost(DataSet: TDataSet);
-Var
- vError : String;
-begin
- If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
-  MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-end;
-
 procedure TForm1.RESTClientSQLGetDataError(Sucess: Boolean;
   const Error: string);
 begin
@@ -89,7 +55,7 @@ end;
 
 procedure TForm1.RESTDataBaseConnection(Sucess: Boolean; const Error: string);
 begin
- Caption := 'Cliente de Testes Utilizando o PoolerDB';
+ Caption := 'REST Dataware - Client SQL';
  if Not (Sucess) then
   MessageDlg(Error, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0)
  Else
@@ -97,6 +63,42 @@ begin
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
+Begin
+ If cbxPooler.ItemIndex > -1 Then
+  Begin
+   RESTDataBase.PoolerName := cbxPooler.Text;
+   If RESTDataBase.Active Then
+    Begin
+     RESTClientSQL.Active       := False;
+     RESTClientSQL.SQL.Clear;
+     RESTClientSQL.SQL.Add(mComando.Text);
+     RESTClientSQL.Active       := True;
+    End;
+  End
+ Else
+  Showmessage('Escolha um Pooler para realizar essa operação...');
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+Var
+ vError    : String;
+Begin
+ If cbxPooler.ItemIndex > -1 Then
+  Begin
+   If RESTDataBase.Active Then
+    Begin
+     RESTClientSQL.Active       := False;
+     RESTClientSQL.SQL.Clear;
+     RESTClientSQL.SQL.Add(mComando.Text);
+     If Not RESTClientSQL.ExecSQL(vError) Then
+      Showmessage(vError);
+    End;
+  End
+ Else
+  Showmessage('Escolha um Pooler para realizar essa operação...');
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
 Var
  vTempList : TStringList;
 Begin
@@ -105,53 +107,17 @@ Begin
  RESTDataBase.Active := True;
  If RESTDataBase.Active Then
   Begin
-   if ListBox1.Items.Count = 0 then
-    Begin
-     vTempList   := RESTDataBase.GetRestPoolers;
-     If vTempList <> Nil Then
-      If vTempList.Count > 0 Then
-       Begin
-        ListBox1.Items.Assign(vTempList);
-        RESTDataBase.PoolerName := ListBox1.Items[0];
-       End;
-    End;
-   RESTClientSQL.Active       := False;
-   RESTClientSQL.SQL.Clear;
-   RESTClientSQL.SQL.Add(Edit1.Text);
-   If RESTClientSQL.ParamByName(Edit3.Text) <> Nil Then
-    RESTClientSQL.ParamByName(Edit3.Text).AsString := Edit2.Text;
-   RESTClientSQL.Active       := True;
-  End;
-end;
-
-procedure TForm1.Button2Click(Sender: TObject);
-Var
- vTempList : TStringList;
- vError    : String;
-Begin
- if ListBox1.Items.Count = 0 then
-  Begin
+   cbxPooler.Items.Clear;
+   cbxPooler.Text := '';
    vTempList   := RESTDataBase.GetRestPoolers;
-   ListBox1.Items.Assign(vTempList);
    If vTempList <> Nil Then
     If vTempList.Count > 0 Then
      Begin
-      ListBox1.Items.Assign(vTempList);
-      RESTDataBase.PoolerName := ListBox1.Items[0];
+      cbxPooler.Items.Assign(vTempList);
+      cbxPooler.ItemIndex := 0;
      End;
   End;
- RESTDataBase.Active := True;
- if RESTDataBase.Active then
-  Begin
-   RESTClientSQL.Active       := False;
-   RESTClientSQL.SQL.Clear;
-   RESTClientSQL.SQL.Add(Edit1.Text);
-   If RESTClientSQL.ParamByName(Edit3.Text) <> Nil Then
-    RESTClientSQL.ParamByName(Edit3.Text).AsString := Edit2.Text;
-   If Not RESTClientSQL.ExecSQL(vError) Then
-    Showmessage(vError);
-  End;
-end;
+End;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
@@ -159,12 +125,6 @@ begin
  RESTDataBase.Active  := False;
  Form1 := Nil;
  Release;
-end;
-
-procedure TForm1.ListBox1Click(Sender: TObject);
-begin
- if ListBox1.ItemIndex > -1 then
-  RESTDataBase.PoolerName := ListBox1.Items[ListBox1.ItemIndex];
 end;
 
 end.
