@@ -943,7 +943,7 @@ object Form1: TForm1
   end
   object Button1: TButton
     Left = 511
-    Top = 140
+    Top = 144
     Width = 133
     Height = 33
     Caption = 'Open'
@@ -952,7 +952,7 @@ object Form1: TForm1
   end
   object Button2: TButton
     Left = 511
-    Top = 180
+    Top = 184
     Width = 133
     Height = 33
     Caption = 'Execute'
@@ -993,6 +993,7 @@ object Form1: TForm1
     Width = 631
     Height = 206
     DataSource = DataSource1
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgTitleClick, dgTitleHotTrack]
     TabOrder = 4
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
