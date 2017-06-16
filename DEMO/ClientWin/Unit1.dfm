@@ -904,7 +904,7 @@ object Form1: TForm1
   object Bevel1: TBevel
     Left = 9
     Top = 21
-    Width = 488
+    Width = 491
     Height = 2
     Shape = bsTopLine
   end
@@ -924,7 +924,7 @@ object Form1: TForm1
   object Bevel2: TBevel
     Left = 9
     Top = 119
-    Width = 488
+    Width = 491
     Height = 2
     Shape = bsTopLine
   end
@@ -1018,7 +1018,7 @@ object Form1: TForm1
   object mComando: TMemo
     Left = 9
     Top = 126
-    Width = 488
+    Width = 491
     Height = 96
     Lines.Strings = (
       'SELECT * FROM EMPLOYEE')
@@ -1028,7 +1028,7 @@ object Form1: TForm1
     Left = 173
     Top = 27
     Width = 104
-    Height = 36
+    Height = 50
     Caption = 'Connect Server'
     TabOrder = 7
     OnClick = Button3Click

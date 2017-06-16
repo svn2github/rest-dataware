@@ -29,13 +29,11 @@ Begin
   {$ifdef DEBUG}
   Try
    // In debug mode the server acts as a console application.
-   WriteLn('ServidorREST DEBUG mode. Press enter to exit.');
+   WriteLn('REST Dataware - Server : DEBUG mode. Press enter to exit.');
    // Create the TService descendant manually.
-   RESTDWServer := TRESTDWServer.Create(nil);
+   RESTDWServer   := TRESTDWServer.Create(nil);
    ServerMethods1 := TServerMethods1.Create(Nil);
-   // Keep the console box running (ServerContainer1 code runs in the background)
    ReadLn;
-   // On exit, destroy the service object.
    RESTDWServer.DisposeOf;
   Except
    On E: Exception Do

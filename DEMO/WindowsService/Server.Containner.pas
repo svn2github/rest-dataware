@@ -246,8 +246,8 @@ Constructor TSimpleServerClass.Create(AOwner: TComponent;
 Begin
  Inherited Create(AOwner);
  FPersistentClass := AClass;
- Self.Server := AServer;
- Self.LifeCycle := ALifeCycle;
+ Self.Server      := AServer;
+ Self.LifeCycle   := ALifeCycle;
 end;
 
 Function TSimpleServerClass.GetDSClass: TDSClass;
