@@ -7,7 +7,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  uRestPoolerDB, Vcl.DBCtrls, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls;
+  uRestPoolerDB, Vcl.DBCtrls, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls,
+  Vcl.Imaging.pngimage;
 
 type
   TfEmployee = class(TForm)
@@ -67,11 +68,25 @@ type
     DBText3: TDBText;
     DBNavigator1: TDBNavigator;
     DBText4: TDBText;
+    Label6: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Image1: TImage;
+    Bevel1: TBevel;
+    Label15: TLabel;
+    Edit4: TEdit;
+    Edit5: TEdit;
+    cbxPooler: TComboBox;
+    Button3: TButton;
+    Bevel2: TBevel;
+    Label16: TLabel;
+    Button1: TButton;
     procedure rEmployeeBeforePost(DataSet: TDataSet);
     procedure rEmployeeAfterInsert(DataSet: TDataSet);
     procedure rEmployeeAfterDelete(DataSet: TDataSet);
     procedure rEmployeeAfterPost(DataSet: TDataSet);
-    procedure FormCreate(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
    Function GetGenID(GenName  : String;
@@ -105,12 +120,45 @@ Begin
  vTempClient.Free;
 End;
 
-procedure TfEmployee.FormCreate(Sender: TObject);
+procedure TfEmployee.Button1Click(Sender: TObject);
 begin
- rDepartment.Open;
- fJob.Open;
- rEmployee.Open;
+ If cbxPooler.ItemIndex > -1 Then
+  Begin
+   RESTDataBase.PoolerName := cbxPooler.Text;
+   If RESTDataBase.Active Then
+    Begin
+     rDepartment.Open;
+     fJob.Open;
+     rEmployee.Open;
+    End;
+  End
+ Else
+  Showmessage('Escolha um Pooler para realizar essa operação...');
 end;
+
+procedure TfEmployee.Button3Click(Sender: TObject);
+Var
+ vTempList : TStringList;
+Begin
+ rDepartment.Close;
+ fJob.Close;
+ rEmployee.Close;
+ RESTDataBase.PoolerService := Edit4.Text;
+ RESTDataBase.PoolerPort    := StrToInt(Edit5.Text);
+ RESTDataBase.Active        := True;
+ If RESTDataBase.Active Then
+  Begin
+   cbxPooler.Items.Clear;
+   cbxPooler.Text := '';
+   vTempList   := RESTDataBase.GetRestPoolers;
+   If vTempList <> Nil Then
+    If vTempList.Count > 0 Then
+     Begin
+      cbxPooler.Items.Assign(vTempList);
+      cbxPooler.ItemIndex := 0;
+     End;
+  End;
+End;
 
 procedure TfEmployee.rEmployeeAfterDelete(DataSet: TDataSet);
 Var
