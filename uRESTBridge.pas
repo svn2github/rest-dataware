@@ -5,7 +5,7 @@ interface
 uses
  System.Classes, System.SysUtils, Datasnap.DSSession, IdSSLOpenSSL, IdSSL, IdHTTPWebBrokerBridge;
 
- //WebBroker Componente para uso do Datasnap
+//WebBroker Componente para uso do Datasnap
 Type
  TRESTBridge  = Class(TComponent)
  Private

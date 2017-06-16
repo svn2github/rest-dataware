@@ -932,7 +932,13 @@ object Form3: TForm3
     Top = 107
     Width = 442
     Height = 195
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
     ItemHeight = 13
+    ParentFont = False
     TabOrder = 0
   end
   object Edit4: TEdit
@@ -969,6 +975,12 @@ object Form3: TForm3
     Width = 104
     Height = 50
     Caption = 'Connect Server'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 3
     OnClick = Button3Click
   end

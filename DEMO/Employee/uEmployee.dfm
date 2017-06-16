@@ -3,7 +3,7 @@ object fEmployee: TfEmployee
   Top = 0
   Caption = 'Simple Project'
   ClientHeight = 416
-  ClientWidth = 568
+  ClientWidth = 533
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,122 +15,212 @@ object fEmployee: TfEmployee
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
-    Left = 40
+    Left = 10
     Top = 128
-    Width = 41
+    Width = 45
     Height = 13
     Caption = 'EMP_NO'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Label2: TLabel
-    Left = 40
+    Left = 10
     Top = 168
-    Width = 63
+    Width = 71
     Height = 13
     Caption = 'FIRST_NAME'
     FocusControl = DBEdit2
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Label3: TLabel
-    Left = 245
+    Left = 215
     Top = 168
-    Width = 58
+    Width = 66
     Height = 13
     Caption = 'LAST_NAME'
     FocusControl = DBEdit3
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Label4: TLabel
-    Left = 40
+    Left = 10
     Top = 248
-    Width = 58
+    Width = 63
     Height = 13
     Caption = 'PHONE_EXT'
     FocusControl = DBEdit4
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Label5: TLabel
-    Left = 112
+    Left = 82
     Top = 248
-    Width = 56
+    Width = 63
     Height = 13
     Caption = 'HIRE_DATE'
     FocusControl = DBEdit5
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Label7: TLabel
-    Left = 216
+    Left = 234
     Top = 365
-    Width = 38
+    Width = 44
     Height = 13
     Caption = 'SALARY'
     FocusControl = DBEdit7
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Label8: TLabel
-    Left = 40
+    Left = 10
     Top = 208
-    Width = 57
+    Width = 64
     Height = 13
     Caption = 'FULL_NAME'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Label9: TLabel
-    Left = 40
+    Left = 10
     Top = 288
-    Width = 66
+    Width = 74
     Height = 13
     Caption = 'DEPARTMENT'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Label10: TLabel
-    Left = 40
+    Left = 10
     Top = 325
-    Width = 52
+    Width = 59
     Height = 13
     Caption = 'JOB_TITLE'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Label11: TLabel
-    Left = 40
+    Left = 10
     Top = 365
-    Width = 63
+    Width = 73
     Height = 13
     Caption = 'MIN_SALARY'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Label12: TLabel
-    Left = 136
+    Left = 122
     Top = 365
-    Width = 65
+    Width = 76
     Height = 13
     Caption = 'MAX_SALARY'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object DBText1: TDBText
-    Left = 41
+    Left = 11
     Top = 384
-    Width = 41
+    Width = 48
     Height = 13
     AutoSize = True
     DataField = 'MIN_SALARY'
     DataSource = dsJob
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object DBText2: TDBText
-    Left = 136
+    Left = 122
     Top = 384
-    Width = 41
+    Width = 48
     Height = 13
     AutoSize = True
     DataField = 'MAX_SALARY'
     DataSource = dsJob
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object DBText3: TDBText
-    Left = 41
+    Left = 11
     Top = 147
-    Width = 41
+    Width = 48
     Height = 13
     AutoSize = True
     DataField = 'EMP_NO'
     DataSource = dsEmployee
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object DBText4: TDBText
-    Left = 40
+    Left = 10
     Top = 227
-    Width = 41
+    Width = 48
     Height = 13
     AutoSize = True
     DataField = 'FULL_NAME'
     DataSource = dsEmployee
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Label6: TLabel
     Left = 8
@@ -172,7 +262,7 @@ object fEmployee: TfEmployee
     ParentFont = False
   end
   object Image1: TImage
-    Left = 425
+    Left = 392
     Top = 21
     Width = 133
     Height = 96
@@ -1020,7 +1110,7 @@ object fEmployee: TfEmployee
   object Bevel1: TBevel
     Left = 9
     Top = 21
-    Width = 409
+    Width = 378
     Height = 2
     Shape = bsTopLine
   end
@@ -1040,7 +1130,7 @@ object fEmployee: TfEmployee
   object Bevel2: TBevel
     Left = 9
     Top = 119
-    Width = 409
+    Width = 378
     Height = 2
     Shape = bsTopLine
   end
@@ -1058,76 +1148,118 @@ object fEmployee: TfEmployee
     ParentFont = False
   end
   object DBEdit2: TDBEdit
-    Left = 40
+    Left = 10
     Top = 184
     Width = 199
     Height = 21
     DataField = 'FIRST_NAME'
     DataSource = dsEmployee
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 0
   end
   object DBEdit3: TDBEdit
-    Left = 245
+    Left = 215
     Top = 184
-    Width = 264
+    Width = 310
     Height = 21
     DataField = 'LAST_NAME'
     DataSource = dsEmployee
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 1
   end
   object DBEdit4: TDBEdit
-    Left = 40
+    Left = 10
     Top = 264
     Width = 56
     Height = 21
     DataField = 'PHONE_EXT'
     DataSource = dsEmployee
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 2
   end
   object DBEdit5: TDBEdit
-    Left = 112
+    Left = 82
     Top = 264
     Width = 89
     Height = 21
     DataField = 'HIRE_DATE'
     DataSource = dsEmployee
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 3
   end
   object DBEdit7: TDBEdit
-    Left = 216
+    Left = 234
     Top = 381
     Width = 105
     Height = 21
     DataField = 'SALARY'
     DataSource = dsEmployee
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 6
   end
   object DBLookupComboBox1: TDBLookupComboBox
-    Left = 40
+    Left = 10
     Top = 304
     Width = 329
     Height = 21
     DataField = 'DEPT_NO'
     DataSource = dsEmployee
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
     KeyField = 'DEPT_NO'
     ListField = 'DEPARTMENT'
     ListSource = dsDepartment
+    ParentFont = False
     TabOrder = 4
   end
   object DBLookupComboBox2: TDBLookupComboBox
-    Left = 40
+    Left = 10
     Top = 341
     Width = 329
     Height = 21
     DataField = 'JOB_CODE'
     DataSource = dsEmployee
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
     KeyField = 'JOB_CODE'
     ListField = 'JOB_TITLE'
     ListSource = dsJob
+    ParentFont = False
     TabOrder = 5
   end
   object DBNavigator1: TDBNavigator
-    Left = 324
+    Left = 291
     Top = 128
     Width = 234
     Height = 25
@@ -1183,6 +1315,12 @@ object fEmployee: TfEmployee
     Width = 104
     Height = 50
     Caption = 'Connect Server'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 11
     OnClick = Button3Click
   end
@@ -1192,6 +1330,12 @@ object fEmployee: TfEmployee
     Width = 104
     Height = 21
     Caption = 'Listar Dados'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 12
     OnClick = Button1Click
   end
@@ -1212,7 +1356,7 @@ object fEmployee: TfEmployee
     Encoding = esUtf8
     Context = 'datasnap'
     RESTContext = 'rest/'
-    Left = 392
+    Left = 362
     Top = 114
   end
   object rEmployee: TRESTClientSQL
@@ -1243,7 +1387,7 @@ object fEmployee: TfEmployee
     SQL.Strings = (
       'select * from employee')
     UpdateTableName = 'EMPLOYEE'
-    Left = 392
+    Left = 362
     Top = 157
     object rEmployeeEMP_NO: TSmallintField
       FieldName = 'EMP_NO'
@@ -1300,7 +1444,7 @@ object fEmployee: TfEmployee
   object dsEmployee: TDataSource
     AutoEdit = False
     DataSet = rEmployee
-    Left = 422
+    Left = 392
     Top = 157
   end
   object rDepartment: TRESTClientSQL
@@ -1357,7 +1501,7 @@ object fEmployee: TfEmployee
     DataBase = RESTDataBase
     SQL.Strings = (
       'select * from DEPARTMENT')
-    Left = 392
+    Left = 362
     Top = 200
     object rDepartmentDEPT_NO: TStringField
       FieldName = 'DEPT_NO'
@@ -1392,7 +1536,7 @@ object fEmployee: TfEmployee
   object dsDepartment: TDataSource
     AutoEdit = False
     DataSet = rDepartment
-    Left = 420
+    Left = 390
     Top = 200
   end
   object fJob: TRESTClientSQL
@@ -1455,7 +1599,7 @@ object fEmployee: TfEmployee
     DataBase = RESTDataBase
     SQL.Strings = (
       'select * from job')
-    Left = 392
+    Left = 362
     Top = 244
     object fJobJOB_CODE: TStringField
       FieldName = 'JOB_CODE'
@@ -1497,7 +1641,7 @@ object fEmployee: TfEmployee
   object dsJob: TDataSource
     AutoEdit = False
     DataSet = fJob
-    Left = 420
+    Left = 390
     Top = 244
   end
 end

@@ -945,12 +945,18 @@ object Form4: TForm4
     Width = 605
     Height = 169
     DataSource = DataSource1
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
+    TitleFont.Style = [fsBold]
   end
   object DBGrid2: TDBGrid
     Left = 8
@@ -958,12 +964,18 @@ object Form4: TForm4
     Width = 605
     Height = 152
     DataSource = DataSource2
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 1
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
+    TitleFont.Style = [fsBold]
   end
   object Edit4: TEdit
     Left = 9
@@ -1013,6 +1025,12 @@ object Form4: TForm4
     Width = 104
     Height = 50
     Caption = 'Connect Server'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 5
     OnClick = Button3Click
   end
@@ -1022,6 +1040,12 @@ object Form4: TForm4
     Width = 104
     Height = 21
     Caption = 'Listar Dados'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 6
     OnClick = Button1Click
   end

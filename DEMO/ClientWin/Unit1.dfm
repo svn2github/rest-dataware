@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   BorderIcons = [biSystemMenu]
   Caption = 'REST Dataware - Client SQL'
-  ClientHeight = 440
+  ClientHeight = 415
   ClientWidth = 648
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -943,19 +943,31 @@ object Form1: TForm1
   end
   object Button1: TButton
     Left = 507
-    Top = 137
+    Top = 126
     Width = 133
     Height = 33
     Caption = 'Open'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 2
     OnClick = Button1Click
   end
   object Button2: TButton
     Left = 507
-    Top = 177
+    Top = 166
     Width = 133
     Height = 33
     Caption = 'Execute'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 3
     OnClick = Button2Click
   end
@@ -989,17 +1001,23 @@ object Form1: TForm1
   end
   object DBGrid1: TDBGrid
     Left = 9
-    Top = 228
+    Top = 204
     Width = 631
     Height = 204
     DataSource = DataSource1
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgTitleClick, dgTitleHotTrack]
+    ParentFont = False
     TabOrder = 4
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
+    TitleFont.Style = [fsBold]
   end
   object cbxPooler: TComboBox
     Left = 8
@@ -1019,9 +1037,15 @@ object Form1: TForm1
     Left = 9
     Top = 126
     Width = 491
-    Height = 96
+    Height = 73
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
     Lines.Strings = (
       'SELECT * FROM EMPLOYEE')
+    ParentFont = False
     TabOrder = 6
   end
   object Button3: TButton
@@ -1030,6 +1054,12 @@ object Form1: TForm1
     Width = 104
     Height = 50
     Caption = 'Connect Server'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 7
     OnClick = Button3Click
   end
