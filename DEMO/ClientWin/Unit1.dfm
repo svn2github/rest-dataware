@@ -1086,8 +1086,8 @@ object Form1: TForm1
   object DataSource1: TDataSource
     AutoEdit = False
     DataSet = RESTClientSQL
-    Left = 276
-    Top = 161
+    Left = 248
+    Top = 182
   end
   object RESTClientSQL: TRESTClientSQL
     FieldDefs = <>
@@ -1134,6 +1134,6 @@ object Form1: TForm1
     Context = 'datasnap'
     RESTContext = 'rest/'
     Left = 222
-    Top = 137
+    Top = 140
   end
 end
