@@ -1042,8 +1042,8 @@ object Form4: TForm4
     Encoding = esUtf8
     Context = 'datasnap'
     RESTContext = 'rest/'
-    Left = 124
-    Top = 40
+    Left = 148
+    Top = 144
   end
   object RESTClientSQL1: TRESTClientSQL
     AfterPost = RESTClientSQL1AfterDelete
@@ -1067,8 +1067,8 @@ object Form4: TForm4
     SQL.Strings = (
       'select * from DEPARTMENT')
     UpdateTableName = 'DEPARTMENT'
-    Left = 152
-    Top = 40
+    Left = 176
+    Top = 144
     object RESTClientSQL1DEPT_NO: TStringField
       FieldName = 'DEPT_NO'
       Required = True
@@ -1184,8 +1184,8 @@ object Form4: TForm4
   end
   object DataSource1: TDataSource
     DataSet = RESTClientSQL1
-    Left = 180
-    Top = 40
+    Left = 204
+    Top = 144
   end
   object DataSource2: TDataSource
     DataSet = RESTClientSQL2

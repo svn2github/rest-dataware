@@ -4,14 +4,24 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uRestPoolerDB, Vcl.StdCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uRestPoolerDB, Vcl.StdCtrls,
+  Vcl.ExtCtrls, Vcl.Imaging.pngimage;
 
 type
   TForm3 = class(TForm)
     RESTPoolerList1: TRESTPoolerList;
     ListBox1: TListBox;
-    Button1: TButton;
-    procedure Button1Click(Sender: TObject);
+    Label3: TLabel;
+    Label5: TLabel;
+    Image1: TImage;
+    Bevel1: TBevel;
+    Label2: TLabel;
+    Edit4: TEdit;
+    Edit5: TEdit;
+    Button3: TButton;
+    Bevel2: TBevel;
+    Label4: TLabel;
+    procedure Button3Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -25,8 +35,11 @@ implementation
 
 {$R *.dfm}
 
-procedure TForm3.Button1Click(Sender: TObject);
+procedure TForm3.Button3Click(Sender: TObject);
 begin
+ RESTPoolerList1.Active := False;
+ RESTPoolerList1.PoolerService := Edit4.Text;
+ RESTPoolerList1.PoolerPort    := StrToInt(Edit5.Text);
  RESTPoolerList1.Active := True;
  If RESTPoolerList1.Active Then
   Begin
