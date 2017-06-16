@@ -28,6 +28,8 @@ type
     Label4: TLabel;
     mComando: TMemo;
     Button3: TButton;
+    Bevel3: TBevel;
+    Label6: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseConnection(Sucess: Boolean; const Error: string);

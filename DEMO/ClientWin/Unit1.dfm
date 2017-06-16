@@ -43,7 +43,7 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label5: TLabel
-    Left = 122
+    Left = 148
     Top = 27
     Width = 24
     Height = 13
@@ -941,6 +941,26 @@ object Form1: TForm1
     Font.Style = [fsBold]
     ParentFont = False
   end
+  object Bevel3: TBevel
+    Left = 9
+    Top = 216
+    Width = 491
+    Height = 2
+    Shape = bsTopLine
+  end
+  object Label6: TLabel
+    Left = 9
+    Top = 201
+    Width = 66
+    Height = 13
+    Caption = 'RESULTADO'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object Button1: TButton
     Left = 507
     Top = 126
@@ -974,7 +994,7 @@ object Form1: TForm1
   object Edit4: TEdit
     Left = 9
     Top = 42
-    Width = 107
+    Width = 134
     Height = 21
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -986,7 +1006,7 @@ object Form1: TForm1
     Text = '127.0.0.1'
   end
   object Edit5: TEdit
-    Left = 122
+    Left = 148
     Top = 42
     Width = 45
     Height = 21
@@ -1001,9 +1021,9 @@ object Form1: TForm1
   end
   object DBGrid1: TDBGrid
     Left = 9
-    Top = 204
+    Top = 221
     Width = 631
-    Height = 204
+    Height = 187
     DataSource = DataSource1
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1022,7 +1042,7 @@ object Form1: TForm1
   object cbxPooler: TComboBox
     Left = 8
     Top = 80
-    Width = 269
+    Width = 293
     Height = 21
     Style = csDropDownList
     Font.Charset = DEFAULT_CHARSET
@@ -1049,7 +1069,7 @@ object Form1: TForm1
     TabOrder = 6
   end
   object Button3: TButton
-    Left = 173
+    Left = 197
     Top = 27
     Width = 104
     Height = 50
