@@ -7,7 +7,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uRestPoolerDB, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.StorageBin;
+  FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.StorageBin,
+  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Imaging.pngimage;
 
 type
   TForm4 = class(TForm)
@@ -25,15 +26,6 @@ type
     RESTClientSQL1BUDGET: TFloatField;
     RESTClientSQL1LOCATION: TStringField;
     RESTClientSQL1PHONE_NO: TStringField;
-    RESTClientSQL3: TRESTClientSQL;
-    DataSource3: TDataSource;
-    RESTClientSQL3EMP_NO: TSmallintField;
-    RESTClientSQL3CHANGE_DATE: TSQLTimeStampField;
-    RESTClientSQL3UPDATER_ID: TStringField;
-    RESTClientSQL3OLD_SALARY: TFloatField;
-    RESTClientSQL3PERCENT_CHANGE: TFloatField;
-    RESTClientSQL3NEW_SALARY: TFloatField;
-    DBGrid3: TDBGrid;
     RESTClientSQL2EMP_NO: TSmallintField;
     RESTClientSQL2FIRST_NAME: TStringField;
     RESTClientSQL2LAST_NAME: TStringField;
@@ -45,9 +37,23 @@ type
     RESTClientSQL2JOB_COUNTRY: TStringField;
     RESTClientSQL2SALARY: TFloatField;
     RESTClientSQL2FULL_NAME: TStringField;
-    procedure FormCreate(Sender: TObject);
+    Label1: TLabel;
+    Label3: TLabel;
+    Label5: TLabel;
+    Image1: TImage;
+    Bevel1: TBevel;
+    Label2: TLabel;
+    Edit4: TEdit;
+    Edit5: TEdit;
+    cbxPooler: TComboBox;
+    Button3: TButton;
+    Bevel2: TBevel;
+    Label4: TLabel;
+    Button1: TButton;
     procedure RESTClientSQL1AfterDelete(DataSet: TDataSet);
     procedure RESTClientSQL2BeforePost(DataSet: TDataSet);
+    procedure Button3Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -81,10 +87,42 @@ Begin
  vTempClient.Free;
 End;
 
-procedure TForm4.FormCreate(Sender: TObject);
+procedure TForm4.Button1Click(Sender: TObject);
 begin
- RESTClientSQL1.Open;
+ If cbxPooler.ItemIndex > -1 Then
+  Begin
+   RESTDataBase.PoolerName := cbxPooler.Text;
+   If RESTDataBase.Active Then
+    Begin
+     RESTClientSQL1.Close;
+     RESTClientSQL1.Open;
+    End;
+  End
+ Else
+  Showmessage('Escolha um Pooler para realizar essa operação...');
 end;
+
+procedure TForm4.Button3Click(Sender: TObject);
+Var
+ vTempList : TStringList;
+Begin
+ RESTClientSQL1.Close;
+ RESTDataBase.PoolerService := Edit4.Text;
+ RESTDataBase.PoolerPort    := StrToInt(Edit5.Text);
+ RESTDataBase.Active        := True;
+ If RESTDataBase.Active Then
+  Begin
+   cbxPooler.Items.Clear;
+   cbxPooler.Text := '';
+   vTempList   := RESTDataBase.GetRestPoolers;
+   If vTempList <> Nil Then
+    If vTempList.Count > 0 Then
+     Begin
+      cbxPooler.Items.Assign(vTempList);
+      cbxPooler.ItemIndex := 0;
+     End;
+  End;
+End;
 
 procedure TForm4.RESTClientSQL1AfterDelete(DataSet: TDataSet);
 Var
