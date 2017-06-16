@@ -50,6 +50,8 @@ type
     Bevel2: TBevel;
     Label4: TLabel;
     Button1: TButton;
+    Bevel3: TBevel;
+    Label6: TLabel;
     procedure RESTClientSQL1AfterDelete(DataSet: TDataSet);
     procedure RESTClientSQL2BeforePost(DataSet: TDataSet);
     procedure Button3Click(Sender: TObject);

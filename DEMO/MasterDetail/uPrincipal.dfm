@@ -929,9 +929,29 @@ object Form4: TForm4
   object Label4: TLabel
     Left = 9
     Top = 104
-    Width = 39
+    Width = 46
     Height = 13
-    Caption = 'DADOS'
+    Caption = 'MASTER'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Bevel3: TBevel
+    Left = 8
+    Top = 311
+    Width = 466
+    Height = 2
+    Shape = bsTopLine
+  end
+  object Label6: TLabel
+    Left = 8
+    Top = 296
+    Width = 40
+    Height = 13
+    Caption = 'DETAIL'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy
     Font.Height = -11
@@ -960,9 +980,9 @@ object Form4: TForm4
   end
   object DBGrid2: TDBGrid
     Left = 8
-    Top = 297
+    Top = 315
     Width = 605
-    Height = 152
+    Height = 133
     DataSource = DataSource2
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
