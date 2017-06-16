@@ -3,8 +3,8 @@ object Form1: TForm1
   Top = 0
   BorderIcons = [biSystemMenu]
   Caption = 'REST Dataware - Client SQL'
-  ClientHeight = 447
-  ClientWidth = 655
+  ClientHeight = 440
+  ClientWidth = 648
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,8 +17,8 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
-    Left = 12
-    Top = 71
+    Left = 8
+    Top = 64
     Width = 137
     Height = 13
     Caption = 'List of Poolers on Server'
@@ -30,8 +30,8 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label3: TLabel
-    Left = 13
-    Top = 34
+    Left = 9
+    Top = 27
     Width = 61
     Height = 13
     Caption = 'Host Name'
@@ -43,8 +43,8 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label5: TLabel
-    Left = 126
-    Top = 34
+    Left = 122
+    Top = 27
     Width = 24
     Height = 13
     Caption = 'Port'
@@ -56,10 +56,10 @@ object Form1: TForm1
     ParentFont = False
   end
   object Image1: TImage
-    Left = 511
-    Top = 8
+    Left = 507
+    Top = 21
     Width = 133
-    Height = 100
+    Height = 96
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D49484452000000870000
       00640806000000AC372326000000097048597300000EC400000EC401952B0E1B
@@ -902,15 +902,15 @@ object Form1: TForm1
       4E92F100CAA80000000049454E44AE426082}
   end
   object Bevel1: TBevel
-    Left = 13
-    Top = 28
+    Left = 9
+    Top = 21
     Width = 488
     Height = 2
     Shape = bsTopLine
   end
   object Label2: TLabel
-    Left = 13
-    Top = 13
+    Left = 9
+    Top = 6
     Width = 167
     Height = 13
     Caption = 'CONFIGURA'#199#195'O DO SERVIDOR'
@@ -922,15 +922,15 @@ object Form1: TForm1
     ParentFont = False
   end
   object Bevel2: TBevel
-    Left = 13
-    Top = 126
+    Left = 9
+    Top = 119
     Width = 488
     Height = 2
     Shape = bsTopLine
   end
   object Label4: TLabel
-    Left = 13
-    Top = 111
+    Left = 9
+    Top = 104
     Width = 80
     Height = 13
     Caption = 'COMANDO SQL'
@@ -942,8 +942,8 @@ object Form1: TForm1
     ParentFont = False
   end
   object Button1: TButton
-    Left = 511
-    Top = 144
+    Left = 507
+    Top = 137
     Width = 133
     Height = 33
     Caption = 'Open'
@@ -951,8 +951,8 @@ object Form1: TForm1
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 511
-    Top = 184
+    Left = 507
+    Top = 177
     Width = 133
     Height = 33
     Caption = 'Execute'
@@ -960,8 +960,8 @@ object Form1: TForm1
     OnClick = Button2Click
   end
   object Edit4: TEdit
-    Left = 13
-    Top = 49
+    Left = 9
+    Top = 42
     Width = 107
     Height = 21
     Font.Charset = DEFAULT_CHARSET
@@ -974,8 +974,8 @@ object Form1: TForm1
     Text = '127.0.0.1'
   end
   object Edit5: TEdit
-    Left = 126
-    Top = 49
+    Left = 122
+    Top = 42
     Width = 45
     Height = 21
     Font.Charset = DEFAULT_CHARSET
@@ -988,10 +988,10 @@ object Form1: TForm1
     Text = '8082'
   end
   object DBGrid1: TDBGrid
-    Left = 13
-    Top = 235
+    Left = 9
+    Top = 228
     Width = 631
-    Height = 206
+    Height = 204
     DataSource = DataSource1
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgTitleClick, dgTitleHotTrack]
     TabOrder = 4
@@ -1002,9 +1002,9 @@ object Form1: TForm1
     TitleFont.Style = []
   end
   object cbxPooler: TComboBox
-    Left = 12
-    Top = 87
-    Width = 249
+    Left = 8
+    Top = 80
+    Width = 269
     Height = 21
     Style = csDropDownList
     Font.Charset = DEFAULT_CHARSET
@@ -1016,8 +1016,8 @@ object Form1: TForm1
     TabOrder = 5
   end
   object mComando: TMemo
-    Left = 13
-    Top = 133
+    Left = 9
+    Top = 126
     Width = 488
     Height = 96
     Lines.Strings = (
@@ -1025,10 +1025,10 @@ object Form1: TForm1
     TabOrder = 6
   end
   object Button3: TButton
-    Left = 177
-    Top = 37
+    Left = 173
+    Top = 27
     Width = 104
-    Height = 33
+    Height = 36
     Caption = 'Connect Server'
     TabOrder = 7
     OnClick = Button3Click
@@ -1036,8 +1036,8 @@ object Form1: TForm1
   object DataSource1: TDataSource
     AutoEdit = False
     DataSet = RESTClientSQL
-    Left = 280
-    Top = 168
+    Left = 276
+    Top = 161
   end
   object RESTClientSQL: TRESTClientSQL
     FieldDefs = <>
@@ -1062,8 +1062,8 @@ object Form1: TForm1
     DataBase = RESTDataBase
     SQL.Strings = (
       'select * from employee')
-    Left = 224
-    Top = 189
+    Left = 220
+    Top = 182
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
@@ -1083,7 +1083,7 @@ object Form1: TForm1
     Encoding = esUtf8
     Context = 'datasnap'
     RESTContext = 'rest/'
-    Left = 226
-    Top = 144
+    Left = 222
+    Top = 137
   end
 end
