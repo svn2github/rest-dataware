@@ -1,4 +1,4 @@
-unit ServerMethods1Unit;
+unit ServerMethodsUnit1;
 
 interface
 

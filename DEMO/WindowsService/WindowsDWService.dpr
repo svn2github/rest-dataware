@@ -8,7 +8,7 @@ uses
   Vcl.SvcMgr,
   System.SysUtils,
   Server.Containner in 'Server.Containner.pas' {RESTDWServer: TService},
-  ServerMethods1Unit in 'ServerMethods1Unit.pas' {ServerMethods1: TDataModule},
+  ServerMethodsUnit1 in 'ServerMethodsUnit1.pas' {ServerMethods1: TDataModule},
   uConsts in 'uConsts.pas';
 
 {$R *.RES}
@@ -48,8 +48,8 @@ Begin
    If Not Application.DelayInitialize Or Application.Installing Then
     Application.Initialize;
    Application.CreateForm(TRESTDWServer, RESTDWServer);
-   Application.CreateForm(TServerMethods1, ServerMethods1);
-   Application.Run;
+  Application.CreateForm(TServerMethods1, ServerMethods1);
+  Application.Run;
   {$endif}
 End.
 

@@ -91,7 +91,7 @@ Implementation
 
 {$R *.dfm}
 
-Uses Winapi.Windows, DSServerClass, WebModuleUnit1, ServerMethods1Unit;
+Uses Winapi.Windows, DSServerClass, WebModuleUnit1, ServerMethodsUnit1;
 
 Procedure ServiceController(CtrlCode: DWord); stdcall;
 Begin
@@ -179,7 +179,7 @@ End;
 Procedure TRESTDWServer.DSServerClass1GetClass(DSServerClass       : TDSServerClass;
                                                Var PersistentClass : TPersistentClass);
 Begin
- PersistentClass := ServerMethods1Unit.TServerMethods1;
+ PersistentClass := ServerMethodsUnit1.TServerMethods1;
 End;
 
 procedure TRESTDWServer.DSServerConnect(DSConnectEventObject : TDSConnectEventObject);
