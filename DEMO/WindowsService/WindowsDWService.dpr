@@ -19,7 +19,6 @@ Begin
   // by Application.Initialize. TServiceApplication.DelayInitialize allows
   // Application.Initialize to be called from TService.Main (after
   // StartServiceCtrlDispatcher has been called).
-  //
   // Delayed initialization of the Application object may affect
   // events which then occur prior to initialization, such as
   // TService.OnCreate. It is only recommended if the ServiceApplication
@@ -31,7 +30,7 @@ Begin
    // In debug mode the server acts as a console application.
    WriteLn('REST Dataware - Server : DEBUG mode. Press enter to exit.');
    // Create the TService descendant manually.
-   RESTDWServer   := TRESTDWServer.Create(nil);
+   RESTDWServer   := TRESTDWServer.Create  (Nil);
    ServerMethods1 := TServerMethods1.Create(Nil);
    ReadLn;
    RESTDWServer.DisposeOf;
@@ -47,9 +46,9 @@ Begin
    // Run as a true windows service (release).
    If Not Application.DelayInitialize Or Application.Installing Then
     Application.Initialize;
-   Application.CreateForm(TRESTDWServer, RESTDWServer);
-  Application.CreateForm(TServerMethods1, ServerMethods1);
-  Application.Run;
+   Application.CreateForm(TRESTDWServer,   RESTDWServer);
+   Application.CreateForm(TServerMethods1, ServerMethods1);
+   Application.Run;
   {$endif}
 End.
 
