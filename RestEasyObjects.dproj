@@ -167,10 +167,10 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_UnitSearchPath>.\$(Platform)\$(Config);$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_BplOutput>.\$(Platform)\$(Config)</DCC_BplOutput>
-        <VerInfo_Build>245</VerInfo_Build>
+        <VerInfo_Build>246</VerInfo_Build>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Release>1</VerInfo_Release>
-        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=Pacote de Componentes REST para usuários de Dataset;FileVersion=1.0.1.245;InternalName=RestEasyObjects;LegalCopyright=;LegalTrademarks=;OriginalFilename=RestEasyObjects.dpk;ProductName=RestEasyObjects;ProductVersion=1.0.1.1;Comments=Criado por : Gilberto Rocha da Silva;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=Pacote de Componentes REST para usuários de Dataset;FileVersion=1.0.1.246;InternalName=RestEasyObjects;LegalCopyright=;LegalTrademarks=;OriginalFilename=RestEasyObjects.dpk;ProductName=RestEasyObjects;ProductVersion=1.0.1.1;Comments=Criado por : Gilberto Rocha da Silva;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
     </PropertyGroup>
     <ItemGroup>
