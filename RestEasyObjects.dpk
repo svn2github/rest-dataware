@@ -69,6 +69,7 @@ contains
   uMasterDetailData in 'uMasterDetailData.pas',
   uWebModuleMethod in 'uWebModuleMethod.pas',
   uPoolerServerMethods in 'uPoolerServerMethods.pas',
-  SMRestPoolerDBMethods in 'SMRestPoolerDBMethods.pas';
+  SMRestPoolerDBMethods in 'SMRestPoolerDBMethods.pas',
+  uRestDriverFD in 'Connectors\uRestDriverFD.pas';
 
 end.

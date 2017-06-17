@@ -15,7 +15,8 @@ uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
      FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,
      FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
      WebModuleUnit1,          Vcl.Dialogs,              TypInfo,
-     IniFiles,  Vcl.Forms,    uRestPoolerDB, URestPoolerDBMethod, FireDAC.Phys.FBDef, FireDAC.Phys.FB;
+     IniFiles,  Vcl.Forms,    uRestPoolerDB, URestPoolerDBMethod, FireDAC.Phys.FBDef, FireDAC.Phys.FB,
+  uRestDriverFD;
 
 type
 {$METHODINFO ON}
@@ -25,7 +26,7 @@ type
     Server_FDConnection: TFDConnection;
     RESTPoolerDB: TRESTPoolerDB;
     FDPhysFBDriverLink1: TFDPhysFBDriverLink;
-    RESTPoolerDB_Backup: TRESTPoolerDB;
+    RESTDriverFD1: TRESTDriverFD;
     procedure Server_FDConnectionBeforeConnect(Sender: TObject);
     procedure DataModuleCreate(Sender: TObject);
   private

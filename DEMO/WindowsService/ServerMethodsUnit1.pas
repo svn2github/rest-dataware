@@ -11,7 +11,7 @@ uses System.SysUtils,          System.Classes,           Datasnap.DSServer,  Dat
      Data.FireDACJSONReflect,  System.JSON,              FireDAC.Stan.StorageBin,
      FireDAC.Stan.StorageJSON, Vcl.Dialogs,              Vcl.Forms,          System.TypInfo,
      Datasnap.Provider,        Datasnap.DBClient,        uRestPoolerDB,      URestPoolerDBMethod,
-     FireDAC.Phys.FB,          FireDAC.Phys.FBDef,       uConsts;
+     FireDAC.Phys.FB,          FireDAC.Phys.FBDef,       uConsts, uRestDriverFD;
 
 type
 {$METHODINFO ON}
@@ -21,6 +21,7 @@ type
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     FDPhysFBDriverLink1: TFDPhysFBDriverLink;
     FDStanStorageJSONLink1: TFDStanStorageJSONLink;
+    RESTDriverFD1: TRESTDriverFD;
     procedure Server_FDConnectionBeforeConnect(Sender: TObject);
   private
     { Private declarations }

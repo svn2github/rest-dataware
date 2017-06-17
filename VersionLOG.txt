@@ -103,3 +103,11 @@ DataAccess.
  Novo Servidor Baseado em Serviço do Windows enviado pelo Alexandre e Alterado por Mim.
  Adicionado SSL no Servidor de Exemplos.
  Várias correções de BUG.
+
+1.0.1.232
+
+ Mudado o conceito do Servidor para agora suportar RESTDriver, o RESTDriver é um componente intermediário
+do DW que serve para adicionar ao DW a capacidade de suportar agora mais de um tipo de componente para
+acesso a Dados.
+ Removido o conversor de Projetos para DW e adicionado a versão final enviada pelo desenvolvedor Flavio Motta.
+ Correções diversas de Layout e bugs nos exemplos em geral.

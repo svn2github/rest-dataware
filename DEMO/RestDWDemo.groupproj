@@ -30,10 +30,10 @@
         <Projects Include="ListPoolers\ListPoolers.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Conversor de ZEOS para RestDW\mkmDfmPasReplace.dproj">
+        <Projects Include="WindowsService\WindowsDWService.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="WindowsService\WindowsDWService.dproj">
+        <Projects Include="Conversor de ZEOS para RestDW\Replace2RestDW.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -125,15 +125,6 @@
     <Target Name="ListPoolers:Make">
         <MSBuild Projects="ListPoolers\ListPoolers.dproj" Targets="Make"/>
     </Target>
-    <Target Name="mkmDfmPasReplace">
-        <MSBuild Projects="Conversor de ZEOS para RestDW\mkmDfmPasReplace.dproj"/>
-    </Target>
-    <Target Name="mkmDfmPasReplace:Clean">
-        <MSBuild Projects="Conversor de ZEOS para RestDW\mkmDfmPasReplace.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="mkmDfmPasReplace:Make">
-        <MSBuild Projects="Conversor de ZEOS para RestDW\mkmDfmPasReplace.dproj" Targets="Make"/>
-    </Target>
     <Target Name="WindowsDWService">
         <MSBuild Projects="WindowsService\WindowsDWService.dproj"/>
     </Target>
@@ -143,14 +134,23 @@
     <Target Name="WindowsDWService:Make">
         <MSBuild Projects="WindowsService\WindowsDWService.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Replace2RestDW">
+        <MSBuild Projects="Conversor de ZEOS para RestDW\Replace2RestDW.dproj"/>
+    </Target>
+    <Target Name="Replace2RestDW:Clean">
+        <MSBuild Projects="Conversor de ZEOS para RestDW\Replace2RestDW.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Replace2RestDW:Make">
+        <MSBuild Projects="Conversor de ZEOS para RestDW\Replace2RestDW.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestEasyObjects;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker;ClientWin;ListPoolers;mkmDfmPasReplace;WindowsDWService"/>
+        <CallTarget Targets="RestEasyObjects;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker;ClientWin;ListPoolers;WindowsDWService;Replace2RestDW"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean;ClientWin:Clean;ListPoolers:Clean;mkmDfmPasReplace:Clean;WindowsDWService:Clean"/>
+        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean;ClientWin:Clean;ListPoolers:Clean;WindowsDWService:Clean;Replace2RestDW:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestEasyObjects:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make;ClientWin:Make;ListPoolers:Make;mkmDfmPasReplace:Make;WindowsDWService:Make"/>
+        <CallTarget Targets="RestEasyObjects:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make;ClientWin:Make;ListPoolers:Make;WindowsDWService:Make;Replace2RestDW:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

@@ -313,6 +313,50 @@ Type
 End;
 
 {$IFDEF MSWINDOWS}
+Type
+ TRESTDriver    = Class(TComponent)
+ Private
+  vStrsTrim,
+  vStrsEmpty2Null,
+  vStrsTrim2Len,
+  vCompression       : Boolean;
+  vEncoding          : TEncodeSelect;
+ Public
+  Procedure ApplyChanges(TableName,
+                         SQL               : String;
+                         Params            : TParams;
+                         Var Error         : Boolean;
+                         Var MessageError  : String;
+                         Const ADeltaList  : TFDJSONDeltas);Overload;Virtual;
+  Procedure ApplyChanges(TableName,
+                         SQL               : String;
+                         Var Error         : Boolean;
+                         Var MessageError  : String;
+                         Const ADeltaList  : TFDJSONDeltas);Overload;Virtual;
+  Function ExecuteCommand(SQL        : String;
+                          Var Error  : Boolean;
+                          Var MessageError : String;
+                          Execute    : Boolean = False) : TFDJSONDataSets;Overload;Virtual;
+  Function ExecuteCommand(SQL              : String;
+                          Params           : TParams;
+                          Var Error        : Boolean;
+                          Var MessageError : String;
+                          Execute          : Boolean = False) : TFDJSONDataSets;Overload;Virtual;
+  Function InsertMySQLReturnID(SQL              : String;
+                               Var Error        : Boolean;
+                               Var MessageError : String) : Integer;Overload;Virtual;
+  Function InsertMySQLReturnID(SQL              : String;
+                               Params           : TParams;
+                               Var Error        : Boolean;
+                               Var MessageError : String) : Integer;Overload;Virtual;
+  Procedure Close;Virtual;
+ Public
+  Property StrsTrim       : Boolean       Read vStrsTrim       Write vStrsTrim;
+  Property StrsEmpty2Null : Boolean       Read vStrsEmpty2Null Write vStrsEmpty2Null;
+  Property StrsTrim2Len   : Boolean       Read vStrsTrim2Len   Write vStrsTrim2Len;
+  Property Compression    : Boolean       Read vCompression    Write vCompression;
+  Property Encoding       : TEncodeSelect Read vEncoding       Write vEncoding;
+End;
 //PoolerDB Control
 Type
  TRESTPoolerDBP = ^TComponent;
@@ -320,15 +364,15 @@ Type
  Private
   Owner          : TComponent;
   FLock          : TCriticalSection;
-  vFDConnectionBack,
-  vFDConnection  : TFDConnection;
+  vRESTDriverBack,
+  vRESTDriver    : TRESTDriver;
   vStrsTrim,
   vStrsEmpty2Null,
   vStrsTrim2Len,
   vCompression   : Boolean;
   vEncoding      : TEncodeSelect;
-  Procedure SetConnection(Value : TFDConnection);
-  Function  GetConnection  : TFDConnection;
+  Procedure SetConnection(Value : TRESTDriver);
+  Function  GetConnection  : TRESTDriver;
  Public
   Procedure ApplyChanges(TableName,
                          SQL               : String;
@@ -358,7 +402,7 @@ Type
                                Var Error        : Boolean;
                                Var MessageError : String) : Integer;Overload;
  Published
-  Property    Database       : TFDConnection Read GetConnection    Write SetConnection;
+  Property    Database       : TRESTDriver   Read GetConnection    Write SetConnection;
   Property    Compression    : Boolean       Read vCompression     Write vCompression;
   Property    Encoding       : TEncodeSelect Read vEncoding        Write vEncoding;
   Property    StrsTrim       : Boolean       Read vStrsTrim        Write vStrsTrim;
@@ -368,6 +412,12 @@ Type
   Destructor  Destroy;Override;                     //Destroy a Classe
 End;
 {$ENDIF}
+
+Function DecodeStrings(Value : String;Encoding:TEncoding) : String;
+Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;
+Function EncodeStrings(Value : String) : String;
+Procedure doUnGZIP(Input, gZipped : TMemoryStream);//helper function
+Procedure doGZIP  (Input, gZipped : TMemoryStream);//helper function
 
 implementation
 
@@ -484,200 +534,59 @@ Begin
 End;
 
 {$IFDEF MSWINDOWS}
-Function  TRESTPoolerDB.GetConnection : TFDConnection;
+Function  TRESTPoolerDB.GetConnection : TRESTDriver;
 Begin
- Result := vFDConnectionBack;
+ Result := vRESTDriverBack;
 End;
 
-Procedure TRESTPoolerDB.SetConnection(Value : TFDConnection);
+Procedure TRESTPoolerDB.SetConnection(Value : TRESTDriver);
 Begin
- vFDConnectionBack := Value;
+ vRESTDriverBack := Value;
  If Value <> Nil Then
-  vFDConnection     := vFDConnectionBack
+  vRESTDriver     := vRESTDriverBack
  Else
   Begin
-   If vFDConnection <> Nil Then
-    vFDConnection.Close;
+   If vRESTDriver <> Nil Then
+    vRESTDriver.Close;
   End;
 End;
 
 Function TRESTPoolerDB.InsertMySQLReturnID(SQL              : String;
                                            Var Error        : Boolean;
                                            Var MessageError : String) : Integer;
-Var
- oTab        : TFDDatStable;
- A, I        : Integer;
- fdCommand   : TFDCommand;
 Begin
- Result := -1;
- Error  := False;
- fdCommand := TFDCommand.Create(Owner);
- Try
-  fdCommand.Connection := vFDConnection;
-  fdCommand.CommandText.Clear;
-  fdCommand.CommandText.Add(DecodeStrings(SQL, GetEncoding(vEncoding)) + '; SELECT LAST_INSERT_ID()ID');
-  fdCommand.Open;
-  oTab := fdCommand.Define;
-  fdCommand.Fetch(oTab, True);
-  If oTab.Rows.Count > 0 Then
-   Result := StrToInt(oTab.Rows[0].AsString['ID']);
-  vFDConnection.CommitRetaining;
- Except
-  On E : Exception do
-   Begin
-    vFDConnection.RollbackRetaining;
-    Error        := True;
-    MessageError := E.Message;
-   End;
- End;
- fdCommand.Close;
- FreeAndNil(fdCommand);
- FreeAndNil(oTab);
- GetInvocationMetaData.CloseSession := True;
+ vRESTDriver.vStrsTrim          := vStrsTrim;
+ vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+ vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+ vRESTDriver.vCompression       := vCompression;
+ vRESTDriver.vEncoding          := vEncoding;
+ Result := vRESTDriver.InsertMySQLReturnID(SQL, Error, MessageError);
 End;
 
 Function TRESTPoolerDB.InsertMySQLReturnID(SQL              : String;
                                            Params           : TParams;
                                            Var Error        : Boolean;
                                            Var MessageError : String) : Integer;
-Var
- oTab        : TFDDatStable;
- A, I        : Integer;
- vParamName  : String;
- fdCommand   : TFDCommand;
- Function GetParamIndex(Params : TFDParams; ParamName : String) : Integer;
- Var
-  I : Integer;
- Begin
-  Result := -1;
-  For I := 0 To Params.Count -1 Do
-   Begin
-    If UpperCase(Params[I].Name) = UpperCase(ParamName) Then
-     Begin
-      Result := I;
-      Break;
-     End;
-   End;
- End;
 Begin
- Result := -1;
- Error  := False;
- fdCommand := TFDCommand.Create(Owner);
- Try
-  fdCommand.Connection := vFDConnection;
-  fdCommand.CommandText.Clear;
-  fdCommand.CommandText.Add(DecodeStrings(SQL, GetEncoding(vEncoding)) + '; SELECT LAST_INSERT_ID()ID');
-  If Params <> Nil Then
-   Begin
-    For I := 0 To Params.Count -1 Do
-     Begin
-      If fdCommand.Params.Count > I Then
-       Begin
-        vParamName := Copy(StringReplace(Params[I].Name, ',', '', []), 1, Length(Params[I].Name));
-        A          := GetParamIndex(fdCommand.Params, vParamName);
-        If A > -1 Then
-         fdCommand.Params[A].Value := Params[I].Value;
-       End
-      Else
-       Break;
-     End;
-   End;
-  fdCommand.Open;
-  oTab := fdCommand.Define;
-  fdCommand.Fetch(oTab, True);
-  If oTab.Rows.Count > 0 Then
-   Result := StrToInt(oTab.Rows[0].AsString['ID']);
-  vFDConnection.CommitRetaining;
- Except
-  On E : Exception do
-   Begin
-    vFDConnection.RollbackRetaining;
-    Error        := True;
-    MessageError := E.Message;
-   End;
- End;
- fdCommand.Close;
- FreeAndNil(fdCommand);
- FreeAndNil(oTab);
- GetInvocationMetaData.CloseSession := True;
+ vRESTDriver.vStrsTrim          := vStrsTrim;
+ vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+ vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+ vRESTDriver.vCompression       := vCompression;
+ vRESTDriver.vEncoding          := vEncoding;
+ Result := vRESTDriver.InsertMySQLReturnID(SQL, Params, Error, MessageError);
 End;
 
 Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
                                       Var Error  : Boolean;
                                       Var MessageError : String;
                                       Execute    : Boolean = False) : TFDJSONDataSets;
-Var
- vTempQuery   : TFDQuery;
- vTempWriter  : TFDJSONDataSetsWriter;
- Original,
- gZIPStream   : TMemoryStream;
- oString      : String;
- Len          : Integer;
- tempDataSets : TFDJSONDataSets;
- MemTable     : TFDMemTable;
 Begin
- Result := Nil;
- Error  := False;
- vTempQuery               := TFDQuery.Create(Owner);
- Try
-  if not vFDConnection.Connected then
-  vFDConnection.Connected :=true;
-  vTempQuery.Connection   := vFDConnection;
-  vTempQuery.FormatOptions.StrsTrim       := vStrsTrim;
-  vTempQuery.FormatOptions.StrsEmpty2Null := vStrsEmpty2Null;
-  vTempQuery.FormatOptions.StrsTrim2Len   := vStrsTrim2Len;
-  vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
-  If Not Execute Then
-   Begin
-    vTempQuery.Open;
-    Result            := TFDJSONDataSets.Create;
-    vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
-    Try
-     If vCompression Then
-      Begin
-       tempDataSets := TFDJSONDataSets.Create;
-       MemTable     := TFDMemTable.Create(Nil);
-       Original     := TStringStream.Create;
-       gZIPStream   := TMemoryStream.Create;
-       Try
-        vTempQuery.SaveToStream(Original, sfJSON);
-        //make it gzip
-        doGZIP(Original, gZIPStream);
-        MemTable.FieldDefs.Add('compress', ftBlob);
-        MemTable.CreateDataSet;
-        MemTable.Insert;
-        TBlobField(MemTable.FieldByName('compress')).LoadFromStream(gZIPStream);
-        MemTable.Post;
-        vTempWriter.ListAdd(Result, MemTable);
-       Finally
-        Original.DisposeOf;
-        gZIPStream.DisposeOf;
-       End;
-      End
-     Else
-      vTempWriter.ListAdd(Result, vTempQuery);
-    Finally
-     vTempWriter := Nil;
-     vTempWriter.DisposeOf;
-    End;
-   End
-  Else
-   Begin
-    vTempQuery.ExecSQL;
-    vFDConnection.CommitRetaining;
-   End;
- Except
-  On E : Exception do
-   Begin
-    Try
-     vFDConnection.RollbackRetaining;
-    Except
-    End;
-    Error := True;
-    MessageError := E.Message;
-   End;
- End;
+ vRESTDriver.vStrsTrim          := vStrsTrim;
+ vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+ vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+ vRESTDriver.vCompression       := vCompression;
+ vRESTDriver.vEncoding          := vEncoding;
+ Result := vRESTDriver.ExecuteCommand(SQL, Error, MessageError, Execute);
 End;
 
 Function TRESTPoolerDB.ExecuteCommand(SQL              : String;
@@ -685,121 +594,13 @@ Function TRESTPoolerDB.ExecuteCommand(SQL              : String;
                                       Var Error        : Boolean;
                                       Var MessageError : String;
                                       Execute          : Boolean = False) : TFDJSONDataSets;
-Var
- vTempQuery  : TFDQuery;
- A, I        : Integer;
- vTempWriter : TFDJSONDataSetsWriter;
- vParamName  : String;
- Original     : TStringStream;
- gZIPStream   : TMemoryStream;
- oString      : String;
- Len          : Integer;
- tempDataSets : TFDJSONDataSets;
- MemTable     : TFDMemTable;
- Function GetParamIndex(Params : TFDParams; ParamName : String) : Integer;
- Var
-  I : Integer;
- Begin
-  Result := -1;
-  For I := 0 To Params.Count -1 Do
-   Begin
-    If UpperCase(Params[I].Name) = UpperCase(ParamName) Then
-     Begin
-      Result := I;
-      Break;
-     End;
-   End;
- End;
 Begin
- Result := Nil;
- Error  := False;
- vTempQuery               := TFDQuery.Create(Owner);
- Try
-  vTempQuery.Connection   := vFDConnection;
-  vTempQuery.FormatOptions.StrsTrim       := vStrsTrim;
-  vTempQuery.FormatOptions.StrsEmpty2Null := vStrsEmpty2Null;
-  vTempQuery.FormatOptions.StrsTrim2Len   := vStrsTrim2Len;
-  vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
-  If Params <> Nil Then
-   Begin
-    vTempQuery.Prepare;
-    For I := 0 To Params.Count -1 Do
-     Begin
-      If vTempQuery.ParamCount > I Then
-       Begin
-        vParamName := Copy(StringReplace(Params[I].Name, ',', '', []), 1, Length(Params[I].Name));
-        A          := GetParamIndex(vTempQuery.Params, vParamName);
-        If A > -1 Then//vTempQuery.ParamByName(vParamName) <> Nil Then
-         Begin
-          If vTempQuery.Params[A].DataType in [ftFixedChar, ftFixedWideChar,
-                                               ftString,    ftWideString]    Then
-           Begin
-            If vTempQuery.Params[A].Size > 0 Then
-             vTempQuery.Params[A].Value := Copy(Params[I].AsString, 1, vTempQuery.Params[A].Size)
-            Else
-             vTempQuery.Params[A].Value := Params[I].AsString;
-           End
-          Else
-           vTempQuery.Params[A].Value    := Params[I].Value;
-         End;
-       End
-      Else
-       Break;
-     End;
-   End;
-  If Not Execute Then
-   Begin
-//    vTempQuery.Active := True;
-    Result            := TFDJSONDataSets.Create;
-    vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
-    Try
-     If vCompression Then
-      Begin
-       tempDataSets := TFDJSONDataSets.Create;
-       MemTable     := TFDMemTable.Create(Nil);
-       Original     := TStringStream.Create;
-       gZIPStream   := TMemoryStream.Create;
-       Try
-        vTempQuery.Open;
-        vTempQuery.SaveToStream(Original, sfJSON);
-        //make it gzip
-        doGZIP(Original, gZIPStream);
-        MemTable.FieldDefs.Add('compress', ftBlob);
-        MemTable.CreateDataSet;
-        MemTable.Insert;
-        TBlobField(MemTable.FieldByName('compress')).LoadFromStream(gZIPStream);
-        MemTable.Post;
-        vTempWriter.ListAdd(Result, MemTable);
-       Finally
-        Original.DisposeOf;
-        gZIPStream.DisposeOf;
-       End;
-      End
-     Else
-      vTempWriter.ListAdd(Result, vTempQuery);
-    Finally
-     vTempWriter := Nil;
-     vTempWriter.DisposeOf;
-    End;
-   End
-  Else
-   Begin
-    vTempQuery.ExecSQL;
-    vFDConnection.CommitRetaining;
-   End;
- Except
-  On E : Exception do
-   Begin
-    Try
-     vFDConnection.RollbackRetaining;
-    Except
-    End;
-    Error := True;
-    MessageError := E.Message;
-   End;
- End;
- GetInvocationMetaData.CloseSession := True;
+ vRESTDriver.vStrsTrim          := vStrsTrim;
+ vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+ vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+ vRESTDriver.vCompression       := vCompression;
+ vRESTDriver.vEncoding          := vEncoding;
+ Result := vRESTDriver.ExecuteCommand(SQL, Params, Error, MessageError);
 End;
 
 Procedure TRESTPoolerDB.ApplyChanges(TableName,
@@ -807,91 +608,13 @@ Procedure TRESTPoolerDB.ApplyChanges(TableName,
                                      Var Error         : Boolean;
                                      Var MessageError  : String;
                                      Const ADeltaList  : TFDJSONDeltas);
-Var
- vTempQuery   : TFDQuery;
- LApply       : IFDJSONDeltasApplyUpdates;
- vTempWriter  : TFDJSONDataSetsWriter;
- Original,
- gZIPStream   : TStringStream;
- LDataSetList : TFDJSONDataSets;
- oJsonObject  : TJSONObject;
- bDeltaList   : TFDJSONDeltas;
 begin
- Error                    := False;
- vTempQuery               := TFDQuery.Create(Owner);
- vTempQuery.CachedUpdates := True;
- Try
-  vTempQuery.Connection   := vFDConnection;
-  vTempQuery.FormatOptions.StrsTrim       := vStrsTrim;
-  vTempQuery.FormatOptions.StrsEmpty2Null := vStrsEmpty2Null;
-  vTempQuery.FormatOptions.StrsTrim2Len   := vStrsTrim2Len;
-  vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
-  vTempQuery.Active := True;
- Except
-  On E : Exception do
-   Begin
-    Error := True;
-    MessageError := E.Message;
-    vTempQuery.DisposeOf;
-    Exit;
-   End;
- End;
- If vCompression Then
-  Begin
-   LDataSetList := TFDJSONDataSets.Create;
-   oJsonObject  := TJSONObject.Create;
-   Try
-    TFDJSONInterceptor.DataSetsToJSONObject(ADeltaList, oJsonObject);
-    TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, ADeltaList);
-    LApply       := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
-    Original     := TStringStream.Create;
-    gZIPStream   := TStringStream.Create;
-    bDeltaList   := TFDJSONDeltas.Create;
-    If LApply.Values[0].RecordCount > 0 Then
-     Begin
-      LApply.Values[0].First;
-      (LApply.Values[0].Fields[0] as TBlobField).SaveToStream(Original);
-      Original.Position := 0;
-      doUnGZIP(Original, gZIPStream);
-      gZIPStream.Position := 0;
-      oJsonObject  := TJSONObject.ParseJSONValue(GetEncoding(vEncoding).GetBytes(gZIPStream.DataString), 0) as TJSONObject;
-      TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, bDeltaList);
-     End;
-   Finally
-    Original.DisposeOf;
-    gZIPStream.DisposeOf;
-    oJsonObject.DisposeOf;
-   End;
-   LApply := TFDJSONDeltasApplyUpdates.Create(bDeltaList);
-  End
- Else
-  LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
- vTempQuery.UpdateOptions.UpdateTableName := TableName;
- Try
-  LApply.ApplyUpdates(0,  vTempQuery.Command);
- Except
-
- End;
- If LApply.Errors.Count > 0 then
-  Begin
-   Error := True;
-   MessageError := LApply.Errors.Strings.Text;
-  End;
- If Not Error Then
-  Begin
-   Try
-    Database.CommitRetaining;
-   Except
-    On E : Exception do
-     Begin
-      Database.RollbackRetaining;
-      Error := True;
-      MessageError := E.Message;
-     End;
-   End;
-  End;
- vTempQuery.DisposeOf;
+ vRESTDriver.vStrsTrim          := vStrsTrim;
+ vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+ vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+ vRESTDriver.vCompression       := vCompression;
+ vRESTDriver.vEncoding          := vEncoding;
+ vRESTDriver.ApplyChanges(TableName, SQL, Error, MessageError, ADeltaList);
 end;
 
 Procedure TRESTPoolerDB.ApplyChanges(TableName,
@@ -900,113 +623,13 @@ Procedure TRESTPoolerDB.ApplyChanges(TableName,
                                      Var Error         : Boolean;
                                      Var MessageError  : String;
                                      Const ADeltaList  : TFDJSONDeltas);
-Var
- I            : Integer;
- vTempQuery   : TFDQuery;
- LApply       : IFDJSONDeltasApplyUpdates;
- vTempWriter  : TFDJSONDeltasWriter;
- LDataSetList : TFDJSONDataSets;
- oJsonObject  : TJSONObject;
- Original,
- gZIPStream   : TStringStream;
- bDeltaList   : TFDJSONDeltas;
 begin
- Error  := False;
- vTempQuery               := TFDQuery.Create(Owner);
- vTempQuery.CachedUpdates := True;
- Try
-  vTempQuery.Connection   := vFDConnection;
-  vTempQuery.FormatOptions.StrsTrim       := vStrsTrim;
-  vTempQuery.FormatOptions.StrsEmpty2Null := vStrsEmpty2Null;
-  vTempQuery.FormatOptions.StrsTrim2Len   := vStrsTrim2Len;
-  vTempQuery.SQL.Clear;
-  vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(vEncoding)));
-  If Params <> Nil Then
-   Begin
-    vTempQuery.Prepare;
-    For I := 0 To Params.Count -1 Do
-     Begin
-      If vTempQuery.ParamCount > I Then
-       Begin
-        If vTempQuery.ParamByName(Params[I].Name) <> Nil Then
-         Begin
-          If vTempQuery.ParamByName(Params[I].Name).DataType in [ftFixedChar, ftFixedWideChar,
-                                                                 ftString,    ftWideString]    Then
-           Begin
-            If vTempQuery.ParamByName(Params[I].Name).Size > 0 Then
-             vTempQuery.ParamByName(Params[I].Name).Value := Copy(Params[I].AsString, 1, vTempQuery.ParamByName(Params[I].Name).Size)
-            Else
-             vTempQuery.ParamByName(Params[I].Name).Value := Params[I].AsString;
-           End
-          Else
-           vTempQuery.ParamByName(Params[I].Name).Value    := Params[I].Value;
-         End;
-       End
-      Else
-       Break;
-     End;
-   End;
-  vTempQuery.Active := True;
- Except
-  On E : Exception do
-   Begin
-    Error := True;
-    MessageError := E.Message;
-    vTempQuery.DisposeOf;
-    Exit;
-   End;
- End;
- If vCompression Then
-  Begin
-   LDataSetList := TFDJSONDataSets.Create;
-   oJsonObject  := TJSONObject.Create;
-   Try
-    TFDJSONInterceptor.DataSetsToJSONObject(ADeltaList, oJsonObject);
-    TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, ADeltaList);
-    LApply       := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
-    Original     := TStringStream.Create;
-    gZIPStream   := TStringStream.Create;
-    bDeltaList   := TFDJSONDeltas.Create;
-    If LApply.Values[0].RecordCount > 0 Then
-     Begin
-      LApply.Values[0].First;
-      (LApply.Values[0].Fields[0] as TBlobField).SaveToStream(Original);
-      Original.Position := 0;
-      doUnGZIP(Original, gZIPStream);
-      gZIPStream.Position := 0;
-      oJsonObject  := TJSONObject.ParseJSONValue(GetEncoding(vEncoding).GetBytes(gZIPStream.DataString), 0) as TJSONObject;
-      TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, bDeltaList);
-     End;
-   Finally
-    Original.DisposeOf;
-    gZIPStream.DisposeOf;
-    oJsonObject.DisposeOf;
-   End;
-   LApply := TFDJSONDeltasApplyUpdates.Create(bDeltaList);
-  End
- Else
-  LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
- vTempQuery.UpdateOptions.UpdateTableName := TableName;
- Try
-  LApply.ApplyUpdates(0,  vTempQuery.Command);
- Except
- End;
- If LApply.Errors.Count > 0 then
-  Begin
-   Error := True;
-   MessageError := LApply.Errors.Strings.Text;
-  End;
- Try
-  Database.CommitRetaining;
- Except
-  On E : Exception do
-   Begin
-    Database.RollbackRetaining;
-    Error := True;
-    MessageError := E.Message;
-   End;
- End;
- vTempQuery.DisposeOf;
+ vRESTDriver.vStrsTrim          := vStrsTrim;
+ vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+ vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+ vRESTDriver.vCompression       := vCompression;
+ vRESTDriver.vEncoding          := vEncoding;
+ vRESTDriver.ApplyChanges(TableName, SQL, Params, Error, MessageError, ADeltaList);
 end;
 
 Constructor TRESTPoolerDB.Create(AOwner : TComponent);
@@ -2443,5 +2066,50 @@ Begin
    Close;
   End;
 End;
+
+{ TRESTDriver }
+
+procedure TRESTDriver.ApplyChanges(TableName, SQL: String; Params: TParams;
+  var Error: Boolean; var MessageError: String;
+  const ADeltaList: TFDJSONDeltas);
+begin
+ //Overload Function
+end;
+
+procedure TRESTDriver.ApplyChanges(TableName, SQL: String; var Error: Boolean;
+  var MessageError: String; const ADeltaList: TFDJSONDeltas);
+begin
+ //Overload Function
+end;
+
+Procedure TRESTDriver.Close;
+Begin
+ //Overload Function
+End;
+
+Function TRESTDriver.InsertMySQLReturnID(SQL: String; var Error: Boolean;
+                                         Var MessageError: String): Integer;
+Begin
+ //Overload Function
+End;
+
+function TRESTDriver.ExecuteCommand(SQL: String; Params: TParams;
+  var Error: Boolean; var MessageError: String;
+  Execute: Boolean): TFDJSONDataSets;
+begin
+ //Overload Function
+end;
+
+function TRESTDriver.ExecuteCommand(SQL: String; var Error: Boolean;
+  var MessageError: String; Execute: Boolean): TFDJSONDataSets;
+begin
+ //Overload Function
+end;
+
+function TRESTDriver.InsertMySQLReturnID(SQL: String; Params: TParams;
+  var Error: Boolean; var MessageError: String): Integer;
+begin
+ //Overload Function
+end;
 
 end.

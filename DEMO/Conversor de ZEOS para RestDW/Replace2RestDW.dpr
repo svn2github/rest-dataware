@@ -1,4 +1,4 @@
-program mkmDfmPasReplace;
+program Replace2RestDW;
 
 uses
   Vcl.Forms,

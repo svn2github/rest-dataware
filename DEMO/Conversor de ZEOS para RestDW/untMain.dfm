@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
   Left = 0
   Top = 0
-  Caption = 'RestDW Query Converter ( by Fl'#225'vio Motta )'
+  Caption = 'Replace2RestDW ( by Fl'#225'vio Motta )'
   ClientHeight = 587
   ClientWidth = 834
   Color = clBtnFace
@@ -51,7 +51,7 @@ object frmMain: TfrmMain
   end
   object Label3: TLabel
     Left = 13
-    Top = 157
+    Top = 151
     Width = 55
     Height = 13
     Caption = 'ORIGINAL'
@@ -62,36 +62,16 @@ object frmMain: TfrmMain
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Label4: TLabel
-    Left = 421
-    Top = 160
-    Width = 71
-    Height = 13
-    Caption = 'CONVERTIDO'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
   object Bevel2: TBevel
     Left = 14
-    Top = 175
-    Width = 395
-    Height = 2
-    Shape = bsTopLine
-  end
-  object Bevel3: TBevel
-    Left = 422
-    Top = 175
-    Width = 395
+    Top = 169
+    Width = 808
     Height = 2
     Shape = bsTopLine
   end
   object labTotArqs: TLabel
     Left = -2
-    Top = 504
+    Top = 498
     Width = 836
     Height = 13
     Alignment = taCenter
@@ -106,7 +86,7 @@ object frmMain: TfrmMain
   end
   object labArq: TLabel
     Left = -2
-    Top = 522
+    Top = 516
     Width = 836
     Height = 13
     Alignment = taCenter
@@ -995,7 +975,7 @@ object frmMain: TfrmMain
   end
   object Label8: TLabel
     Left = 218
-    Top = 550
+    Top = 544
     Width = 400
     Height = 13
     Alignment = taCenter
@@ -1010,7 +990,7 @@ object frmMain: TfrmMain
   end
   object Bevel4: TBevel
     Left = 14
-    Top = 544
+    Top = 538
     Width = 806
     Height = 2
     Shape = bsTopLine
@@ -1037,34 +1017,20 @@ object frmMain: TfrmMain
     TabOrder = 0
     Text = 'C:\mkmFONTES\CONVERTER Zeos para RestDW\originais'
   end
-  object memo_Convertido: TMemo
-    Left = 422
-    Top = 183
-    Width = 400
-    Height = 313
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -9
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    ScrollBars = ssBoth
-    TabOrder = 1
-  end
   object pg: TProgressBar
     Left = 218
-    Top = 569
+    Top = 563
     Width = 400
     Height = 17
     Smooth = True
     MarqueeInterval = 1
     Step = 1
-    TabOrder = 2
+    TabOrder = 1
   end
   object memo_Original: TMemo
     Left = 13
-    Top = 183
-    Width = 400
+    Top = 177
+    Width = 810
     Height = 313
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1073,7 +1039,7 @@ object frmMain: TfrmMain
     Font.Style = []
     ParentFont = False
     ScrollBars = ssBoth
-    TabOrder = 3
+    TabOrder = 2
   end
   object ButtonStart: TButton
     Left = 344
@@ -1087,7 +1053,7 @@ object frmMain: TfrmMain
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 3
     OnClick = ButtonStartClick
   end
   object edPastaConvertido: TEdit
@@ -1095,7 +1061,7 @@ object frmMain: TfrmMain
     Top = 58
     Width = 321
     Height = 21
-    TabOrder = 5
+    TabOrder = 4
     Text = 'C:\mkmFONTES\CONVERTER Zeos para RestDW\Convertido'
   end
   object Button1: TButton
@@ -1110,15 +1076,15 @@ object frmMain: TfrmMain
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 5
     OnClick = Button1Click
   end
   object Edit1: TEdit
     Left = 513
-    Top = 136
+    Top = 130
     Width = 321
     Height = 21
-    TabOrder = 7
+    TabOrder = 6
     Text = 'C:\mkmFONTES\CONVERTER Zeos para RestDW\originais'
     Visible = False
   end
@@ -1128,7 +1094,7 @@ object frmMain: TfrmMain
     Width = 322
     Height = 21
     ItemIndex = 0
-    TabOrder = 8
+    TabOrder = 7
     Text = 'Zeos'
     Items.Strings = (
       'Zeos'

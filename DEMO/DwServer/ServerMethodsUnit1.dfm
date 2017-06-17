@@ -26,31 +26,26 @@ object ServerMethods1: TServerMethods1
     ConnectedStoredUsage = []
     LoginPrompt = False
     BeforeConnect = Server_FDConnectionBeforeConnect
-    Left = 83
-    Top = 18
+    Left = 59
+    Top = 26
   end
   object RESTPoolerDB: TRESTPoolerDB
-    Database = Server_FDConnection
+    Database = RESTDriverFD1
     Compression = True
     Encoding = esUtf8
     StrsTrim = False
     StrsEmpty2Null = False
     StrsTrim2Len = True
-    Left = 116
-    Top = 72
+    Left = 60
+    Top = 128
   end
   object FDPhysFBDriverLink1: TFDPhysFBDriverLink
     Left = 200
     Top = 72
   end
-  object RESTPoolerDB_Backup: TRESTPoolerDB
-    Database = Server_FDConnection
-    Compression = True
-    Encoding = esUtf8
-    StrsTrim = False
-    StrsEmpty2Null = False
-    StrsTrim2Len = True
-    Left = 52
-    Top = 72
+  object RESTDriverFD1: TRESTDriverFD
+    Connection = Server_FDConnection
+    Left = 61
+    Top = 80
   end
 end

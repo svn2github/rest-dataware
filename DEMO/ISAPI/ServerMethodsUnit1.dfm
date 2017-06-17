@@ -27,17 +27,22 @@ object ServerMethods1: TServerMethods1
     ConnectedStoredUsage = []
     LoginPrompt = False
     BeforeConnect = FDConnectionEMPLOYEEBeforeConnect
-    Left = 60
+    Left = 44
     Top = 21
   end
   object RESTPoolerDB: TRESTPoolerDB
-    Database = FDConnectionEMPLOYEE
+    Database = RESTDriverFD1
     Compression = True
     Encoding = esUtf8
     StrsTrim = False
     StrsEmpty2Null = False
     StrsTrim2Len = True
-    Left = 88
+    Left = 102
+    Top = 21
+  end
+  object RESTDriverFD1: TRESTDriverFD
+    Connection = FDConnectionEMPLOYEE
+    Left = 73
     Top = 21
   end
 end

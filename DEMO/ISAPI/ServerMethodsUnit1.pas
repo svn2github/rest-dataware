@@ -15,7 +15,7 @@ uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
      FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,
      FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
      WebModuleUnit1,          TypInfo,                  uRestPoolerDB,      uConsts,
-     URestPoolerDBMethod;
+     URestPoolerDBMethod, uRestDriverFD;
 
 type
 {$METHODINFO ON}
@@ -25,6 +25,7 @@ type
     FDStanStorageJSONLink1 : TFDStanStorageJSONLink;
     FDConnectionEMPLOYEE   : TFDConnection;
     RESTPoolerDB: TRESTPoolerDB;
+    RESTDriverFD1: TRESTDriverFD;
     procedure FDConnectionEMPLOYEEBeforeConnect(Sender: TObject);
     procedure DataModuleCreate(Sender: TObject);
   private

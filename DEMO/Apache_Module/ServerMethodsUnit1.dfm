@@ -1,8 +1,8 @@
 object ServerMethods1: TServerMethods1
   OldCreateOrder = False
   OnCreate = DataModuleCreate
-  Height = 259
-  Width = 261
+  Height = 143
+  Width = 211
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
     Left = 48
@@ -31,14 +31,22 @@ object ServerMethods1: TServerMethods1
     Top = 21
   end
   object RESTPoolerDB: TRESTPoolerDB
-    Database = FDConnectionEMPLOYEE
+    Database = RESTDriverFD1
     Compression = True
     Encoding = esUtf8
-    Left = 88
+    StrsTrim = False
+    StrsEmpty2Null = False
+    StrsTrim2Len = True
+    Left = 116
     Top = 21
   end
   object FDPhysFBDriverLink1: TFDPhysFBDriverLink
     Left = 132
     Top = 67
+  end
+  object RESTDriverFD1: TRESTDriverFD
+    Connection = FDConnectionEMPLOYEE
+    Left = 88
+    Top = 21
   end
 end
