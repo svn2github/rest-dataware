@@ -14,6 +14,7 @@ object RestDWForm: TRestDWForm
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
@@ -1267,5 +1268,27 @@ object RestDWForm: TRestDWForm
     OnIdle = ApplicationEvents1Idle
     Left = 509
     Top = 123
+  end
+  object ctiPrincipal: TTrayIcon
+    Hint = 'REST Dataware - Service'
+    PopupMenu = pmMenu
+    OnDblClick = ctiPrincipalDblClick
+    Left = 224
+    Top = 80
+  end
+  object pmMenu: TPopupMenu
+    Left = 272
+    Top = 84
+    object RestaurarAplicao1: TMenuItem
+      Caption = 'Restaurar Aplica'#231#227'o'
+      OnClick = RestaurarAplicao1Click
+    end
+    object N5: TMenuItem
+      Caption = '-'
+    end
+    object SairdaAplicao1: TMenuItem
+      Caption = 'Sair da Aplica'#231#227'o'
+      OnClick = SairdaAplicao1Click
+    end
   end
 end
