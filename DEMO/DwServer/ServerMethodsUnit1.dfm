@@ -48,4 +48,32 @@ object ServerMethods1: TServerMethods1
     Left = 61
     Top = 80
   end
+  object RESTDriverZEOS1: TRESTDriverZEOS
+    Connection = ZConnection1
+    Left = 136
+    Top = 80
+  end
+  object ZConnection1: TZConnection
+    ControlsCodePage = cCP_UTF16
+    Catalog = ''
+    BeforeConnect = ZConnection1BeforeConnect
+    HostName = ''
+    Port = 0
+    Database = ''
+    User = ''
+    Password = ''
+    Protocol = 'firebird-2.5'
+    Left = 136
+    Top = 28
+  end
+  object RESTPoolerDBZEOS: TRESTPoolerDB
+    Database = RESTDriverZEOS1
+    Compression = True
+    Encoding = esUtf8
+    StrsTrim = False
+    StrsEmpty2Null = False
+    StrsTrim2Len = True
+    Left = 136
+    Top = 128
+  end
 end

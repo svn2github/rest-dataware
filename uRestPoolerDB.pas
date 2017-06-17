@@ -637,7 +637,7 @@ Begin
  Inherited;
  Owner           := aOwner;
  FLock           := TCriticalSection.Create;
- vCompression    := False;
+ vCompression    := True;
  vStrsTrim       := False;
  vStrsEmpty2Null := False;
  vStrsTrim2Len   := True;
@@ -1084,7 +1084,7 @@ Begin
  Owner                     := AOwner;
  vLogin                    := '';
  vMyIP                     := '0.0.0.0';
- vCompression              := False;
+ vCompression              := True;
  vPassword                 := vLogin;
  vRestModule               := 'TServerMethods1';
  vRestPooler               := vPassword;

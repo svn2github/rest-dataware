@@ -58,7 +58,12 @@ requires
   RESTComponents,
   vclFireDAC,
   IndyIPServer,
-  DataSnapServerMidas;
+  DataSnapServerMidas,
+  ZComponent,
+  ZDbc,
+  ZPlain,
+  ZCore,
+  ZParseSql;
 
 contains
   uPoolerMethod in 'uPoolerMethod.pas',
@@ -70,6 +75,7 @@ contains
   uWebModuleMethod in 'uWebModuleMethod.pas',
   uPoolerServerMethods in 'uPoolerServerMethods.pas',
   SMRestPoolerDBMethods in 'SMRestPoolerDBMethods.pas',
-  uRestDriverFD in 'Connectors\uRestDriverFD.pas';
+  uRestDriverFD in 'Connectors\uRestDriverFD.pas',
+  uRestDriverZEOS in 'Connectors\uRestDriverZEOS.pas';
 
 end.

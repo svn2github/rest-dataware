@@ -16,7 +16,7 @@ uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
      FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef,
      WebModuleUnit1,          Vcl.Dialogs,              TypInfo,
      IniFiles,  Vcl.Forms,    uRestPoolerDB, URestPoolerDBMethod, FireDAC.Phys.FBDef, FireDAC.Phys.FB,
-  uRestDriverFD;
+  uRestDriverFD, ZAbstractConnection, ZConnection, uRestDriverZEOS;
 
 type
 {$METHODINFO ON}
@@ -27,8 +27,12 @@ type
     RESTPoolerDB: TRESTPoolerDB;
     FDPhysFBDriverLink1: TFDPhysFBDriverLink;
     RESTDriverFD1: TRESTDriverFD;
+    RESTDriverZEOS1: TRESTDriverZEOS;
+    ZConnection1: TZConnection;
+    RESTPoolerDBZEOS: TRESTPoolerDB;
     procedure Server_FDConnectionBeforeConnect(Sender: TObject);
     procedure DataModuleCreate(Sender: TObject);
+    procedure ZConnection1BeforeConnect(Sender: TObject);
   private
     { Private declarations }
   public
@@ -81,6 +85,29 @@ Begin
  //Server_FDConnection.Params.Add('CharacterSet=ISO8859_1');
  TFDConnection(Sender).UpdateOptions.CountUpdatedRecords := False;
 end;
+
+procedure TServerMethods1.ZConnection1BeforeConnect(Sender: TObject);
+Var
+ porta_BD,
+ servidor,
+ database,
+ pasta,
+ usuario_BD,
+ senha_BD      : String;
+Begin
+ servidor                      := RestDWForm.DatabaseIP;
+ database                      := RestDWForm.edBD.Text;
+ pasta                         := IncludeTrailingPathDelimiter(RestDWForm.edPasta.Text);
+ porta_BD                      := RestDWForm.edPortaBD.Text;
+ usuario_BD                    := RestDWForm.edUserNameBD.Text;
+ senha_BD                      := RestDWForm.edPasswordBD.Text;
+ vDatabaseName                 := pasta + database;
+ TZConnection(Sender).HostName := Servidor;
+ TZConnection(Sender).Database := vDatabaseName;
+ TZConnection(Sender).Port     := StrToInt(porta_BD);
+ TZConnection(Sender).User     := usuario_BD;
+ TZConnection(Sender).Password := senha_BD;
+End;
 
 end.
 
