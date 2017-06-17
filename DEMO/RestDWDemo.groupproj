@@ -36,6 +36,12 @@
         <Projects Include="Conversor de ZEOS para RestDW\Replace2RestDW.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\Connectors\FireDAC\RESTDriverFD.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\Connectors\ZEOS\RESTDriverZEOS.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -143,14 +149,32 @@
     <Target Name="Replace2RestDW:Make">
         <MSBuild Projects="Conversor de ZEOS para RestDW\Replace2RestDW.dproj" Targets="Make"/>
     </Target>
+    <Target Name="RESTDriverFD">
+        <MSBuild Projects="..\Connectors\FireDAC\RESTDriverFD.dproj"/>
+    </Target>
+    <Target Name="RESTDriverFD:Clean">
+        <MSBuild Projects="..\Connectors\FireDAC\RESTDriverFD.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RESTDriverFD:Make">
+        <MSBuild Projects="..\Connectors\FireDAC\RESTDriverFD.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="RESTDriverZEOS">
+        <MSBuild Projects="..\Connectors\ZEOS\RESTDriverZEOS.dproj"/>
+    </Target>
+    <Target Name="RESTDriverZEOS:Clean">
+        <MSBuild Projects="..\Connectors\ZEOS\RESTDriverZEOS.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RESTDriverZEOS:Make">
+        <MSBuild Projects="..\Connectors\ZEOS\RESTDriverZEOS.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestEasyObjects;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker;ClientWin;ListPoolers;WindowsDWService;Replace2RestDW"/>
+        <CallTarget Targets="RestEasyObjects;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker;ClientWin;ListPoolers;WindowsDWService;Replace2RestDW;RESTDriverFD;RESTDriverZEOS"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean;ClientWin:Clean;ListPoolers:Clean;WindowsDWService:Clean;Replace2RestDW:Clean"/>
+        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean;ClientWin:Clean;ListPoolers:Clean;WindowsDWService:Clean;Replace2RestDW:Clean;RESTDriverFD:Clean;RESTDriverZEOS:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestEasyObjects:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make;ClientWin:Make;ListPoolers:Make;WindowsDWService:Make;Replace2RestDW:Make"/>
+        <CallTarget Targets="RestEasyObjects:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make;ClientWin:Make;ListPoolers:Make;WindowsDWService:Make;Replace2RestDW:Make;RESTDriverFD:Make;RESTDriverZEOS:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
