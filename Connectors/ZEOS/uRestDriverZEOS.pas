@@ -101,6 +101,8 @@ procedure TRESTDriverZEOS.ApplyChanges(TableName, SQL: String; var Error: Boolea
   var MessageError: String; const ADeltaList: TFDJSONDeltas);
 begin
   Inherited;
+  Error        := True;
+  MessageError := 'Method not implemented for the ZEOS Driver.';
 end;
 
 procedure TRESTDriverZEOS.ApplyChanges(TableName, SQL: String; Params: TParams;
@@ -108,6 +110,8 @@ procedure TRESTDriverZEOS.ApplyChanges(TableName, SQL: String; Params: TParams;
   const ADeltaList: TFDJSONDeltas);
 begin
   Inherited;
+  Error        := True;
+  MessageError := 'Method not implemented for the ZEOS Driver.';
 end;
 
 Procedure TRESTDriverZEOS.Close;
@@ -332,12 +336,16 @@ Function TRESTDriverZEOS.InsertMySQLReturnID(SQL: String; Params: TParams;
   var Error: Boolean; var MessageError: String): Integer;
 Begin
   Inherited;
+  Error        := True;
+  MessageError := 'Method not implemented for the ZEOS Driver.';
 End;
 
 Function TRESTDriverZEOS.InsertMySQLReturnID(SQL: String; var Error: Boolean;
                                          Var MessageError: String): Integer;
 Begin
   Inherited;
+  Error        := True;
+  MessageError := 'Method not implemented for the ZEOS Driver.';
 End;
 
 Procedure TRESTDriverZEOS.SetConnection(Value: TZConnection);

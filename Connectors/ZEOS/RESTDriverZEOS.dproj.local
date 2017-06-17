@@ -1,39 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>2017/06/16 23:25:25.000.043,=rtl.dcp</Transaction>
     <Transaction>2017/06/16 23:25:35.000.431,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\RESTDriverZEOS.dproj=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Package1.dproj</Transaction>
     <Transaction>2017/06/16 23:25:54.000.659,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\Connectors\ZEOS\RESTDriverZEOS.dproj=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\RESTDriverZEOS.dproj</Transaction>
-    <Transaction>2017/06/16 23:26:10.000.103,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\Connectors\ZEOS\uRestDriverZEOS.pas</Transaction>
-    <Transaction>2017/06/16 23:26:33.000.116,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\Connectors\ZEOS\TRESTDriverZEOS.bmp</Transaction>
-    <Transaction>2017/06/16 23:27:02.000.961,=DbxCommonDriver.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:02.000.980,=dbrtl.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:02.000.999,=DataSnapClient.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.491,=ZDbc.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.412,=DataSnapServer.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.108,=IndyIPCommon.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.470,=ZComponent.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.149,=IndyProtocols.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.531,=ZCore.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.550,=ZParseSql.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.058,=CustomIPTransport.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.364,=dbexpress.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.391,=dbxcds.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.220,=FireDAC.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.245,=FireDACCommonDriver.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.511,=ZPlain.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.018,=DataSnapCommon.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.339,=dsnap.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.431,=DataSnapFireDAC.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.268,=FireDACCommon.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.451,=RESTComponents.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.172,=IndyCore.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.292,=bindengine.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.083,=soaprtl.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.195,=IndyIPClient.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.126,=IndySystem.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.313,=bindcomp.dcp</Transaction>
-    <Transaction>2017/06/16 23:27:03.000.037,=DbxClientDriver.dcp</Transaction>
     <Transaction>2017/06/16 23:27:39.000.626,=RestEasyObjects.dcp</Transaction>
   </Transactions>
 </BorlandProject>

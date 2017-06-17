@@ -111,3 +111,10 @@ do DW que serve para adicionar ao DW a capacidade de suportar agora mais de um t
 acesso a Dados.
  Removido o conversor de Projetos para DW e adicionado a versão final enviada pelo desenvolvedor Flavio Motta.
  Correções diversas de Layout e bugs nos exemplos em geral.
+
+1.0.1.241
+
+ Alterado no Servidor a Propriedade Database dos Poolers para RESTDriver; Ajuste no RESTDriverZEOS para mostrar a msg de
+Metodo não implementado para algo que não foi convertido.
+ Ajuste do conversor de Projetos para DW enviado por Flavio Motta.
+ Correções de Ajustes nos DEMOS em todos os Servidores para a nova propriedade estar ligada no Driver corretamente.

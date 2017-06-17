@@ -402,7 +402,7 @@ Type
                                Var Error        : Boolean;
                                Var MessageError : String) : Integer;Overload;
  Published
-  Property    Database       : TRESTDriver   Read GetConnection    Write SetConnection;
+  Property    RESTDriver     : TRESTDriver   Read GetConnection    Write SetConnection;
   Property    Compression    : Boolean       Read vCompression     Write vCompression;
   Property    Encoding       : TEncodeSelect Read vEncoding        Write vEncoding;
   Property    StrsTrim       : Boolean       Read vStrsTrim        Write vStrsTrim;
@@ -555,12 +555,20 @@ Function TRESTPoolerDB.InsertMySQLReturnID(SQL              : String;
                                            Var Error        : Boolean;
                                            Var MessageError : String) : Integer;
 Begin
- vRESTDriver.vStrsTrim          := vStrsTrim;
- vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
- vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
- vRESTDriver.vCompression       := vCompression;
- vRESTDriver.vEncoding          := vEncoding;
- Result := vRESTDriver.InsertMySQLReturnID(SQL, Error, MessageError);
+ If vRESTDriver <> Nil Then
+  Begin
+   vRESTDriver.vStrsTrim          := vStrsTrim;
+   vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+   vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+   vRESTDriver.vCompression       := vCompression;
+   vRESTDriver.vEncoding          := vEncoding;
+   Result := vRESTDriver.InsertMySQLReturnID(SQL, Error, MessageError);
+  End
+ Else
+  Begin
+   Error        := True;
+   MessageError := 'Selected Pooler Does Not Have a Driver Set';
+  End;
 End;
 
 Function TRESTPoolerDB.InsertMySQLReturnID(SQL              : String;
@@ -568,12 +576,20 @@ Function TRESTPoolerDB.InsertMySQLReturnID(SQL              : String;
                                            Var Error        : Boolean;
                                            Var MessageError : String) : Integer;
 Begin
- vRESTDriver.vStrsTrim          := vStrsTrim;
- vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
- vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
- vRESTDriver.vCompression       := vCompression;
- vRESTDriver.vEncoding          := vEncoding;
- Result := vRESTDriver.InsertMySQLReturnID(SQL, Params, Error, MessageError);
+ If vRESTDriver <> Nil Then
+  Begin
+   vRESTDriver.vStrsTrim          := vStrsTrim;
+   vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+   vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+   vRESTDriver.vCompression       := vCompression;
+   vRESTDriver.vEncoding          := vEncoding;
+   Result := vRESTDriver.InsertMySQLReturnID(SQL, Params, Error, MessageError);
+  End
+ Else
+  Begin
+   Error        := True;
+   MessageError := 'Selected Pooler Does Not Have a Driver Set';
+  End;
 End;
 
 Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
@@ -581,12 +597,20 @@ Function TRESTPoolerDB.ExecuteCommand(SQL        : String;
                                       Var MessageError : String;
                                       Execute    : Boolean = False) : TFDJSONDataSets;
 Begin
- vRESTDriver.vStrsTrim          := vStrsTrim;
- vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
- vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
- vRESTDriver.vCompression       := vCompression;
- vRESTDriver.vEncoding          := vEncoding;
- Result := vRESTDriver.ExecuteCommand(SQL, Error, MessageError, Execute);
+ If vRESTDriver <> Nil Then
+  Begin
+   vRESTDriver.vStrsTrim          := vStrsTrim;
+   vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+   vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+   vRESTDriver.vCompression       := vCompression;
+   vRESTDriver.vEncoding          := vEncoding;
+   Result := vRESTDriver.ExecuteCommand(SQL, Error, MessageError, Execute);
+  End
+ Else
+  Begin
+   Error        := True;
+   MessageError := 'Selected Pooler Does Not Have a Driver Set';
+  End;
 End;
 
 Function TRESTPoolerDB.ExecuteCommand(SQL              : String;
@@ -595,12 +619,20 @@ Function TRESTPoolerDB.ExecuteCommand(SQL              : String;
                                       Var MessageError : String;
                                       Execute          : Boolean = False) : TFDJSONDataSets;
 Begin
- vRESTDriver.vStrsTrim          := vStrsTrim;
- vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
- vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
- vRESTDriver.vCompression       := vCompression;
- vRESTDriver.vEncoding          := vEncoding;
- Result := vRESTDriver.ExecuteCommand(SQL, Params, Error, MessageError);
+ If vRESTDriver <> Nil Then
+  Begin
+   vRESTDriver.vStrsTrim          := vStrsTrim;
+   vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+   vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+   vRESTDriver.vCompression       := vCompression;
+   vRESTDriver.vEncoding          := vEncoding;
+   Result := vRESTDriver.ExecuteCommand(SQL, Params, Error, MessageError);
+  End
+ Else
+  Begin
+   Error        := True;
+   MessageError := 'Selected Pooler Does Not Have a Driver Set';
+  End;
 End;
 
 Procedure TRESTPoolerDB.ApplyChanges(TableName,
@@ -609,12 +641,20 @@ Procedure TRESTPoolerDB.ApplyChanges(TableName,
                                      Var MessageError  : String;
                                      Const ADeltaList  : TFDJSONDeltas);
 begin
- vRESTDriver.vStrsTrim          := vStrsTrim;
- vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
- vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
- vRESTDriver.vCompression       := vCompression;
- vRESTDriver.vEncoding          := vEncoding;
- vRESTDriver.ApplyChanges(TableName, SQL, Error, MessageError, ADeltaList);
+ If vRESTDriver <> Nil Then
+  Begin
+   vRESTDriver.vStrsTrim          := vStrsTrim;
+   vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+   vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+   vRESTDriver.vCompression       := vCompression;
+   vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.ApplyChanges(TableName, SQL, Error, MessageError, ADeltaList);
+  End
+ Else
+  Begin
+   Error        := True;
+   MessageError := 'Selected Pooler Does Not Have a Driver Set';
+  End;
 end;
 
 Procedure TRESTPoolerDB.ApplyChanges(TableName,
@@ -624,12 +664,20 @@ Procedure TRESTPoolerDB.ApplyChanges(TableName,
                                      Var MessageError  : String;
                                      Const ADeltaList  : TFDJSONDeltas);
 begin
- vRESTDriver.vStrsTrim          := vStrsTrim;
- vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
- vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
- vRESTDriver.vCompression       := vCompression;
- vRESTDriver.vEncoding          := vEncoding;
- vRESTDriver.ApplyChanges(TableName, SQL, Params, Error, MessageError, ADeltaList);
+ If vRESTDriver <> Nil Then
+  Begin
+   vRESTDriver.vStrsTrim          := vStrsTrim;
+   vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+   vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+   vRESTDriver.vCompression       := vCompression;
+   vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.ApplyChanges(TableName, SQL, Params, Error, MessageError, ADeltaList);
+  End
+ Else
+  Begin
+   Error        := True;
+   MessageError := 'Selected Pooler Does Not Have a Driver Set';
+  End;
 end;
 
 Constructor TRESTPoolerDB.Create(AOwner : TComponent);

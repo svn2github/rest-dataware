@@ -3,7 +3,7 @@ object ServerMethods1: TServerMethods1
   Height = 226
   Width = 363
   object RESTPoolerDB: TRESTPoolerDB
-    Database = RESTDriverFD1
+    RESTDriver = RESTDriverFD1
     Compression = True
     Encoding = esUtf8
     StrsTrim = False

@@ -31,7 +31,7 @@ object ServerMethods1: TServerMethods1
     Top = 21
   end
   object RESTPoolerDB: TRESTPoolerDB
-    Database = RESTDriverFD1
+    RESTDriver = RESTDriverFD1
     Compression = True
     Encoding = esUtf8
     StrsTrim = False

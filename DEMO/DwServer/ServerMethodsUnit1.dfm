@@ -30,7 +30,7 @@ object ServerMethods1: TServerMethods1
     Top = 26
   end
   object RESTPoolerDB: TRESTPoolerDB
-    Database = RESTDriverFD1
+    RESTDriver = RESTDriverFD1
     Compression = True
     Encoding = esUtf8
     StrsTrim = False
@@ -67,7 +67,7 @@ object ServerMethods1: TServerMethods1
     Top = 28
   end
   object RESTPoolerDBZEOS: TRESTPoolerDB
-    Database = RESTDriverZEOS1
+    RESTDriver = RESTDriverZEOS1
     Compression = True
     Encoding = esUtf8
     StrsTrim = False
