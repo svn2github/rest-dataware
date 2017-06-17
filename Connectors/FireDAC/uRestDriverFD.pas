@@ -133,7 +133,7 @@ begin
   LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
  vTempQuery.UpdateOptions.UpdateTableName := TableName;
  Try
-  LApply.ApplyUpdates(0,  vTempQuery.Command);
+  LApply.ApplyUpdates(TableName,  vTempQuery.Command);
  Except
 
  End;
@@ -177,7 +177,7 @@ begin
  vTempQuery               := TFDQuery.Create(Owner);
  vTempQuery.CachedUpdates := True;
  Try
-  vTempQuery.Connection   := vFDConnection;
+  vTempQuery.Connection                   := vFDConnection;
   vTempQuery.FormatOptions.StrsTrim       := StrsTrim;
   vTempQuery.FormatOptions.StrsEmpty2Null := StrsEmpty2Null;
   vTempQuery.FormatOptions.StrsTrim2Len   := StrsTrim2Len;
@@ -257,7 +257,7 @@ begin
   LApply := TFDJSONDeltasApplyUpdates.Create(ADeltaList);
  vTempQuery.UpdateOptions.UpdateTableName := TableName;
  Try
-  LApply.ApplyUpdates(0,  vTempQuery.Command);
+  LApply.ApplyUpdates(TableName,  vTempQuery.Command);
  Except
  End;
  If LApply.Errors.Count > 0 then

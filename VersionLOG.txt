@@ -118,3 +118,9 @@ acesso a Dados.
 Metodo não implementado para algo que não foi convertido.
  Ajuste do conversor de Projetos para DW enviado por Flavio Motta.
  Correções de Ajustes nos DEMOS em todos os Servidores para a nova propriedade estar ligada no Driver corretamente.
+
+1.0.1.245
+
+ Implementada a nova propriedade CachedUpdates para o RESTClientSQL, e a implementação do cache de dados para você conseguir dar
+vários post's e somente um ApplyUpdates você enviar todos os dados do Cache para o Servidor.
+ Ajuste do conversor de Projetos para DW enviado por Flavio Motta.

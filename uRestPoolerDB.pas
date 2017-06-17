@@ -193,6 +193,7 @@ Type
   vAutoIncFields,
   vMasterFields,
   vUpdateTableName     : String;                          //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
+  vCacheUpdateRecords,
   vReadData,
   vCascadeDelete,
   vBeforeClone,
@@ -225,6 +226,7 @@ Type
   Procedure OldAfterDelete(DataSet: TDataSet);            //Eventos do Dataset para realizar o AfterDelete
   Procedure SetMasterDataSet(Value : TRESTClientSQL);
   Procedure PrepareDetails(ActiveMode : Boolean);
+  Procedure SetCacheUpdateRecords(Value : Boolean);
   Procedure PrepareDetailsNew;
   Property  LocalSQL;
   Property  DataSetField;
@@ -262,24 +264,24 @@ Type
   Procedure   GotoRec(Const RecNo : Integer);
   Function    ParamCount : Integer;
  Published
-  Property MasterDataSet   : TRESTClientSQL      Read vMasterDataSet            Write SetMasterDataSet;
-  Property MasterCascadeDelete : Boolean         Read vCascadeDelete            Write vCascadeDelete;
-  Property AfterDelete     : TDataSetNotifyEvent Read vOnAfterDelete            Write vOnAfterDelete;
-  Property OnGetDataError  : TOnEventConnection  Read vOnGetDataError           Write vOnGetDataError;         //Recebe os Erros de ExecSQL ou de GetData
-  Property AfterScroll     : TOnAfterScroll      Read vOnAfterScroll            Write vOnAfterScroll;
-  Property AfterOpen       : TOnAfterOpen        Read vOnAfterOpen              Write vOnAfterOpen;
-  Property AfterClose      : TOnAfterClose       Read vOnAfterClose             Write vOnAfterClose;
-  Property AfterInsert     : TOnAfterInsert      Read vOnAfterInsert            Write vOnAfterInsert;
-  Property BeforeDelete    : TOnBeforeDelete     Read vOnBeforeDelete           Write vOnBeforeDelete;
-  Property BeforePost      : TOnBeforePost       Read vOnBeforePost             Write vOnBeforePost;
-  Property AfterPost       : TOnAfterPost        Read vOnAfterPost              Write vOnAfterPost;
-  Property Active          : Boolean             Read vActive                   Write SetActiveDB;             //Estado do Dataset
-  Property DataCache       : Boolean             Read vDataCache                Write vDataCache;              //Diz se será salvo o último Stream do Dataset
-  Property Params          : TParams             Read vParams                   Write vParams;                 //Parametros de Dataset
-  Property DataBase        : TRESTDataBase       Read vRESTDataBase             Write SetDataBase;             //Database REST do Dataset
-  Property SQL             : TStringList         Read vSQL                      Write SetSQL;                  //SQL a ser Executado
-  Property UpdateTableName : String              Read vUpdateTableName          Write SetUpdateTableName;      //Tabela que será usada para Reflexão de Dados
-//  Property AutoIncFields   : String              Read vAutoIncFields            Write vAutoIncFields;
+  Property MasterDataSet       : TRESTClientSQL      Read vMasterDataSet            Write SetMasterDataSet;
+  Property MasterCascadeDelete : Boolean             Read vCascadeDelete            Write vCascadeDelete;
+  Property AfterDelete         : TDataSetNotifyEvent Read vOnAfterDelete            Write vOnAfterDelete;
+  Property OnGetDataError      : TOnEventConnection  Read vOnGetDataError           Write vOnGetDataError;         //Recebe os Erros de ExecSQL ou de GetData
+  Property AfterScroll         : TOnAfterScroll      Read vOnAfterScroll            Write vOnAfterScroll;
+  Property AfterOpen           : TOnAfterOpen        Read vOnAfterOpen              Write vOnAfterOpen;
+  Property AfterClose          : TOnAfterClose       Read vOnAfterClose             Write vOnAfterClose;
+  Property AfterInsert         : TOnAfterInsert      Read vOnAfterInsert            Write vOnAfterInsert;
+  Property BeforeDelete        : TOnBeforeDelete     Read vOnBeforeDelete           Write vOnBeforeDelete;
+  Property BeforePost          : TOnBeforePost       Read vOnBeforePost             Write vOnBeforePost;
+  Property AfterPost           : TOnAfterPost        Read vOnAfterPost              Write vOnAfterPost;
+  Property Active              : Boolean             Read vActive                   Write SetActiveDB;             //Estado do Dataset
+  Property DataCache           : Boolean             Read vDataCache                Write vDataCache;              //Diz se será salvo o último Stream do Dataset
+  Property Params              : TParams             Read vParams                   Write vParams;                 //Parametros de Dataset
+  Property DataBase            : TRESTDataBase       Read vRESTDataBase             Write SetDataBase;             //Database REST do Dataset
+  Property SQL                 : TStringList         Read vSQL                      Write SetSQL;                  //SQL a ser Executado
+  Property UpdateTableName     : String              Read vUpdateTableName          Write SetUpdateTableName;      //Tabela que será usada para Reflexão de Dados
+  Property CacheUpdateRecords  : Boolean             Read vCacheUpdateRecords       Write SetCacheUpdateRecords;
 End;
 
 
@@ -1346,7 +1348,8 @@ Begin
  vDataCache                        := False;
  vConnectedOnce                    := True;
  vActive                           := False;
- UpdateOptions.CountUpdatedRecords := False;
+ vCacheUpdateRecords               := True;
+ UpdateOptions.CountUpdatedRecords := vCacheUpdateRecords;
  vBeforeClone                      := False;
  vReadData                         := False;
  vCascadeDelete                    := True;
@@ -1558,7 +1561,7 @@ procedure TRESTClientSQL.ProcBeforePost(DataSet: TDataSet);
 Var
  vOldState : TDatasetState;
 Begin
-  If Not vReadData Then
+ If Not vReadData Then
   Begin
    vActualRec := -1;
    vReadData  := True;
@@ -1674,7 +1677,7 @@ var
  gZIPStream    : TMemoryStream;
  Function GetDeltas : TFDJSONDeltas;
  Begin
-  UpdateOptions.CountUpdatedRecords := False;
+  UpdateOptions.CountUpdatedRecords := vCacheUpdateRecords;
   If State In [dsEdit, dsInsert] Then
    Post;
   Result := TFDJSONDeltas.Create;
@@ -1729,7 +1732,11 @@ Begin
  Error        := vMessageError;
  vErrorBefore := vError;
  If (Result) And (Not(vError)) Then
-  TFDMemTable(Self).ApplyUpdates(-1)
+  Begin
+   TFDMemTable(Self).ApplyUpdates(-1);
+   If Not (vErrorBefore)     Then
+    TFDMemTable(Self).CommitUpdates;
+  End
  Else If vError Then
   Begin
    TFDMemTable(Self).Close;
@@ -1917,8 +1924,6 @@ Begin
   Begin
    If Assigned(vOnAfterPost) Then
     vOnAfterPost(Self);
-   If Not (vErrorBefore)     Then
-    TFDMemTable(Self).CommitUpdates;
   End;
 End;
 
@@ -2127,6 +2132,12 @@ Begin
    vActive := False;
    Close;
   End;
+End;
+
+Procedure TRESTClientSQL.SetCacheUpdateRecords(Value: Boolean);
+Begin
+ vCacheUpdateRecords               := Value;
+ UpdateOptions.CountUpdatedRecords := vCacheUpdateRecords;
 End;
 
 { TRESTDriver }
