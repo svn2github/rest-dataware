@@ -118,6 +118,9 @@ Type
   VEncondig            : TEncodeSelect;              //Enconding se usar CORS usar UTF8 - Alexandre Abade
   vContentex           : String ;                    //Contexto - Alexandre Abade
   vRESTContext         : String ;                    //RestContexto - Alexandre Abade
+  vStrsTrim,
+  vStrsEmpty2Null,
+  vStrsTrim2Len        : Boolean;
   Procedure SetConnection(Value : Boolean);          //Seta o Estado da Conexão
   Procedure SetRestPooler(Value : String);           //Seta o Restpooler a ser utilizado
   Procedure SetPoolerPort(Value : Integer);          //Seta a Porta do Pooler a ser usada
@@ -164,9 +167,12 @@ Type
   Property RestModule         : String                   Read vRestModule         Write vRestModule;        //Classe do Servidor REST Principal
   Property StateConnection    : TAutoCheckData           Read vAutoCheckData      Write vAutoCheckData;     //Autocheck da Conexão
   Property RequestTimeOut     : Integer                  Read vTimeOut            Write vTimeOut;           //Timeout da Requisição
-  Property Encoding           : TEncodeSelect            Read VEncondig           write VEncondig ;         //Encoding da string
-  Property Context            : string                   Read vContentex          write vContentex ;        //Contexto
-  Property RESTContext        : string                   Read vRESTContext        write vRESTContext ;      //Rest Contexto
+  Property Encoding           : TEncodeSelect            Read VEncondig           Write VEncondig;          //Encoding da string
+  Property Context            : string                   Read vContentex          Write vContentex;         //Contexto
+  Property RESTContext        : string                   Read vRESTContext        Write vRESTContext;       //Rest Contexto
+  Property StrsTrim           : Boolean                  Read vStrsTrim           Write vStrsTrim;
+  Property StrsEmpty2Null     : Boolean                  Read vStrsEmpty2Null     Write vStrsEmpty2Null;
+  Property StrsTrim2Len       : Boolean                  Read vStrsTrim2Len       Write vStrsTrim2Len;
 End;
 
 Type
@@ -1147,6 +1153,9 @@ Begin
  VEncondig                 := esUtf8;
  vContentex                := 'Datasnap';
  vRESTContext              := 'rest/';
+ vStrsTrim                 := False;
+ vStrsEmpty2Null           := False;
+ vStrsTrim2Len             := True;
 End;
 
 Destructor  TRESTPoolerList.Destroy;
@@ -2093,7 +2102,12 @@ Begin
     Exit;
    Try
     If Not(vActive) And (Value) Then
-     vActive := GetData;
+     Begin
+      FormatOptions.StrsTrim       := vRESTDataBase.StrsTrim;
+      FormatOptions.StrsEmpty2Null := vRESTDataBase.StrsEmpty2Null;
+      FormatOptions.StrsTrim2Len   := vRESTDataBase.StrsTrim2Len;
+      vActive                      := GetData;
+     End;
     If State = dsBrowse Then
      PrepareDetails(True)
     Else If State = dsInactive Then
