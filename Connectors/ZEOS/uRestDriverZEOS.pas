@@ -161,7 +161,10 @@ Begin
   vTempQuery.SQL.Add(DecodeStrings(SQL, GetEncoding(Encoding)));
   If Params <> Nil Then
    Begin
-    vTempQuery.Prepare;
+    Try
+     vTempQuery.Prepare;
+    Except
+    End;
     For I := 0 To Params.Count -1 Do
      Begin
       If vTempQuery.Params.Count > I Then
@@ -179,7 +182,11 @@ Begin
              vTempQuery.Params[A].Value := Params[I].AsString;
            End
           Else
-           vTempQuery.Params[A].Value    := Params[I].Value;
+           Begin
+            If vTempQuery.Params[A].DataType in [ftUnknown] Then
+             vTempQuery.Params[A].DataType := Params[I].DataType;
+            vTempQuery.Params[A].Value    := Params[I].Value;
+           End;
          End;
        End
       Else
