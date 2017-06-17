@@ -81,12 +81,12 @@ type
     Bevel2: TBevel;
     Label16: TLabel;
     Button1: TButton;
+    Button2: TButton;
     procedure rEmployeeBeforePost(DataSet: TDataSet);
     procedure rEmployeeAfterInsert(DataSet: TDataSet);
-    procedure rEmployeeAfterDelete(DataSet: TDataSet);
-    procedure rEmployeeAfterPost(DataSet: TDataSet);
     procedure Button3Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
    Function GetGenID(GenName  : String;
@@ -136,6 +136,14 @@ begin
   Showmessage('Escolha um Pooler para realizar essa operação...');
 end;
 
+procedure TfEmployee.Button2Click(Sender: TObject);
+Var
+ vError : String;
+begin
+ If Not (rEmployee.ApplyUpdates(vError)) Then
+  MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+end;
+
 procedure TfEmployee.Button3Click(Sender: TObject);
 Var
  vTempList : TStringList;
@@ -160,29 +168,10 @@ Begin
   End;
 End;
 
-procedure TfEmployee.rEmployeeAfterDelete(DataSet: TDataSet);
-Var
- vError : String;
-begin
- If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
-  MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-end;
-
 procedure TfEmployee.rEmployeeAfterInsert(DataSet: TDataSet);
 begin
  rEmployeeEMP_NO.AsInteger     := GetGenID('EMP_NO_GEN', rEmployee.DataBase);
  rEmployeeHIRE_DATE.AsDateTime := Now;
-end;
-
-procedure TfEmployee.rEmployeeAfterPost(DataSet: TDataSet);
-Var
- vError : String;
-begin
- If Not (TRESTClientSQL(DataSet).ApplyUpdates(vError)) Then
-  Begin
-   MessageDlg(vError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-   Dataset.Edit;
-  End;
 end;
 
 procedure TfEmployee.rEmployeeBeforePost(DataSet: TDataSet);

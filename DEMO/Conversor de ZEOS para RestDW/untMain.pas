@@ -385,6 +385,13 @@ begin
    Inc( _itens_pas );
    aCode_EngineOrigem   [ _itens_pas ] := 'TZQuery';  //Quaquer query...
    aCode_RestDW [ _itens_pas ]         := 'TRESTClientSQL'; // acrescentar if not antes
+   Inc( _itens_pas );
+   aCode_EngineOrigem   [ _itens_pas ] := '.commit';
+   aCode_RestDW [ _itens_pas ]         := '//'; // comentar o inicio da linha
+   Inc( _itens_pas );
+   aCode_EngineOrigem   [ _itens_pas ] := '.rollback';
+   aCode_RestDW [ _itens_pas ]         := '//'; // comentar o inicio da linha
+
    //----------------------------------------------------------------------------------------------------------
 
 
@@ -818,6 +825,14 @@ begin
 
                                  // monta a linha com a nova estrutura
                                  linha := espacos + 'if not ' + Trim( linha2 ) + aCode_RestDw[ i ];
+
+                             end
+                             else
+                             if aCode_RestDw[ i ] = '//' then
+                             begin
+
+                                 // monta a linha com a nova estrutura
+                                 linha := aCode_RestDw[ i ] + linha;
 
                              end
                              else

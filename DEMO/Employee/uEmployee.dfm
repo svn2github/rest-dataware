@@ -1259,8 +1259,8 @@ object fEmployee: TfEmployee
     TabOrder = 5
   end
   object DBNavigator1: TDBNavigator
-    Left = 291
-    Top = 128
+    Left = 232
+    Top = 127
     Width = 234
     Height = 25
     DataSource = dsEmployee
@@ -1339,6 +1339,15 @@ object fEmployee: TfEmployee
     TabOrder = 12
     OnClick = Button1Click
   end
+  object Button2: TButton
+    Left = 465
+    Top = 128
+    Width = 60
+    Height = 24
+    Caption = 'Commit'
+    TabOrder = 13
+    OnClick = Button2Click
+  end
   object RESTDataBase: TRESTDataBase
     Active = False
     Compression = True
@@ -1356,14 +1365,15 @@ object fEmployee: TfEmployee
     Encoding = esUtf8
     Context = 'datasnap'
     RESTContext = 'rest/'
+    StrsTrim = False
+    StrsEmpty2Null = False
+    StrsTrim2Len = True
     Left = 362
     Top = 114
   end
   object rEmployee: TRESTClientSQL
     AfterInsert = rEmployeeAfterInsert
     BeforePost = rEmployeeBeforePost
-    AfterPost = rEmployeeAfterPost
-    AfterDelete = rEmployeeAfterDelete
     FieldDefs = <>
     CachedUpdates = True
     IndexDefs = <>
