@@ -145,34 +145,80 @@ begin
    if cbxEngine.Text = 'Zeos' then
    begin
 
-        // RestDW
-        Inc( _itens_descartar );
-        aDescartar  [ _itens_descartar ] := ': TREST';//'TRESTDataBase';
-
-        // FireDac
-        Inc( _itens_descartar );
-        aDescartar  [ _itens_descartar ] := ': TFD';//'TFDQuery';
-
-        //IBX
-        Inc( _itens_descartar );
-        aDescartar  [ _itens_descartar ] := ': TIB';//'TIBDataBase';
+       // propriedades q serão removidas / substituidas integralmente
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'CachedUpdates = True';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'CachedUpdates = False';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'ReadOnly = True';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'ControlsCodePage';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'Catalog';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'Properties.Strings';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := '''controls_cp=GET_ACP'')';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'AutoCommit';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'TransactIsolationLevel';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'Connected';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'SQLHourGlass';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'HostName';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'Port';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'Database = ''';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'User = ''';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'Password = ''';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'Protocol = ''';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'DataSource =';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'ParamCheck =';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'UpdateMode =';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'WhereMode =';
+       //aRestDW[ _itens_descartar ]         := '';
+       Inc( _itens_descartar );
+       aDescartar  [ _itens_descartar ] := 'Options =';
+       //aRestDW[ _itens_descartar ]         := '';
 
    end
    else
    if cbxEngine.Text = 'FireDac' then
    begin
 
-        // RestDW
-        Inc( _itens_descartar );
-        aDescartar  [ _itens_descartar ] := ': TREST';//'TRESTDataBase';
 
-        // Zeos
-        Inc( _itens_descartar );
-        aDescartar  [ _itens_descartar ] := ': TZ';//'TFDQuery';
-
-        //IBX
-        Inc( _itens_descartar );
-        aDescartar  [ _itens_descartar ] := ': TIB';//'TIBDataBase';
 
    end;
    //----------------------------------------------------------------------------------------------------------
@@ -254,6 +300,19 @@ begin
        Inc( _itens_alt_dfm );
        aEngineOrigem  [ _itens_alt_dfm ] := ' DataSource =';
        aRestDW[ _itens_alt_dfm ]         := '';
+       Inc( _itens_alt_dfm );
+       aEngineOrigem  [ _itens_alt_dfm ] := ' ParamCheck =';
+       aRestDW[ _itens_alt_dfm ]         := '';
+       Inc( _itens_alt_dfm );
+       aEngineOrigem  [ _itens_alt_dfm ] := ' UpdateMode =';
+       aRestDW[ _itens_alt_dfm ]         := '';
+       Inc( _itens_alt_dfm );
+       aEngineOrigem  [ _itens_alt_dfm ] := ' WhereMode =';
+       aRestDW[ _itens_alt_dfm ]         := '';
+       Inc( _itens_alt_dfm );
+       aEngineOrigem  [ _itens_alt_dfm ] := ' Options =';
+       aRestDW[ _itens_alt_dfm ]         := '';
+
 
        //propriedades compostas
        //
@@ -502,14 +561,14 @@ begin
              // verificar se existe partes de CODIGO pra substituir( EXECSQL por ex. )
              f := memo_Original.Lines.Count - 1;
 
-                     (*
-             // limpar todo o DFM de OBJETOS descartaveis
-                          //fazer critica de substituicao/adicao de codigo
+
+             // linhas que nao sao compativeis com o RestDW e devem ser removidas integralmente
              //
              r := -1;
              while r <= f do //for r := 0 to f do
              begin
 
+                 s := 0;
                  inc( r );
                  linha := memo_Original.Lines.Strings[ r ];
 
@@ -519,35 +578,22 @@ begin
 
                        // se o objeto atual for descarte, pula até o 'end' do objeto
                        if Pos( aDescartar[ I ] , linha ) > 0 then
-                       begin
-
-                           repeat
-
-                                 // marcar linha para nao ser processada
-                                 strArqTemp.Add( r.ToString + '.' + linha );
-
-                                 Inc( r );
-                                 linha := memo_Original.Lines.Strings[ r ];
-
-
-                           until ( Copy( linha , 1, 3 ) = 'end' ) and ( Pos( '>' , linha ) = 0 );
-
-                           // marcar linha para nao ser processada
-                           strArqTemp.Add( r.ToString + '.' + linha );
-
-                       end;
+                          s := 1;
 
                  end;
+
+                 if s = 0 then
+                    strArqTemp.Add( linha );
 
              end;
 
              memo_Original.Lines.Text := strArqTemp.Text;
 
-             strArqTemp.SaveToFile( ExtractFileDir( ParamStr(0)) + '\descarte.txt' );
+             //strArqTemp.SaveToFile( ExtractFileDir( ParamStr(0)) + '\descarte.txt' );
 
              //strArqTemp.Free;
 
-*)
+
              // verificar se existe partes de CODIGO pra substituir( EXECSQL por ex. )
 
              //fazer critica de substituicao/adicao de codigo
@@ -563,7 +609,27 @@ begin
                  //verificar se esta linha pode ser processada...
                  //if Pos( r.ToString + '.' + linha , strArqTemp.Text ) = 0 then
                  begin
+                           (*
+                     // linhas que nao sao compativeis com o RestDW e devem ser removidas integralmente
+                     //
+                     for I := 1 to _itens_descartar do
+                     begin
 
+                         try
+
+                            if ( Pos( aDescartar[ i ] ,  linha ) > 0 ) then
+                            begin
+
+                                 linha := '';
+
+                            end;
+
+                         except
+
+                         end;
+
+                     end;
+                       *)
                      //fazer critica de adicao de propriedades( inserir logo abaixo de Objetc TRestSql )
                      //
                      for I := 1 to _itens_alt_dfm do
@@ -575,6 +641,8 @@ begin
 
                             if ( Pos( aEngineOrigem[ i ] ,  linha ) > 0 ) then
                             begin
+
+
 
                                  // até a prop. CONNECTION
                                  if i <= 3 then
