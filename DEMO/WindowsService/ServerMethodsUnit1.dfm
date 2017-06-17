@@ -22,7 +22,6 @@ object ServerMethods1: TServerMethods1
       'CharacterSet='
       'DriverID=FB')
     UpdateOptions.AssignedValues = [uvCountUpdatedRecords]
-    UpdateOptions.CountUpdatedRecords = False
     ConnectedStoredUsage = []
     LoginPrompt = False
     BeforeConnect = Server_FDConnectionBeforeConnect

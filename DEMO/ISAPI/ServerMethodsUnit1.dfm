@@ -23,7 +23,6 @@ object ServerMethods1: TServerMethods1
       'User_Name=sysdba'
       'password=masterkey')
     UpdateOptions.AssignedValues = [uvCountUpdatedRecords]
-    UpdateOptions.CountUpdatedRecords = False
     ConnectedStoredUsage = []
     LoginPrompt = False
     BeforeConnect = FDConnectionEMPLOYEEBeforeConnect
