@@ -49,6 +49,13 @@ Type
                                Params           : TParams;
                                Var Error        : Boolean;
                                Var MessageError : String) : Integer;Overload;Override;
+  Procedure ExecuteProcedure    (ProcName         : String;
+                                 Params           : TParams;
+                                 Var Error        : Boolean;
+                                 Var MessageError : String);Override;
+  Procedure ExecuteProcedurePure(ProcName         : String;
+                                 Var Error        : Boolean;
+                                 Var MessageError : String);Override;
   Procedure Close;Override;
  Published
   Property Connection : TFDConnection Read GetConnection Write SetConnection;
@@ -411,6 +418,120 @@ Begin
    End;
  End;
  GetInvocationMetaData.CloseSession := True;
+End;
+
+procedure TRESTDriverFD.ExecuteProcedure(ProcName: String; Params: TParams;
+  var Error: Boolean; var MessageError: String);
+Var
+ A, I            : Integer;
+ vParamName      : String;
+ vTempStoredProc : TFDStoredProc;
+ Function GetParamIndex(Params : TFDParams; ParamName : String) : Integer;
+ Var
+  I : Integer;
+ Begin
+  Result := -1;
+  For I := 0 To Params.Count -1 Do
+   Begin
+    If UpperCase(Params[I].Name) = UpperCase(ParamName) Then
+     Begin
+      Result := I;
+      Break;
+     End;
+   End;
+ End;
+Begin
+ Inherited;
+ Error  := False;
+ vTempStoredProc                               := TFDStoredProc.Create(Owner);
+ Try
+  vTempStoredProc.Connection                   := vFDConnection;
+  vTempStoredProc.FormatOptions.StrsTrim       := StrsTrim;
+  vTempStoredProc.FormatOptions.StrsEmpty2Null := StrsEmpty2Null;
+  vTempStoredProc.FormatOptions.StrsTrim2Len   := StrsTrim2Len;
+  vTempStoredProc.StoredProcName               := ProcName;
+  If Params <> Nil Then
+   Begin
+    Try
+     vTempStoredProc.Prepare;
+    Except
+    End;
+    For I := 0 To Params.Count -1 Do
+     Begin
+      If vTempStoredProc.ParamCount > I Then
+       Begin
+        vParamName := Copy(StringReplace(Params[I].Name, ',', '', []), 1, Length(Params[I].Name));
+        A          := GetParamIndex(vTempStoredProc.Params, vParamName);
+        If A > -1 Then//vTempQuery.ParamByName(vParamName) <> Nil Then
+         Begin
+          If vTempStoredProc.Params[A].DataType in [ftFixedChar, ftFixedWideChar,
+                                               ftString,    ftWideString]    Then
+           Begin
+            If vTempStoredProc.Params[A].Size > 0 Then
+             vTempStoredProc.Params[A].Value := Copy(Params[I].AsString, 1, vTempStoredProc.Params[A].Size)
+            Else
+             vTempStoredProc.Params[A].Value := Params[I].AsString;
+           End
+          Else
+           Begin
+            If vTempStoredProc.Params[A].DataType in [ftUnknown] Then
+             vTempStoredProc.Params[A].DataType := Params[I].DataType;
+            vTempStoredProc.Params[A].Value    := Params[I].Value;
+           End;
+         End;
+       End
+      Else
+       Break;
+     End;
+   End;
+  vTempStoredProc.ExecProc;
+  vFDConnection.CommitRetaining;
+ Except
+  On E : Exception do
+   Begin
+    Try
+     vFDConnection.RollbackRetaining;
+    Except
+    End;
+    Error := True;
+    MessageError := E.Message;
+   End;
+ End;
+ GetInvocationMetaData.CloseSession := True;
+ vTempStoredProc.DisposeOf;
+End;
+
+procedure TRESTDriverFD.ExecuteProcedurePure(ProcName         : String;
+                                             Var Error        : Boolean;
+                                             Var MessageError : String);
+Var
+ vTempStoredProc : TFDStoredProc;
+Begin
+ Inherited;
+ Error                                         := False;
+ vTempStoredProc                               := TFDStoredProc.Create(Owner);
+ Try
+  If Not vFDConnection.Connected Then
+   vFDConnection.Connected                     := True;
+  vTempStoredProc.Connection                   := vFDConnection;
+  vTempStoredProc.FormatOptions.StrsTrim       := StrsTrim;
+  vTempStoredProc.FormatOptions.StrsEmpty2Null := StrsEmpty2Null;
+  vTempStoredProc.FormatOptions.StrsTrim2Len   := StrsTrim2Len;
+  vTempStoredProc.StoredProcName               := DecodeStrings(ProcName, GetEncoding(Encoding));
+  vTempStoredProc.ExecProc;
+  vFDConnection.CommitRetaining;
+ Except
+  On E : Exception do
+   Begin
+    Try
+     vFDConnection.RollbackRetaining;
+    Except
+    End;
+    Error := True;
+    MessageError := E.Message;
+   End;
+ End;
+ vTempStoredProc.DisposeOf;
 End;
 
 function TRESTDriverFD.ExecuteCommand(SQL: String; var Error: Boolean;

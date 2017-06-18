@@ -23,14 +23,14 @@ implementation
 {$IFDEF MSWINDOWS}
 Procedure Register;
 Begin
- RegisterComponents('REST Dataware',     [TRESTPoolerDB, TRESTDataBase, TRESTClientSQL, TRESTPoolerList]);
+ RegisterComponents('REST Dataware',     [TRESTPoolerDB, TRESTDataBase, TRESTClientSQL, TRESTStoredProc, TRESTPoolerList]);
  RegisterPropertyEditor(TypeInfo(String), TRESTDataBase, 'PoolerName', TPoolersList);
 End;
 {$ENDIF}
 {$IFNDEF MSWINDOWS}
 Procedure Register;
 Begin
- RegisterComponents('REST Dataware',      [TRESTDataBase, TRESTClientSQL, TRESTPoolerList]);
+ RegisterComponents('REST Dataware',      [TRESTDataBase, TRESTClientSQL, TRESTStoredProc, TRESTPoolerList]);
  RegisterPropertyEditor(TypeInfo(String), TRESTDataBase, 'PoolerName', TPoolersList);
 End;
 {$ENDIF}

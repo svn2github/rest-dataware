@@ -127,11 +127,15 @@ Type
   Procedure CheckConnection;                         //Checa o Estado automatico da Conexão
   Function  TryConnect : Boolean;                    //Tenta Conectar o Servidor para saber se posso executar comandos
   Procedure SetConnectionOptions(Var Value : TDSRestConnection); //Seta as Opções de Conexão
-  Function ExecuteCommand(Var SQL    : TStringList;
-                          Var Params : TParams;
-                          Var Error  : Boolean;
-                          Var MessageError : String;
-                          Execute    : Boolean = False) : TFDJSONDataSets;
+  Function  ExecuteCommand  (Var SQL    : TStringList;
+                             Var Params : TParams;
+                             Var Error  : Boolean;
+                             Var MessageError : String;
+                             Execute    : Boolean = False) : TFDJSONDataSets;
+  Procedure ExecuteProcedure(ProcName         : String;
+                             Params           : TParams;
+                             Var Error        : Boolean;
+                             Var MessageError : String);
   Procedure ApplyUpdates(Var SQL          : TStringList;
                          Var Params       : TParams;
                          ADeltaList       : TFDJSONDeltas;
@@ -284,6 +288,23 @@ Type
   Property CacheUpdateRecords  : Boolean             Read vCacheUpdateRecords       Write SetCacheUpdateRecords;
 End;
 
+Type
+ TRESTStoredProc = Class(TComponent)
+ Private
+  Owner         : TComponent;
+  vParams       : TParams;
+  vProcName     : String;
+  vRESTDataBase : TRESTDataBase;
+  procedure SetDataBase(Const Value : TRESTDataBase);
+ Public
+  Constructor Create   (AOwner      : TComponent);Override; //Cria o Componente
+  Function    ExecProc (Var Error   : String) : Boolean;
+  Destructor  Destroy;Override;                             //Destroy a Classe
+ Published
+  Property DataBase            : TRESTDataBase       Read vRESTDataBase Write SetDataBase;             //Database REST do Dataset
+  Property Params              : TParams             Read vParams       Write vParams;                 //Parametros de Dataset
+  Property ProcName            : String              Read vProcName     Write vProcName;               //Procedure a ser Executada
+End;
 
 Type
  TRESTPoolerList = Class(TComponent)
@@ -317,7 +338,6 @@ Type
   Property PoolerPort         : Integer                  Read vPoolerPort         Write SetPoolerPort;      //A Porta do Pooler do DataSet
   Property PoolerPrefix       : String                   Read vPoolerPrefix       Write vPoolerPrefix;      //Prefixo do WebService REST
   Property Poolers            : TStringList              Read vPoolerList;
-
 End;
 
 {$IFDEF MSWINDOWS}
@@ -330,33 +350,40 @@ Type
   vCompression       : Boolean;
   vEncoding          : TEncodeSelect;
  Public
-  Procedure ApplyChanges(TableName,
-                         SQL               : String;
-                         Params            : TParams;
-                         Var Error         : Boolean;
-                         Var MessageError  : String;
-                         Const ADeltaList  : TFDJSONDeltas);Overload;Virtual;
-  Procedure ApplyChanges(TableName,
-                         SQL               : String;
-                         Var Error         : Boolean;
-                         Var MessageError  : String;
-                         Const ADeltaList  : TFDJSONDeltas);Overload;Virtual;
-  Function ExecuteCommand(SQL        : String;
-                          Var Error  : Boolean;
-                          Var MessageError : String;
-                          Execute    : Boolean = False) : TFDJSONDataSets;Overload;Virtual;
-  Function ExecuteCommand(SQL              : String;
-                          Params           : TParams;
-                          Var Error        : Boolean;
-                          Var MessageError : String;
-                          Execute          : Boolean = False) : TFDJSONDataSets;Overload;Virtual;
-  Function InsertMySQLReturnID(SQL              : String;
-                               Var Error        : Boolean;
-                               Var MessageError : String) : Integer;Overload;Virtual;
-  Function InsertMySQLReturnID(SQL              : String;
-                               Params           : TParams;
-                               Var Error        : Boolean;
-                               Var MessageError : String) : Integer;Overload;Virtual;
+  Procedure ApplyChanges        (TableName,
+                                 SQL               : String;
+                                 Params            : TParams;
+                                 Var Error         : Boolean;
+                                 Var MessageError  : String;
+                                 Const ADeltaList  : TFDJSONDeltas);Overload;Virtual;
+  Procedure ApplyChanges        (TableName,
+                                 SQL               : String;
+                                 Var Error         : Boolean;
+                                 Var MessageError  : String;
+                                 Const ADeltaList  : TFDJSONDeltas);Overload;Virtual;
+  Function ExecuteCommand       (SQL        : String;
+                                 Var Error  : Boolean;
+                                 Var MessageError : String;
+                                 Execute    : Boolean = False) : TFDJSONDataSets;Overload;Virtual;
+  Function ExecuteCommand       (SQL              : String;
+                                 Params           : TParams;
+                                 Var Error        : Boolean;
+                                 Var MessageError : String;
+                                 Execute          : Boolean = False) : TFDJSONDataSets;Overload;Virtual;
+  Function InsertMySQLReturnID  (SQL              : String;
+                                 Var Error        : Boolean;
+                                 Var MessageError : String) : Integer;Overload;Virtual;
+  Function InsertMySQLReturnID  (SQL              : String;
+                                 Params           : TParams;
+                                 Var Error        : Boolean;
+                                 Var MessageError : String) : Integer;Overload;Virtual;
+  Procedure ExecuteProcedure    (ProcName         : String;
+                                 Params           : TParams;
+                                 Var Error        : Boolean;
+                                 Var MessageError : String);Virtual;
+  Procedure ExecuteProcedurePure(ProcName         : String;
+                                 Var Error        : Boolean;
+                                 Var MessageError : String);Virtual;
   Procedure Close;Virtual;
  Public
   Property StrsTrim       : Boolean       Read vStrsTrim       Write vStrsTrim;
@@ -409,6 +436,13 @@ Type
                                Params           : TParams;
                                Var Error        : Boolean;
                                Var MessageError : String) : Integer;Overload;
+  Procedure ExecuteProcedure  (ProcName         : String;
+                               Params           : TParams;
+                               Var Error        : Boolean;
+                               Var MessageError : String);
+  Procedure ExecuteProcedurePure(ProcName         : String;
+                                 Var Error        : Boolean;
+                                 Var MessageError : String);
  Published
   Property    RESTDriver     : TRESTDriver   Read GetConnection    Write SetConnection;
   Property    Compression    : Boolean       Read vCompression     Write vCompression;
@@ -635,6 +669,47 @@ Begin
    vRESTDriver.vCompression       := vCompression;
    vRESTDriver.vEncoding          := vEncoding;
    Result := vRESTDriver.ExecuteCommand(SQL, Params, Error, MessageError);
+  End
+ Else
+  Begin
+   Error        := True;
+   MessageError := 'Selected Pooler Does Not Have a Driver Set';
+  End;
+End;
+
+Procedure TRESTPoolerDB.ExecuteProcedure(ProcName         : String;
+                                         Params           : TParams;
+                                         Var Error        : Boolean;
+                                         Var MessageError : String);
+Begin
+ If vRESTDriver <> Nil Then
+  Begin
+   vRESTDriver.vStrsTrim          := vStrsTrim;
+   vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+   vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+   vRESTDriver.vCompression       := vCompression;
+   vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.ExecuteProcedure(ProcName, Params, Error, MessageError);
+  End
+ Else
+  Begin
+   Error        := True;
+   MessageError := 'Selected Pooler Does Not Have a Driver Set';
+  End;
+End;
+
+Procedure TRESTPoolerDB.ExecuteProcedurePure(ProcName         : String;
+                                             Var Error        : Boolean;
+                                             Var MessageError : String);
+Begin
+ If vRESTDriver <> Nil Then
+  Begin
+   vRESTDriver.vStrsTrim          := vStrsTrim;
+   vRESTDriver.vStrsEmpty2Null    := vStrsEmpty2Null;
+   vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
+   vRESTDriver.vCompression       := vCompression;
+   vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.ExecuteProcedurePure(ProcName, Error, MessageError);
   End
  Else
   Begin
@@ -1084,6 +1159,45 @@ Begin
  End;
  vDSRConnection.DisposeOf;
  vRESTConnectionDB.DisposeOf;
+End;
+
+Procedure TRESTDataBase.ExecuteProcedure(ProcName         : String;
+                                         Params           : TParams;
+                                         Var Error        : Boolean;
+                                         Var MessageError : String);
+Var
+ vDSRConnection    : TDSRestConnection;
+ vRESTConnectionDB : TSMPoolerMethodClient;
+Begin
+ if vRestPooler = '' then
+  Exit;
+ If Trim(ProcName) = '' Then
+  Begin
+   Error := True;
+   MessageError := 'ProcName Cannot is Empty';
+  End
+ Else
+  Begin
+   SetConnectionOptions(vDSRConnection);
+   vRESTConnectionDB             := TSMPoolerMethodClient.Create(vDSRConnection, True);
+   vRESTConnectionDB.Compression := vCompression;
+   vRESTConnectionDB.Encoding    := GetEncoding(VEncondig);
+   Try
+    If Params.Count > 0 Then
+     vRESTConnectionDB.ExecuteProcedure(vRestPooler, vRestModule, ProcName, Params, Error, MessageError)
+    Else
+     vRESTConnectionDB.ExecuteProcedurePure(vRestPooler, vRestModule, ProcName, Error, MessageError);
+   Except
+    On E : Exception do
+     Begin
+      vDSRConnection.SessionID := '';
+      if Assigned(vOnEventConnection) then
+       vOnEventConnection(False, E.Message);
+     End;
+   End;
+  vDSRConnection.DisposeOf;
+  vRESTConnectionDB.DisposeOf;
+ End;
 End;
 
 Function TRESTDataBase.GetRestPoolers : TStringList;
@@ -2173,6 +2287,18 @@ begin
  //Overload Function
 end;
 
+procedure TRESTDriver.ExecuteProcedure(ProcName: String; Params: TParams;
+  var Error: Boolean; var MessageError: String);
+begin
+ //Overload Function
+end;
+
+procedure TRESTDriver.ExecuteProcedurePure(ProcName: String; var Error: Boolean;
+  var MessageError: String);
+begin
+ //Overload Function
+end;
+
 function TRESTDriver.ExecuteCommand(SQL: String; var Error: Boolean;
   var MessageError: String; Execute: Boolean): TFDJSONDataSets;
 begin
@@ -2183,6 +2309,37 @@ function TRESTDriver.InsertMySQLReturnID(SQL: String; Params: TParams;
   var Error: Boolean; var MessageError: String): Integer;
 begin
  //Overload Function
+end;
+
+{ TRESTStoredProc }
+
+constructor TRESTStoredProc.Create(AOwner: TComponent);
+begin
+ Inherited;
+ vParams   := TParams.Create;
+ Owner     := AOwner;
+ vParams   := Nil;
+ vProcName := '';
+end;
+
+destructor TRESTStoredProc.Destroy;
+begin
+ vParams.DisposeOf;
+ Inherited;
+end;
+
+function TRESTStoredProc.ExecProc(var Error: String): Boolean;
+begin
+ If vRESTDataBase <> Nil Then
+  Begin
+   If vParams.Count > 0 Then
+    vRESTDataBase.ExecuteProcedure(vProcName, vParams, Result, Error);
+  End;
+End;
+
+procedure TRESTStoredProc.SetDataBase(const Value: TRESTDataBase);
+begin
+ vRESTDataBase := Value;
 end;
 
 end.

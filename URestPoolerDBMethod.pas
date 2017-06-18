@@ -122,6 +122,16 @@ Uses System.SysUtils,         System.Classes,           Datasnap.DSServer,  Data
    //Get All Poolers
   Procedure GetPoolerList(Var PoolerList : TStringList);
   Procedure updateGetPoolerList(Var PoolerList : TStringList);
+  //StorecProc
+  Procedure ExecuteProcedure(Pooler     : String;
+                             ProcName   : String;
+                             Params     : TParams;
+                             Var Error  : Boolean;
+                             Var MessageError : String);
+  Procedure ExecuteProcedurePure(Pooler     : String;
+                                 ProcName   : String;
+                                 Var Error  : Boolean;
+                                 Var MessageError : String);
  End;
 {$METHODINFO ON}
  Type
@@ -365,6 +375,51 @@ Begin
   If LDataSets <> Nil Then
    LDataSets.Free;
  End;
+End;
+
+Procedure TModule.ExecuteProcedure(Pooler,
+                                   ProcName         : String;
+                                   Params           : TParams;
+                                   Var Error        : Boolean;
+                                   Var MessageError : String);
+Var
+ I : Integer;
+ vTempPooler : String;
+Begin
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
+ For I := 0 to ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       TRESTPoolerDB(Components[i]).ExecuteProcedure(ProcName, Params, Error, MessageError);
+       Break;
+      End;
+    End;
+  End;
+End;
+
+Procedure TModule.ExecuteProcedurePure(Pooler,
+                                       ProcName         : String;
+                                       Var Error        : Boolean;
+                                       Var MessageError : String);
+Var
+ I : Integer;
+ vTempPooler : String;
+Begin
+ vTempPooler := UpperCase(GetPoolerName(Pooler));
+ For I := 0 to ComponentCount -1 Do
+  Begin
+   If Components[i] is TRESTPoolerDB Then
+    Begin
+     If UpperCase(Components[i].Name) = vTempPooler Then
+      Begin
+       TRESTPoolerDB(Components[i]).ExecuteProcedurePure(ProcName, Error, MessageError);
+       Break;
+      End;
+    End;
+  End;
 End;
 
 Function Tmodule.updateExecuteCommandPureJSON(Pooler, SQL: String;

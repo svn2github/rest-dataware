@@ -124,3 +124,9 @@ Metodo não implementado para algo que não foi convertido.
  Implementada a nova propriedade CachedUpdates para o RESTClientSQL, e a implementação do cache de dados para você conseguir dar
 vários post's e somente um ApplyUpdates você enviar todos os dados do Cache para o Servidor.
  Ajuste do conversor de Projetos para DW enviado por Flavio Motta.
+
+1.0.1.248
+
+ Criação do componente RESTStoredProc para ajudar na compatibilidade de conversão dos sistemas e para execução simples de procedures
+com RESTDataware.
+ Exemplo de uso do RESTStoredProc adicionado no ProjectGroup dos Exemplos.

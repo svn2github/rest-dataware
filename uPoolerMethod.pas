@@ -30,7 +30,9 @@ Const
    FApplyChangesPureCommand,
    FApplyChangesCommand,
    FGetPoolerListCommand,
-   FGetPoolerListCommand_Cache          : TDSRestCommand;
+   FGetPoolerListCommand_Cache,
+   FExecuteProcedureCommand,
+   FExecuteProcedurePureCommand  : TDSRestCommand;
    Function DecompressJSON(Value : String) : TJSONObject;
    Function CompressJSON  (Value : String) : TJSONObject;
   Public
@@ -152,6 +154,21 @@ Const
                                   TimeOut              : Integer = 3000;
                                   UserName             : String  = '';
                                   Password             : String  = '');
+   //StoredProc
+   Procedure  ExecuteProcedure    (Pooler,
+                                   Method_Prefix,
+                                   ProcName             : String;
+                                   Params               : TParams;
+                                   Var Error            : Boolean;
+                                   Var MessageError     : String;
+                                   Const ARequestFilter : String = '');
+   Procedure  ExecuteProcedurePure(Pooler,
+                                   Method_Prefix,
+                                   ProcName             : String;
+                                   Var Error            : Boolean;
+                                   Var MessageError     : String;
+                                   Const ARequestFilter : String = '');
+
  End;
   IDSRestCachedTStringList = Interface(IDSRestCachedObject<TStringList>)
  End;
@@ -260,6 +277,23 @@ Const
   (
     (Name: 'PoolerList'; Direction: 2; DBXType: 26; TypeName: 'String')
   );
+  TSMPoolerMethodClient_ExecuteProcedure: array [0..4] of TDSRestParameterMetaData =
+  (
+    (Name: 'Pooler'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'ProcName'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'Params'; Direction: 1; DBXType: 23; TypeName: 'TParams'),
+    (Name: 'Error'; Direction: 3; DBXType: 4; TypeName: 'Boolean'),
+    (Name: 'MessageError'; Direction: 3; DBXType: 26; TypeName: 'string')
+  );
+
+  TSMPoolerMethodClient_ExecuteProcedurePure: array [0..3] of TDSRestParameterMetaData =
+  (
+    (Name: 'Pooler'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'ProcName'; Direction: 1; DBXType: 26; TypeName: 'string'),
+    (Name: 'Error'; Direction: 3; DBXType: 4; TypeName: 'Boolean'),
+    (Name: 'MessageError'; Direction: 3; DBXType: 26; TypeName: 'string')
+  );
+
 
 Var
  CompressionEncoding,
@@ -367,6 +401,54 @@ Begin
     Input.Free;
    End;
   End;
+End;
+
+procedure TSMPoolerMethodClient.ExecuteProcedure(Pooler,
+                                                 Method_Prefix,
+                                                 ProcName             : String;
+                                                 Params               : TParams;
+                                                 Var Error            : Boolean;
+                                                 Var MessageError     : String;
+                                                 Const ARequestFilter : String);
+Begin
+ If FExecuteProcedureCommand = Nil Then
+  Begin
+   FExecuteProcedureCommand             := FConnection.CreateCommand;
+   FExecuteProcedureCommand.RequestType := 'POST';
+   FExecuteProcedureCommand.Text        := Method_Prefix + '."ExecuteProcedure"';
+   FExecuteProcedureCommand.Prepare(TSMPoolerMethodClient_ExecuteProcedure);
+  End;
+ FExecuteProcedureCommand.Parameters[0].Value.SetWideString(Pooler);
+ FExecuteProcedureCommand.Parameters[1].Value.SetWideString(EncodeStrings(ProcName, vEncoding));
+ FExecuteProcedureCommand.Parameters[2].Value.SetDBXReader (TDBXParamsReader.Create(Params, FInstanceOwner), True);
+ FExecuteProcedureCommand.Parameters[3].Value.SetBoolean   (Error);
+ FExecuteProcedureCommand.Parameters[4].Value.SetWideString(MessageError);
+ FExecuteProcedureCommand.Execute                          (ARequestFilter);
+ Error        := FExecuteProcedureCommand.Parameters[3].Value.GetBoolean;
+ MessageError := FExecuteProcedureCommand.Parameters[4].Value.GetWideString;
+end;
+
+Procedure TSMPoolerMethodClient.ExecuteProcedurePure(Pooler,
+                                                     Method_Prefix,
+                                                     ProcName             : String;
+                                                     Var   Error          : Boolean;
+                                                     Var   MessageError   : String;
+                                                     Const ARequestFilter : String);
+begin
+ If FExecuteProcedurePureCommand = Nil Then
+  Begin
+   FExecuteProcedurePureCommand             := FConnection.CreateCommand;
+   FExecuteProcedurePureCommand.RequestType := 'GET';
+   FExecuteProcedurePureCommand.Text        := Method_Prefix + '.ExecuteCommandPure';
+   FExecuteProcedurePureCommand.Prepare(TSMPoolerMethodClient_ExecuteProcedurePure);
+  End;
+ FExecuteProcedurePureCommand.Parameters[0].Value.SetWideString(Pooler);
+ FExecuteProcedurePureCommand.Parameters[1].Value.SetWideString(EncodeStrings(ProcName, vEncoding));
+ FExecuteProcedurePureCommand.Parameters[2].Value.SetBoolean   (Error);
+ FExecuteProcedurePureCommand.Parameters[3].Value.SetWideString(MessageError);
+ FExecuteProcedurePureCommand.Execute                          (ARequestFilter);
+ Error        := FExecuteProcedurePureCommand.Parameters[2].Value.GetBoolean;
+ MessageError := FExecuteProcedurePureCommand.Parameters[3].Value.GetWideString;
 End;
 
 Procedure TSMPoolerMethodClient.ApplyChangesPure(Pooler,

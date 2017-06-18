@@ -2,13 +2,13 @@ unit uRestDriverZEOS;
 
 interface
 
-uses System.SysUtils,          System.Classes,
-     ZSqlUpdate,               ZAbstractRODataset,      ZAbstractDataset, ZDataset,
-     ZAbstractConnection,      Soap.EncdDecd,           ZConnection, System.JSON,
-     Data.DB,                  Data.FireDACJSONReflect, Data.DBXJSONReflect,
-     uPoolerMethod,            FireDAC.Stan.StorageBin, Data.DBXPlatform,
-     FireDAC.Stan.StorageJSON, DbxCompressionFilter,    uRestCompressTools,
-     System.ZLib, uRestPoolerDB, FireDAC.Comp.Client,   FireDAC.Stan.Intf,
+uses System.SysUtils,            System.Classes,          ZStoredProcedure,
+     ZSqlUpdate,                 ZAbstractRODataset,      ZAbstractDataset, ZDataset,
+     ZAbstractConnection,        Soap.EncdDecd,           ZConnection, System.JSON,
+     Data.DB,                    Data.FireDACJSONReflect, Data.DBXJSONReflect,
+     uPoolerMethod,              FireDAC.Stan.StorageBin, Data.DBXPlatform,
+     FireDAC.Stan.StorageJSON,   DbxCompressionFilter,    uRestCompressTools,
+     System.ZLib, uRestPoolerDB, FireDAC.Comp.Client,     FireDAC.Stan.Intf,
      FireDAC.DatS;
 
 {$IFDEF MSWINDOWS}
@@ -48,6 +48,13 @@ Type
                                Params           : TParams;
                                Var Error        : Boolean;
                                Var MessageError : String) : Integer;Overload;Override;
+  Procedure ExecuteProcedure    (ProcName         : String;
+                                 Params           : TParams;
+                                 Var Error        : Boolean;
+                                 Var MessageError : String);Override;
+  Procedure ExecuteProcedurePure(ProcName         : String;
+                                 Var Error        : Boolean;
+                                 Var MessageError : String);Override;
   Procedure Close;Override;
  Published
   Property Connection : TZConnection Read GetConnection Write SetConnection;
@@ -252,6 +259,113 @@ Begin
    End;
  End;
  GetInvocationMetaData.CloseSession := True;
+End;
+
+procedure TRESTDriverZEOS.ExecuteProcedure(ProcName: String; Params: TParams;
+  var Error: Boolean; var MessageError: String);
+Var
+ A, I            : Integer;
+ vParamName      : String;
+ vTempStoredProc : TZStoredProc;
+ Function GetParamIndex(Params : TParams; ParamName : String) : Integer;
+ Var
+  I : Integer;
+ Begin
+  Result := -1;
+  For I := 0 To Params.Count -1 Do
+   Begin
+    If UpperCase(Params[I].Name) = UpperCase(ParamName) Then
+     Begin
+      Result := I;
+      Break;
+     End;
+   End;
+ End;
+Begin
+ Inherited;
+ Error  := False;
+ vTempStoredProc                               := TZStoredProc.Create(Owner);
+ Try
+  vTempStoredProc.Connection                   := vZConnection;
+  vTempStoredProc.StoredProcName               := ProcName;
+  If Params <> Nil Then
+   Begin
+    Try
+     vTempStoredProc.Prepare;
+    Except
+    End;
+    For I := 0 To Params.Count -1 Do
+     Begin
+      If vTempStoredProc.Params.Count > I Then
+       Begin
+        vParamName := Copy(StringReplace(Params[I].Name, ',', '', []), 1, Length(Params[I].Name));
+        A          := GetParamIndex(vTempStoredProc.Params, vParamName);
+        If A > -1 Then//vTempQuery.ParamByName(vParamName) <> Nil Then
+         Begin
+          If vTempStoredProc.Params[A].DataType in [ftFixedChar, ftFixedWideChar,
+                                               ftString,    ftWideString]    Then
+           Begin
+            If vTempStoredProc.Params[A].Size > 0 Then
+             vTempStoredProc.Params[A].Value := Copy(Params[I].AsString, 1, vTempStoredProc.Params[A].Size)
+            Else
+             vTempStoredProc.Params[A].Value := Params[I].AsString;
+           End
+          Else
+           Begin
+            If vTempStoredProc.Params[A].DataType in [ftUnknown] Then
+             vTempStoredProc.Params[A].DataType := Params[I].DataType;
+            vTempStoredProc.Params[A].Value    := Params[I].Value;
+           End;
+         End;
+       End
+      Else
+       Break;
+     End;
+   End;
+  vTempStoredProc.ExecProc;
+  vZConnection.Commit;
+ Except
+  On E : Exception do
+   Begin
+    Try
+     vZConnection.Rollback;
+    Except
+    End;
+    Error := True;
+    MessageError := E.Message;
+   End;
+ End;
+ GetInvocationMetaData.CloseSession := True;
+ vTempStoredProc.DisposeOf;
+End;
+
+procedure TRESTDriverZEOS.ExecuteProcedurePure(ProcName: String;
+  var Error: Boolean; var MessageError: String);
+Var
+ vTempStoredProc : TZStoredProc;
+Begin
+ Inherited;
+ Error                                         := False;
+ vTempStoredProc                               := TZStoredProc.Create(Owner);
+ Try
+  If Not vZConnection.Connected Then
+   vZConnection.Connected                     := True;
+  vTempStoredProc.Connection                   := vZConnection;
+  vTempStoredProc.StoredProcName               := DecodeStrings(ProcName, GetEncoding(Encoding));
+  vTempStoredProc.ExecProc;
+  vZConnection.Commit;
+ Except
+  On E : Exception do
+   Begin
+    Try
+     vZConnection.Rollback;
+    Except
+    End;
+    Error := True;
+    MessageError := E.Message;
+   End;
+ End;
+ vTempStoredProc.DisposeOf;
 End;
 
 function TRESTDriverZEOS.ExecuteCommand(SQL: String; var Error: Boolean;
