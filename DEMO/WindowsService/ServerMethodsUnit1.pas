@@ -1,3 +1,6 @@
+// Criada originalmente por : Gilberto Rocha da Silva
+// Atualizada por : Alexandre Abade e Gilberto Rocha da Silva
+
 unit ServerMethodsUnit1;
 
 interface

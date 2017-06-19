@@ -4,11 +4,11 @@ interface
 
 uses System.SysUtils,          System.Classes,            MemDS,
      Data.DB,                  DBAccess,                  Uni,                       
-     System.JSON,              Data.DB,                   Data.DBXJSONReflect,
+     System.JSON,              Data.DBXJSONReflect,       FireDAC.Comp.Client,
      uPoolerMethod,            Data.DBXPlatform,          DbxCompressionFilter, 
    	 VirtualTable,             Vcl.StdCtrls,              uRestCompressTools,
    	 System.ZLib,              Soap.EncdDecd,             Data.FireDACJSONReflect,
-   	 uRestPoolerDB;
+   	 FireDAC.Stan.Intf,        uRestPoolerDB;
 
 {$IFDEF MSWINDOWS}
 Type
@@ -18,7 +18,7 @@ Type
   vUniConnection                 : TUniConnection;
   Procedure SetConnection(Value : TUniConnection);
   Function  GetConnection       : TUniConnection;
-  Procedure CloneData(Source : TUniQuery; Var Dest : TVirtualTable);  
+  Procedure CloneData(Source : TUniQuery; Var Dest : TFDMemTable);
  Public
   Procedure ApplyChanges(TableName,
                          SQL               : String;
@@ -73,12 +73,12 @@ Begin
 End;
 {$ENDIF}
 
-Procedure TRESTDriverUnidac.CloneData(Source : TUniQuery; Var Dest : TVirtualTable);
+Procedure TRESTDriverUnidac.CloneData(Source : TUniQuery; Var Dest : TFDMemTable);
 Var
  I : Integer;
  vFieldType : TFieldType;
 Begin
- Dest := TVirtualTable.Create(Nil);
+ Dest := TFDMemTable.Create(Nil);
  Dest.Close;
  Dest.FieldDefs.Clear;
  For I := 0 to Source.FieldDefs.Count -1 do
@@ -143,8 +143,8 @@ Var
  Len          : Integer;
  tempDataSets : TFDJSONDataSets;
  vTempMemT,
- MemTable     : TVirtualTable;
- Function GetParamIndex(Params : TFDParams; ParamName : String) : Integer;
+ MemTable     : TFDMemTable;
+ Function GetParamIndex(Params : TParams; ParamName : String) : Integer;
  Var
   I : Integer;
  Begin
@@ -209,7 +209,7 @@ Begin
      If Compression Then
       Begin
        tempDataSets := TFDJSONDataSets.Create;
-       MemTable     := TVirtualTable.Create(Nil);
+       MemTable     := TFDMemTable.Create(Nil);
        Original     := TStringStream.Create;
        gZIPStream   := TMemoryStream.Create;
        Try
@@ -232,9 +232,9 @@ Begin
       End
      Else
       Begin
-        CloneData(vTempQuery, vTempMemT);  
-        vTempWriter.ListAdd(Result, vTempQuery);
-	  End;
+        CloneData(vTempQuery, vTempMemT);
+        vTempWriter.ListAdd(Result, vTempMemT);
+	    End;
     Finally
      vTempWriter := Nil;
      vTempWriter.DisposeOf;
@@ -265,7 +265,7 @@ Var
  A, I            : Integer;
  vParamName      : String;
  vTempStoredProc : TUniStoredProc;
- Function GetParamIndex(Params : TFDParams; ParamName : String) : Integer;
+ Function GetParamIndex(Params : TParams; ParamName : String) : Integer;
  Var
   I : Integer;
  Begin
@@ -378,7 +378,7 @@ Var
  Len          : Integer;
  tempDataSets : TFDJSONDataSets;
  vTempMemT,
- MemTable     : TVirtualTable;
+ MemTable     : TFDMemTable;
 Begin
  Inherited;
  Result := Nil;
@@ -399,7 +399,7 @@ Begin
      If Compression Then
       Begin
        tempDataSets := TFDJSONDataSets.Create;
-       MemTable     := TVirtualTable.Create(Nil);
+       MemTable     := TFDMemTable.Create(Nil);
        Original     := TStringStream.Create;
        gZIPStream   := TMemoryStream.Create;
        Try
@@ -457,7 +457,7 @@ Var
  A, I        : Integer;
  vParamName  : String;
  fdCommand   : TUniQuery;
- Function GetParamIndex(Params : TFDParams; ParamName : String) : Integer;
+ Function GetParamIndex(Params : TParams; ParamName : String) : Integer;
  Var
   I : Integer;
  Begin

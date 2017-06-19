@@ -1,6 +1,5 @@
-// Para Funcionar o Servidor é necessário que todos os Métodos declarados em PUBLIC sejam
-//adicionados em seus Projetos.
-//Gilberto Rocha da Silva
+// Criada originalmente por : Gilberto Rocha da Silva
+// Atualizada por : Alexandre Abade e Gilberto Rocha da Silva
 
 unit ServerMethodsUnit1;
 
