@@ -232,6 +232,7 @@ Type
   Procedure PrepareDetails(ActiveMode : Boolean);
   Procedure SetCacheUpdateRecords(Value : Boolean);
   Procedure PrepareDetailsNew;
+  Function  FirstWord(Value : String) : String;
   Property  LocalSQL;
   Property  DataSetField;
   Property  DetailFields;
@@ -255,6 +256,7 @@ Type
   //Métodos
   Procedure   Open;Overload; Virtual;                     //Método Open que será utilizado no Componente
   Procedure   Open(SQL: String);Overload; Virtual;        //Método Open que será utilizado no Componente
+  Procedure   ExecOrOpen;                                 //Método Open que será utilizado no Componente
   Procedure   Close;Virtual;                              //Método Close que será utilizado no Componente
   Procedure   CreateDataSet; Virtual;
   Function    ExecSQL(Var Error : String) : Boolean;      //Método ExecSQL que será utilizado no Componente
@@ -1902,6 +1904,41 @@ End;
 Function TRESTClientSQL.ParamCount: Integer;
 Begin
  Result := vParams.Count;
+End;
+
+Function TRESTClientSQL.FirstWord(Value : String) : String;
+Var
+ vTempValue : PChar;
+Begin
+ vTempValue := PChar(Trim(Value));
+ While Not (vTempValue^ = #0) Do
+  Begin
+   If (vTempValue^ <> ' ') Then
+    Result := Result + vTempValue^
+   Else
+    Break;
+   Inc(vTempValue);
+  End;
+End;
+
+Procedure TRESTClientSQL.ExecOrOpen;
+Var
+ vError : String;
+ Function OpenSQL : Boolean;
+ Var
+  vSQLText : String;
+ Begin
+  vSQLText := UpperCase(Trim(vSQL.Text));
+  Result := FirstWord(vSQLText) = 'SELECT';
+ End;
+Begin
+ If OpenSQL Then
+  Open
+ Else
+  Begin
+   If Not ExecSQL(vError) Then
+    Raise Exception.Create(vError);
+  End;
 End;
 
 Function TRESTClientSQL.ExecSQL(Var Error : String) : Boolean;

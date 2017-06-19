@@ -963,9 +963,9 @@ object Form1: TForm1
   end
   object Button1: TButton
     Left = 507
-    Top = 126
+    Top = 127
     Width = 133
-    Height = 33
+    Height = 24
     Caption = 'Open'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -978,9 +978,9 @@ object Form1: TForm1
   end
   object Button2: TButton
     Left = 507
-    Top = 166
+    Top = 151
     Width = 133
-    Height = 33
+    Height = 24
     Caption = 'Execute'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1055,9 +1055,9 @@ object Form1: TForm1
   end
   object mComando: TMemo
     Left = 9
-    Top = 126
+    Top = 127
     Width = 491
-    Height = 73
+    Height = 72
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -1082,6 +1082,21 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 7
     OnClick = Button3Click
+  end
+  object Button4: TButton
+    Left = 507
+    Top = 175
+    Width = 133
+    Height = 24
+    Caption = 'Execute/Open'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 8
+    OnClick = Button4Click
   end
   object DataSource1: TDataSource
     AutoEdit = False
@@ -1112,12 +1127,13 @@ object Form1: TForm1
     DataBase = RESTDataBase
     SQL.Strings = (
       'select * from employee')
+    CacheUpdateRecords = True
     Left = 220
     Top = 182
   end
   object RESTDataBase: TRESTDataBase
     OnConnection = RESTDataBaseConnection
-    Active = True
+    Active = False
     Compression = True
     Login = 'testserver'
     Password = 'testserver'
@@ -1133,6 +1149,9 @@ object Form1: TForm1
     Encoding = esUtf8
     Context = 'datasnap'
     RESTContext = 'rest/'
+    StrsTrim = False
+    StrsEmpty2Null = False
+    StrsTrim2Len = True
     Left = 222
     Top = 140
   end

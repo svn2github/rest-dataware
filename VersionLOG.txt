@@ -130,3 +130,5 @@ vários post's e somente um ApplyUpdates você enviar todos os dados do Cache para
  Criação do componente RESTStoredProc para ajudar na compatibilidade de conversão dos sistemas e para execução simples de procedures
 com RESTDataware.
  Exemplo de uso do RESTStoredProc adicionado no ProjectGroup dos Exemplos.
+ Adicionado ao RESTClientSQL o métodos ExecOrOpen.
+ Exemplo ClientWin alterado para usar o novo método "ExecOrOpen".

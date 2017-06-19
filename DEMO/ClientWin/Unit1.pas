@@ -30,12 +30,14 @@ type
     Button3: TButton;
     Bevel3: TBevel;
     Label6: TLabel;
+    Button4: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
     procedure RESTDataBaseConnection(Sucess: Boolean; const Error: string);
     procedure Button2Click(Sender: TObject);
     procedure RESTClientSQLGetDataError(Sucess: Boolean; const Error: string);
     procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -120,6 +122,31 @@ Begin
      End;
   End;
 End;
+
+procedure TForm1.Button4Click(Sender: TObject);
+Var
+ vError    : String;
+Begin
+ If cbxPooler.ItemIndex > -1 Then
+  Begin
+   If RESTDataBase.Active Then
+    Begin
+     RESTClientSQL.Active       := False;
+     RESTClientSQL.SQL.Clear;
+     RESTClientSQL.SQL.Add(mComando.Text);
+     Try
+      RESTClientSQL.ExecOrOpen;
+     Except
+      On E : Exception do
+       Begin
+        Showmessage(E.Message);
+       End;
+     End;
+    End;
+  End
+ Else
+  Showmessage('Escolha um Pooler para realizar essa operação...');
+end;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
 begin

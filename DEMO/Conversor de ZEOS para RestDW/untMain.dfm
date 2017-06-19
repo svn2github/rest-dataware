@@ -959,19 +959,18 @@ object frmMain: TfrmMain
       4E92F100CAA80000000049454E44AE426082}
   end
   object Label6: TLabel
-    Left = 621
-    Top = 119
-    Width = 213
+    Left = 12
+    Top = 86
+    Width = 304
     Height = 13
     AutoSize = False
-    Caption = 'Processar apenas um arquivo'
+    Caption = 'Processar apenas um arquivo( pode ser um FILTRO )'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    Visible = False
   end
   object Label8: TLabel
     Left = 218
@@ -996,8 +995,8 @@ object frmMain: TfrmMain
     Shape = bsTopLine
   end
   object Label5: TLabel
-    Left = 13
-    Top = 89
+    Left = 343
+    Top = 86
     Width = 126
     Height = 13
     AutoSize = False
@@ -1042,9 +1041,9 @@ object frmMain: TfrmMain
     TabOrder = 2
   end
   object ButtonStart: TButton
-    Left = 344
-    Top = 103
-    Width = 85
+    Left = 480
+    Top = 100
+    Width = 88
     Height = 25
     Caption = 'Iniciar'
     Font.Charset = DEFAULT_CHARSET
@@ -1065,9 +1064,9 @@ object frmMain: TfrmMain
     Text = 'C:\mkmFONTES\CONVERTER Zeos para RestDW\Convertido'
   end
   object Button1: TButton
-    Left = 434
-    Top = 103
-    Width = 85
+    Left = 573
+    Top = 100
+    Width = 91
     Height = 25
     Caption = 'Info'
     Font.Charset = DEFAULT_CHARSET
@@ -1079,27 +1078,25 @@ object frmMain: TfrmMain
     TabOrder = 5
     OnClick = Button1Click
   end
-  object Edit1: TEdit
-    Left = 513
-    Top = 130
+  object edFiltro: TEdit
+    Left = 12
+    Top = 103
     Width = 321
     Height = 21
     TabOrder = 6
-    Text = 'C:\mkmFONTES\CONVERTER Zeos para RestDW\originais'
-    Visible = False
   end
   object cbxEngine: TComboBox
-    Left = 12
-    Top = 105
-    Width = 322
+    Left = 342
+    Top = 102
+    Width = 130
     Height = 21
-    ItemIndex = 0
     TabOrder = 7
     Text = 'Zeos'
     Items.Strings = (
       'Zeos'
-      'FireDac( a desenvolver )'
-      'IBX( a desenvolver )')
+      'IBX'
+      'FireDac'
+      'UniDac')
   end
   object OpenDialog1: TOpenDialog
     Left = 555
