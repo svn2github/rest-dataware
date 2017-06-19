@@ -2343,6 +2343,7 @@ End;
 
 { TRESTDriver }
 
+{$IFDEF MSWINDOWS}
 procedure TRESTDriver.ApplyChanges(TableName, SQL: String; Params: TParams;
   var Error: Boolean; var MessageError: String;
   const ADeltaList: TFDJSONDeltas);
@@ -2397,6 +2398,7 @@ function TRESTDriver.InsertMySQLReturnID(SQL: String; Params: TParams;
 begin
  //Overload Function
 end;
+{$ENDIF}
 
 { TRESTStoredProc }
 
