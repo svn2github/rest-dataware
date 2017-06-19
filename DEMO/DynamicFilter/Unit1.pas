@@ -107,9 +107,9 @@ begin
       vTempText := Edit1.Text;
       If chr(Key) in ['a'..'z', 'A'..'Z', '0'..'9', ' '] Then
        Begin
-        If Length(vTempText) = 0 Then
+        If Length(vTempText) = 0 Then //Se não tiver texto digitado fecha a consulta
          RESTClientSQL.Close
-        Else If Length(vTempText) = 1 Then
+        Else If Length(vTempText) = 1 Then //Abre aprimeira consulta com dados Filtrados
          Begin
           RESTClientSQL.Close;
           RESTClientSQL.SQL.Clear;

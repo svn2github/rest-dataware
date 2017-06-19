@@ -1057,7 +1057,13 @@ object Form1: TForm1
     Top = 128
     Width = 97
     Height = 17
-    Caption = 'Cont'#233'm Texto'
+    Caption = 'Text Into'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 6
   end
   object DataSource1: TDataSource
