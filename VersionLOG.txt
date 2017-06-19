@@ -132,3 +132,9 @@ com RESTDataware.
  Exemplo de uso do RESTStoredProc adicionado no ProjectGroup dos Exemplos.
  Adicionado ao RESTClientSQL o métodos ExecOrOpen.
  Exemplo ClientWin alterado para usar o novo método "ExecOrOpen".
+
+1.0.1.249
+
+ Adicionado ao RESTClientSQL o novo método DynamicFilter para ajudar as pesquisas incrementais com conceito WEB.
+ Exemplo DynamicFilter adicionado para mostrar o uso de pesquisas incrementais na WEB.
+ Melhoria do sistema de Erros.

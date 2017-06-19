@@ -269,6 +269,7 @@ Type
   procedure   OpenCursor(InfoQuery: Boolean); Override;   //Subscrevendo o OpenCursor para não ter erros de ADD Fields em Tempo de Design
   Procedure   GotoRec(Const RecNo : Integer);
   Function    ParamCount : Integer;
+  Procedure   DynamicFilter(Field, Value : String; InText : Boolean = False);
  Published
   Property MasterDataSet       : TRESTClientSQL      Read vMasterDataSet            Write SetMasterDataSet;
   Property MasterCascadeDelete : Boolean             Read vCascadeDelete            Write vCascadeDelete;
@@ -1506,6 +1507,28 @@ Begin
  Inherited;
 End;
 
+Procedure TRESTClientSQL.DynamicFilter(Field, Value : String; InText : Boolean = False);
+Begin
+ ExecOrOpen;
+ If vActive Then
+  Begin
+   If Length(Value) > 0 Then
+    Begin
+     If InText Then
+      Filter := Format('%s Like ''%s''', [Field, '%' + Value + '%'])
+     Else
+      Filter := Format('%s Like ''%s''', [Field, Value + '%']);
+     If Not (Filtered) Then
+      Filtered := True;
+    End
+   Else
+    Begin
+     Filter   := '';
+     Filtered := False;
+    End;
+  End;
+End;
+
 Function ScanParams(SQL : String) : TStringList;
 Var
  vTemp        : String;
@@ -1937,7 +1960,17 @@ Begin
  Else
   Begin
    If Not ExecSQL(vError) Then
-    Raise Exception.Create(vError);
+    Begin
+     If csDesigning in ComponentState Then
+      Raise Exception.Create(PChar(vError))
+     Else
+      Begin
+       If Assigned(vOnGetDataError) Then
+        vOnGetDataError(False, vError)
+       Else
+        Raise Exception.Create(PChar(vError));
+      End;
+    End;
   End;
 End;
 
@@ -2055,9 +2088,14 @@ Begin
          On E : Exception do
           Begin
            If csDesigning in ComponentState Then
-            Raise Exception.Create(PChar(E.Message));
-           If Assigned(vOnGetDataError) Then
-            vOnGetDataError(False, E.Message);
+            Raise Exception.Create(PChar(E.Message))
+           Else
+            Begin
+             If Assigned(vOnGetDataError) Then
+              vOnGetDataError(False, E.Message)
+             Else
+              Raise Exception.Create(PChar(E.Message));
+            End;
           End;
         End;
        Finally
@@ -2239,9 +2277,14 @@ Begin
    If vError Then
     Begin
      If csDesigning in ComponentState Then
-      Raise Exception.Create(PChar(vMessageError));
-     If Assigned(vOnGetDataError) Then
-      vOnGetDataError(Not(vError), vMessageError);
+      Raise Exception.Create(PChar(vMessageError))
+     Else
+      Begin
+       If Assigned(vOnGetDataError) Then
+        vOnGetDataError(Not(vError), vMessageError)
+       Else
+        Raise Exception.Create(PChar(vMessageError));
+      End;
     End;
   End;
 End;
@@ -2259,6 +2302,8 @@ Begin
    Try
     If Not(vActive) And (Value) Then
      Begin
+      Filter                       := '';
+      Filtered                     := False;
       FormatOptions.StrsTrim       := vRESTDataBase.StrsTrim;
       FormatOptions.StrsEmpty2Null := vRESTDataBase.StrsEmpty2Null;
       FormatOptions.StrsTrim2Len   := vRESTDataBase.StrsTrim2Len;
@@ -2272,9 +2317,14 @@ Begin
     On E : Exception do
      Begin
       If csDesigning in ComponentState Then
-       Raise Exception.Create(PChar(E.Message));
-      If Assigned(vOnGetDataError) then
-       vOnGetDataError(False, E.Message);
+       Raise Exception.Create(PChar(E.Message))
+      Else
+       Begin
+        If Assigned(vOnGetDataError) Then
+         vOnGetDataError(False, E.Message)
+        Else
+         Raise Exception.Create(PChar(E.Message));
+       End;
      End;
    End;
   End
