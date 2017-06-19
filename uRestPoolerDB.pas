@@ -303,6 +303,7 @@ Type
   Constructor Create   (AOwner      : TComponent);Override; //Cria o Componente
   Function    ExecProc (Var Error   : String) : Boolean;
   Destructor  Destroy;Override;                             //Destroy a Classe
+  Function    ParamByName(Value : String) : TParam;
  Published
   Property DataBase            : TRESTDataBase       Read vRESTDataBase Write SetDataBase;             //Database REST do Dataset
   Property Params              : TParams             Read vParams       Write vParams;                 //Parametros de Dataset
@@ -2417,13 +2418,18 @@ begin
  Inherited;
 end;
 
-function TRESTStoredProc.ExecProc(var Error: String): Boolean;
-begin
+Function TRESTStoredProc.ExecProc(Var Error : String) : Boolean;
+Begin
  If vRESTDataBase <> Nil Then
   Begin
    If vParams.Count > 0 Then
     vRESTDataBase.ExecuteProcedure(vProcName, vParams, Result, Error);
   End;
+End;
+
+Function TRESTStoredProc.ParamByName(Value: String): TParam;
+Begin
+ Result := Params.ParamByName(Value);
 End;
 
 procedure TRESTStoredProc.SetDataBase(const Value: TRESTDataBase);
