@@ -12,6 +12,9 @@
         <Projects Include="Connectors\ZEOS\RESTDriverZEOS.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Connectors\UniDAC\RESTDriverUniDAC.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +50,23 @@
     <Target Name="RESTDriverZEOS:Make">
         <MSBuild Projects="Connectors\ZEOS\RESTDriverZEOS.dproj" Targets="Make"/>
     </Target>
+    <Target Name="RESTDriverUniDAC">
+        <MSBuild Projects="Connectors\UniDAC\RESTDriverUniDAC.dproj"/>
+    </Target>
+    <Target Name="RESTDriverUniDAC:Clean">
+        <MSBuild Projects="Connectors\UniDAC\RESTDriverUniDAC.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RESTDriverUniDAC:Make">
+        <MSBuild Projects="Connectors\UniDAC\RESTDriverUniDAC.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestEasyObjects;RESTDriverFD;RESTDriverZEOS"/>
+        <CallTarget Targets="RestEasyObjects;RESTDriverFD;RESTDriverZEOS;RESTDriverUniDAC"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestEasyObjects:Clean;RESTDriverFD:Clean;RESTDriverZEOS:Clean"/>
+        <CallTarget Targets="RestEasyObjects:Clean;RESTDriverFD:Clean;RESTDriverZEOS:Clean;RESTDriverUniDAC:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestEasyObjects:Make;RESTDriverFD:Make;RESTDriverZEOS:Make"/>
+        <CallTarget Targets="RestEasyObjects:Make;RESTDriverFD:Make;RESTDriverZEOS:Make;RESTDriverUniDAC:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

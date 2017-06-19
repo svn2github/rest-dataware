@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2017/06/19 13:03:05.928,=rtl.dcp</Transaction>
+    <Transaction>2017/06/19 13:03:40.312,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\Connectors\UniDAC\RESTDriverUniDAC.dproj=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Package1.dproj</Transaction>
+    <Transaction>2017/06/19 13:03:58.230,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\Connectors\UniDAC\uRestDriverUnidac.pas</Transaction>
+    <Transaction>2017/06/19 13:10:52.677,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\Connectors\UniDAC\TRESTDriverUnidac.bmp</Transaction>
+  </Transactions>
+</BorlandProject>

@@ -1230,6 +1230,6 @@ object Form1: TForm1
     StrsEmpty2Null = False
     StrsTrim2Len = True
     Left = 222
-    Top = 172
+    Top = 180
   end
 end
