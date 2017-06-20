@@ -146,7 +146,6 @@
             <Form>WebModule1</Form>
             <DesignClass>TWebModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="..\..\uRESTBridge.pas"/>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
