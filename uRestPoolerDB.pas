@@ -411,6 +411,7 @@ Type
   vStrsTrim2Len,
   vCompression   : Boolean;
   vEncoding      : TEncodeSelect;
+  vMessagePoolerOff : String;
   Procedure SetConnection(Value : TRESTDriver);
   Function  GetConnection  : TRESTDriver;
  Public
@@ -451,13 +452,14 @@ Type
   Constructor Create(AOwner : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                     //Destroy a Classe
  Published
-  Property    RESTDriver     : TRESTDriver   Read GetConnection    Write SetConnection;
-  Property    Compression    : Boolean       Read vCompression     Write vCompression;
-  Property    Encoding       : TEncodeSelect Read vEncoding        Write vEncoding;
-  Property    StrsTrim       : Boolean       Read vStrsTrim        Write vStrsTrim;
-  Property    StrsEmpty2Null : Boolean       Read vStrsEmpty2Null  Write vStrsEmpty2Null;
-  Property    StrsTrim2Len   : Boolean       Read vStrsTrim2Len    Write vStrsTrim2Len;
-  Property    Active         : Boolean       Read vActive          Write vActive;
+  Property    RESTDriver       : TRESTDriver   Read GetConnection     Write SetConnection;
+  Property    Compression      : Boolean       Read vCompression      Write vCompression;
+  Property    Encoding         : TEncodeSelect Read vEncoding         Write vEncoding;
+  Property    StrsTrim         : Boolean       Read vStrsTrim         Write vStrsTrim;
+  Property    StrsEmpty2Null   : Boolean       Read vStrsEmpty2Null   Write vStrsEmpty2Null;
+  Property    StrsTrim2Len     : Boolean       Read vStrsTrim2Len     Write vStrsTrim2Len;
+  Property    Active           : Boolean       Read vActive           Write vActive;
+  Property    PoolerOffMessage : String        Read vMessagePoolerOff Write vMessagePoolerOff;
 End;
 {$ENDIF}
 
@@ -772,14 +774,15 @@ end;
 Constructor TRESTPoolerDB.Create(AOwner : TComponent);
 Begin
  Inherited;
- Owner           := aOwner;
- FLock           := TCriticalSection.Create;
- vCompression    := True;
- vStrsTrim       := False;
- vStrsEmpty2Null := False;
- vStrsTrim2Len   := True;
- vActive         := True;
- vEncoding       := esUtf8;
+ Owner             := aOwner;
+ FLock             := TCriticalSection.Create;
+ vCompression      := True;
+ vStrsTrim         := False;
+ vStrsEmpty2Null   := False;
+ vStrsTrim2Len     := True;
+ vActive           := True;
+ vEncoding         := esUtf8;
+ vMessagePoolerOff := 'RESTPooler not active.';
 End;
 
 Destructor  TRESTPoolerDB.Destroy;

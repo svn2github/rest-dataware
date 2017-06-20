@@ -152,4 +152,5 @@ o Pooler que estiver com a propriedade Active False vai retornar do WS o Erro Po
 pode colocar seu Servidor em Manutenção sem Derrubar o Serviço.
  Exemplo Servidor "RestDWServerProject" alterado para demonstração da nova propriedade.
  Retirado do Servidor "RestDWServerProject" os exemplos com Drivers UniDAC e Zeos por reclamações de outros usuários, não tendo os mesmos e não
-conseguindo usar o exemplo. Porém a dinâmica eh a mesma, sendo assim para implementar qualquer um dos Drivers somente seguir o exemplo atual.
+conseguindo usar o exemplo. Porém a dinâmica eh a mesma, sendo assim para implementar qualquer um dos Drivers somente seguir o exemplo atual. 
+ Propriedade pedida PoolerOffMessage criada para poder ser dita a MSG de Pooler desligado desejada pelo programador.

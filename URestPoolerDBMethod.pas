@@ -165,7 +165,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
@@ -200,7 +200,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
@@ -235,7 +235,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
@@ -270,7 +270,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
@@ -311,7 +311,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
@@ -347,7 +347,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
@@ -421,7 +421,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
@@ -458,7 +458,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
@@ -638,7 +638,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
@@ -675,7 +675,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
@@ -711,7 +711,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
@@ -747,7 +747,7 @@ Begin
        Else
         Begin
          Error := True;
-         MessageError := 'RESTPooler not active.';
+         MessageError := TRESTPoolerDB(Components[i]).PoolerOffMessage;
         End;
        Break;
       End;
