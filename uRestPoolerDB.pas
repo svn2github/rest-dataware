@@ -405,6 +405,7 @@ Type
   FLock          : TCriticalSection;
   vRESTDriverBack,
   vRESTDriver    : TRESTDriver;
+  vActive,
   vStrsTrim,
   vStrsEmpty2Null,
   vStrsTrim2Len,
@@ -447,6 +448,8 @@ Type
   Procedure ExecuteProcedurePure(ProcName         : String;
                                  Var Error        : Boolean;
                                  Var MessageError : String);
+  Constructor Create(AOwner : TComponent);Override; //Cria o Componente
+  Destructor  Destroy;Override;                     //Destroy a Classe
  Published
   Property    RESTDriver     : TRESTDriver   Read GetConnection    Write SetConnection;
   Property    Compression    : Boolean       Read vCompression     Write vCompression;
@@ -454,8 +457,7 @@ Type
   Property    StrsTrim       : Boolean       Read vStrsTrim        Write vStrsTrim;
   Property    StrsEmpty2Null : Boolean       Read vStrsEmpty2Null  Write vStrsEmpty2Null;
   Property    StrsTrim2Len   : Boolean       Read vStrsTrim2Len    Write vStrsTrim2Len;
-  Constructor Create(AOwner : TComponent);Override; //Cria o Componente
-  Destructor  Destroy;Override;                     //Destroy a Classe
+  Property    Active         : Boolean       Read vActive          Write vActive;
 End;
 {$ENDIF}
 
@@ -776,6 +778,7 @@ Begin
  vStrsTrim       := False;
  vStrsEmpty2Null := False;
  vStrsTrim2Len   := True;
+ vActive         := True;
  vEncoding       := esUtf8;
 End;
 

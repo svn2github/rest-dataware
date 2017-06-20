@@ -147,20 +147,34 @@ Procedure Tmodule.ApplyChanges(Pooler, TableName, SQL: String; Params: TParams;
                                const ADeltaList: TFDJSONDeltas; var Error: Boolean;
                                var MessageError: String);
 Var
- I : Integer;
+ I           : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
+ vFound      := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound  := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       TRESTPoolerDB(Components[i]).ApplyChanges(TableName, SQL, Params, Error, MessageError, ADeltaList);
+       If TRESTPoolerDB(Components[i]).Active Then
+        TRESTPoolerDB(Components[i]).ApplyChanges(TableName, SQL, Params, Error, MessageError, ADeltaList)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -170,18 +184,32 @@ Procedure Tmodule.updateApplyChanges(Pooler, TableName, SQL: String; Params: TPa
 Var
  I : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
+ vFound      := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       TRESTPoolerDB(Components[i]).ApplyChanges(TableName, SQL, Params, Error, MessageError, ADeltaList);
+       If TRESTPoolerDB(Components[i]).Active Then
+        TRESTPoolerDB(Components[i]).ApplyChanges(TableName, SQL, Params, Error, MessageError, ADeltaList)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -191,18 +219,32 @@ Procedure Tmodule.ApplyChangesPure(Pooler, TableName, SQL: String;
 Var
  I : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
+ vFound      := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound  := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       TRESTPoolerDB(Components[i]).ApplyChanges(TableName, SQL, Error, MessageError, ADeltaList);
+       If TRESTPoolerDB(Components[i]).Active Then
+        TRESTPoolerDB(Components[i]).ApplyChanges(TableName, SQL, Error, MessageError, ADeltaList)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -212,18 +254,32 @@ Procedure Tmodule.updateApplyChangesPure(Pooler, TableName, SQL: String;
 Var
  I : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
+ vFound      := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound  := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       TRESTPoolerDB(Components[i]).ApplyChanges(TableName, SQL, Error, MessageError, ADeltaList);
+       If TRESTPoolerDB(Components[i]).Active Then
+        TRESTPoolerDB(Components[i]).ApplyChanges(TableName, SQL, Error, MessageError, ADeltaList)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -238,19 +294,33 @@ Function Tmodule.ExecuteCommand(Pooler, SQL: String; Params: TParams;
 Var
  I : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
  Result := Nil;
+ vFound := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Params, Error, MessageError, Execute);;
+       If TRESTPoolerDB(Components[i]).Active Then
+        Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Params, Error, MessageError, Execute)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -260,19 +330,33 @@ Function Tmodule.updateExecuteCommand(Pooler, SQL: String; Params: TParams;
 Var
  I : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
  Result := Nil;
+ vFound      := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Params, Error, MessageError, Execute);;
+       If TRESTPoolerDB(Components[i]).Active Then
+        Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Params, Error, MessageError, Execute)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -320,19 +404,33 @@ Function Tmodule.ExecuteCommandPure(Pooler, SQL: String;
 Var
  I : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
  Result := Nil;
+ vFound := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 To ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Error, MessageError, Execute);
+       If TRESTPoolerDB(Components[i]).Active Then
+        Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Error, MessageError, Execute)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -343,19 +441,33 @@ Function Tmodule.updateExecuteCommandPure(Pooler, SQL: String;
 Var
  I : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
  Result := Nil;
+ vFound := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 To ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Error, MessageError, Execute);
+       If TRESTPoolerDB(Components[i]).Active Then
+        Result := TRESTPoolerDB(Components[i]).ExecuteCommand(SQL, Error, MessageError, Execute)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -383,20 +495,28 @@ Procedure TModule.ExecuteProcedure(Pooler,
                                    Var Error        : Boolean;
                                    Var MessageError : String);
 Var
- I : Integer;
+ I           : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
+ vFound      := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
        TRESTPoolerDB(Components[i]).ExecuteProcedure(ProcName, Params, Error, MessageError);
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -407,18 +527,25 @@ Procedure TModule.ExecuteProcedurePure(Pooler,
 Var
  I : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 to ComponentCount -1 Do
   Begin
    If Components[i] is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
        TRESTPoolerDB(Components[i]).ExecuteProcedurePure(ProcName, Error, MessageError);
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -494,19 +621,33 @@ Function Tmodule.InsertValue(Pooler, SQL: String;
 Var
  I           : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
  Result := -1;
+ vFound := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 To ComponentCount -1 Do
   Begin
    If Components[i] Is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Params, Error, MessageError);
+       If TRESTPoolerDB(Components[i]).Active Then
+        Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Params, Error, MessageError)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -517,19 +658,33 @@ Function Tmodule.updateInsertValue(Pooler, SQL: String;
 Var
  I           : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
  Result := -1;
+ vFound := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 To ComponentCount -1 Do
   Begin
    If Components[i] Is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Params, Error, MessageError);
+       If TRESTPoolerDB(Components[i]).Active Then
+        Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Params, Error, MessageError)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -539,19 +694,33 @@ Function Tmodule.InsertValuePure(Pooler, SQL: String;
 Var
  I : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
  Result := -1;
+ vFound := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 To ComponentCount -1 Do
   Begin
    If Components[i] Is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Error, MessageError);
+       If TRESTPoolerDB(Components[i]).Active Then
+        Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Error, MessageError)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 
@@ -561,19 +730,33 @@ Function Tmodule.updateInsertValuePure(Pooler, SQL: String;
 Var
  I : Integer;
  vTempPooler : String;
+ vFound      : Boolean;
 Begin
  Result := -1;
+ vFound := False;
  vTempPooler := UpperCase(GetPoolerName(Pooler));
  For I := 0 To ComponentCount -1 Do
   Begin
    If Components[i] Is TRESTPoolerDB Then
     Begin
-     If UpperCase(Components[i].Name) = vTempPooler Then
+     vFound := UpperCase(Components[i].Name) = vTempPooler;
+     If vFound Then
       Begin
-       Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Error, MessageError);
+       If TRESTPoolerDB(Components[i]).Active Then
+        Result := TRESTPoolerDB(Components[i]).InsertMySQLReturnID(SQL, Error, MessageError)
+       Else
+        Begin
+         Error := True;
+         MessageError := 'RESTPooler not active.';
+        End;
        Break;
       End;
     End;
+  End;
+ If Not vFound Then
+  Begin
+   Error := True;
+   MessageError := 'RESTPooler not Found.';
   End;
 End;
 

@@ -144,3 +144,12 @@ com RESTDataware.
  Ajuste no Driver UniDAC para retirar BUG de Access violation em campos array(XyberX/Gilson).
  Ajuste no Server Project para ter um Pooler UniDAC(XyberX).
  Ajuste no conversor de aplicações para contemplar IBX (Flavio/Mizael).
+
+1.0.1.252
+
+ Nova propriedade criada no RESTPooler, Active. A propriedade Active serve para o Servidor continuar respondendo como ativo porém,
+o Pooler que estiver com a propriedade Active False vai retornar do WS o Erro Pooler not active e assim não trará dados, com isso você
+pode colocar seu Servidor em Manutenção sem Derrubar o Serviço.
+ Exemplo Servidor "RestDWServerProject" alterado para demonstração da nova propriedade.
+ Retirado do Servidor "RestDWServerProject" os exemplos com Drivers UniDAC e Zeos por reclamações de outros usuários, não tendo os mesmos e não
+conseguindo usar o exemplo. Porém a dinâmica eh a mesma, sendo assim para implementar qualquer um dos Drivers somente seguir o exemplo atual.

@@ -1264,6 +1264,22 @@ object RestDWForm: TRestDWForm
     TabOrder = 13
     Text = ''
   end
+  object cbPoolerState: TCheckBox
+    Left = 162
+    Top = 353
+    Width = 97
+    Height = 17
+    Caption = 'Pooler Active?'
+    Checked = True
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    State = cbChecked
+    TabOrder = 14
+  end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
     Left = 509
@@ -1277,8 +1293,8 @@ object RestDWForm: TRestDWForm
     Top = 80
   end
   object pmMenu: TPopupMenu
-    Left = 272
-    Top = 84
+    Left = 192
+    Top = 80
     object RestaurarAplicao1: TMenuItem
       Caption = 'Restaurar Aplica'#231#227'o'
       OnClick = RestaurarAplicao1Click
