@@ -2,8 +2,8 @@
 EditorSecs=3
 DesignerSecs=1
 InspectorSecs=1
-CompileSecs=1
-OtherSecs=6
+CompileSecs=30845
+OtherSecs=89
 StartTime=19/06/2017 13:10:57
 RealKeys=0
 EffectiveKeys=0

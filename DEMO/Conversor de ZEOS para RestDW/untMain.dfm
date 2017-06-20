@@ -964,7 +964,7 @@ object frmMain: TfrmMain
     Width = 304
     Height = 13
     AutoSize = False
-    Caption = 'Processar apenas um arquivo( pode ser um FILTRO )'
+    Caption = 'Processar apenas um arquivo( Ex: uCadCli*.* )'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -1000,7 +1000,7 @@ object frmMain: TfrmMain
     Width = 126
     Height = 13
     AutoSize = False
-    Caption = 'Engine de Acesso'
+    Caption = 'Engine de Origem'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11

@@ -97,8 +97,7 @@ Begin
  While Not Source.Eof Do
   Begin
    Dest.Insert;
-   For I := 0 to Source.Fields.Count -1 do
-    Dest.Fields[I].Value := Source.Fields[I].Value;
+   Dest.CopyRecord(Source);
    Dest.Post;
    Source.Next;
   End;

@@ -12,6 +12,7 @@ object fEmployee: TfEmployee
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -1349,7 +1350,7 @@ object fEmployee: TfEmployee
     OnClick = Button2Click
   end
   object RESTDataBase: TRESTDataBase
-    Active = False
+    Active = True
     Compression = True
     Login = 'testserver'
     Password = 'testserver'
@@ -1357,7 +1358,7 @@ object fEmployee: TfEmployee
     ProxyOptions.Port = 8888
     PoolerService = '127.0.0.1'
     PoolerPort = 8082
-    PoolerName = 'ServerMethodsUnit1.RESTPoolerDB'
+    PoolerName = 'ServerMethodsUnit1.RESTPoolerUNIDAC'
     RestModule = 'TServerMethods1'
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
@@ -1397,6 +1398,7 @@ object fEmployee: TfEmployee
     SQL.Strings = (
       'select * from employee')
     UpdateTableName = 'EMPLOYEE'
+    CacheUpdateRecords = True
     Left = 362
     Top = 157
     object rEmployeeEMP_NO: TSmallintField
@@ -1511,6 +1513,7 @@ object fEmployee: TfEmployee
     DataBase = RESTDataBase
     SQL.Strings = (
       'select * from DEPARTMENT')
+    CacheUpdateRecords = True
     Left = 362
     Top = 200
     object rDepartmentDEPT_NO: TStringField
@@ -1609,6 +1612,7 @@ object fEmployee: TfEmployee
     DataBase = RESTDataBase
     SQL.Strings = (
       'select * from job')
+    CacheUpdateRecords = True
     Left = 362
     Top = 244
     object fJobJOB_CODE: TStringField

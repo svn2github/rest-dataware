@@ -48,6 +48,9 @@
         <Projects Include="DynamicFilter\DynamicFilter.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\Connectors\UniDAC\RESTDriverUniDAC.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -191,14 +194,23 @@
     <Target Name="DynamicFilter:Make">
         <MSBuild Projects="DynamicFilter\DynamicFilter.dproj" Targets="Make"/>
     </Target>
+    <Target Name="RESTDriverUniDAC">
+        <MSBuild Projects="..\Connectors\UniDAC\RESTDriverUniDAC.dproj"/>
+    </Target>
+    <Target Name="RESTDriverUniDAC:Clean">
+        <MSBuild Projects="..\Connectors\UniDAC\RESTDriverUniDAC.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RESTDriverUniDAC:Make">
+        <MSBuild Projects="..\Connectors\UniDAC\RESTDriverUniDAC.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestEasyObjects;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker;ClientWin;ListPoolers;WindowsDWService;Replace2RestDW;RESTDriverFD;RESTDriverZEOS;StoredProc;DynamicFilter"/>
+        <CallTarget Targets="RestEasyObjects;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker;ClientWin;ListPoolers;WindowsDWService;Replace2RestDW;RESTDriverFD;RESTDriverZEOS;StoredProc;DynamicFilter;RESTDriverUniDAC"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean;ClientWin:Clean;ListPoolers:Clean;WindowsDWService:Clean;Replace2RestDW:Clean;RESTDriverFD:Clean;RESTDriverZEOS:Clean;StoredProc:Clean;DynamicFilter:Clean"/>
+        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean;ClientWin:Clean;ListPoolers:Clean;WindowsDWService:Clean;Replace2RestDW:Clean;RESTDriverFD:Clean;RESTDriverZEOS:Clean;StoredProc:Clean;DynamicFilter:Clean;RESTDriverUniDAC:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestEasyObjects:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make;ClientWin:Make;ListPoolers:Make;WindowsDWService:Make;Replace2RestDW:Make;RESTDriverFD:Make;RESTDriverZEOS:Make;StoredProc:Make;DynamicFilter:Make"/>
+        <CallTarget Targets="RestEasyObjects:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make;ClientWin:Make;ListPoolers:Make;WindowsDWService:Make;Replace2RestDW:Make;RESTDriverFD:Make;RESTDriverZEOS:Make;StoredProc:Make;DynamicFilter:Make;RESTDriverUniDAC:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
