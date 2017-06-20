@@ -36,6 +36,7 @@ object ServerMethods1: TServerMethods1
     StrsEmpty2Null = False
     StrsTrim2Len = True
     Active = True
+    PoolerOffMessage = 'RESTPooler not active.'
     Left = 60
     Top = 128
   end

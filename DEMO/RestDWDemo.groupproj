@@ -15,9 +15,6 @@
         <Projects Include="Android\ClientMobile.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="DwServer\RestDWServerProject.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="MasterDetail\MasterDetail.dproj">
             <Dependencies/>
         </Projects>
@@ -49,6 +46,9 @@
             <Dependencies/>
         </Projects>
         <Projects Include="..\Connectors\UniDAC\RESTDriverUniDAC.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="DwServer\RestDWServerProject.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -94,15 +94,6 @@
     </Target>
     <Target Name="ClientMobile:Make">
         <MSBuild Projects="Android\ClientMobile.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="RestDWServerProject">
-        <MSBuild Projects="DwServer\RestDWServerProject.dproj"/>
-    </Target>
-    <Target Name="RestDWServerProject:Clean">
-        <MSBuild Projects="DwServer\RestDWServerProject.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="RestDWServerProject:Make">
-        <MSBuild Projects="DwServer\RestDWServerProject.dproj" Targets="Make"/>
     </Target>
     <Target Name="MasterDetail">
         <MSBuild Projects="MasterDetail\MasterDetail.dproj"/>
@@ -203,14 +194,23 @@
     <Target Name="RESTDriverUniDAC:Make">
         <MSBuild Projects="..\Connectors\UniDAC\RESTDriverUniDAC.dproj" Targets="Make"/>
     </Target>
+    <Target Name="RestDWServerProject">
+        <MSBuild Projects="DwServer\RestDWServerProject.dproj"/>
+    </Target>
+    <Target Name="RestDWServerProject:Clean">
+        <MSBuild Projects="DwServer\RestDWServerProject.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RestDWServerProject:Make">
+        <MSBuild Projects="DwServer\RestDWServerProject.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestEasyObjects;RestDWServerISAPI;SimpleProject;ClientMobile;RestDWServerProject;MasterDetail;mod_webbroker;ClientWin;ListPoolers;WindowsDWService;Replace2RestDW;RESTDriverFD;RESTDriverZEOS;StoredProc;DynamicFilter;RESTDriverUniDAC"/>
+        <CallTarget Targets="RestEasyObjects;RestDWServerISAPI;SimpleProject;ClientMobile;MasterDetail;mod_webbroker;ClientWin;ListPoolers;WindowsDWService;Replace2RestDW;RESTDriverFD;RESTDriverZEOS;StoredProc;DynamicFilter;RESTDriverUniDAC;RestDWServerProject"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;RestDWServerProject:Clean;MasterDetail:Clean;mod_webbroker:Clean;ClientWin:Clean;ListPoolers:Clean;WindowsDWService:Clean;Replace2RestDW:Clean;RESTDriverFD:Clean;RESTDriverZEOS:Clean;StoredProc:Clean;DynamicFilter:Clean;RESTDriverUniDAC:Clean"/>
+        <CallTarget Targets="RestEasyObjects:Clean;RestDWServerISAPI:Clean;SimpleProject:Clean;ClientMobile:Clean;MasterDetail:Clean;mod_webbroker:Clean;ClientWin:Clean;ListPoolers:Clean;WindowsDWService:Clean;Replace2RestDW:Clean;RESTDriverFD:Clean;RESTDriverZEOS:Clean;StoredProc:Clean;DynamicFilter:Clean;RESTDriverUniDAC:Clean;RestDWServerProject:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestEasyObjects:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;RestDWServerProject:Make;MasterDetail:Make;mod_webbroker:Make;ClientWin:Make;ListPoolers:Make;WindowsDWService:Make;Replace2RestDW:Make;RESTDriverFD:Make;RESTDriverZEOS:Make;StoredProc:Make;DynamicFilter:Make;RESTDriverUniDAC:Make"/>
+        <CallTarget Targets="RestEasyObjects:Make;RestDWServerISAPI:Make;SimpleProject:Make;ClientMobile:Make;MasterDetail:Make;mod_webbroker:Make;ClientWin:Make;ListPoolers:Make;WindowsDWService:Make;Replace2RestDW:Make;RESTDriverFD:Make;RESTDriverZEOS:Make;StoredProc:Make;DynamicFilter:Make;RESTDriverUniDAC:Make;RestDWServerProject:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

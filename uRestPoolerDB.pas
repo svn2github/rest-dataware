@@ -676,7 +676,7 @@ Begin
    vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
    vRESTDriver.vCompression       := vCompression;
    vRESTDriver.vEncoding          := vEncoding;
-   Result := vRESTDriver.ExecuteCommand(SQL, Params, Error, MessageError);
+   Result := vRESTDriver.ExecuteCommand(SQL, Params, Error, MessageError, Execute);
   End
  Else
   Begin
