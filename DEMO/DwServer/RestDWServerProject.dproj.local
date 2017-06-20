@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>2017/06/20 15:00:29.144,=c:\program files (x86)\embarcadero\studio\18.0\source\rtl\common\System.JSON.pas</Transaction>
-    <Transaction>2017/06/20 15:33:29.378,c:\program files (x86)\embarcadero\studio\18.0\source\rtl\common\System.JSON.pas=</Transaction>
-  </Transactions>
+	</Transactions>
 </BorlandProject>
