@@ -39,11 +39,9 @@ type
     { Private declarations }
   public
     { Public declarations }
-
     Function ReverseStr (S : ShortString) : ShortString;
     Function Occurs(T, S : ShortString) : Byte;
     Function OccurPos (T, S : ShortString; N : Byte) : Byte;
-
   end;
 
 var
