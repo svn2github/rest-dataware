@@ -36,6 +36,10 @@ requires
 
 contains
   uRESTDWBase in '..\..\Source\uRESTDWBase.pas',
-  uRESTDWReg in '..\..\Source\uRESTDWReg.pas';
+  uRESTDWReg in '..\..\Source\uRESTDWReg.pas',
+  ServerUtils in '..\..\Source\libs\ServerUtils.pas',
+  StringBuilderUnit in '..\..\Source\libs\StringBuilderUnit.pas',
+  SysTypes in '..\..\Source\libs\SysTypes.pas',
+  uDWConsts in '..\..\Source\libs\uDWConsts.pas';
 
 end.

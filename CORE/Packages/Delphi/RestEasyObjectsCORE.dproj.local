@@ -13,5 +13,10 @@
     <Transaction>2017/06/20 21:19:32.314,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Images\TRESTServicePooler.bmp</Transaction>
     <Transaction>2017/06/20 21:23:09.313,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\uRESTDWBase.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWBase.pas</Transaction>
     <Transaction>2017/06/20 21:23:33.326,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\uRESTDWReg.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWReg.pas</Transaction>
+    <Transaction>2017/06/20 21:35:05.093,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\libs\ServerUtils.pas</Transaction>
+    <Transaction>2017/06/20 21:35:05.115,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\libs\StringBuilderUnit.pas</Transaction>
+    <Transaction>2017/06/20 21:35:05.136,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\libs\SysTypes.pas</Transaction>
+    <Transaction>2017/06/20 21:53:30.193,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas</Transaction>
+    <Transaction>2017/06/20 21:53:49.375,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\libs\uDWConsts.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas</Transaction>
   </Transactions>
 </BorlandProject>
