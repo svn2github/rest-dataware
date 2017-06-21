@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2017/06/20 20:48:33.284,=rtl.dcp</Transaction>
+    <Transaction>2017/06/20 20:49:31.324,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\RestEasyObjectsCORE.dproj=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Package1.dproj</Transaction>
+    <Transaction>2017/06/20 20:51:22.374,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas</Transaction>
+    <Transaction>2017/06/20 20:51:46.630,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWBase.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas</Transaction>
+    <Transaction>2017/06/20 21:11:54.012,=IndySystem.dcp</Transaction>
+    <Transaction>2017/06/20 21:11:54.017,=IndyProtocols.dcp</Transaction>
+    <Transaction>2017/06/20 21:11:54.024,=IndyCore.dcp</Transaction>
+    <Transaction>2017/06/20 21:13:17.582,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas</Transaction>
+    <Transaction>2017/06/20 21:13:38.307,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWReg.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas</Transaction>
+    <Transaction>2017/06/20 21:19:32.314,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Images\TRESTServicePooler.bmp</Transaction>
+    <Transaction>2017/06/20 21:23:09.313,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\uRESTDWBase.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWBase.pas</Transaction>
+    <Transaction>2017/06/20 21:23:33.326,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\uRESTDWReg.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWReg.pas</Transaction>
+  </Transactions>
+</BorlandProject>

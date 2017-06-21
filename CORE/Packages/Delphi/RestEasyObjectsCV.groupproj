@@ -1,0 +1,36 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{6FE7FEDB-3C0E-45CC-A75C-FDC7A25FC64B}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="RestEasyObjectsCORE.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="RestEasyObjectsCORE">
+        <MSBuild Projects="RestEasyObjectsCORE.dproj"/>
+    </Target>
+    <Target Name="RestEasyObjectsCORE:Clean">
+        <MSBuild Projects="RestEasyObjectsCORE.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RestEasyObjectsCORE:Make">
+        <MSBuild Projects="RestEasyObjectsCORE.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="RestEasyObjectsCORE"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="RestEasyObjectsCORE:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="RestEasyObjectsCORE:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
