@@ -24,7 +24,7 @@ interface
 
 Uses System.SysUtils, System.Classes, SysTypes, ServerUtils, Windows,
      IdContext, IdHTTPServer, IdCustomHTTPServer, IdSSLOpenSSL, IdSSL,
-     uDWConsts;
+     uDWJSONTools, uDWConsts;
 
 Type
  TLastRequest  = Procedure (Value : String) of Object;
@@ -61,9 +61,11 @@ Type
   vCriticalSection : TRTLCriticalSection;
   lHandler         : TIdServerIOHandlerSSLOpenSSL;
   aSSLVersion      : TIdSSLVersion;
+  vServerContext,
   ASSLPrivateKeyFile,
   ASSLPrivateKeyPassword,
-  ASSLCertFile            : String;
+  ASSLCertFile     : String;
+  VEncondig        : TEncodeSelect;              //Enconding se usar CORS usar UTF8 - Alexandre Abade
   Procedure GetSSLPassWord(Var Password: String);
   Procedure CommandGet  (AContext      : TIdContext;
                          ARequestInfo  : TIdHTTPRequestInfo;
@@ -89,6 +91,8 @@ Type
   Property SSLVersion            : TIdSSLVersion   Read aSSLVersion            Write aSSLVersion;
   Property OnLastRequest         : TLastRequest    Read vLastRequest           Write vLastRequest;
   Property OnLastResponse        : TLastResponse   Read vLastResponse          Write vLastResponse;
+  Property Encoding              : TEncodeSelect   Read VEncondig              Write VEncondig;          //Encoding da string
+  Property ServerContext         : String          Read vServerContext         Write vServerContext;
 End;
 
 implementation
@@ -151,7 +155,9 @@ Begin
      Else
       Argumentos := TServerUtils.ParseRESTURL (ARequestInfo.URI);
      If Assigned(vServerMethod) Then
-      vTempServerMethods := vServerMethod.Create;
+      vTempServerMethods := vServerMethod.Create
+     Else
+      JSONStr := GetPairJSON(-5, 'Server Methods Cannot Assigned');
      Try
       If Assigned(vLastRequest) Then
        Begin
@@ -160,10 +166,13 @@ Begin
                      ARequestInfo.RawHTTPCommand);
         LeaveCriticalSection(vCriticalSection);
        End;
-      If UpperCase(Copy (Cmd, 1, 3)) = 'GET' Then
-       JSONStr := TServerMethods(vTempServerMethods).CallGETServerMethod(Argumentos);
-      If UpperCase(Copy (Cmd, 1, 4)) = 'POST' Then
-       JSONStr := TServerMethods(vTempServerMethods).CallPOSTServerMethod(Argumentos);
+      If Assigned(vServerMethod) Then
+       Begin
+        If UpperCase(Copy (Cmd, 1, 3)) = 'GET' Then
+         JSONStr := TServerMethods(vTempServerMethods).CallGETServerMethod(Argumentos);
+        If UpperCase(Copy (Cmd, 1, 4)) = 'POST' Then
+         JSONStr := TServerMethods(vTempServerMethods).CallPOSTServerMethod(Argumentos);
+       End;
       AResponseInfo.ContentText := JSONStr;
       If Assigned(vLastResponse) Then
        Begin
@@ -173,7 +182,8 @@ Begin
        End;
       AResponseInfo.WriteContent;
      Finally
-      vTempServerMethods.Free;
+      If Assigned(vServerMethod) Then
+       vTempServerMethods.Free;
      End;
     End;
   End;
@@ -202,7 +212,10 @@ Begin
     (UpperCase(Copy (Cmd, 1, 6)) = 'DELETE') Then
   Begin
    Argumentos    := TServerUtils.ParseRESTURL (ARequestInfo.URI);
-   vTempServerMethods := vServerMethod.Create;
+   If Assigned(vServerMethod) Then
+    vTempServerMethods := vServerMethod.Create
+   Else
+    JSONStr := GetPairJSON(-5, 'Server Methods Cannot Assigned');
    Try
     If Assigned(vLastRequest) Then
      Begin
@@ -211,10 +224,13 @@ Begin
                    ARequestInfo.RawHTTPCommand);
       LeaveCriticalSection(vCriticalSection);
      End;
-    If UpperCase(Copy (Cmd, 1, 3)) = 'PUT' Then
-     JSONStr := TServerMethods(vTempServerMethods).CallPUTServerMethod(Argumentos);
-    If UpperCase(Copy (Cmd, 1, 6)) = 'DELETE' Then
-     JSONStr := TServerMethods(vTempServerMethods).CallDELETEServerMethod(Argumentos);
+    If Assigned(vServerMethod) Then
+     Begin
+      If UpperCase(Copy (Cmd, 1, 3)) = 'PUT' Then
+       JSONStr := TServerMethods(vTempServerMethods).CallPUTServerMethod(Argumentos);
+      If UpperCase(Copy (Cmd, 1, 6)) = 'DELETE' Then
+       JSONStr := TServerMethods(vTempServerMethods).CallDELETEServerMethod(Argumentos);
+     End;
     AResponseInfo.ContentText := JSONStr;
     If Assigned(vLastResponse) Then
      Begin
@@ -224,7 +240,8 @@ Begin
      End;
     AResponseInfo.WriteContent;
    Finally
-    vTempServerMethods.Free;
+    If Assigned(vServerMethod) Then
+     vTempServerMethods.Free;
    End;
   End;
 end;
@@ -232,16 +249,18 @@ end;
 Constructor TRESTServicePooler.Create(AOwner: TComponent);
 Begin
  Inherited;
- vProxyOptions             := TProxyOptions.Create;
- HTTPServer                := TIdHTTPServer.Create(Nil);
- lHandler                  := TIdServerIOHandlerSSLOpenSSL.Create;
- HTTPServer.OnCommandGet   := CommandGet;
- HTTPServer.OnCommandOther := CommandOther;
- vServerParams             := TServerParams.Create;
- vActive                   := False;
+ vProxyOptions                   := TProxyOptions.Create;
+ HTTPServer                      := TIdHTTPServer.Create(Nil);
+ lHandler                        := TIdServerIOHandlerSSLOpenSSL.Create;
+ HTTPServer.OnCommandGet         := CommandGet;
+ HTTPServer.OnCommandOther       := CommandOther;
+ vServerParams                   := TServerParams.Create;
+ vActive                         := False;
  vServerParams.HasAuthentication := True;
- vServerParams.UserName    := 'testserver';
- vServerParams.Password    := 'testserver';
+ vServerParams.UserName          := 'testserver';
+ vServerParams.Password          := 'testserver';
+ vServerContext                  := 'restdataware';
+ VEncondig                       := esUtf8;
  InitializeCriticalSection(vCriticalSection);
 End;
 

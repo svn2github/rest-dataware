@@ -18,8 +18,8 @@ type
     lSeguro: TLabel;
     cbPoolerState: TCheckBox;
     PageControl1: TPageControl;
-    TabSheet1: TTabSheet;
-    Logs: TTabSheet;
+    tsConfigs: TTabSheet;
+    tsLogs: TTabSheet;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -237,6 +237,7 @@ End;
 procedure TRestDWForm.ButtonStopClick(Sender: TObject);
 begin
  RESTServicePooler1.Active := False;
+ PageControl1.ActivePage := tsConfigs;
  ShowApplication;
 end;
 
@@ -267,6 +268,7 @@ Begin
  FCfgName := StringReplace(ExtractFileName(ParamStr(0) ), '.exe' , '' , [rfReplaceAll]);
  FCfgName := ExtractFilePath(ParamSTR(0)) + 'Config_' + FCfgName + '.ini' ;
  RESTServicePooler1.ServerMethodClass := TServerMethods1;
+ PageControl1.ActivePage              := tsConfigs;
 End;
 
 procedure TRestDWForm.FormShow(Sender: TObject);
@@ -339,6 +341,9 @@ begin
    RESTServicePooler1.SSLPrivateKeyPassword := ePrivKeyPass.Text;
    RESTServicePooler1.SSLCertFile           := eCertFile.Text;
    RESTServicePooler1.Active                := True;
+   If Not RESTServicePooler1.Active Then
+    Exit;
+   PageControl1.ActivePage := tsLogs;
    HideApplication;
   End;
  If RESTServicePooler1.Secure Then

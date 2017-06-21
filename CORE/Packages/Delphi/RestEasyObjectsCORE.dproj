@@ -141,12 +141,14 @@
         <DCCReference Include="IndySystem.dcp"/>
         <DCCReference Include="IndyProtocols.dcp"/>
         <DCCReference Include="IndyCore.dcp"/>
+        <DCCReference Include="soaprtl.dcp"/>
         <DCCReference Include="..\..\Source\uRESTDWBase.pas"/>
         <DCCReference Include="..\..\Source\uRESTDWReg.pas"/>
         <DCCReference Include="..\..\Source\libs\ServerUtils.pas"/>
         <DCCReference Include="..\..\Source\libs\StringBuilderUnit.pas"/>
         <DCCReference Include="..\..\Source\libs\SysTypes.pas"/>
         <DCCReference Include="..\..\Source\libs\uDWConsts.pas"/>
+        <DCCReference Include="..\..\Source\libs\uDWJSONTools.pas"/>
         <RcItem Include="..\..\Images\TRESTServicePooler.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TRESTServicePooler</ResourceId>

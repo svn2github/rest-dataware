@@ -102,13 +102,11 @@ object RestDWForm: TRestDWForm
     Top = 0
     Width = 520
     Height = 353
-    ActivePage = TabSheet1
+    ActivePage = tsConfigs
     Align = alTop
     TabOrder = 3
-    object TabSheet1: TTabSheet
+    object tsConfigs: TTabSheet
       Caption = 'Configuration'
-      ExplicitWidth = 281
-      ExplicitHeight = 165
       object Label1: TLabel
         Left = 7
         Top = 37
@@ -1296,11 +1294,9 @@ object RestDWForm: TRestDWForm
         Text = ''
       end
     end
-    object Logs: TTabSheet
+    object tsLogs: TTabSheet
       Caption = 'Logs'
       ImageIndex = 1
-      ExplicitLeft = 8
-      ExplicitTop = 25
       object Label19: TLabel
         Left = 7
         Top = 147
@@ -1337,7 +1333,7 @@ object RestDWForm: TRestDWForm
   end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
-    Left = 492
+    Left = 356
     Top = 123
   end
   object ctiPrincipal: TTrayIcon
@@ -1364,11 +1360,13 @@ object RestDWForm: TRestDWForm
   end
   object RESTServicePooler1: TRESTServicePooler
     Active = False
-    ServicePort = 0
+    ServicePort = 8082
     ProxyOptions.Port = 8888
     SSLVersion = sslvSSLv2
     OnLastRequest = RESTServicePooler1LastRequest
     OnLastResponse = RESTServicePooler1LastResponse
+    Encoding = esUtf8
+    ServerContext = 'restdataware'
     Left = 168
     Top = 160
   end

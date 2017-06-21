@@ -32,7 +32,8 @@ requires
   rtl,
   IndySystem,
   IndyProtocols,
-  IndyCore;
+  IndyCore,
+  soaprtl;
 
 contains
   uRESTDWBase in '..\..\Source\uRESTDWBase.pas',
@@ -40,6 +41,7 @@ contains
   ServerUtils in '..\..\Source\libs\ServerUtils.pas',
   StringBuilderUnit in '..\..\Source\libs\StringBuilderUnit.pas',
   SysTypes in '..\..\Source\libs\SysTypes.pas',
-  uDWConsts in '..\..\Source\libs\uDWConsts.pas';
+  uDWConsts in '..\..\Source\libs\uDWConsts.pas',
+  uDWJSONTools in '..\..\Source\libs\uDWJSONTools.pas';
 
 end.
