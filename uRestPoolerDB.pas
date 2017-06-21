@@ -1863,6 +1863,11 @@ Begin
       gZIPStream.DisposeOf;
      End;
     End;
+  End
+ Else
+  Begin
+   Raise Exception.Create(PChar('Empty Database Property'));
+   Exit;
   End;
  If Assigned(vRESTDataBase) And (Trim(UpdateTableName) <> '') Then
   vRESTDataBase.ApplyUpdates(vSQL, vParams, LDeltaList, Trim(vUpdateTableName), vError, vMessageError)
@@ -1988,9 +1993,14 @@ Var
 Begin
  Result := False;
  Try
-  vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, True);
-  Result := Not vError;
-  Error  := vMessageError;
+  If vRESTDataBase <> Nil Then
+   Begin
+    vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, True);
+    Result := Not vError;
+    Error  := vMessageError;
+   End
+  Else
+   Raise Exception.Create(PChar('Empty Database Property'));
  Except
  End;
 End;
@@ -2000,10 +2010,13 @@ Var
  vError        : Boolean;
  vMessageError : String;
 Begin
+ Result := -1;
  Try
-  Result := vRESTDataBase.InsertMySQLReturnID(vSQL, vParams, vError, vMessageError);
+  If vRESTDataBase <> Nil Then
+   Result := vRESTDataBase.InsertMySQLReturnID(vSQL, vParams, vError, vMessageError)
+  Else 
+   Raise Exception.Create(PChar('Empty Database Property')); 
  Except
-  Result := -1;
  End;
 End;
 
@@ -2109,7 +2122,9 @@ Begin
         vBeforeClone := False;
        End;
       End;
-    End;
+    End
+   Else
+    Raise Exception.Create(PChar('Empty Database Property'));  
   End;
 End;
 
@@ -2293,13 +2308,15 @@ Begin
         Raise Exception.Create(PChar(vMessageError));
       End;
     End;
-  End;
+  End
+ Else
+  Raise Exception.Create(PChar('Empty Database Property'));  
 End;
 
 Procedure TRESTClientSQL.SetActiveDB(Value : Boolean);
 Begin
  vActive := False;
- if (vRESTDataBase <> Nil) And (Value) Then
+ If (vRESTDataBase <> Nil) And (Value) Then
   Begin
    If vRESTDataBase <> Nil Then
     If Not vRESTDataBase.Active Then
@@ -2339,6 +2356,8 @@ Begin
   Begin
    vActive := False;
    Close;
+   If vRESTDataBase = Nil Then
+    Raise Exception.Create(PChar('Empty Database Property'));
   End;
 End;
 
@@ -2430,7 +2449,9 @@ Begin
   Begin
    If vParams.Count > 0 Then
     vRESTDataBase.ExecuteProcedure(vProcName, vParams, Result, Error);
-  End;
+  End
+ Else
+  Raise Exception.Create(PChar('Empty Database Property'));
 End;
 
 Function TRESTStoredProc.ParamByName(Value: String): TParam;
