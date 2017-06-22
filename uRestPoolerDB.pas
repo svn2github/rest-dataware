@@ -1154,7 +1154,6 @@ Begin
          {$else}
          MemTable.LoadFromStream(gZIPStream);
          {$ifend}
-         MemTable.LoadFromStream(gZIPStream, sfJSON);
          vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
          vTempWriter.ListAdd(Result, MemTable);
         Finally
