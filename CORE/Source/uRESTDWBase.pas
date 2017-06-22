@@ -196,7 +196,17 @@ Begin
        StringStream.Free;
       End
      Else If EventType = seDELETE Then
-      Result := HttpRequest.Delete(vURL);
+      Begin
+       Try
+         HttpRequest.Delete(vURL);
+         Result := GetPairJSON('OK', 'DELETE COMMAND OK');
+       Except
+        On e:exception Do
+         Begin
+          Result := GetPairJSON('NOK', e.Message);
+         End;
+       End;
+      End;
     End;
   End;
  Except
