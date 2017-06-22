@@ -22,9 +22,9 @@ unit uRESTDWBase;
 
 interface
 
-Uses System.SysUtils, System.Classes, SysTypes, ServerUtils, Windows,
-     IdContext, IdHTTPServer, IdCustomHTTPServer, IdSSLOpenSSL, IdSSL,
-     uDWJSONTools, uDWConsts;
+Uses System.SysUtils,  System.Classes,   SysTypes, ServerUtils, Windows,
+     IdContext,        IdHTTPServer,     IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
+     IdAuthentication, IdHTTPHeaderInfo, uDWJSONTools,          uDWConsts,    IdHTTP;
 
 Type
  TLastRequest  = Procedure (Value : String) of Object;
@@ -95,7 +95,157 @@ Type
   Property ServerContext         : String          Read vServerContext         Write vServerContext;
 End;
 
+Type
+ TRESTClientPooler = Class(TComponent) //Novo Componente de Acesso a Requisições REST para o RESTDataware
+ Protected
+  //Variáveis, Procedures e  Funções Protegidas
+  HttpRequest       : TIdHTTP;
+  Procedure SetParams;
+ Private
+  //Variáveis, Procedures e Funções Privadas
+  vTypeRequest      : TTypeRequest;
+  vProxyOptions     : TProxyOptions;
+  vRSCharset        : TEncodeSelect;
+  vUserName,
+  vPassword,
+  vHost             : String;
+  vPort             : Integer;
+  vAutenticacao     : Boolean;
+  vTransparentProxy : TIdProxyConnectionInfo;
+  vRequestTimeOut   : Integer;
+  Procedure SetUserName(Value : String);
+  procedure SetPassword(Value : String);
+ Public
+  //Métodos, Propriedades, Variáveis, Procedures e Funções Publicas
+  Function    SendEvent(EventData : String)              : String;Overload;
+  Function    SendEvent(EventData : String;
+                        RBody     : TStringList;
+                        EventType : TSendEvent = sePOST) : String;Overload;
+  Constructor Create(AOwner: TComponent);Override;
+  Destructor  Destroy;Override;
+ Published
+  //Métodos e Propriedades
+  Property Encoding         : TEncodeSelect          Read vRSCharset        Write vRSCharset;
+  Property TypeRequest      : TTypeRequest           Read vTypeRequest      Write vTypeRequest       Default trHttp;
+  Property Host             : String                 Read vHost             Write vHost;
+  Property Port             : Integer                Read vPort             Write vPort              Default 8082;
+  Property UserName         : String                 Read vUserName         Write SetUserName;
+  Property Password         : String                 Read vPassword         Write SetPassword;
+  Property Autenticacao     : Boolean                Read vAutenticacao     Write vAutenticacao      Default True;
+  Property ProxyOptions     : TIdProxyConnectionInfo Read vTransparentProxy Write vTransparentProxy;
+  Property RequestTimeOut   : Integer                Read vRequestTimeOut   Write vRequestTimeOut;
+End;
+
 implementation
+
+Constructor TRESTClientPooler.Create(AOwner: TComponent);
+Begin
+ Inherited;
+ HttpRequest                     := TIdHTTP.Create(Nil);
+ HttpRequest.Request.ContentType := 'application/json';
+ vTransparentProxy               := TIdProxyConnectionInfo.Create;
+ vHost                           := 'localhost';
+ vPort                           := 8082;
+ vUserName                       := 'testserver';
+ vPassword                       := 'testserver';
+ vRSCharset                      := esUtf8;
+ vAutenticacao                   := True;
+ vRequestTimeOut                 := 10000;
+End;
+
+Destructor  TRESTClientPooler.Destroy;
+Begin
+ HttpRequest.Free;
+ vTransparentProxy.Free;
+ Inherited;
+End;
+
+Function TRESTClientPooler.SendEvent(EventData : String;
+                                     RBody     : TStringList;
+                                     EventType : TSendEvent = sePOST) : String;
+Var
+ StringStream : TStringStream;
+ vURL         : String;
+ vTpRequest : String;
+Begin
+ If vTypeRequest = trHttp Then
+  vTpRequest := 'http'
+ Else If vTypeRequest = trHttps Then
+  vTpRequest := 'https';
+ SetParams;
+ Try
+  If Pos(Uppercase(Format(UrlBase, [vTpRequest, vHost, vPort])), Uppercase(EventData)) = 0 Then
+   vURL := LowerCase(Format(UrlBase, [vTpRequest, vHost, vPort]) + EventData)
+  Else
+   vURL := LowerCase(EventData);
+  If vRSCharset = esUtf8 Then
+   HttpRequest.Request.Charset := 'utf-8'
+  Else If vRSCharset = esASCII Then
+   HttpRequest.Request.Charset := 'ansi';
+  Case EventType Of
+   seGET : Result := HttpRequest.Get(vURL);
+   sePOST,
+   sePUT,
+   seDELETE :
+    Begin;
+     If EventType = sePOST Then
+      Result := HttpRequest.Post(vURL, RBody)
+     Else If EventType = sePUT Then
+      Begin
+       StringStream := TStringStream.Create(RBody.Text);
+       Result := HttpRequest.Put(vURL, StringStream);
+       StringStream.Free;
+      End
+     Else If EventType = seDELETE Then
+      Result := HttpRequest.Delete(vURL);
+    End;
+  End;
+ Except
+
+ End;
+End;
+
+Function TRESTClientPooler.SendEvent(EventData : String) : String;
+Var
+ RBody      : TStringList;
+ vTpRequest : String;
+Begin
+ RBody   := TStringList.Create;
+ Try
+  If vTypeRequest = trHttp Then
+   vTpRequest := 'http'
+  Else If vTypeRequest = trHttps Then
+   vTpRequest := 'https';
+  Result := SendEvent(Format(UrlBase, [vTpRequest, vHost, vPort]) + EventData, RBody, seGET);
+ Except
+ End;
+ RBody.Free;
+End;
+
+Procedure TRESTClientPooler.SetParams;
+Begin
+ HttpRequest.Request.BasicAuthentication := vAutenticacao;
+ If HttpRequest.Request.BasicAuthentication Then
+  Begin
+   If HttpRequest.Request.Authentication = Nil Then
+    HttpRequest.Request.Authentication         := TIdBasicAuthentication.Create;
+   HttpRequest.Request.Authentication.Password := vPassword;
+   HttpRequest.Request.Authentication.Username := vUserName;
+  End;
+ HttpRequest.ProxyParams := vTransparentProxy;
+ HttpRequest.ReadTimeout := vRequestTimeout;
+End;
+
+procedure TRESTClientPooler.SetPassword(Value : String);
+begin
+ vPassword := Value;
+ HttpRequest.Request.Password := vPassword;
+end;
+
+procedure TRESTClientPooler.SetUserName(Value : String);
+begin
+ vUsername := Value;
+end;
 
 Constructor TProxyOptions.Create;
 Begin

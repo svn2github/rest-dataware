@@ -9,6 +9,9 @@
         <Projects Include="..\..\Samples\SimpleServer\Server\RestDWServerProject.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\..\Samples\SimpleServer\Client\RestDWClientProject.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -35,14 +38,23 @@
     <Target Name="RestDWServerProject:Make">
         <MSBuild Projects="..\..\Samples\SimpleServer\Server\RestDWServerProject.dproj" Targets="Make"/>
     </Target>
+    <Target Name="RestDWClientProject">
+        <MSBuild Projects="..\..\Samples\SimpleServer\Client\RestDWClientProject.dproj"/>
+    </Target>
+    <Target Name="RestDWClientProject:Clean">
+        <MSBuild Projects="..\..\Samples\SimpleServer\Client\RestDWClientProject.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RestDWClientProject:Make">
+        <MSBuild Projects="..\..\Samples\SimpleServer\Client\RestDWClientProject.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestEasyObjectsCORE;RestDWServerProject"/>
+        <CallTarget Targets="RestEasyObjectsCORE;RestDWServerProject;RestDWClientProject"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestEasyObjectsCORE:Clean;RestDWServerProject:Clean"/>
+        <CallTarget Targets="RestEasyObjectsCORE:Clean;RestDWServerProject:Clean;RestDWClientProject:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestEasyObjectsCORE:Make;RestDWServerProject:Make"/>
+        <CallTarget Targets="RestEasyObjectsCORE:Make;RestDWServerProject:Make;RestDWClientProject:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

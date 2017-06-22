@@ -11,7 +11,7 @@ implementation
 
 Procedure Register;
 Begin
- RegisterComponents('REST Dataware - Service',     [TRESTServicePooler]);
+ RegisterComponents('REST Dataware - Service',     [TRESTServicePooler, TRESTClientPooler]);
 End;
 
 end.

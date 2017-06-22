@@ -6,9 +6,13 @@ Uses System.SysUtils;
 
 Const
  AuthRealm = 'Provide Authentication';
+ UrlBase   = '%s://%s:%d/';
 
 Type
  TEncodeSelect = (esASCII, esUtf8);
+ TSendEvent    = (seGET,   sePOST,
+                  sePUT,   seDELETE);
+ TTypeRequest  = (trHttp, trHttps);
 
 Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;
 
