@@ -14,9 +14,11 @@ Uses
  FireDAC.Stan.Async,      FireDAC.DApt,             FireDAC.UI.Intf,    FireDAC.VCLUI.Wait,
  FireDAC.Stan.Def,        FireDAC.Stan.Pool,        FireDAC.Phys,       Data.DB,
  FireDAC.Comp.Client,     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,    FireDAC.Comp.UI,
- FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  System.JSON,        Datasnap.DSSession,
- FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef, Datasnap.DSProviderDataModuleAdapter,
- uRestPoolerDB;
+ FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  Datasnap.DSSession,
+ uRestPoolerDB, Data.DBXJSON
+ {$if CompilerVersion > 26}
+ , System.JSON, FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef, Datasnap.DSProviderDataModuleAdapter
+ {$ifend};
 
 Type
   TModule = Class Helper For TDSServerModule

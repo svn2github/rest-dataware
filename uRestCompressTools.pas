@@ -40,7 +40,11 @@ Begin
     //   this rarely works, but is here for completeness and just in case
     LDecompress.DecompressHTTPDeflate(LCompressed, LDecompressed);
    End;
-  TProtectedRESTResponse(ARESTResponse).SetContent(LDecompressed.DataString);
+  {$if CompilerVersion > 26}
+   TProtectedRESTResponse(ARESTResponse).SetContent(LDecompressed.DataString);
+  {$else}
+   TProtectedRESTResponse(ARESTResponse).SetContent(LDecompressed);
+  {$ifend}
  Finally
   LDecompressed.Free;
   LCompressed.Free;

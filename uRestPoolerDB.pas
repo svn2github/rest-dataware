@@ -16,15 +16,18 @@ uses System.SysUtils,         System.Classes,
      FireDAC.Stan.Error,      FireDAC.DatS,            FireDAC.Stan.Async,
      FireDAC.DApt,            FireDAC.UI.Intf,         FireDAC.Stan.Def,
      FireDAC.Stan.Pool,       FireDAC.Comp.Client,     FireDAC.Comp.UI,
-     FireDAC.Comp.DataSet,    System.JSON,             FireDAC.DApt.Intf,
+     FireDAC.Comp.DataSet,    FireDAC.DApt.Intf,       Data.DBXJSON,
      Data.DB,                 Data.FireDACJSONReflect, Data.DBXJSONReflect,
      IPPeerClient,            Datasnap.DSClientRest,   System.SyncObjs,
-     uPoolerMethod,           FireDAC.Stan.StorageBin, Data.DBXPlatform,
-     FireDAC.Stan.StorageJSON {$IFDEF MSWINDOWS},      Datasnap.DSServer,
+     uPoolerMethod,            Data.DBXPlatform
+      {$IFDEF MSWINDOWS},      Datasnap.DSServer,
      Datasnap.DSAuth,         Datasnap.DSProxyRest     {$ENDIF},
-     Soap.EncdDecd,           System.NetEncoding,      uMasterDetailData,
+     Soap.EncdDecd,           uMasterDetailData,
      DbxCompressionFilter,    uRestCompressTools,      System.ZLib,
-     uPoolerServerMethods;
+     uPoolerServerMethods
+     {$if CompilerVersion > 26}
+       ,System.NetEncoding, System.JSON, FireDAC.Stan.StorageJSON, FireDAC.Stan.StorageBin
+     {$ifend};
 
 Type
  TEncodeSelect            = (esASCII, esUtf8);
@@ -237,8 +240,10 @@ Type
   Property  DataSetField;
   Property  DetailFields;
   Property  Adapter;
-  Property  ChangeAlerter;
-  Property  ChangeAlertName;
+  {$if CompilerVersion > 26}
+    Property  ChangeAlerter;
+    Property  ChangeAlertName;
+  {$ifend}
   Property  ObjectView;
   Property  StoreDefs;
   Property  CachedUpdates;
@@ -912,10 +917,11 @@ Begin
  Value.UrlPath             := vRestURL;
  Value.UserName            := vLogin;
  Value.Password            := vPassword;
+ {$if CompilerVersion > 26}
  Value.HTTP.ConnectTimeout := vTimeOut;
+ {$ifend}
  Value.RESTContext         := vRESTContext;
  Value.Context             := vContentex;
-
  If vProxy Then
   Begin
    Value.ProxyHost     := vProxyOptions.vServer;
@@ -1143,6 +1149,11 @@ Begin
          MemTable.Close;
          Original.Position := 0;
          doUnGZIP(Original, gZIPStream);
+         {$if CompilerVersion > 26}
+         MemTable.LoadFromStream(gZIPStream, sfJSON);
+         {$else}
+         MemTable.LoadFromStream(gZIPStream);
+         {$ifend}
          MemTable.LoadFromStream(gZIPStream, sfJSON);
          vTempWriter       := TFDJSONDataSetsWriter.Create(Result);
          vTempWriter.ListAdd(Result, MemTable);

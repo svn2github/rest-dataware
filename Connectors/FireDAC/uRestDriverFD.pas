@@ -2,16 +2,19 @@ unit uRestDriverFD;
 
 interface
 
-uses System.SysUtils,          System.Classes,
+uses System.SysUtils,          System.Classes,          Data.DBXJSON,
      FireDAC.Stan.Intf,        FireDAC.Stan.Option,     FireDAC.Stan.Param,
      FireDAC.Stan.Error,       FireDAC.DatS,            FireDAC.Stan.Async,
      FireDAC.DApt,             FireDAC.UI.Intf,         FireDAC.Stan.Def,
      FireDAC.Stan.Pool,        FireDAC.Comp.Client,     FireDAC.Comp.UI,
-     FireDAC.Comp.DataSet,     System.JSON,             FireDAC.DApt.Intf,
+     FireDAC.Comp.DataSet,     FireDAC.DApt.Intf,
      Data.DB,                  Data.FireDACJSONReflect, Data.DBXJSONReflect,
-     uPoolerMethod,            FireDAC.Stan.StorageBin, Data.DBXPlatform,
-     FireDAC.Stan.StorageJSON, DbxCompressionFilter,    uRestCompressTools,
-     System.ZLib, uRestPoolerDB;
+     uPoolerMethod,            Data.DBXPlatform,
+     DbxCompressionFilter,     uRestCompressTools,
+     System.ZLib, uRestPoolerDB
+     {$if CompilerVersion > 26}
+     , System.JSON, FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef, Datasnap.DSProviderDataModuleAdapter
+     {$ifend};
 
 {$IFDEF MSWINDOWS}
 Type
@@ -380,7 +383,11 @@ Begin
        gZIPStream   := TMemoryStream.Create;
        Try
         vTempQuery.Open;
+        {$if CompilerVersion > 26}
         vTempQuery.SaveToStream(Original, sfJSON);
+        {$else}
+        vTempQuery.SaveToStream(Original);
+        {$ifend};
         //make it gzip
         doGZIP(Original, gZIPStream);
         MemTable.FieldDefs.Add('compress', ftBlob);
@@ -572,7 +579,11 @@ Begin
        Original     := TStringStream.Create;
        gZIPStream   := TMemoryStream.Create;
        Try
+        {$if CompilerVersion > 26}
         vTempQuery.SaveToStream(Original, sfJSON);
+        {$else}
+        vTempQuery.SaveToStream(Original);
+        {$ifend};
         //make it gzip
         doGZIP(Original, gZIPStream);
         MemTable.FieldDefs.Add('compress', ftBlob);
