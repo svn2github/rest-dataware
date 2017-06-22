@@ -1,9 +1,14 @@
 Alterações :
 
+1.0.1.257 :
+===========
+ Adicionadas as cláusulas de compilação para Delphi XE5 e superiores(Laelson).
+ Modificado o código para adaptar as versões(Laelson).
+ Melhorias na versão CORE(XyberX).
+
 1.0.1.1 (CORE Version) :
 ===========
  Novo componente criado o RESTClientPooler, o Exemplo também está criado e Funcionando.
-
 
 1.0.1.252 :
 ===========
