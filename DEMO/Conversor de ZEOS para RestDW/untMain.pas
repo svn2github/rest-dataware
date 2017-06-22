@@ -39,9 +39,11 @@ type
     { Private declarations }
   public
     { Public declarations }
+
     Function ReverseStr (S : ShortString) : ShortString;
     Function Occurs(T, S : ShortString) : Byte;
     Function OccurPos (T, S : ShortString; N : Byte) : Byte;
+
   end;
 
 var
@@ -303,6 +305,11 @@ begin
        Inc( _itens_descartar );
        aDescartar  [ _itens_descartar ] := ' Options =';
        //aRestDW[ _itens_descartar ]         := '';
+
+        // Mizael correçao para Valmir
+       Inc(_itens_descartar);
+       aDescartar[_itens_descartar]     := ' ''lc_ctype=ISO8859_1'')';
+
 
 
        //IBX
@@ -760,8 +767,8 @@ begin
    // o item abaixo nao é DUPLICIDADE é no caso de algum EXECSQL estiver dentro de um WITH...
    // o de cima procura pelos ExecSql explicitos( query.execsql ) e o de baixo pelos implicitos
    Inc( _itens_pas );
-   aCode_EngineOrigem   [ _itens_pas ] := 'ExecSql';  //Quaquer query...
-   aCode_RestDW [ _itens_pas ]         := 'ExecSql( _Erro_DW ) then ShowMessage( _Erro_DW )'; // acrescentar if not antes
+   aCode_EngineOrigem   [ _itens_pas ] := ' ExecSql';  //Quaquer query...
+   aCode_RestDW [ _itens_pas ]         := ' ExecSql( _Erro_DW ) then ShowMessage( _Erro_DW )'; // acrescentar if not antes
 
 
    Inc( _itens_pas );
@@ -791,6 +798,21 @@ begin
    if ( cbxEngine.Text = 'IBX' ) then
    begin
 
+      // FLAVIO PARA Mizael
+      //
+      // faco uma critica no INDICE <= 2 pra ZEOS, pra manter entao a compatibildiade vou criar o primeiro
+      // item com algo que nao BATA na comparacao...se nao, teriamos q fazer varios IFs de acordo com
+      // a Engne escolhida
+      //
+      // desculpem a solucao tá bem feia, mas meu tempo tá curto e já estou bem atrasado com projetos de
+      // clientes...espero em breve possamos dar um ar mais profissional
+      //
+      Inc(_itens_pas);
+      aCode_EngineOrigem[_itens_pas] := '...!!!@@@###!!!$$%%%¨¨¨&&&***'; // Quaquer query...
+      aCode_RestDW[_itens_pas] := '';
+      Inc(_itens_pas);
+      aCode_EngineOrigem[_itens_pas] := '...!!!@@@###!!!$$%%%¨¨¨&&&***'; // Quaquer query...
+      aCode_RestDW[_itens_pas] := '';
 
       // Mizael
       Inc(_itens_pas);
@@ -798,16 +820,16 @@ begin
       aCode_RestDW[_itens_pas] := '.ExecOrOpen';
       // acrescentar if not antes
       Inc(_itens_pas);
-      aCode_EngineOrigem[_itens_pas] := 'ExecQuery'; // Quaquer query...
-      aCode_RestDW[_itens_pas] := 'ExecOrOpen';
+      aCode_EngineOrigem[_itens_pas] := ' ExecQuery'; // Quaquer query...
+      aCode_RestDW[_itens_pas] := ' ExecOrOpen';
 
       Inc(_itens_pas);
       aCode_EngineOrigem[_itens_pas] := '.ExecSQL'; // Quaquer query...
       aCode_RestDW[_itens_pas] := '.ExecOrOpen';
 
       Inc(_itens_pas);
-      aCode_EngineOrigem[_itens_pas] := 'ExecSQL'; // Quaquer query...
-      aCode_RestDW[_itens_pas] := 'ExecOrOpen';
+      aCode_EngineOrigem[_itens_pas] := ' ExecSQL'; // Quaquer query...
+      aCode_RestDW[_itens_pas] := ' ExecOrOpen';
 
       // Mizael
       Inc(_itens_pas);
@@ -1437,7 +1459,13 @@ begin
                              //
                              // as demais, serao substituicao de linha inteira( o q o gReplace, cnPack poderia fazer... )
                              //
-                             if i = 1 then
+                             // OBSERVEM  indice que IMPONHO logo abaixo, entao fiquem de olho no(s) item(ns) aCode_EngineOrigem
+                             // pois pra ZEOS( no meu caso ) substituo e incluo um IF NOT ....
+                             //
+                             // na IBX, Mizael adicionou outras situações...
+                             //
+                             // if i = 1 then
+                             if i <= 2 then
                              begin
 
                                  //pegar o nome da QUERY
@@ -1445,13 +1473,18 @@ begin
                                  // verificar se tem um DM ( por ex. antes do nome da query )
                                  a := Occurs( '.' , linha );
 
+                                 //if pos( 'exec' , ansilowercase(linha) ) > 0 then
+                                 //showmessagE( 'exec' );
+
+
                                  if a = 1 then
                                     linha2 := Copy( linha, 1, Pos( '.' , linha ) - 1 )
                                  else
+                                 //if a > 1 then
                                  begin
 
                                       linha2 := Copy( linha, 1, OccurPos( '.' , linha, 2 ) - 1 );
-                                      
+
                                  end;
                                  // caso a linha esteja indentada...
                                  espacos := '';
@@ -1464,8 +1497,12 @@ begin
 
                                  end;
 
+                                 if Trim( linha2 ) = '' then
+                                    espacos := '       ';
+
                                  // monta a linha com a nova estrutura
-                                 linha := espacos + 'if not ' + Trim( linha2 ) + aCode_RestDw[ i ];
+                                 //if a >= 1 then
+                                    linha := espacos + 'if not ' + Trim( linha2 ) + aCode_RestDw[ i ];
 
                              end
                              else
