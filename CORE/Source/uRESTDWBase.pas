@@ -104,7 +104,6 @@ Type
  Private
   //Variáveis, Procedures e Funções Privadas
   vTypeRequest      : TTypeRequest;
-  vProxyOptions     : TProxyOptions;
   vRSCharset        : TEncodeSelect;
   vUserName,
   vPassword,
@@ -283,6 +282,7 @@ Var
  JSONStr       : String;
  vTempServerMethods : TObject;
 Begin
+ vTempServerMethods := Nil;
  Cmd := Trim(ARequestInfo.RawHTTPCommand);
  If (vServerParams.HasAuthentication) Then
   Begin
@@ -318,10 +318,13 @@ Begin
        End;
       If Assigned(vServerMethod) Then
        Begin
-        If UpperCase(Copy (Cmd, 1, 3)) = 'GET' Then
-         JSONStr := TServerMethods(vTempServerMethods).CallGETServerMethod(Argumentos);
-        If UpperCase(Copy (Cmd, 1, 4)) = 'POST' Then
-         JSONStr := TServerMethods(vTempServerMethods).CallPOSTServerMethod(Argumentos);
+        If vTempServerMethods <> Nil Then
+         Begin
+          If UpperCase(Copy (Cmd, 1, 3)) = 'GET' Then
+           JSONStr := TServerMethods(vTempServerMethods).CallGETServerMethod(Argumentos);
+          If UpperCase(Copy (Cmd, 1, 4)) = 'POST' Then
+           JSONStr := TServerMethods(vTempServerMethods).CallPOSTServerMethod(Argumentos);
+         End;
        End;
       AResponseInfo.ContentText := JSONStr;
       If Assigned(vLastResponse) Then
@@ -347,6 +350,7 @@ Var
  Cmd, JSONStr       : String;
  vTempServerMethods : TObject;
 Begin
+ vTempServerMethods := Nil;
  Cmd := ARequestInfo.RawHTTPCommand;
  If (vServerParams.HasAuthentication) Then
   Begin
@@ -376,10 +380,13 @@ Begin
      End;
     If Assigned(vServerMethod) Then
      Begin
-      If UpperCase(Copy (Cmd, 1, 3)) = 'PUT' Then
-       JSONStr := TServerMethods(vTempServerMethods).CallPUTServerMethod(Argumentos);
-      If UpperCase(Copy (Cmd, 1, 6)) = 'DELETE' Then
-       JSONStr := TServerMethods(vTempServerMethods).CallDELETEServerMethod(Argumentos);
+      If vTempServerMethods <> Nil Then
+       Begin
+        If UpperCase(Copy (Cmd, 1, 3)) = 'PUT' Then
+         JSONStr := TServerMethods(vTempServerMethods).CallPUTServerMethod(Argumentos);
+        If UpperCase(Copy (Cmd, 1, 6)) = 'DELETE' Then
+         JSONStr := TServerMethods(vTempServerMethods).CallDELETEServerMethod(Argumentos);
+       End;
      End;
     AResponseInfo.ContentText := JSONStr;
     If Assigned(vLastResponse) Then
