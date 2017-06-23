@@ -11,9 +11,9 @@ Uses {$IFDEF LCL}
 
 
 Const
- TValueFormatJSON   = '"%s":%s, "%s":%s, "%s":%s';
+ TValueFormatJSON   = '{"%s":"%s", "%s":"%s", "%s":"%s", "%s":%s}';
  TJsonDatasetHeader = '"%s":%s, "%s":%s, "%s":%d, "%s":%d, "%s":%s';
- TJsonValueFormat   = '["%d", "%s"]';
+ TJsonValueFormat   = '["%d", %s]';
 
 Type
  TJSONValue = Class
@@ -27,6 +27,7 @@ Type
   Function  GetValue           : String;
   Procedure WriteValue (bValue : String);
   Function  FormatValue(bValue : String) : String;
+  Function  GetValueJSON(bValue: String) : String;
  Public
   Procedure   ToStream       (Var bValue  : TMemoryStream);
   Procedure   LoadFromDataset(TableName   : String;
@@ -77,16 +78,25 @@ Begin
  inherited;
 End;
 
+Function TJSONValue.GetValueJSON(bValue : String): String;
+Begin
+ Result := bValue;
+ If vObjectValue In [ovString, ovFixedChar,   ovWideString,
+                     ovFixedWideChar, ovDate, ovTime,
+                     ovDateTime]  Then
+  Result := '"' + EscapeQuotes(bValue) + '"';
+End;
+
 Function TJSONValue.FormatValue(bValue : String): String;
 Var
- vResult,
  aResult  : String;
 Begin
- vResult  := Format(TValueFormatJSON, []);
  If vObjectValue In [ovMemo, ovGraphic, ovFmtMemo,
                      ovParadoxOle,      ovDBaseOle,
                      ovTypedBinary,     ovCursor,
-                     ovDataSet]  Then
+                     ovDataSet,         ovOraBlob,
+                     ovOraClob,         ovWideMemo,
+                     ovParams,          ovStream]  Then
   {$IFDEF LCL}
    //Encode String Base64 Here
   {$ELSE}
@@ -94,6 +104,10 @@ Begin
   {$ENDIF}
  Else
   aResult := bValue;
+ Result  := Format(TValueFormatJSON, ['ObjectType', GetObjectName(vTypeObject),
+                                      'Direction',  GetDirectionName(vObjectDirection),
+                                      'ValueType',  GetValueType(vObjectValue),
+                                      vTAGName,     Format(TJsonValueFormat, [Length(aResult), GetValueJSON(aResult)])]);
 End;
 
 Function  TJSONValue.GetValue : String;
