@@ -2,21 +2,21 @@
   This source is only used to compile and install the package.
  }
 
-unit RestEasyObjectsCORE;
+unit resteasyobjectscore;
 
 interface
 
 uses
-  ServerUtils, SysTypes, uDWConsts, uDWJSONObject, uDWJSONTools, uKBDynamic, 
-  uRESTDWBase, LazarusPackageIntf;
+  ServerUtils, uDWConsts, uDWJSONObject, uDWJSONTools, uKBDynamic, SysTypes, 
+  uRESTDWBase, uRESTDWReg, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
- RegisterComponents('REST Dataware - Service', [TRESTServicePooler, TRESTClientPooler]);
+  RegisterUnit('uRESTDWReg', @uRESTDWReg.Register);
 end;
 
 initialization
-  RegisterPackage('RestEasyObjectsCORE', @Register);
+  RegisterPackage('resteasyobjectscore', @Register);
 end.
