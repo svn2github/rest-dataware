@@ -42,6 +42,8 @@ contains
   StringBuilderUnit in '..\..\Source\libs\StringBuilderUnit.pas',
   SysTypes in '..\..\Source\libs\SysTypes.pas',
   uDWConsts in '..\..\Source\libs\uDWConsts.pas',
-  uDWJSONTools in '..\..\Source\libs\uDWJSONTools.pas';
+  uDWJSONTools in '..\..\Source\libs\uDWJSONTools.pas',
+  uDWJSONObject in '..\..\Source\libs\uDWJSONObject.pas',
+  uKBDynamic in '..\..\Source\libs\uKBDynamic.pas';
 
 end.

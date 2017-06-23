@@ -17,7 +17,7 @@ Function DecodeStrings(Value       : String;
 
 implementation
 
-Function EncodeStrings(Value : String;Encoding:TEncoding) : String;
+Function EncodeStrings(Value : String; Encoding : TEncoding) : String;
 Var
  Input,
  Output : TStringStream;
@@ -37,7 +37,7 @@ Begin
  End;
 End;
 
-Function DecodeStrings(Value : String;Encoding:TEncoding) : String;
+Function DecodeStrings(Value : String;Encoding : TEncoding) : String;
 Var
  Input,
  Output : TStringStream;

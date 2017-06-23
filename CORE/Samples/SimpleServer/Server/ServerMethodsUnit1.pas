@@ -2,7 +2,7 @@ unit ServerMethodsUnit1;
 
 interface
 
-uses SysUtils, Classes, Windows,
+uses SysUtils, Classes, Windows, uDWConsts,
      System.JSON, Dialogs, ServerUtils, SysTypes;
 
 Type
@@ -20,14 +20,16 @@ Type
                           NewNome   : String) : String;
    // http://localhost:8080/ExcluiAluno/NomeAluno
    Function ExcluiAluno  (NomeAluno : String) : String;
+   Function CallGETServerMethod   (Argumentos : TArguments) : String;
+   Function CallPUTServerMethod   (Argumentos : TArguments) : string;
+   Function CallDELETEServerMethod(Argumentos : TArguments) : string;
+   Function CallPOSTServerMethod  (Argumentos : TArguments) : string;
   public
    { Public declarations }
-   Constructor Create (aOwner : TComponent); Override;
-   Destructor Destroy; Override;
-   Function CallGETServerMethod   (Argumentos : TArguments) : String;Override;
-   Function CallPUTServerMethod   (Argumentos : TArguments) : string;Override;
-   Function CallDELETEServerMethod(Argumentos : TArguments) : string;Override;
-   Function CallPOSTServerMethod  (Argumentos : TArguments) : string;Override;
+   Constructor Create    (aOwner : TComponent); Override;
+   Destructor  Destroy; Override;
+   Function    ReplyEvent(SendType  : TSendEvent;
+                          Arguments : TArguments) : String;Override;
   End;
 {$METHODINFO OFF}
 
@@ -155,6 +157,17 @@ Begin
  Finally
   List.Free;
   JSONObject.Free;
+ End;
+End;
+
+Function TServerMethods1.ReplyEvent(SendType  : TSendEvent;
+                                    Arguments : TArguments) : String;
+Begin
+ Case SendType Of
+  seGET    : CallGETServerMethod   (Arguments);
+  sePOST   : CallPOSTServerMethod  (Arguments);
+  sePUT    : CallPUTServerMethod   (Arguments);
+  seDELETE : CallDELETEServerMethod(Arguments);
  End;
 End;
 

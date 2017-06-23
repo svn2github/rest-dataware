@@ -3,7 +3,7 @@ unit SysTypes;
 Interface
 
 Uses
- IdURI, IdGlobal, SysUtils, Classes, ServerUtils;
+ IdURI, IdGlobal, SysUtils, Classes, ServerUtils, uDWConsts;
 
 Type
  TResultErro = Record
@@ -24,15 +24,13 @@ End;
 Type
  TServerMethods = Class(TComponent)
  Protected
-  Function ReturnIncorrectArgs  : String;
-  Function ReturnMethodNotFound : String;
+  Function    ReturnIncorrectArgs  : String;
+  Function    ReturnMethodNotFound : String;
  Public
-  Constructor Create(aOwner : TComponent); Override;
+  Function    ReplyEvent(SendType  : TSendEvent;
+                         Arguments : TArguments) : String;Virtual;
+  Constructor Create    (aOwner    : TComponent); Override;
   Destructor  Destroy; Override;
-  Function CallGETServerMethod   (Argumentos : TArguments) : String;Virtual;
-  Function CallPUTServerMethod   (Argumentos : TArguments) : String;Virtual;
-  Function CallDELETEServerMethod(Argumentos : TArguments) : String;Virtual;
-  Function CallPOSTServerMethod  (Argumentos : TArguments) : String;Virtual;
 End;
 
 implementation
@@ -98,26 +96,6 @@ Begin
  Result := '{"STATUS":"' + wsResult.Status + '","MENSSAGE":"' + wsResult.MessageText + '"}';
 End;
 
-function TServerMethods.CallDELETEServerMethod(Argumentos: TArguments): String;
-begin
-
-end;
-
-function TServerMethods.CallGETServerMethod(Argumentos: TArguments): String;
-begin
-
-end;
-
-function TServerMethods.CallPOSTServerMethod(Argumentos: TArguments): String;
-begin
-
-end;
-
-function TServerMethods.CallPUTServerMethod(Argumentos: TArguments): String;
-begin
-
-end;
-
 constructor TServerMethods.Create(aOwner: TComponent);
 begin
   inherited;
@@ -127,6 +105,12 @@ destructor TServerMethods.Destroy;
 begin
   inherited;
 end;
+
+Function TServerMethods.ReplyEvent(SendType  : TSendEvent;
+                                   Arguments : TArguments) : String;
+Begin
+ //Virtual Function
+End;
 
 Function TServerMethods.ReturnIncorrectArgs: String;
 Var

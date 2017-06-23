@@ -27,8 +27,10 @@ Uses System.SysUtils,  System.Classes,   SysTypes, ServerUtils, Windows,
      IdAuthentication, IdHTTPHeaderInfo, uDWJSONTools,          uDWConsts,    IdHTTP;
 
 Type
- TLastRequest  = Procedure (Value : String) of Object;
- TLastResponse = Procedure (Value : String) of Object;
+ TLastRequest  = Procedure (Value     : String)     of Object;
+ TLastResponse = Procedure (Value     : String)     of Object;
+ TReplyEvent   = Procedure (SendType  : TSendEvent;
+                            Arguments : TArguments) of Object;
 
 Type
  TProxyOptions = Class(TPersistent)
@@ -331,9 +333,9 @@ Begin
         If vTempServerMethods <> Nil Then
          Begin
           If UpperCase(Copy (Cmd, 1, 3)) = 'GET' Then
-           JSONStr := TServerMethods(vTempServerMethods).CallGETServerMethod(Argumentos);
+           JSONStr := TServerMethods(vTempServerMethods).ReplyEvent(seGET, Argumentos);
           If UpperCase(Copy (Cmd, 1, 4)) = 'POST' Then
-           JSONStr := TServerMethods(vTempServerMethods).CallPOSTServerMethod(Argumentos);
+           JSONStr := TServerMethods(vTempServerMethods).ReplyEvent(sePOST, Argumentos);
          End;
        End;
       AResponseInfo.ContentText := JSONStr;
@@ -393,9 +395,9 @@ Begin
       If vTempServerMethods <> Nil Then
        Begin
         If UpperCase(Copy (Cmd, 1, 3)) = 'PUT' Then
-         JSONStr := TServerMethods(vTempServerMethods).CallPUTServerMethod(Argumentos);
+         JSONStr := TServerMethods(vTempServerMethods).ReplyEvent(sePUT, Argumentos);
         If UpperCase(Copy (Cmd, 1, 6)) = 'DELETE' Then
-         JSONStr := TServerMethods(vTempServerMethods).CallDELETEServerMethod(Argumentos);
+         JSONStr := TServerMethods(vTempServerMethods).ReplyEvent(seDELETE, Argumentos);
        End;
      End;
     AResponseInfo.ContentText := JSONStr;
