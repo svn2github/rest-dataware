@@ -59,7 +59,11 @@ var
 
 implementation
 
+{$IFDEF LCL}
+{$R *.lfm}
+{$ELSE}
 {$R *.dfm}
+{$ENDIF}
 
 procedure TForm2.ListAlunos(Value : String);
 Var

@@ -99,7 +99,11 @@ var
 
 implementation
 
+{$IFDEF LCL}
+{$R *.lfm}
+{$ELSE}
 {$R *.dfm}
+{$ENDIF}
 
 uses
   Winapi.ShellApi;
@@ -359,6 +363,4 @@ begin
 end;
 
 end.
-
-
 

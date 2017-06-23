@@ -107,10 +107,6 @@ object RestDWForm: TRestDWForm
     TabOrder = 3
     object tsConfigs: TTabSheet
       Caption = 'Configuration'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 7
         Top = 37
@@ -284,7 +280,7 @@ object RestDWForm: TRestDWForm
       end
       object Image1: TImage
         Left = 370
-        Top = 0
+        Top = 6
         Width = 133
         Height = 100
         Picture.Data = {
@@ -1301,10 +1297,6 @@ object RestDWForm: TRestDWForm
     object tsLogs: TTabSheet
       Caption = 'Logs'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label19: TLabel
         Left = 7
         Top = 147
