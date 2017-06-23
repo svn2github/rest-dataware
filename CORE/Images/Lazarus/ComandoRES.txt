@@ -1,0 +1,1 @@
+c:\lazarus\tools\lazres.exe resteasyobjectscore.lrs TRESTClientPooler.png TRESTServicePooler.png
