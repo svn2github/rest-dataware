@@ -27,7 +27,7 @@ uses System.SysUtils,         System.Classes,
      uPoolerServerMethods
      {$if CompilerVersion > 26}
        ,System.NetEncoding, System.JSON, FireDAC.Stan.StorageJSON, FireDAC.Stan.StorageBin
-     {$ifend};
+     {$endif};
 
 Type
  TEncodeSelect            = (esASCII, esUtf8);
@@ -243,7 +243,7 @@ Type
   {$if CompilerVersion > 26}
     Property  ChangeAlerter;
     Property  ChangeAlertName;
-  {$ifend}
+  {$endif}
   Property  ObjectView;
   Property  StoreDefs;
   Property  CachedUpdates;
@@ -275,6 +275,7 @@ Type
   Procedure   GotoRec(Const RecNo : Integer);
   Function    ParamCount : Integer;
   Procedure   DynamicFilter(Field, Value : String; InText : Boolean = False);
+  procedure   Refresh;
  Published
   Property MasterDataSet       : TRESTClientSQL      Read vMasterDataSet            Write SetMasterDataSet;
   Property MasterCascadeDelete : Boolean             Read vCascadeDelete            Write vCascadeDelete;
@@ -919,7 +920,7 @@ Begin
  Value.Password            := vPassword;
  {$if CompilerVersion > 26}
  Value.HTTP.ConnectTimeout := vTimeOut;
- {$ifend}
+ {$endif}
  Value.RESTContext         := vRESTContext;
  Value.Context             := vContentex;
  If vProxy Then
@@ -1739,6 +1740,27 @@ Begin
     vOnBeforePost(DataSet);
   End;
 End;
+
+procedure TRESTClientSQL.Refresh;
+var
+  Curso:integer;
+begin
+  try
+    if Active then
+    begin
+      if RecordCount > 0 then
+      Curso:= self.CurrentRecord;
+      close;
+      Open;
+      if Active then
+      begin
+        if RecordCount > 0 then
+        MoveBy(Curso);
+      end;
+    end;
+  finally
+  end;
+end;
 
 Procedure TRESTClientSQL.ProcAfterClose(DataSet: TDataSet);
 Var
