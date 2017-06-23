@@ -164,10 +164,10 @@ Function TServerMethods1.ReplyEvent(SendType  : TSendEvent;
                                     Arguments : TArguments) : String;
 Begin
  Case SendType Of
-  seGET    : CallGETServerMethod   (Arguments);
-  sePOST   : CallPOSTServerMethod  (Arguments);
-  sePUT    : CallPUTServerMethod   (Arguments);
-  seDELETE : CallDELETEServerMethod(Arguments);
+  seGET    : Result := CallGETServerMethod   (Arguments);
+  sePOST   : Result := CallPOSTServerMethod  (Arguments);
+  sePUT    : Result := CallPUTServerMethod   (Arguments);
+  seDELETE : Result := CallDELETEServerMethod(Arguments);
  End;
 End;
 
