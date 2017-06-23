@@ -2,37 +2,32 @@ unit uDWJSONObject;
 
 interface
 
-Uses
-     {$IFDEF LCL}
-     SysUtils, SysTypes,   Classes, uDWJSONTools, uDWConsts,
-     IdGlobal,        uKBDynamic,   DB;
+Uses {$IFDEF LCL}
+     SysUtils, SysTypes, Classes, uDWJSONTools, uDWConsts, IdGlobal, uKBDynamic, DB;
      {$ELSE}
      System.SysUtils, SysTypes,   System.Classes, uDWJSONTools, uDWConsts,
-     IdGlobal,        uKBDynamic, System.Rtti,    Data.DB;
+     IdGlobal,        uKBDynamic, System.Rtti,    Data.DB,      Soap.EncdDecd;
      {$ENDIF}
 
 
 Const
  TValueFormatJSON   = '"%s":%s, "%s":%s, "%s":%s';
  TJsonDatasetHeader = '"%s":%s, "%s":%s, "%s":%d, "%s":%d, "%s":%s';
- TJsonValueFormat   = '"%s":%d, "%s":%s';
+ TJsonValueFormat   = '["%d", "%s"]';
 
 Type
  TJSONValue = Class
  Private
-  vTypeObject                : TTypeObject;
-  vObjectDirection           : TObjectDirection;
-  vObjectValue               : TObjectValue;
-  aValue                     : TIdBytes;
-  vEncoding                  : TEncoding;
-  Function  GetValue         : String;
-  Procedure WriteValue(Value : String);
+  vTAGName                     : String;
+  vTypeObject                  : TTypeObject;
+  vObjectDirection             : TObjectDirection;
+  vObjectValue                 : TObjectValue;
+  aValue                       : TIdBytes;
+  vEncoding                    : TEncoding;
+  Function  GetValue           : String;
+  Procedure WriteValue (bValue : String);
+  Function  FormatValue(bValue : String) : String;
  Public
-  Property    TypeObject                  : TTypeObject      Read vTypeObject      Write vTypeObject;
-  Property    ObjectDirection             : TObjectDirection Read vObjectDirection Write vObjectDirection;
-  Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
-  Property    Encoding                    : TEncoding        Read vEncoding        Write vEncoding;
-  Property    Value                       : String           Read GetValue         Write WriteValue;
   Procedure   ToStream       (Var bValue  : TMemoryStream);
   Procedure   LoadFromDataset(TableName   : String;
                               bValue      : TDataset);
@@ -41,6 +36,12 @@ Type
                               var DestDS  : TDataset);
   Constructor Create;
   Destructor  Destroy;Override;
+  Property    TypeObject                  : TTypeObject      Read vTypeObject      Write vTypeObject;
+  Property    ObjectDirection             : TObjectDirection Read vObjectDirection Write vObjectDirection;
+  Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
+  Property    Encoding                    : TEncoding        Read vEncoding        Write vEncoding;
+  Property    Value                       : String           Read GetValue         Write WriteValue;
+  Property    TAGName                     : String           Read vTAGName         Write vTAGName;
 End;
 
 implementation
@@ -67,12 +68,32 @@ Begin
  vTypeObject     := toObject;
  ObjectDirection := odINOUT;
  vObjectValue    := ovString;
+ vTAGName        := 'TAGJSON';
 End;
 
 Destructor TJSONValue.Destroy;
 Begin
  SetLength(aValue, 0);
  inherited;
+End;
+
+Function TJSONValue.FormatValue(bValue : String): String;
+Var
+ vResult,
+ aResult  : String;
+Begin
+ vResult  := Format(TValueFormatJSON, []);
+ If vObjectValue In [ovMemo, ovGraphic, ovFmtMemo,
+                     ovParadoxOle,      ovDBaseOle,
+                     ovTypedBinary,     ovCursor,
+                     ovDataSet]  Then
+  {$IFDEF LCL}
+   //Encode String Base64 Here
+  {$ELSE}
+  aResult := EncodeString(bValue)
+  {$ENDIF}
+ Else
+  aResult := bValue;
 End;
 
 Function  TJSONValue.GetValue : String;
@@ -104,10 +125,10 @@ Begin
 
 End;
 
-Procedure TJSONValue.WriteValue(Value : String);
+Procedure TJSONValue.WriteValue(bValue : String);
 Begin
  SetLength(aValue, 0);
- aValue := tIdBytes(vEncoding.GetBytes(Value));
+ aValue := tIdBytes(vEncoding.GetBytes(FormatValue(bValue)));
 End;
 
 end.

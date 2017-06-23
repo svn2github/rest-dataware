@@ -2,12 +2,11 @@ unit uDWConsts;
 
 Interface
 
-Uses
-  {$IFDEF LCL}
-  SysUtils;
-  {$ELSE}
-  System.SysUtils;
-  {$ENDIF}
+Uses {$IFDEF LCL}
+     SysUtils;
+     {$ELSE}
+     System.SysUtils;
+     {$ENDIF}
 
 Const
  TSepValueMemString    = '\\';
