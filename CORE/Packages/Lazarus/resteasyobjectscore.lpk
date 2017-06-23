@@ -12,7 +12,7 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="13">
+    <Files Count="14">
       <Item1>
         <Filename Value="..\..\Source\libs\backup\ServerUtils.pas"/>
         <UnitName Value="ServerUtils"/>
@@ -66,6 +66,10 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="uRESTDWReg"/>
       </Item13>
+      <Item14>
+        <Filename Value="resteasyobjectscore.lrs"/>
+        <Type Value="LRS"/>
+      </Item14>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>

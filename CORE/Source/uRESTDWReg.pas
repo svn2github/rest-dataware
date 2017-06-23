@@ -4,7 +4,7 @@ interface
 
 uses
   {$IFDEF LCL}
-   Classes, uRESTDWBase;
+   LResources, Classes, uRESTDWBase;
   {$ELSE}
    System.Classes, uRESTDWBase;
   {$ENDIF}
@@ -17,5 +17,10 @@ Procedure Register;
 Begin
  RegisterComponents('REST Dataware - Service',     [TRESTServicePooler, TRESTClientPooler]);
 End;
+
+{$IFDEF LCL}
+initialization
+{$I resteasyobjectscore.lrs}
+{$ENDIF}
 
 end.

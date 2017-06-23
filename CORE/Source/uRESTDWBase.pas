@@ -34,10 +34,13 @@ Uses
      {$ENDIF}
 
 Type
- TLastRequest  = Procedure (Value     : String)     of Object;
- TLastResponse = Procedure (Value     : String)     of Object;
+ TLastRequest  = Procedure (Value     : String)                  Of Object;
+ TLastResponse = Procedure (Value     : String)                  Of Object;
  TReplyEvent   = Procedure (SendType  : TSendEvent;
-                            Arguments : TArguments) of Object;
+                            Arguments : TArguments)              Of Object;
+ TEventContext = Procedure (AContext      : TIdContext;
+                            ARequestInfo  : TIdHTTPRequestInfo;
+                            AResponseInfo : TIdHTTPResponseInfo) Of Object;
 
 Type
  TProxyOptions = Class(TPersistent)
@@ -58,6 +61,13 @@ End;
 
 Type
  TRESTServicePooler = Class(TComponent)
+ Protected
+  Procedure aCommandGet  (AContext      : TIdContext;
+                          ARequestInfo  : TIdHTTPRequestInfo;
+                          AResponseInfo : TIdHTTPResponseInfo);
+  Procedure aCommandOther(AContext      : TIdContext;
+                          ARequestInfo  : TIdHTTPRequestInfo;
+                          AResponseInfo : TIdHTTPResponseInfo);
  Private
   vActive          : Boolean;
   vProxyOptions    : TProxyOptions;
@@ -76,12 +86,6 @@ Type
   ASSLCertFile     : String;
   VEncondig        : TEncodeSelect;              //Enconding se usar CORS usar UTF8 - Alexandre Abade
   Procedure GetSSLPassWord(Var Password: String);
-  Procedure aCommandGet  (AContext      : TIdContext;
-                          ARequestInfo  : TIdHTTPRequestInfo;
-                          AResponseInfo : TIdHTTPResponseInfo);
-  Procedure aCommandOther(AContext      : TIdContext;
-                          ARequestInfo  : TIdHTTPRequestInfo;
-                          AResponseInfo : TIdHTTPResponseInfo);
   Procedure SetActive(Value : Boolean);
   Function  GetSecure : Boolean;
  Public
@@ -293,8 +297,8 @@ End;
 { TRESTServicePooler }
 
 Procedure TRESTServicePooler.aCommandGet(AContext      : TIdContext;
-                                        ARequestInfo  : TIdHTTPRequestInfo;
-                                        AResponseInfo : TIdHTTPResponseInfo);
+                                         ARequestInfo  : TIdHTTPRequestInfo;
+                                         AResponseInfo : TIdHTTPResponseInfo);
 Var
  Cmd           : String;
  Argumentos    : TArguments;
@@ -429,7 +433,8 @@ Begin
  HTTPServer                      := TIdHTTPServer.Create(Nil);
  lHandler                        := TIdServerIOHandlerSSLOpenSSL.Create;
  {$IFDEF LCL}
- //Problema no Passar eventos para o Indy em Lazarus
+ HTTPServer.OnCommandGet         := @aCommandGet;
+ HTTPServer.OnCommandOther       := @aCommandOther;
  {$ELSE}
  HTTPServer.OnCommandGet         := aCommandGet;
  HTTPServer.OnCommandOther       := aCommandOther;
@@ -477,7 +482,7 @@ Begin
      Begin
       lHandler.SSLOptions.Method                := aSSLVersion;
       {$IFDEF LCL}
-      //Problema no Passar eventos para o Indy em Lazarus
+      lHandler.OnGetPassword                    := @GetSSLPassword;
       {$ELSE}
       lHandler.OnGetPassword                    := GetSSLPassword;
       {$ENDIF}
