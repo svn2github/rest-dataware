@@ -2,13 +2,20 @@ unit uDWJSONObject;
 
 interface
 
-Uses System.SysUtils, SysTypes, System.Classes, uDWJSONTools, uDWConsts, IdGlobal, uKBDynamic,
-     System.Rtti,     Data.DB;
+Uses
+     {$IFDEF LCL}
+     SysUtils, SysTypes,   Classes, uDWJSONTools, uDWConsts,
+     IdGlobal,        uKBDynamic,   DB;
+     {$ELSE}
+     System.SysUtils, SysTypes,   System.Classes, uDWJSONTools, uDWConsts,
+     IdGlobal,        uKBDynamic, System.Rtti,    Data.DB;
+     {$ENDIF}
+
 
 Const
- TValueFormatJSON   = '%s|%s|%s|';
- TJsonDatasetHeader = '%s|%s|%d|%d|%s|';
- TJsonValueFormat   = '%d|%s|';
+ TValueFormatJSON   = '"%s":%s, "%s":%s, "%s":%s';
+ TJsonDatasetHeader = '"%s":%s, "%s":%s, "%s":%d, "%s":%d, "%s":%s';
+ TJsonValueFormat   = '"%s":%d, "%s":%s';
 
 Type
  TJSONValue = Class
@@ -26,9 +33,9 @@ Type
   Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
   Property    Encoding                    : TEncoding        Read vEncoding        Write vEncoding;
   Property    Value                       : String           Read GetValue         Write WriteValue;
-  Procedure   ToStream       (Var Value   : TMemoryStream);
+  Procedure   ToStream       (Var bValue  : TMemoryStream);
   Procedure   LoadFromDataset(TableName   : String;
-                              Value       : TDataset);
+                              bValue      : TDataset);
   Procedure   WriteToDataset (DatasetType : TDatasetType;
                               TableName   : String;
                               var DestDS  : TDataset);
@@ -74,20 +81,20 @@ Begin
 End;
 
 Procedure TJSONValue.LoadFromDataset(TableName : String;
-                                     Value     : TDataset);
+                                     bValue     : TDataset);
 Begin
 
 End;
 
-Procedure TJSONValue.ToStream(var Value : TMemoryStream);
+Procedure TJSONValue.ToStream(var bValue : TMemoryStream);
 Begin
  If Length(aValue) > 0 Then
   Begin
-   Value := TMemoryStream.Create;
-   Value.Write(aValue[0], -1);
+   bValue := TMemoryStream.Create;
+   bValue.Write(aValue[0], -1);
   End
  Else
-  Value := Nil;
+  bValue := Nil;
 End;
 
 Procedure TJSONValue.WriteToDataset(DatasetType : TDatasetType;

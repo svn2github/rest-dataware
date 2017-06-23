@@ -2,7 +2,12 @@ unit uDWConsts;
 
 Interface
 
-Uses System.SysUtils;
+Uses
+  {$IFDEF LCL}
+  SysUtils;
+  {$ELSE}
+  System.SysUtils;
+  {$ENDIF}
 
 Const
  TSepValueMemString    = '\\';
@@ -11,10 +16,10 @@ Const
  UrlBase               = '%s://%s:%d/';
 
 Type
- TEncodeSelect    = (esASCII, esUtf8);
- TSendEvent       = (seGET,   sePOST,
-                     sePUT,   seDELETE);
- TTypeRequest     = (trHttp, trHttps);
+ TEncodeSelect    = (esASCII,   esUtf8);
+ TSendEvent       = (seGET,     sePOST,
+                     sePUT,     seDELETE);
+ TTypeRequest     = (trHttp,    trHttps);
  TTypeObject      = (toDataset, toParam, toVariable, toObject);
  TObjectDirection = (odIN, odOUT, odINOUT);
  TObjectValue     = (ovUnknown,         ovString,       ovSmallint,         ovInteger,    ovWord, // 0..4
@@ -34,6 +39,7 @@ implementation
 
 Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;
 Begin
+ Result := TEncoding.utf8;
  Case Avalue of
   esUtf8  : Result := TEncoding.utf8;
   esASCII : Result := TEncoding.ASCII;

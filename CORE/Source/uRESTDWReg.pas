@@ -3,7 +3,11 @@ unit uRESTDWReg;
 interface
 
 uses
- System.Classes, uRESTDWBase;
+  {$IFDEF LCL}
+   Classes, uRESTDWBase;
+  {$ELSE}
+   System.Classes, uRESTDWBase;
+  {$ENDIF}
 
 Procedure Register;
 

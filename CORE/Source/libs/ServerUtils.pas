@@ -3,8 +3,12 @@ unit ServerUtils;
 interface
 
 Uses
-    Classes, StringBuilderUnit,
-    SysUtils, IdURI, IdGlobal;
+  {$IFDEF LCL}
+  Classes, SysUtils, IdURI, IdGlobal;
+  {$ELSE}
+  Classes, StringBuilderUnit,
+  SysUtils, IdURI, IdGlobal;
+  {$ENDIF}
 
 Type
  TServerParams = Class(TPersistent)

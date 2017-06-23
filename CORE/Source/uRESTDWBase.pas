@@ -22,9 +22,16 @@ unit uRESTDWBase;
 
 interface
 
-Uses System.SysUtils,  System.Classes,   SysTypes, ServerUtils, Windows,
+Uses
+     {$IFDEF LCL}
+     SysUtils,         Classes, SysTypes, ServerUtils, Windows,
+     IdContext,        IdHTTPServer,      IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
+     IdAuthentication, IdHTTPHeaderInfo,  uDWJSONTools,          uDWConsts,    IdHTTP;
+     {$ELSE}
+     System.SysUtils,  System.Classes,   SysTypes, ServerUtils, Windows,
      IdContext,        IdHTTPServer,     IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
      IdAuthentication, IdHTTPHeaderInfo, uDWJSONTools,          uDWConsts,    IdHTTP;
+     {$ENDIF}
 
 Type
  TLastRequest  = Procedure (Value     : String)     of Object;
@@ -69,12 +76,12 @@ Type
   ASSLCertFile     : String;
   VEncondig        : TEncodeSelect;              //Enconding se usar CORS usar UTF8 - Alexandre Abade
   Procedure GetSSLPassWord(Var Password: String);
-  Procedure CommandGet  (AContext      : TIdContext;
-                         ARequestInfo  : TIdHTTPRequestInfo;
-                         AResponseInfo : TIdHTTPResponseInfo);
-  Procedure CommandOther(AContext      : TIdContext;
-                         ARequestInfo  : TIdHTTPRequestInfo;
-                         AResponseInfo : TIdHTTPResponseInfo);
+  Procedure aCommandGet  (AContext      : TIdContext;
+                          ARequestInfo  : TIdHTTPRequestInfo;
+                          AResponseInfo : TIdHTTPResponseInfo);
+  Procedure aCommandOther(AContext      : TIdContext;
+                          ARequestInfo  : TIdHTTPRequestInfo;
+                          AResponseInfo : TIdHTTPResponseInfo);
   Procedure SetActive(Value : Boolean);
   Function  GetSecure : Boolean;
  Public
@@ -285,7 +292,7 @@ End;
 
 { TRESTServicePooler }
 
-Procedure TRESTServicePooler.CommandGet(AContext      : TIdContext;
+Procedure TRESTServicePooler.aCommandGet(AContext      : TIdContext;
                                         ARequestInfo  : TIdHTTPRequestInfo;
                                         AResponseInfo : TIdHTTPResponseInfo);
 Var
@@ -354,7 +361,7 @@ Begin
   End;
 End;
 
-Procedure TRESTServicePooler.CommandOther(AContext      : TIdContext;
+Procedure TRESTServicePooler.aCommandOther(AContext      : TIdContext;
                                           ARequestInfo  : TIdHTTPRequestInfo;
                                           AResponseInfo : TIdHTTPResponseInfo);
 Var
@@ -421,8 +428,12 @@ Begin
  vProxyOptions                   := TProxyOptions.Create;
  HTTPServer                      := TIdHTTPServer.Create(Nil);
  lHandler                        := TIdServerIOHandlerSSLOpenSSL.Create;
- HTTPServer.OnCommandGet         := CommandGet;
- HTTPServer.OnCommandOther       := CommandOther;
+ {$IFDEF LCL}
+ //Problema no Passar eventos para o Indy em Lazarus
+ {$ELSE}
+ HTTPServer.OnCommandGet         := aCommandGet;
+ HTTPServer.OnCommandOther       := aCommandOther;
+ {$ENDIF}
  vServerParams                   := TServerParams.Create;
  vActive                         := False;
  vServerParams.HasAuthentication := True;
@@ -465,7 +476,11 @@ Begin
        (ASSLCertFile <> '')           Then
      Begin
       lHandler.SSLOptions.Method                := aSSLVersion;
+      {$IFDEF LCL}
+      //Problema no Passar eventos para o Indy em Lazarus
+      {$ELSE}
       lHandler.OnGetPassword                    := GetSSLPassword;
+      {$ENDIF}
       lHandler.SSLOptions.CertFile              := ASSLCertFile;
       lHandler.SSLOptions.KeyFile               := ASSLPrivateKeyFile;
       HTTPServer.IOHandler := lHandler;

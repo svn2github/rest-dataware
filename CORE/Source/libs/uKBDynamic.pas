@@ -55,18 +55,22 @@ type
 { Compiler compatibility }
 
   // XE4+ legacy warning silence
+  {$IFNDEF LCL}
   {$IF CompilerVersion >= 25}
   {$LEGACYIFEND on}
   {$IFEND}
+  {$ENDIF}
 
   // D2009 and older. D2007/D2009 supports NativeInt/NativeUInt, however compiler is buggy for this types.
   // http://qc.embarcadero.com/wc/qcmain.aspx?d=71292
+  {$IFNDEF LCL}
   {$IF CompilerVersion < 21}
   NativeInt = Integer;
   NativeUInt = Cardinal;
   PNativeInt = ^NativeInt;
   PNativeUInt = ^NativeUInt;
   {$IFEND}
+  {$ENDIF}
 
   KBSize = NativeInt;
 
@@ -508,28 +512,48 @@ begin
 
   tkArray:
     begin
+      {$IFDEF LCL}
+      lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo)[0].Name)^);
+      {$ELSE}
       lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo).Name)^);
+      {$ENDIF}
       while ALength > 0 do
       begin
+        {$IFDEF LCL}
+        if not DynamicCompare_Array(ADynamic1, ADynamic2, lFieldTable[0].Fields[0].TypeInfo^, lFieldTable[0].Count) then
+          Exit;
+        Inc(KBPointerMath(ADynamic1), lFieldTable[0].Size);
+        Inc(KBPointerMath(ADynamic2), lFieldTable[0].Size);
+        {$ELSE}
         if not DynamicCompare_Array(ADynamic1, ADynamic2, lFieldTable.Fields[0].TypeInfo^, lFieldTable.Count) then
           Exit;
-
         Inc(KBPointerMath(ADynamic1), lFieldTable.Size);
         Inc(KBPointerMath(ADynamic2), lFieldTable.Size);
+        {$ENDIF}
         Dec(ALength);
       end;
     end;
 
   tkRecord:
     begin
+      {$IFDEF LCL}
+      lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo)[0].Name)^);
+      {$ELSE}
       lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo).Name)^);
+      {$ENDIF}
       while ALength > 0 do
       begin
+        {$IFDEF LCL}
         if not DynamicCompare_Record(ADynamic1, ADynamic2, lFieldTable) then
           Exit;
-
+        Inc(KBPointerMath(ADynamic1), lFieldTable[0].Size);
+        Inc(KBPointerMath(ADynamic2), lFieldTable[0].Size);
+        {$ELSE}
+        if not DynamicCompare_Record(ADynamic1, ADynamic2, lFieldTable) then
+          Exit;
         Inc(KBPointerMath(ADynamic1), lFieldTable.Size);
         Inc(KBPointerMath(ADynamic2), lFieldTable.Size);
+        {$ENDIF}
         Dec(ALength);
       end;
     end;
@@ -769,28 +793,52 @@ begin
 
   tkArray:
     begin
+      {$IFDEF LCL}
+      lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo)[0].Name)^);
+      {$ELSE}
       lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo).Name)^);
+      {$ENDIF}
       while ALength > 0 do
       begin
+        {$IFDEF LCL}
+        Inc(Result, DynamicGetSize_Array(
+          ADynamic,
+          lFieldTable[0].Fields[0].TypeInfo^,
+          lFieldTable[0].Count,
+          AOptions
+        ));
+        {$ELSE}
         Inc(Result, DynamicGetSize_Array(
           ADynamic,
           lFieldTable.Fields[0].TypeInfo^,
           lFieldTable.Count,
           AOptions
         ));
-
+        {$ENDIF}
+        {$IFDEF LCL}
+        Inc(KBPointerMath(ADynamic), lFieldTable[0].Size);
+        {$ELSE}
         Inc(KBPointerMath(ADynamic), lFieldTable.Size);
+        {$ENDIF}
         Dec(ALength);
       end;
     end;
 
   tkRecord:
     begin
+      {$IFDEF LCL}
+      lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo)[0].Name)^);
+      {$ELSE}
       lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo).Name)^);
+      {$ENDIF}
       while ALength > 0 do
       begin
         Inc(Result, DynamicGetSize_Record(ADynamic, lFieldTable, AOptions));
+        {$IFDEF LCL}
+        Inc(KBPointerMath(ADynamic), lFieldTable[0].Size);
+        {$ELSE}
         Inc(KBPointerMath(ADynamic), lFieldTable.Size);
+        {$ENDIF}
         Dec(ALength);
       end;
     end;
@@ -831,7 +879,11 @@ var
 begin
   if AFieldTable^.Count = 0 then
   begin
+    {$IFDEF LCL}
+    TStream_WriteBuffer(AStream, PByte(ADynamic)^, AFieldTable[0].Size);
+    {$ELSE}
     TStream_WriteBuffer(AStream, PByte(ADynamic)^, AFieldTable.Size);
+    {$ENDIF}
     Exit;
   end;
 
@@ -1091,23 +1143,41 @@ begin
 
   tkArray:
     begin
+      {$IFDEF LCL}
+      lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo)[0].Name)^);
+      {$ELSE}
       lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo).Name)^);
+      {$ENDIF}
       while ALength > 0 do
       begin
+        {$IFDEF LCL}
+        DynamicWrite_Array(AStream, ADynamic, lFieldTable[0].Fields[0].TypeInfo^,
+          lFieldTable[0].Count, AOptions);
+        Inc(KBPointerMath(ADynamic), lFieldTable[0].Size);
+        {$ELSE}
         DynamicWrite_Array(AStream, ADynamic, lFieldTable.Fields[0].TypeInfo^,
           lFieldTable.Count, AOptions);
         Inc(KBPointerMath(ADynamic), lFieldTable.Size);
+        {$ENDIF}
         Dec(ALength);
       end;
     end;
 
   tkRecord:
     begin
+      {$IFDEF LCL}
+      lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo)[0].Name)^);
+      {$ELSE}
       lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo).Name)^);
+      {$ENDIF}
       while ALength > 0 do
       begin
         DynamicWrite_Record(AStream, ADynamic, lFieldTable, AOptions);
+        {$IFDEF LCL}
+        Inc(KBPointerMath(ADynamic), lFieldTable[0].Size);
+        {$ELSE}
         Inc(KBPointerMath(ADynamic), lFieldTable.Size);
+        {$ENDIF}
         Dec(ALength);
       end;
     end;
@@ -1148,7 +1218,11 @@ var
 begin
   if AFieldTable^.Count = 0 then
   begin
+    {$IFDEF LCL}
+    TStream_ReadBuffer(AStream, PByte(ADynamic)^, AFieldTable[0].Size);
+    {$ELSE}
     TStream_ReadBuffer(AStream, PByte(ADynamic)^, AFieldTable.Size);
+    {$ENDIF}
     Exit;
   end;
 
@@ -1356,28 +1430,49 @@ begin
 
   tkArray:
     begin
+      {$IFDEF LCL}
+      lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo)[0].Name)^);
+      {$ELSE}
       lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo).Name)^);
+      {$ENDIF}
       while ALength > 0 do
       begin
+        {$IFDEF LCL}
+        DynamicRead_Array(
+          AStream,
+          ADynamic,
+          lFieldTable[0].Fields[0].TypeInfo^,
+          lFieldTable[0].Count,
+          AOptions);
+        Inc(KBPointerMath(ADynamic), lFieldTable[0].Size);
+        {$ELSE}
         DynamicRead_Array(
           AStream,
           ADynamic,
           lFieldTable.Fields[0].TypeInfo^,
           lFieldTable.Count,
           AOptions);
-
         Inc(KBPointerMath(ADynamic), lFieldTable.Size);
+        {$ENDIF}
         Dec(ALength);
       end;
     end;
 
   tkRecord:
     begin
+      {$IFDEF LCL}
+      lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo)[0].Name)^);
+      {$ELSE}
       lFieldTable := PFieldTable(KBPointerMath(ATypeInfo) + PByte(@PTypeInfo(ATypeInfo).Name)^);
+      {$ENDIF}
       while ALength > 0 do
       begin
         DynamicRead_Record(AStream, ADynamic, lFieldTable, AOptions);
+        {$IFDEF LCL}
+        Inc(KBPointerMath(ADynamic), lFieldTable[0].Size);
+        {$ELSE}
         Inc(KBPointerMath(ADynamic), lFieldTable.Size);
+        {$ENDIF}
         Dec(ALength);
       end;
     end;
