@@ -95,8 +95,9 @@ Begin
                      ovParams,          ovStream]  Then
   {$IFDEF LCL}
    //Encode String Base64 Here
+   aResult := EncodeStrings(bValue{$IFNDEF LCL}, vEncoding{$ENDIF});
   {$ELSE}
-  aResult := EncodeString(bValue)
+   aResult := EncodeString(bValue)
   {$ENDIF}
  Else
   aResult := bValue;
@@ -163,11 +164,15 @@ Var
                                           ftMemo,   ftGraphic, ftFmtMemo,  ftOraBlob, ftOraClob] Then
      Begin
       vStringStream     := TStringStream.Create;
-      bStream           := bValue.CreateBlobStream(TBlobField(bValue.Fields[I]), bmread);
-      bStream.Position := 0;
-      vStringStream.Read(bStream, bStream.Size);
-      vStringStream.Position := 0;
-      vTempValue := Format('"%s"', [EncodeString(vStringStream.DataString)]);
+      Try
+       bStream           := bValue.CreateBlobStream(TBlobField(bValue.Fields[I]), bmRead);
+       bStream.Position := 0;
+       vStringStream.CopyFrom(bStream, bStream.Size);
+       vStringStream.Position := 0;
+       vTempValue := Format('"%s"', [EncodeStrings(vStringStream.DataString{$IFNDEF LCL}, vEncoding{$ENDIF})]);
+      Finally
+       vStringStream.Free;
+      End;
      End
     Else
      vTempValue := Format('"%s"', [EscapeQuotes(bValue.Fields[I].AsString)]);
@@ -225,13 +230,14 @@ Procedure TJSONValue.WriteToDataset(DatasetType : TDatasetType;
                                     JSONValue   : String;
                                     DestDS      : TDataset);
 var
- JsonParser : TJsonParser;
- bJsonValue : TJsonObject;
- JsonArray  : TJsonArray;
- J, I       : Integer;
- vTableName : String;
- FieldDef   : TFieldDef;
- Field      : TField;
+ JsonParser  : TJsonParser;
+ bJsonValue  : TJsonObject;
+ JsonArray   : TJsonArray;
+ J, I        : Integer;
+ vTableName  : String;
+ FieldDef    : TFieldDef;
+ Field       : TField;
+ vBlobStream : TStringStream;
 begin
  ClearJsonParser(JsonParser);
  ParseJson(JsonParser, JSONValue);
@@ -241,6 +247,7 @@ begin
  vObjectValue     := GetValueType    (bJsonValue[2].Value.Value);
  vtagName         := lowercase       (bJsonValue[3].Key);
  //Add Field Defs
+ DestDS.DisableControls;
  DestDS.Close;
  DestDS.FieldDefs.Clear;
  For J := 1 To Length(JsonParser.Output.Objects) -1 Do
@@ -278,7 +285,14 @@ begin
                                       ftOraClob,         ftWideMemo,
                                       ftParams,          ftStream]  Then
       Begin
-
+       vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[I].Value{$IFNDEF LCL}, vEncoding{$ENDIF}));
+       Try
+        vBlobStream.Position := 0;
+        DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
+       Finally
+        vBlobStream.Clear;
+        vBlobStream.Free;
+       End;
       End
      Else
       DestDS.Fields[I].Value := JsonArray[I].Value;
@@ -286,6 +300,7 @@ begin
    DestDS.Post;
   End;
  DestDS.First;
+ DestDS.EnableControls;
 End;
 
 Procedure TJSONValue.WriteValue(bValue : String);

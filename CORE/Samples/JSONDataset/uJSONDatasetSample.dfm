@@ -1062,6 +1062,7 @@ object Form1: TForm1
       'DriverID=FB')
     UpdateOptions.AssignedValues = [uvCountUpdatedRecords]
     ConnectedStoredUsage = []
+    Connected = True
     LoginPrompt = False
     BeforeConnect = Server_FDConnectionBeforeConnect
     Left = 54
@@ -1078,69 +1079,49 @@ object Form1: TForm1
   object FDQuery1: TFDQuery
     Connection = Server_FDConnection
     SQL.Strings = (
-      'select * from employee')
+      'select * from JOB')
     Left = 52
     Top = 136
-    object FDQuery1EMP_NO: TSmallintField
-      FieldName = 'EMP_NO'
-      Origin = 'EMP_NO'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      Required = True
-    end
-    object FDQuery1FIRST_NAME: TStringField
-      FieldName = 'FIRST_NAME'
-      Origin = 'FIRST_NAME'
-      Required = True
-      Size = 15
-    end
-    object FDQuery1LAST_NAME: TStringField
-      FieldName = 'LAST_NAME'
-      Origin = 'LAST_NAME'
-      Required = True
-    end
-    object FDQuery1PHONE_EXT: TStringField
-      FieldName = 'PHONE_EXT'
-      Origin = 'PHONE_EXT'
-      Size = 4
-    end
-    object FDQuery1HIRE_DATE: TSQLTimeStampField
-      FieldName = 'HIRE_DATE'
-      Origin = 'HIRE_DATE'
-      Required = True
-    end
-    object FDQuery1DEPT_NO: TStringField
-      FieldName = 'DEPT_NO'
-      Origin = 'DEPT_NO'
-      Required = True
-      FixedChar = True
-      Size = 3
-    end
     object FDQuery1JOB_CODE: TStringField
       FieldName = 'JOB_CODE'
       Origin = 'JOB_CODE'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
       Size = 5
     end
     object FDQuery1JOB_GRADE: TSmallintField
       FieldName = 'JOB_GRADE'
       Origin = 'JOB_GRADE'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
     object FDQuery1JOB_COUNTRY: TStringField
       FieldName = 'JOB_COUNTRY'
       Origin = 'JOB_COUNTRY'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
       Size = 15
     end
-    object FDQuery1SALARY: TFloatField
-      FieldName = 'SALARY'
-      Origin = 'SALARY'
+    object FDQuery1JOB_TITLE: TStringField
+      FieldName = 'JOB_TITLE'
+      Origin = 'JOB_TITLE'
+      Required = True
+      Size = 25
+    end
+    object FDQuery1MIN_SALARY: TFloatField
+      FieldName = 'MIN_SALARY'
+      Origin = 'MIN_SALARY'
       Required = True
     end
-    object FDQuery1FULL_NAME: TStringField
-      FieldName = 'FULL_NAME'
-      Origin = 'FULL_NAME'
-      Size = 37
+    object FDQuery1MAX_SALARY: TFloatField
+      FieldName = 'MAX_SALARY'
+      Origin = 'MAX_SALARY'
+      Required = True
+    end
+    object FDQuery1JOB_REQUIREMENT: TMemoField
+      FieldName = 'JOB_REQUIREMENT'
+      Origin = 'JOB_REQUIREMENT'
+      BlobType = ftMemo
     end
   end
 end

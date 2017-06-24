@@ -16,14 +16,18 @@ Function GetPairJSON  (Status      : Integer;
 Function GetPairJSON  (Tag,
                        MessageText : String;
                        Encoding    : TEncodeSelect = esUtf8) : String;Overload;
-Function EncodeStrings(Value       : String;
-                       Encoding    : TEncoding)              : String;
-Function DecodeStrings(Value       : String;
-                       Encoding    : TEncoding)              : String;
+Function EncodeStrings(Value       : String
+                      {$IFNDEF LCL};
+                          Encoding : TEncoding
+                                      {$ENDIF})              : String;
+Function DecodeStrings(Value       : String
+                      {$IFNDEF LCL};
+                          Encoding : TEncoding
+                                      {$ENDIF})              : String;
 
 implementation
 
-Function EncodeStrings(Value : String; Encoding : TEncoding) : String;
+Function EncodeStrings(Value : String{$IFNDEF LCL}; Encoding : TEncoding{$ENDIF}) : String;
 Var
  Input,
  Output : TStringStream;
@@ -64,7 +68,7 @@ Begin
  {$ENDIF}
 End;
 
-Function DecodeStrings(Value : String;Encoding : TEncoding) : String;
+Function DecodeStrings(Value : String{$IFNDEF LCL};Encoding : TEncoding{$ENDIF}) : String;
 Var
  Input,
  Output : TStringStream;
