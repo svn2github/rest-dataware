@@ -7,7 +7,12 @@ Uses Winapi.Windows,    Winapi.Messages, System.SysUtils,         System.Variant
      winsock,           Winapi.iphlpapi, Winapi.IpTypes, uSock,   System.IniFiles,
      Vcl.AppEvnts,      Vcl.StdCtrls,    Web.HTTPApp,             Vcl.ExtCtrls,
      Vcl.Imaging.jpeg,  Vcl.Imaging.pngimage, Vcl.Mask,           Vcl.Menus,
-     uRESTDWBase,       ServerMethodsUnit1, Vcl.ComCtrls;
+     uRESTDWBase,       ServerMethodsUnit1, Vcl.ComCtrls, FireDAC.Phys.FBDef,
+  FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
+  FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.FB, Data.DB,
+  FireDAC.Comp.Client, FireDAC.Comp.UI, FireDAC.Phys.IBBase,
+  FireDAC.Stan.StorageJSON;
 
 type
   TRestDWForm = class(TForm)
@@ -63,6 +68,10 @@ type
     memoResp: TMemo;
     Label19: TLabel;
     Label18: TLabel;
+    FDStanStorageJSONLink1: TFDStanStorageJSONLink;
+    FDPhysFBDriverLink1: TFDPhysFBDriverLink;
+    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+    Server_FDConnection: TFDConnection;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);
@@ -75,8 +84,10 @@ type
     procedure RestaurarAplicao1Click(Sender: TObject);
     procedure RESTServicePooler1LastRequest(Value: string);
     procedure RESTServicePooler1LastResponse(Value: string);
+    procedure Server_FDConnectionBeforeConnect(Sender: TObject);
   Private
    {Private declarations}
+   vDatabaseName,
    FCfgName,
    vDatabaseIP,
    vUsername,
@@ -163,6 +174,34 @@ begin
  Close;
 end;
 
+procedure TRestDWForm.Server_FDConnectionBeforeConnect(Sender: TObject);
+Var
+ porta_BD,
+ servidor,
+ database,
+ pasta,
+ usuario_BD,
+ senha_BD      : String;
+Begin
+ servidor      := vDatabaseIP;
+ database      := edBD.Text;
+ pasta         := IncludeTrailingPathDelimiter(edPasta.Text);
+ porta_BD      := edPortaBD.Text;
+ usuario_BD    := edUserNameBD.Text;
+ senha_BD      := edPasswordBD.Text;
+ vDatabaseName := pasta + database;
+ TFDConnection(Sender).Params.Clear;
+ TFDConnection(Sender).Params.Add('DriverID=FB');
+ TFDConnection(Sender).Params.Add('Server='    + Servidor);
+ TFDConnection(Sender).Params.Add('Port='      + porta_BD);
+ TFDConnection(Sender).Params.Add('Database='  + vDatabaseName);
+ TFDConnection(Sender).Params.Add('User_Name=' + usuario_BD);
+ TFDConnection(Sender).Params.Add('Password='  + senha_BD);
+ TFDConnection(Sender).Params.Add('Protocol=TCPIP');
+ //Server_FDConnection.Params.Add('CharacterSet=ISO8859_1');
+ TFDConnection(Sender).UpdateOptions.CountUpdatedRecords := False;
+end;
+
 Procedure TRestDWForm.ShowApplication;
 Begin
  ctiPrincipal.Visible := False;
@@ -241,6 +280,7 @@ End;
 procedure TRestDWForm.ButtonStopClick(Sender: TObject);
 begin
  RESTServicePooler1.Active := False;
+ Server_FDConnection.Connected := False;
  PageControl1.ActivePage := tsConfigs;
  ShowApplication;
 end;
@@ -347,6 +387,7 @@ begin
    RESTServicePooler1.Active                := True;
    If Not RESTServicePooler1.Active Then
     Exit;
+   Server_FDConnection.Connected := True;
    PageControl1.ActivePage := tsLogs;
    HideApplication;
   End;

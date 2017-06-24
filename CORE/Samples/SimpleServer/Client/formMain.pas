@@ -4,10 +4,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics,
-  Controls, Forms, Dialogs, StdCtrls, System.JSON,
+  Controls, Forms, Dialogs, StdCtrls, uDWJSONObject, System.JSON,
   DB, memds, Grids, DBGrids, uRESTDWBase, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
-  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet, uDWJSONTools,
   FireDAC.Comp.Client, uDWConsts, Vcl.ExtCtrls, Vcl.Imaging.pngimage;
 
 type
@@ -41,6 +41,9 @@ type
     Label6: TLabel;
     edUserNameDW: TEdit;
     Label8: TLabel;
+    mComando: TMemo;
+    Bevel2: TBevel;
+    Label9: TLabel;
     procedure btnPutClick(Sender: TObject);
     procedure btnGetClick(Sender: TObject);
     procedure btnPostClick(Sender: TObject);
@@ -108,22 +111,30 @@ end;
 procedure TForm2.btnGetClick(Sender: TObject);
 Var
  lResponse,
- Aluno : String;
+ SQL : String;
+ JSONValue : uDWJSONObject.TJSONValue;
 Begin
  RESTClientPooler1.Host     := eHost.Text;
  RESTClientPooler1.Port     := StrToInt(ePort.Text);
  RESTClientPooler1.UserName := edUserNameDW.Text;
  RESTClientPooler1.Password := edPasswordDW.Text;
- Aluno := InputBox('Rest Client', 'Nome do aluno', '');
- If Aluno <> '' Then
+ SQL := mComando.Text;
+ If SQL <> '' Then
   Begin
    Try
     RESTClientPooler1.Host := eHost.Text;
     RESTClientPooler1.Port := StrToInt(ePort.Text);
-    lResponse := RESTClientPooler1.SendEvent('ConsultaAluno/' + Aluno);
+    lResponse := RESTClientPooler1.SendEvent('ConsultaBanco/' + EncodeStrings(SQL{$IFNDEF LCL}, GetEncoding(RESTClientPooler1.Encoding){$ENDIF}));
+    JSONValue := uDWJSONObject.TJSONValue.Create;
+    Try
+     JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);
+    Finally
+     JSONValue.Free;
+    End;
     Memo2.Lines.Clear;
     Memo2.Lines.add(lResponse);
-    ListAlunos(Aluno);
+
+//    ListAlunos(Aluno);
    Except
    End;
   End;

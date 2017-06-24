@@ -187,9 +187,9 @@ Begin
  SetParams;
  Try
   If Pos(Uppercase(Format(UrlBase, [vTpRequest, vHost, vPort])), Uppercase(EventData)) = 0 Then
-   vURL := LowerCase(Format(UrlBase, [vTpRequest, vHost, vPort]) + EventData)
+   vURL := LowerCase(Format(UrlBase, [vTpRequest, vHost, vPort])) + EventData
   Else
-   vURL := LowerCase(EventData);
+   vURL := EventData;
   If vRSCharset = esUtf8 Then
    HttpRequest.Request.Charset := 'utf-8'
   Else If vRSCharset = esASCII Then

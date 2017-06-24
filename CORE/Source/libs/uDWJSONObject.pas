@@ -184,6 +184,8 @@ Var
  End;
 Begin
  bValue.DisableControls;
+ If Not bValue.Active Then
+  bValue.Open;
  bValue.First;
  Result := '[' + GenerateHeader + '], [%s]';
  While Not bValue.Eof Do

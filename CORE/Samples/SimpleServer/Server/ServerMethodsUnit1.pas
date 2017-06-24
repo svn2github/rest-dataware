@@ -2,8 +2,18 @@ unit ServerMethodsUnit1;
 
 interface
 
-uses SysUtils, Classes, Windows, uDWConsts,
-     System.JSON, Dialogs, ServerUtils, SysTypes;
+uses SysUtils, Classes, Windows, uDWConsts, uDWJSONTools, uDWJSONObject,
+     System.JSON, Dialogs, ServerUtils, SysTypes,
+     {$IFDEF LCL}
+     {$ELSE}
+     FireDAC.Dapt,
+     FireDAC.Phys.FBDef,
+     FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+     FireDAC.Stan.Error, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
+     FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.FB, Data.DB,
+     FireDAC.Comp.Client, FireDAC.Comp.UI, FireDAC.Phys.IBBase,
+     FireDAC.Stan.StorageJSON;
+     {$ENDIF}
 
 Type
 {$METHODINFO ON}
@@ -20,6 +30,8 @@ Type
                           NewNome   : String) : String;
    // http://localhost:8080/ExcluiAluno/NomeAluno
    Function ExcluiAluno  (NomeAluno : String) : String;
+   // http://localhost:8080/ConsultaBanco/SQL ENCODE64
+   Function ConsultaBanco(SQL       : String) : String;
    Function CallGETServerMethod   (Argumentos : TArguments) : String;
    Function CallPUTServerMethod   (Argumentos : TArguments) : string;
    Function CallDELETEServerMethod(Argumentos : TArguments) : string;
@@ -35,8 +47,7 @@ Type
 
 implementation
 
-
-uses StrUtils;
+uses StrUtils, RestDWServerFormU;
 
 
 Constructor TServerMethods1.Create (aOwner : TComponent);
@@ -69,6 +80,14 @@ begin
      FoundMethod := True;
      If Length (Argumentos) >= 1 Then
       Result := GetListaAlunos
+     Else
+      Result := ReturnIncorrectArgs;
+    End;
+   If UpperCase(Argumentos[0]) = UpperCase('ConsultaBanco') Then
+    Begin
+     FoundMethod := True;
+     If Length (Argumentos) >= 2 Then
+      Result := ConsultaBanco(Argumentos[1])
      Else
       Result := ReturnIncorrectArgs;
     End;
@@ -202,6 +221,32 @@ Begin
   List.Free;
   JSONObject.Free;
  End;
+End;
+
+Function TServerMethods1.ConsultaBanco(SQL: String): String;
+Var
+ vSQL : String;
+ JSONValue : uDWJSONObject.TJSONValue;
+ {$IFDEF LCL}
+ {$ELSE}
+ fdQuery : TFDQuery;
+ {$ENDIF}
+Begin
+ vSQL := DecodeStrings(SQL{$IFNDEF LCL}, GetEncoding(RestDWForm.RESTServicePooler1.Encoding){$ENDIF});
+ {$IFDEF LCL}
+ {$ELSE}
+  fdQuery   := TFDQuery.Create(Nil);
+  JSONValue := uDWJSONObject.TJSONValue.Create;
+  Try
+   fdQuery.Connection := RestDWForm.Server_FDConnection;
+   fdQuery.SQL.Add(vSQL);
+   JSONValue.LoadFromDataset('sql', fdQuery);
+   Result             := JSONValue.Value;
+  Finally
+   JSONValue.Free;
+   fdQuery.Free;
+  End;
+ {$ENDIF}
 End;
 
 Function TServerMethods1.GetListaAlunos : String;

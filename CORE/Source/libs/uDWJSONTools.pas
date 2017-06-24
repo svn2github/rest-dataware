@@ -102,8 +102,8 @@ Begin
    Try
     Output := TStringStream.Create('', Encoding);
     Try
+     Input.Position := 0;
      Soap.EncdDecd.DecodeStream(Input, Output);
-     Output.Position := 0;
      Try
       Result := Output.DataString;
      Except

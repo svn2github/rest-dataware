@@ -983,6 +983,26 @@ object Form2: TForm2
     Font.Style = [fsBold]
     ParentFont = False
   end
+  object Bevel2: TBevel
+    Left = 240
+    Top = 116
+    Width = 311
+    Height = 2
+    Shape = bsTopLine
+  end
+  object Label9: TLabel
+    Left = 240
+    Top = 101
+    Width = 80
+    Height = 13
+    Caption = 'COMANDO SQL'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object btnPut: TButton
     Left = 24
     Top = 91
@@ -1045,13 +1065,6 @@ object Form2: TForm2
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'Alunos'
-        Width = 502
-        Visible = True
-      end>
   end
   object btnIDHttpGetTest: TButton
     Left = 24
@@ -1104,21 +1117,36 @@ object Form2: TForm2
     TabOrder = 12
     Text = 'testserver'
   end
+  object mComando: TMemo
+    Left = 240
+    Top = 124
+    Width = 311
+    Height = 72
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    Lines.Strings = (
+      'SELECT * FROM EMPLOYEE')
+    ParentFont = False
+    TabOrder = 13
+  end
   object DataSource1: TDataSource
     DataSet = MemDataset1
-    Left = 264
-    Top = 128
+    Left = 128
+    Top = 88
   end
   object RESTClientPooler1: TRESTClientPooler
-    Encoding = esUtf8
+    Encoding = esASCII
     Host = 'localhost'
     UserName = 'testserver'
     Password = 'testserver'
     ProxyOptions.BasicAuthentication = False
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 10000
-    Left = 229
-    Top = 81
+    Left = 77
+    Top = 41
   end
   object MemDataset1: TFDMemTable
     FieldDefs = <
@@ -1136,7 +1164,7 @@ object Form2: TForm2
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
     StoreDefs = True
-    Left = 232
-    Top = 128
+    Left = 80
+    Top = 88
   end
 end
