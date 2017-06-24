@@ -17,7 +17,6 @@ uses
 
 type
   TForm1 = class(TForm)
-    DBGrid1: TDBGrid;
     DataSource1: TDataSource;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     Server_FDConnection: TFDConnection;

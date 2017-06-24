@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   Caption = 'JSONDataset Sample'
   ClientHeight = 350
-  ClientWidth = 704
+  ClientWidth = 651
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 13
   object Label9: TLabel
-    Left = 257
+    Left = 229
     Top = 36
     Width = 31
     Height = 13
@@ -32,7 +32,7 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label10: TLabel
-    Left = 306
+    Left = 278
     Top = 36
     Width = 43
     Height = 13
@@ -46,7 +46,7 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label11: TLabel
-    Left = 413
+    Left = 385
     Top = 36
     Width = 35
     Height = 13
@@ -60,7 +60,7 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label13: TLabel
-    Left = 36
+    Left = 8
     Top = 10
     Width = 206
     Height = 13
@@ -73,14 +73,14 @@ object Form1: TForm1
     ParentFont = False
   end
   object Bevel2: TBevel
-    Left = 37
+    Left = 9
     Top = 29
     Width = 495
     Height = 2
     Shape = bsTopLine
   end
   object Label12: TLabel
-    Left = 36
+    Left = 8
     Top = 80
     Width = 32
     Height = 13
@@ -94,7 +94,7 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label14: TLabel
-    Left = 413
+    Left = 385
     Top = 80
     Width = 15
     Height = 13
@@ -108,7 +108,7 @@ object Form1: TForm1
     ParentFont = False
   end
   object Image1: TImage
-    Left = 535
+    Left = 507
     Top = 10
     Width = 133
     Height = 109
@@ -954,7 +954,7 @@ object Form1: TForm1
       4E92F100CAA80000000049454E44AE426082}
   end
   object Label5: TLabel
-    Left = 36
+    Left = 8
     Top = 35
     Width = 12
     Height = 13
@@ -967,134 +967,66 @@ object Form1: TForm1
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object DBGrid1: TDBGrid
-    Left = 14
-    Top = 157
-    Width = 411
-    Height = 185
-    DataSource = DataSource1
-    TabOrder = 0
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'EMP_NO'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'FIRST_NAME'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'LAST_NAME'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'PHONE_EXT'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'HIRE_DATE'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'DEPT_NO'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'JOB_CODE'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'JOB_GRADE'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'JOB_COUNTRY'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'SALARY'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'FULL_NAME'
-        Visible = True
-      end>
-  end
   object cbAdaptadores: TComboBox
-    Left = 37
+    Left = 9
     Top = 54
     Width = 212
     Height = 21
-    TabOrder = 1
+    TabOrder = 0
     Text = 'cbAdaptadores'
     OnChange = cbAdaptadoresChange
   end
   object edPortaBD: TEdit
-    Left = 257
+    Left = 229
     Top = 54
     Width = 40
     Height = 21
-    TabOrder = 2
+    TabOrder = 1
     Text = '3050'
   end
   object edUserNameBD: TEdit
-    Left = 306
+    Left = 278
     Top = 54
     Width = 100
     Height = 21
-    TabOrder = 3
+    TabOrder = 2
     Text = 'sysdba'
   end
   object edPasswordBD: TEdit
-    Left = 413
+    Left = 385
     Top = 54
     Width = 119
     Height = 21
     PasswordChar = '*'
-    TabOrder = 4
+    TabOrder = 3
     Text = 'masterkey'
   end
   object edPasta: TEdit
-    Left = 37
+    Left = 9
     Top = 98
     Width = 369
     Height = 21
-    TabOrder = 5
+    TabOrder = 4
   end
   object edBD: TEdit
-    Left = 413
+    Left = 385
     Top = 98
     Width = 119
     Height = 21
-    TabOrder = 6
+    TabOrder = 5
   end
   object Memo1: TMemo
-    Left = 431
+    Left = 9
     Top = 157
-    Width = 265
+    Width = 631
     Height = 185
-    TabOrder = 7
+    ScrollBars = ssVertical
+    TabOrder = 6
   end
   object ButtonStart: TButton
-    Left = 412
+    Left = 507
     Top = 126
-    Width = 121
+    Width = 133
     Height = 25
     Caption = 'Gerar JSON'
     Font.Charset = DEFAULT_CHARSET
@@ -1103,18 +1035,18 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 8
+    TabOrder = 7
     OnClick = ButtonStartClick
   end
   object DataSource1: TDataSource
     AutoEdit = False
     DataSet = FDQuery1
-    Left = 79
+    Left = 51
     Top = 83
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
-    Left = 175
+    Left = 147
     Top = 27
   end
   object Server_FDConnection: TFDConnection
@@ -1130,25 +1062,24 @@ object Form1: TForm1
       'DriverID=FB')
     UpdateOptions.AssignedValues = [uvCountUpdatedRecords]
     ConnectedStoredUsage = []
-    Connected = True
     LoginPrompt = False
     BeforeConnect = Server_FDConnectionBeforeConnect
-    Left = 82
+    Left = 54
     Top = 26
   end
   object FDPhysFBDriverLink1: TFDPhysFBDriverLink
-    Left = 175
+    Left = 147
     Top = 80
   end
   object FDStanStorageJSONLink1: TFDStanStorageJSONLink
-    Left = 153
+    Left = 125
     Top = 133
   end
   object FDQuery1: TFDQuery
     Connection = Server_FDConnection
     SQL.Strings = (
       'select * from employee')
-    Left = 80
+    Left = 52
     Top = 136
     object FDQuery1EMP_NO: TSmallintField
       FieldName = 'EMP_NO'
