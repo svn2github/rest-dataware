@@ -3,12 +3,16 @@ unit uDWConsts;
 Interface
 
 Uses {$IFDEF LCL}
-     SysUtils;
+     SysUtils, DB;
      {$ELSE}
-     System.SysUtils;
+     System.SysUtils,
+     Data.DB;
      {$ENDIF}
 
 Const
+ TValueFormatJSON      = '{"%s":"%s", "%s":"%s", "%s":"%s", "%s":[%s]}';
+ TJsonDatasetHeader    = '{"Field":"%s", "Type":"%s", "Primary":"%s", "Required":"%s", "Size":%d, "Precision":%d}';
+ TJsonValueFormat      = '[%s]';
  TSepValueMemString    = '\\';
  TQuotedValueMemString = '\"';
  AuthRealm             = 'Provide Authentication';
@@ -37,10 +41,17 @@ Type
  Function GetObjectName   (TypeObject      : TTypeObject)      : String;
  Function GetDirectionName(ObjectDirection : TObjectDirection) : String;
  Function GetValueType    (ObjectValue     : TObjectValue)     : String;
+ Function GetFieldType    (FieldType       : TFieldType)       : String;
+ Function StringFloat     (aValue          : String)           : String;
 
 implementation
 
-Function GetObjectName   (TypeObject      : TTypeObject)      : String;
+Function StringFloat     (aValue          : String)           : String;
+Begin
+ Result := StringReplace(aValue, '.', '', [rfReplaceall]);
+End;
+
+Function GetObjectName   (TypeObject      : TTypeObject)       : String;
 Begin
  Result := 'toObject';
  Case TypeObject Of
@@ -117,6 +128,65 @@ Begin
   ovTimeStampOffset : Result := 'ovTimeStampOffset';
   ovObject          : Result := 'ovObject';
   ovSingle          : Result := 'ovSingle';
+ End;
+End;
+
+Function GetFieldType (FieldType     : TFieldType)     : String;
+Begin
+ Result := 'ftUnknown';
+ Case FieldType Of
+  ftUnknown         : Result := 'ftUnknown';
+  ftString          : Result := 'ftString';
+  ftSmallint        : Result := 'ftSmallint';
+  ftInteger         : Result := 'ftInteger';
+  ftWord            : Result := 'ftWord';
+  ftBoolean         : Result := 'ftBoolean';
+  ftFloat           : Result := 'ftFloat';
+  ftCurrency        : Result := 'ftCurrency';
+  ftBCD             : Result := 'ftBCD';
+  ftDate            : Result := 'ftDate';
+  ftTime            : Result := 'ftTime';
+  ftDateTime        : Result := 'ftDateTime';
+  ftBytes           : Result := 'ftBytes';
+  ftVarBytes        : Result := 'ftVarBytes';
+  ftAutoInc         : Result := 'ftAutoInc';
+  ftBlob            : Result := 'ftBlob';
+  ftMemo            : Result := 'ftMemo';
+  ftGraphic         : Result := 'ftGraphic';
+  ftFmtMemo         : Result := 'ftFmtMemo';
+  ftParadoxOle      : Result := 'ftParadoxOle';
+  ftDBaseOle        : Result := 'ftDBaseOle';
+  ftTypedBinary     : Result := 'ftTypedBinary';
+  ftCursor          : Result := 'ftCursor';
+  ftFixedChar       : Result := 'ftFixedChar';
+  ftWideString      : Result := 'ftWideString';
+  ftLargeint        : Result := 'ftLargeint';
+  ftADT             : Result := 'ftADT';
+  ftArray           : Result := 'ftArray';
+  ftReference       : Result := 'ftReference';
+  ftDataSet         : Result := 'ftDataSet';
+  ftOraBlob         : Result := 'ftOraBlob';
+  ftOraClob         : Result := 'ftOraClob';
+  ftVariant         : Result := 'ftVariant';
+  ftInterface       : Result := 'ftInterface';
+  ftIDispatch       : Result := 'ftIDispatch';
+  ftGuid            : Result := 'ftGuid';
+  ftTimeStamp       : Result := 'ftTimeStamp';
+  ftFMTBcd          : Result := 'ftFMTBcd';
+  ftFixedWideChar   : Result := 'ftFixedWideChar';
+  ftWideMemo        : Result := 'ftWideMemo';
+  ftOraTimeStamp    : Result := 'ftOraTimeStamp';
+  ftOraInterval     : Result := 'ftOraInterval';
+  ftLongWord        : Result := 'ftLongWord';
+  ftShortint        : Result := 'ftShortint';
+  ftByte            : Result := 'ftByte';
+  ftExtended        : Result := 'ftExtended';
+  ftConnection      : Result := 'ftConnection';
+  ftParams          : Result := 'ftParams';
+  ftStream          : Result := 'ftStream';
+  ftTimeStampOffset : Result := 'ftTimeStampOffset';
+  ftObject          : Result := 'ftObject';
+  ftSingle          : Result := 'ftSingle';
  End;
 End;
 

@@ -1,10 +1,10 @@
 object frmMain: TfrmMain
   Left = 419
-  Height = 386
-  Top = 137
+  Height = 385
+  Top = 138
   Width = 522
   Caption = 'REST Dataware CORE - Simple Server'
-  ClientHeight = 386
+  ClientHeight = 385
   ClientWidth = 522
   Color = clBtnFace
   Font.Color = clWindowText
@@ -1217,8 +1217,8 @@ object frmMain: TfrmMain
     end
     object tsLogs: TTabSheet
       Caption = 'Logs'
-      ClientHeight = 0
-      ClientWidth = 0
+      ClientHeight = 327
+      ClientWidth = 514
       ImageIndex = 1
       object Label19: TLabel
         Left = 7
@@ -1234,8 +1234,8 @@ object frmMain: TfrmMain
         Left = 7
         Height = 13
         Top = 10
-        Width = 56
-        Caption = 'Requisições'
+        Width = 51
+        Caption = 'RequisiÃ§Ã£o'
         Color = clBtnFace
         ParentColor = False
         Transparent = False
@@ -1304,6 +1304,7 @@ object frmMain: TfrmMain
     Height = 13
     Top = 361
     Width = 70
+    AutoSize = False
     Caption = 'Seguro : NÃ£o'
     Font.Color = clRed
     Font.Height = -11

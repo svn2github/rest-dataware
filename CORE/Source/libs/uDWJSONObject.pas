@@ -9,25 +9,20 @@ Uses {$IFDEF LCL}
      IdGlobal,        uKBDynamic, System.Rtti,    Data.DB,      Soap.EncdDecd;
      {$ENDIF}
 
-
-Const
- TValueFormatJSON   = '{"%s":"%s", "%s":"%s", "%s":"%s", "%s":%s}';
- TJsonDatasetHeader = '"%s":%s, "%s":%s, "%s":%d, "%s":%d, "%s":%s';
- TJsonValueFormat   = '["%d", %s]';
-
 Type
  TJSONValue = Class
  Private
-  vTAGName                     : String;
-  vTypeObject                  : TTypeObject;
-  vObjectDirection             : TObjectDirection;
-  vObjectValue                 : TObjectValue;
-  aValue                       : TIdBytes;
-  vEncoding                    : TEncoding;
-  Function  GetValue           : String;
-  Procedure WriteValue (bValue : String);
-  Function  FormatValue(bValue : String) : String;
-  Function  GetValueJSON(bValue: String) : String;
+  vtagName                      : String;
+  vTypeObject                   : TTypeObject;
+  vObjectDirection              : TObjectDirection;
+  vObjectValue                  : TObjectValue;
+  aValue                        : TIdBytes;
+  vEncoding                     : TEncoding;
+  Function  GetValue            : String;
+  Procedure WriteValue  (bValue : String);
+  Function  FormatValue (bValue : String) : String;
+  Function  GetValueJSON(bValue : String) : String;
+  Function    DatasetValues  (bValue      : TDataset) : String;
  Public
   Procedure   ToStream       (Var bValue  : TMemoryStream);
   Procedure   LoadFromDataset(TableName   : String;
@@ -42,7 +37,7 @@ Type
   Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
   Property    Encoding                    : TEncoding        Read vEncoding        Write vEncoding;
   Property    Value                       : String           Read GetValue         Write WriteValue;
-  Property    TAGName                     : String           Read vTAGName         Write vTAGName;
+  Property    Tagname                     : String           Read vtagName         Write vtagName;
 End;
 
 implementation
@@ -115,10 +110,103 @@ Begin
  Result := vEncoding.GetString(TBytes(aValue));
 End;
 
-Procedure TJSONValue.LoadFromDataset(TableName : String;
-                                     bValue     : TDataset);
-Begin
+Function TJSONValue.DatasetValues(bValue : TDataset) : String;
+Var
+ vLines : String;
+ Function GenerateHeader : String;
+ Var
+  I : Integer;
+  vPrimary,
+  vRequired,
+  vGenerateLine : String;
+ Begin
+  For I := 0 To bValue.Fields.Count -1 Do
+   Begin
+    vPrimary := 'N';
+    If pfInKey in bValue.Fields[I].ProviderFlags Then
+     vPrimary := 'S';
+    vRequired := 'N';
+    If bValue.Fields[I].Required Then
+     vRequired := 'S';
+    If bValue.Fields[I].DataType in [ftExtended, ftFloat, ftCurrency, ftFMTBcd, ftBCD] Then
+     vGenerateLine := Format(TJsonDatasetHeader, [bValue.Fields[I].FieldName,
+                                                   GetFieldType(bValue.Fields[I].DataType),
+                                                   vPrimary, vRequired,
+                                                   TFloatField(bValue.Fields[I]).Size,
+                                                   TFloatField(bValue.Fields[I]).Precision])
+    Else
+     vGenerateLine := Format(TJsonDatasetHeader, [bValue.Fields[I].FieldName,
+                                                  GetFieldType(bValue.Fields[I].DataType),
+                                                  vPrimary, vRequired,
+                                                  bValue.Fields[I].Size, 0]);
 
+    If I = 0 Then
+     Result := vGenerateLine
+    Else
+     Result := Result + ', ' + vGenerateLine;
+   End;
+ End;
+ Function GenerateLine : String;
+ Var
+  I : Integer;
+  vTempValue,
+  vGenerateLine : String;
+  bStream       : TStream;
+  vStringStream : TStringStream;
+ Begin
+  For I := 0 To bValue.Fields.Count -1 Do
+   Begin
+    If bValue.Fields[I].DataType      in [ftExtended, ftFloat, ftCurrency, ftFMTBcd,  ftBCD]     Then
+     vTempValue := Format('"%s"', [StringFloat(bValue.Fields[I].AsString)])
+    Else If bValue.Fields[I].DataType in [ftWideMemo, ftBytes, ftVarBytes, ftBlob,
+                                          ftMemo,   ftGraphic, ftFmtMemo,  ftOraBlob, ftOraClob] Then
+     Begin
+      vStringStream     := TStringStream.Create;
+      bStream           := bValue.CreateBlobStream(TBlobField(bValue.Fields[I]), bmread);
+      bStream.Position := 0;
+      vStringStream.Read(bStream, bStream.Size);
+      vStringStream.Position := 0;
+      vTempValue := Format('"%s"', [EncodeString(vStringStream.DataString)]);
+     End
+    Else
+     vTempValue := Format('"%s"', [EscapeQuotes(bValue.Fields[I].AsString)]);
+    If I = 0 Then
+     Result := vTempValue
+    Else
+     Result := Result + ', ' + vTempValue;
+   End;
+ End;
+Begin
+ bValue.DisableControls;
+ bValue.First;
+ Result := '[' + GenerateHeader + '], [%s]';
+ While Not bValue.Eof Do
+  Begin
+   If bValue.RecNo = 1 Then
+    vLines := '[' + GenerateLine + ']'
+   Else
+    vLines := vLines + ', [' + GenerateLine + ']';
+   bValue.Next;
+  End;
+ Result := Format(Result, [vLines]);
+ bValue.First;
+ bValue.EnableControls;
+End;
+
+Procedure TJSONValue.LoadFromDataset(TableName : String;
+                                     bValue    : TDataset);
+Var
+ vTagGeral : String;
+Begin
+ vTypeObject      := toDataset;
+ vObjectDirection := odINOUT;
+ vObjectValue     := ovDataSet;
+ vtagName         := lowercase(TableName);
+ vTagGeral        := Format(TValueFormatJSON, ['ObjectType', GetObjectName(vTypeObject),
+                                               'Direction',  GetDirectionName(vObjectDirection),
+                                               'ValueType',  GetValueType(vObjectValue),
+                                               vtagName,     DatasetValues(bValue)]);
+ aValue := tIdBytes(vEncoding.GetBytes(vTagGeral));
 End;
 
 Procedure TJSONValue.ToStream(var bValue : TMemoryStream);

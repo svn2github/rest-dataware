@@ -1367,7 +1367,7 @@ object RestDWForm: TRestDWForm
     OnLastResponse = RESTServicePooler1LastResponse
     Encoding = esUtf8
     ServerContext = 'restdataware'
-    Left = 168
-    Top = 160
+    Left = 192
+    Top = 128
   end
 end
