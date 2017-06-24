@@ -75,7 +75,10 @@ Begin
     lResponse := RESTClientPooler1.SendEvent('ConsultaBanco/' + EncodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RESTClientPooler1.Encoding){$ENDIF}));
     JSONValue := TJSONValue.Create;
     Try
+     DBGrid1.DataSource := Nil;
+     DBGrid1.Columns.Clear;
      JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);
+     DBGrid1.DataSource := DataSource1;
     Finally
      JSONValue.Free;
     End;

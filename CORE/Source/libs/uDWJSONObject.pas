@@ -234,6 +234,45 @@ var
  FieldDef    : TFieldDef;
  Field       : TField;
  vBlobStream : TStringStream;
+ Procedure SetValue(Field : TField; Value : String);
+ Begin
+  Case Field.DataType Of
+   ftUnknown,
+   ftString,
+   ftFixedChar,
+   ftFixedWideChar,
+   ftWideString     :
+    Begin
+     Field.AsString := Value;
+    End;
+   ftAutoInc,
+   ftSmallint,
+   ftInteger,
+   ftLargeint,
+   ftWord,
+   ftBoolean        :
+    Begin
+     If Value <> '' Then
+      Field.AsInteger := StrToInt(Value);
+    End;
+   ftFloat,
+   ftCurrency,
+   ftBCD,
+   ftFMTBcd         :
+    Begin
+     If Value <> '' Then
+      Field.AsFloat := StrToFloat(Value);
+    End;
+   ftDate,
+   ftTime,
+   ftDateTime,
+   ftTimeStamp      :
+    Begin
+     If Value <> '' Then
+      Field.AsDateTime := StrToDateTime(Value);
+    End;
+  End;
+ End;
 begin
  ClearJsonParser(JsonParser);
  Try
@@ -242,11 +281,15 @@ begin
   vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
   vObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
   vObjectValue     := GetValueType    (bJsonValue[2].Value.Value);
-  vtagName         := lowercase       (bJsonValue[3].Key);
+  vtagName         := Lowercase       (bJsonValue[3].Key);
   //Add Field Defs
   DestDS.DisableControls;
-  DestDS.Close;
+  If DestDS.Active Then
+   DestDS.Close;
   DestDS.FieldDefs.Clear;
+  {$IFDEF FPC}
+  DestDS.Fields.Clear;
+  {$ENDIF}
   For J := 1 To Length(JsonParser.Output.Objects) -1 Do
    Begin
     bJsonValue         := JsonParser.Output.Objects[J];
@@ -297,13 +340,20 @@ begin
       Else
        Begin
         If JsonArray[I].Value <> '' Then
-         DestDS.Fields[I].Value := JsonArray[I].Value;
+         Begin
+          {$IFNDEF FPC}
+          DestDS.Fields[I].Value := JsonArray[I].Value;
+          {$ELSE}
+          SetValue(DestDS.Fields[I], JsonArray[I].Value);
+          {$ENDIF}
+         end;
        End;
      End;
     DestDS.Post;
    End;
  Finally
-  DestDS.First;
+  If DestDS.Active Then
+   DestDS.First;
   DestDS.EnableControls;
  End;
 End;

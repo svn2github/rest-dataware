@@ -415,7 +415,11 @@ Begin
  Else If vFieldType = Uppercase('ftGuid')            Then
   Result := ftGuid
  Else If vFieldType = Uppercase('ftTimeStamp')       Then
+  {$IFNDEF FPC}
   Result := ftTimeStamp
+  {$ELSE}
+  Result := ftDateTime
+  {$ENDIF}
  Else If vFieldType = Uppercase('ftFMTBcd')          Then
   Result := ftFMTBcd
  Else If vFieldType = Uppercase('ftFixedWideChar')   Then
