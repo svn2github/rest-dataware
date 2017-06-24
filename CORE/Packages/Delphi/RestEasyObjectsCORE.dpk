@@ -44,6 +44,7 @@ contains
   uDWConsts in '..\..\Source\libs\uDWConsts.pas',
   uDWJSONTools in '..\..\Source\libs\uDWJSONTools.pas',
   uDWJSONObject in '..\..\Source\libs\uDWJSONObject.pas',
-  uKBDynamic in '..\..\Source\libs\uKBDynamic.pas';
+  uKBDynamic in '..\..\Source\libs\uKBDynamic.pas',
+  uDWJSONParser in '..\..\Source\libs\JSON\uDWJSONParser.pas';
 
 end.

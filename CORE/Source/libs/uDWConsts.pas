@@ -38,10 +38,14 @@ Type
  TDatasetType     = (dtReflection,      dtFull,         dtDiff);
 
  Function GetEncoding     (Avalue          : TEncodeSelect)    : TEncoding;
- Function GetObjectName   (TypeObject      : TTypeObject)      : String;
- Function GetDirectionName(ObjectDirection : TObjectDirection) : String;
- Function GetValueType    (ObjectValue     : TObjectValue)     : String;
- Function GetFieldType    (FieldType       : TFieldType)       : String;
+ Function GetObjectName   (TypeObject      : TTypeObject)      : String;          Overload;
+ Function GetObjectName   (TypeObject      : String)           : TTypeObject;     Overload;
+ Function GetDirectionName(ObjectDirection : TObjectDirection) : String;          Overload;
+ Function GetDirectionName(ObjectDirection : String)           : TObjectDirection;Overload;
+ Function GetValueType    (ObjectValue     : TObjectValue)     : String;          Overload;
+ Function GetValueType    (ObjectValue     : String)           : TObjectValue;    Overload;
+ Function GetFieldType    (FieldType       : TFieldType)       : String;          Overload;
+ Function GetFieldType    (FieldType       : String)           : TFieldType;      Overload;
  Function StringFloat     (aValue          : String)           : String;
 
 implementation
@@ -62,6 +66,23 @@ Begin
  End;
 End;
 
+Function GetObjectName   (TypeObject      : String)       : TTypeObject;
+Var
+ vTypeObject : String;
+Begin
+ vTypeObject := Uppercase(TypeObject);
+ If vTypeObject = Uppercase('toObject') Then
+  Result := toObject
+ Else If vTypeObject = Uppercase('toDataset') Then
+  Result := toDataset
+ Else If vTypeObject = Uppercase('toParam') Then
+  Result := toParam
+ Else If vTypeObject = Uppercase('toVariable') Then
+  Result := toVariable
+ Else If vTypeObject = Uppercase('toObject') Then
+  Result := toObject;
+End;
+
 Function GetDirectionName(ObjectDirection : TObjectDirection) : String;
 Begin
  Result := 'odINOUT';
@@ -70,6 +91,19 @@ Begin
   odIN    : Result := 'odIN';
   odOUT   : Result := 'odOUT';
  End;
+End;
+
+Function GetDirectionName(ObjectDirection : String) : TObjectDirection;
+Var
+ vObjectDirection : String;
+Begin
+ vObjectDirection := Uppercase(ObjectDirection);
+ If vObjectDirection = Uppercase('odINOUT') Then
+  Result := odINOUT
+ Else If vObjectDirection = Uppercase('odIN') Then
+  Result := odIN
+ Else If vObjectDirection = Uppercase('odOUT') Then
+  Result := odOUT;
 End;
 
 Function GetValueType    (ObjectValue     : TObjectValue)     : String;
@@ -131,6 +165,117 @@ Begin
  End;
 End;
 
+Function GetValueType (ObjectValue : String) : TObjectValue;
+Var
+ vObjectValue : String;
+Begin
+ vObjectValue := Uppercase(ObjectValue);
+ If vObjectValue      = Uppercase('ovUnknown')         Then
+  Result := ovUnknown
+ Else If vObjectValue = Uppercase('ovString')          Then
+  Result := ovString
+ Else If vObjectValue = Uppercase('ovSmallint')        Then
+  Result := ovSmallint
+ Else If vObjectValue = Uppercase('ovInteger')         Then
+  Result := ovInteger
+ Else If vObjectValue = Uppercase('ovWord')            Then
+  Result := ovWord
+ Else If vObjectValue = Uppercase('ovBoolean')         Then
+  Result := ovBoolean
+ Else If vObjectValue = Uppercase('ovFloat')           Then
+  Result := ovFloat
+ Else If vObjectValue = Uppercase('ovCurrency')        Then
+  Result := ovCurrency
+ Else If vObjectValue = Uppercase('ovBCD')             Then
+  Result := ovBCD
+ Else If vObjectValue = Uppercase('ovDate')            Then
+  Result := ovDate
+ Else If vObjectValue = Uppercase('ovTime')            Then
+  Result := ovTime
+ Else If vObjectValue = Uppercase('ovDateTime')        Then
+  Result := ovDateTime
+ Else If vObjectValue = Uppercase('ovBytes')           Then
+  Result := ovBytes
+ Else If vObjectValue = Uppercase('ovVarBytes')        Then
+  Result := ovVarBytes
+ Else If vObjectValue = Uppercase('ovAutoInc')         Then
+  Result := ovAutoInc
+ Else If vObjectValue = Uppercase('ovBlob')            Then
+  Result := ovBlob
+ Else If vObjectValue = Uppercase('ovMemo')            Then
+  Result := ovMemo
+ Else If vObjectValue = Uppercase('ovGraphic')         Then
+  Result := ovGraphic
+ Else If vObjectValue = Uppercase('ovFmtMemo')         Then
+  Result := ovFmtMemo
+ Else If vObjectValue = Uppercase('ovParadoxOle')      Then
+  Result := ovParadoxOle
+ Else If vObjectValue = Uppercase('ovDBaseOle')        Then
+  Result := ovDBaseOle
+ Else If vObjectValue = Uppercase('ovTypedBinary')     Then
+  Result := ovTypedBinary
+ Else If vObjectValue = Uppercase('ovCursor')          Then
+  Result := ovCursor
+ Else If vObjectValue = Uppercase('ovFixedChar')       Then
+  Result := ovFixedChar
+ Else If vObjectValue = Uppercase('ovWideString')      Then
+  Result := ovWideString
+ Else If vObjectValue = Uppercase('ovLargeint')        Then
+  Result := ovLargeint
+ Else If vObjectValue = Uppercase('ovADT')             Then
+  Result := ovADT
+ Else If vObjectValue = Uppercase('ovArray')           Then
+  Result := ovArray
+ Else If vObjectValue = Uppercase('ovReference')       Then
+  Result := ovReference
+ Else If vObjectValue = Uppercase('ovDataSet')         Then
+  Result := ovDataSet
+ Else If vObjectValue = Uppercase('ovOraBlob')         Then
+  Result := ovOraBlob
+ Else If vObjectValue = Uppercase('ovOraClob')         Then
+  Result := ovOraClob
+ Else If vObjectValue = Uppercase('ovVariant')         Then
+  Result := ovVariant
+ Else If vObjectValue = Uppercase('ovInterface')       Then
+  Result := ovInterface
+ Else If vObjectValue = Uppercase('ovIDispatch')       Then
+  Result := ovIDispatch
+ Else If vObjectValue = Uppercase('ovGuid')            Then
+  Result := ovGuid
+ Else If vObjectValue = Uppercase('ovTimeStamp')       Then
+  Result := ovTimeStamp
+ Else If vObjectValue = Uppercase('ovFMTBcd')          Then
+  Result := ovFMTBcd
+ Else If vObjectValue = Uppercase('ovFixedWideChar')   Then
+  Result := ovFixedWideChar
+ Else If vObjectValue = Uppercase('ovWideMemo')        Then
+  Result := ovWideMemo
+ Else If vObjectValue = Uppercase('ovOraTimeStamp')    Then
+  Result := ovOraTimeStamp
+ Else If vObjectValue = Uppercase('ovOraInterval')     Then
+  Result := ovOraInterval
+ Else If vObjectValue = Uppercase('ovLongWord')        Then
+  Result := ovLongWord
+ Else If vObjectValue = Uppercase('ovShortint')        Then
+  Result := ovShortint
+ Else If vObjectValue = Uppercase('ovByte')            Then
+  Result := ovByte
+ Else If vObjectValue = Uppercase('ovExtended')        Then
+  Result := ovExtended
+ Else If vObjectValue = Uppercase('ovConnection')      Then
+  Result := ovConnection
+ Else If vObjectValue = Uppercase('ovParams')          Then
+  Result := ovParams
+ Else If vObjectValue = Uppercase('ovStream')          Then
+  Result := ovStream
+ Else If vObjectValue = Uppercase('ovTimeStampOffset') Then
+  Result := ovTimeStampOffset
+ Else If vObjectValue = Uppercase('ovObject')          Then
+  Result := ovObject
+ Else If vObjectValue = Uppercase('ovSingle')          Then
+  Result := ovSingle;
+End;
+
 Function GetFieldType (FieldType     : TFieldType)     : String;
 Begin
  Result := 'ftUnknown';
@@ -188,6 +333,117 @@ Begin
   ftObject          : Result := 'ftObject';
   ftSingle          : Result := 'ftSingle';
  End;
+End;
+
+Function GetFieldType(FieldType : String) : TFieldType;
+Var
+ vFieldType : String;
+Begin
+ vFieldType := Uppercase(FieldType);
+ If vFieldType      = Uppercase('ftUnknown')         Then
+  Result := ftUnknown
+ Else If vFieldType = Uppercase('ftString')          Then
+  Result := ftString
+ Else If vFieldType = Uppercase('ftSmallint')        Then
+  Result := ftSmallint
+ Else If vFieldType = Uppercase('ftInteger')         Then
+  Result := ftInteger
+ Else If vFieldType = Uppercase('ftWord')            Then
+  Result := ftWord
+ Else If vFieldType = Uppercase('ftBoolean')         Then
+  Result := ftBoolean
+ Else If vFieldType = Uppercase('ftFloat')           Then
+  Result := ftFloat
+ Else If vFieldType = Uppercase('ftCurrency')        Then
+  Result := ftCurrency
+ Else If vFieldType = Uppercase('ftBCD')             Then
+  Result := ftBCD
+ Else If vFieldType = Uppercase('ftDate')            Then
+  Result := ftDate
+ Else If vFieldType = Uppercase('ftTime')            Then
+  Result := ftTime
+ Else If vFieldType = Uppercase('ftDateTime')        Then
+  Result := ftDateTime
+ Else If vFieldType = Uppercase('ftBytes')           Then
+  Result := ftBytes
+ Else If vFieldType = Uppercase('ftVarBytes')        Then
+  Result := ftVarBytes
+ Else If vFieldType = Uppercase('ftAutoInc')         Then
+  Result := ftAutoInc
+ Else If vFieldType = Uppercase('ftBlob')            Then
+  Result := ftBlob
+ Else If vFieldType = Uppercase('ftMemo')            Then
+  Result := ftMemo
+ Else If vFieldType = Uppercase('ftGraphic')         Then
+  Result := ftGraphic
+ Else If vFieldType = Uppercase('ftFmtMemo')         Then
+  Result := ftFmtMemo
+ Else If vFieldType = Uppercase('ftParadoxOle')      Then
+  Result := ftParadoxOle
+ Else If vFieldType = Uppercase('ftDBaseOle')        Then
+  Result := ftDBaseOle
+ Else If vFieldType = Uppercase('ftTypedBinary')     Then
+  Result := ftTypedBinary
+ Else If vFieldType = Uppercase('ftCursor')          Then
+  Result := ftCursor
+ Else If vFieldType = Uppercase('ftFixedChar')       Then
+  Result := ftFixedChar
+ Else If vFieldType = Uppercase('ftWideString')      Then
+  Result := ftWideString
+ Else If vFieldType = Uppercase('ftLargeint')        Then
+  Result := ftLargeint
+ Else If vFieldType = Uppercase('ftADT')             Then
+  Result := ftADT
+ Else If vFieldType = Uppercase('ftArray')           Then
+  Result := ftArray
+ Else If vFieldType = Uppercase('ftReference')       Then
+  Result := ftReference
+ Else If vFieldType = Uppercase('ftDataSet')         Then
+  Result := ftDataSet
+ Else If vFieldType = Uppercase('ftOraBlob')         Then
+  Result := ftOraBlob
+ Else If vFieldType = Uppercase('ftOraClob')         Then
+  Result := ftOraClob
+ Else If vFieldType = Uppercase('ftVariant')         Then
+  Result := ftVariant
+ Else If vFieldType = Uppercase('ftInterface')       Then
+  Result := ftInterface
+ Else If vFieldType = Uppercase('ftIDispatch')       Then
+  Result := ftIDispatch
+ Else If vFieldType = Uppercase('ftGuid')            Then
+  Result := ftGuid
+ Else If vFieldType = Uppercase('ftTimeStamp')       Then
+  Result := ftTimeStamp
+ Else If vFieldType = Uppercase('ftFMTBcd')          Then
+  Result := ftFMTBcd
+ Else If vFieldType = Uppercase('ftFixedWideChar')   Then
+  Result := ftFixedWideChar
+ Else If vFieldType = Uppercase('ftWideMemo')        Then
+  Result := ftWideMemo
+ Else If vFieldType = Uppercase('ftOraTimeStamp')    Then
+  Result := ftOraTimeStamp
+ Else If vFieldType = Uppercase('ftOraInterval')     Then
+  Result := ftOraInterval
+ Else If vFieldType = Uppercase('ftLongWord')        Then
+  Result := ftLongWord
+ Else If vFieldType = Uppercase('ftShortint')        Then
+  Result := ftShortint
+ Else If vFieldType = Uppercase('ftByte')            Then
+  Result := ftByte
+ Else If vFieldType = Uppercase('ftExtended')        Then
+  Result := ftExtended
+ Else If vFieldType = Uppercase('ftConnection')      Then
+  Result := ftConnection
+ Else If vFieldType = Uppercase('ftParams')          Then
+  Result := ftParams
+ Else If vFieldType = Uppercase('ftStream')          Then
+  Result := ftStream
+ Else If vFieldType = Uppercase('ftTimeStampOffset') Then
+  Result := ftTimeStampOffset
+ Else If vFieldType = Uppercase('ftObject')          Then
+  Result := ftObject
+ Else If vFieldType = Uppercase('ftSingle')          Then
+  Result := ftSingle;
 End;
 
 Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;

@@ -1,41 +1,16 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{7ABB481F-C5A4-477F-9D75-3FE3E95D2ACF}</ProjectGuid>
-        <MainSource>RestEasyObjectsCORE.dpk</MainSource>
+        <ProjectGuid>{615C1F5F-BB65-4E31-81B9-C5D0C1142900}</ProjectGuid>
         <ProjectVersion>18.2</ProjectVersion>
-        <FrameworkType>None</FrameworkType>
+        <FrameworkType>VCL</FrameworkType>
+        <MainSource>LoadfromJSON.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <TargetedPlatforms>1119</TargetedPlatforms>
-        <AppType>Package</AppType>
+        <TargetedPlatforms>1</TargetedPlatforms>
+        <AppType>Application</AppType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='Android' and '$(Base)'=='true') or '$(Base_Android)'!=''">
-        <Base_Android>true</Base_Android>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='iOSDevice32' and '$(Base)'=='true') or '$(Base_iOSDevice32)'!=''">
-        <Base_iOSDevice32>true</Base_iOSDevice32>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='iOSDevice64' and '$(Base)'=='true') or '$(Base_iOSDevice64)'!=''">
-        <Base_iOSDevice64>true</Base_iOSDevice64>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='iOSSimulator' and '$(Base)'=='true') or '$(Base_iOSSimulator)'!=''">
-        <Base_iOSSimulator>true</Base_iOSSimulator>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='OSX32' and '$(Base)'=='true') or '$(Base_OSX32)'!=''">
-        <Base_OSX32>true</Base_OSX32>
-        <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
@@ -64,12 +39,18 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
-        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
-        <GenDll>true</GenDll>
-        <SanitizedProjectName>RestEasyObjectsCORE</SanitizedProjectName>
-        <GenPackage>true</GenPackage>
+        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
+        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+        <SanitizedProjectName>LoadfromJSON</SanitizedProjectName>
+        <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
@@ -78,58 +59,17 @@
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_Android)'!=''">
-        <BT_BuildType>Debug</BT_BuildType>
-        <VerInfo_Keys>package=com.embarcadero.$(MSBuildProjectName);label=$(MSBuildProjectName);versionCode=1;versionName=1.0.0;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
-        <EnabledSysJars>android-support-v4.dex.jar;cloud-messaging.dex.jar;fmx.dex.jar;google-analytics-v2.dex.jar;google-play-billing.dex.jar;google-play-licensing.dex.jar;google-play-services.dex.jar</EnabledSysJars>
-        <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
-        <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;soaprtl;$(DCC_UsePackage)</DCC_UsePackage>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_iOSDevice32)'!=''">
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_BundleId>$(MSBuildProjectName)</VerInfo_BundleId>
-        <VerInfo_UIDeviceFamily>iPhoneAndiPad</VerInfo_UIDeviceFamily>
-        <VerInfo_Keys>CFBundleName=$(MSBuildProjectName);CFBundleDevelopmentRegion=en;CFBundleDisplayName=$(MSBuildProjectName);CFBundleIdentifier=$(MSBuildProjectName);CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=1.0.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;CFBundleResourceSpecification=ResourceRules.plist;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;FMLocalNotificationPermission=false;UIBackgroundModes=;NSContactsUsageDescription=The reason for accessing the contacts;NSPhotoLibraryUsageDescription=The reason for accessing the photo library;NSCameraUsageDescription=The reason for accessing the camera</VerInfo_Keys>
-        <BT_BuildType>Debug</BT_BuildType>
-        <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
-        <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;soaprtl;$(DCC_UsePackage)</DCC_UsePackage>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_iOSDevice64)'!=''">
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_BundleId>$(MSBuildProjectName)</VerInfo_BundleId>
-        <VerInfo_UIDeviceFamily>iPhoneAndiPad</VerInfo_UIDeviceFamily>
-        <VerInfo_Keys>CFBundleName=$(MSBuildProjectName);CFBundleDevelopmentRegion=en;CFBundleDisplayName=$(MSBuildProjectName);CFBundleIdentifier=$(MSBuildProjectName);CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=1.0.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;CFBundleResourceSpecification=ResourceRules.plist;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;FMLocalNotificationPermission=false;UIBackgroundModes=;NSContactsUsageDescription=The reason for accessing the contacts;NSPhotoLibraryUsageDescription=The reason for accessing the photo library;NSCameraUsageDescription=The reason for accessing the camera</VerInfo_Keys>
-        <BT_BuildType>Debug</BT_BuildType>
-        <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
-        <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;soaprtl;$(DCC_UsePackage)</DCC_UsePackage>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_iOSSimulator)'!=''">
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_UIDeviceFamily>iPhoneAndiPad</VerInfo_UIDeviceFamily>
-        <VerInfo_Keys>CFBundleName=$(MSBuildProjectName);CFBundleDevelopmentRegion=en;CFBundleDisplayName=$(MSBuildProjectName);CFBundleIdentifier=$(MSBuildProjectName);CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=1.0.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;CFBundleResourceSpecification=ResourceRules.plist;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;FMLocalNotificationPermission=false;UIBackgroundModes=;NSContactsUsageDescription=The reason for accessing the contacts;NSPhotoLibraryUsageDescription=The reason for accessing the photo library;NSCameraUsageDescription=The reason for accessing the camera</VerInfo_Keys>
-        <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
-        <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;soaprtl;$(DCC_UsePackage)</DCC_UsePackage>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_OSX32)'!=''">
-        <BT_BuildType>Debug</BT_BuildType>
-        <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;soaprtl;$(DCC_UsePackage)</DCC_UsePackage>
-        <VerInfo_Keys>CFBundleName=$(MSBuildProjectName);CFBundleDisplayName=$(MSBuildProjectName);CFBundleIdentifier=$(MSBuildProjectName);CFBundleVersion=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.utilities;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;NSContactsUsageDescription=The reason for accessing the contacts</VerInfo_Keys>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <BT_BuildType>Debug</BT_BuildType>
-        <VerInfo_Locale>1033</VerInfo_Locale>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_UsePackage>DBXSqliteDriver;fmxase;DBXDb2Driver;vclFireDAC;tethering;cxDataRS23;dxPSdxOCLnkRS23;dxSkinLondonLiquidSkyRS23;dxSkinBlackRS23;JvPluginSystem;NxLayout6Run_d10;FireDACMSSQLDriver;ACBr_NFeDanfeFR;dxPScxCommonRS23;dxSkinOffice2007BlueRS23;dxBarRS23;dxSkinOffice2013WhiteRS23;dxPSTeeChartRS23;lmdrtdialog;cxPivotGridChartRS23;dxSkinSummer2008RS23;dxGDIPlusRS23;FireDACDBXDriver;dxSkinFoggyRS23;ACBr_NFSeDanfseFR;dxSkinOffice2010SilverRS23;RESTBackendComponents;dxPSPrVwRibbonRS23;dxSkinDevExpressStyleRS23;EmbeddedWebBrowser_XE;NxInspector6Dsgn_d10;dxSkinWhiteprintRS23;CloudService;dxSkinOffice2013DarkGrayRS23;DataSnapClient;bindcompdbx;ACBr_TCP;lmdrttoolsdb;cxTreeListdxBarPopupMenuRS23;ACBr_synapse;FireDACMSAccDriver;FireDACInfxDriver;lmdrtchart;vclimg;ComparerAdoDXE8;ACBr_SPEDImportar;emshosting;dxFlowChartRS23;vclZipForged23;DBXOdbcDriver;soaprtl;DbxCommonDriver;dxSpreadSheetRS23;dxSkinOffice2007PinkRS23;soapmidas;rtl;dxSkinDevExpressDarkStyleRS23;DBXSybaseASADriver;dxSkinMetropolisDarkRS23;dxRichEditControlRS23;lmdrtprint;appanalytics;dxRibbonRS23;dxSkinOffice2007SilverRS23;dxMapControlRS23;TeeUI;ComparerDXE8;frxe24;JvDocking;JvPascalInterpreter;VclSmp;dxPScxSchedulerLnkRS23;cxTreeListRS23;FireDACODBCDriver;JclVcl;dxRibbonCustomizationFormRS23;dxBarExtDBItemsRS23;DataSnapProviderClient;dxSkiniMaginaryRS23;JvControls;JvPrintPreview;lmdrtstorage;ACBr_NFSe;DataSnapServerMidas;RESTComponents;lmdrtsearch;NxStandard6Dsgn_d10;vwTechBombaXyb;JvGlobus;dxPSDBTeeChartRS23;dxSkinLiquidSkyRS23;lmdrtl;dxdbtrRS23;dxSkinscxPCPainterRS23;DBXMSSQLDriver;JvMM;RESTDriverZEOS;unidacfmx240;lmdrtbar;CurrencyEditFMX;bindcompfmx;JvNet;dxSkinValentineRS23;unidacvcl240;JvAppFrm;ACBr_TXTComum;emsedge;unidac240;FireDACIBDriver;dxServerModeRS23;ACBr_CTeDacteFR;JvWizards;cxPageControlRS23;dbexpress;IndyCore;NativeXML_D7;ZParseSql;JvPageComps;lmdrtrtlx;FireDACCommon;dxSkinOffice2010BlueRS23;dxSkinVS2010RS23;dxSkinMetropolisRS23;DataSnapConnectors;cxVerticalGridRS23;lmdrtelcore;ACBR_DeSTDA;dac240;cxGridRS23;JvCmp;DBXMySQLDriver;ACBr_Sintegra;FireDACCommonDriver;ACBr_GNRE;inet;JvCustom;dxDockingRS23;dxSkinOffice2007GreenRS23;tmsxlsdXE9;JvXPCtrls;dxSkinsCoreRS23;NxInspector6Run_d10;dxSkinsdxRibbonPainterRS23;dxSkinMoneyTwinsRS23;dxtrmdRS23;FireDAC;dxFireDACServerModeRS23;dxSkinBlueRS23;FireDACSqliteDriver;ibmonitor;FireDACASADriver;cxEditorsRS23;dxSkinGlassOceansRS23;JvDlgs;JvRuntimeDesign;cxPivotGridOLAPRS23;DataSnapServer;lmdrtscript;vclwinx;NxDBGrid6Run_d10;lmdrtrtfdb;frxTee24;CustomIPTransport;bindcomp;fgx;ZPlain;DBXInformixDriver;dxPSdxGaugeControlLnkRS23;dbxcds;KernowSoftwareFMX;ACBr_NFCeECFVirtual;adortl;ACBr_BoletoFR;frxDB24;ComparerBDEDXE8;dxComnRS23;dsnapxml;cxExportRS23;dxSkinVisualStudio2013DarkRS23;RESTDriverUniDAC;RestEasyObjects;vquery240;dxCoreRS23;vclactnband;dxPSdxLCLnkRS23;dxPSLnksRS23;fs24;lmdrtplugin;dxTabbedMDIRS23;FireDACADSDriver;RaizeComponentsVclDb230;dxDBXServerModeRS23;dxHttpIndyRequestRS23;dxPScxGridLnkRS23;cxSchedulerRS23;vcltouch;JvBands;ACBr_NFe;vcldb;lmdrtchartdb;svn;JvJans;dxWizardControlRS23;dxSkinMcSkinRS23;CompanytecBombaXyb;ACBr_NFeDanfeESCPOS;cxSchedulerRibbonStyleEventEditorRS23;dacfmx240;JvDotNetCtrls;cxLibraryRS23;dxSkinVisualStudio2013LightRS23;lmdrttools;frx24;vclib;crcontrols240;dxPSdxDBOCLnkRS23;lmdrtrtf;dxSkinDarkSideRS23;dxSkinSevenRS23;vclx;lmdrtelpro;dxdborRS23;dxLayoutControlRS23;VCLRESTComponents;vclie;bindengine;JvHMI;FireDACMySQLDriver;ACBr_PAF;ACBr_SATECFVirtual;dxPScxPCProdRS23;DBXSybaseASEDriver;IndyIPServer;dxSkinPumpkinRS23;Intraweb_14_D10_1;ACBr_CTe;IndySystem;NxDBGrid6Dsgn_d10;dsnapcon;fmxFireDAC;dxSkinLilianRS23;Jcl;tmsexdXE9;ACBr_SPED;lmdrttxt;ACBr_MDFe;dxBarDBNavRS23;ACBr_LFD;dxSkinOffice2016ColorfulRS23;FireDACTDataDriver;FMXTee;NxGrid6Run_d10;JvManagedThreads;dxPSdxSpreadSheetLnkRS23;xmlrtl;DataSnapNativeClient;JvTimeFramework;fmxobj;dxSkinTheAsphaltWorldRS23;dxSkinSevenClassicRS23;dxSkinHighContrastRS23;DbxClientDriver;dxNavBarRS23;NxGrid6Dsgn_d10;JvSystem;JvStdCtrls;ACBr_Convenio115;lmdrtdocking;cxPivotGridRS23;dxPScxVGridLnkRS23;IndyIPClient;dxSkinsdxDLPainterRS23;bindcompvcl;dxPScxTLLnkRS23;lmdrtsyntax;lmdrttxtdb;NxCollection6Dsgn_d10;DataSnapIndy10ServerTransport;dxPSRichEditControlLnkRS23;ACBr_Boleto;lmdrtscriptimp;ACBr_SEF2;FireDACMongoDBDriver;dxSpellCheckerRS23;dxSkinsdxBarPainterRS23;lmdrtshell;NxCollection6Run_d10;ACBr_MDFeDamdfeFR;dxSkinCoffeeRS23;lmdrtweb;ZComponent;CurrencyEditVCL;DBXInterBaseDriver;ACBr_TEFD;ZCore;dxADOServerModeRS23;emsclientfiredac;ACBr_SATWS;DataSnapFireDAC;svnui;dxmdsRS23;dxSkinSpringTimeRS23;dxPSCoreRS23;bmsPack_D6;dxSkinXmas2008BlueRS23;DatasnapConnectorsFreePascal;compack;lmdrteldb;DBXOracleDriver;dxSkinSilverRS23;inetdb;ACBr_Diversos;ACBr_GNREGuiaFR;FmxTeeUI;dxBarExtItemsRS23;fmx;fmxdae;dxPsPrVwAdvRS23;dxSkinOffice2010BlackRS23;dxSkinStardustRS23;cxSchedulerGridRS23;ACBr_Ponto;dxSkinSharpPlusRS23;RestEasyObjectsCORE;dsnap;DataSnapCommon;emsclient;JvDB;ACBr_PCNComum;soapserver;ACBr_SAT;dxSkinCaramelRS23;dxTileControlRS23;JclDeveloperTools;lmdrtinspector;lmdrtfx;CPortLibDXE;FireDACOracleDriver;DBXFirebirdDriver;lmdrtsearchdb;FireDACCommonODBC;RESTDriverFD;IndyIPCommon;dxSkinDarkRoomRS23;vcl;dxPScxExtCommonRS23;ACBr_SATExtratoESCPOS;FireDACDb2Driver;dxThemeRS23;acntDX10Berlin_R;dxSkinVisualStudio2013BlueRS23;tmswizdXE9;lmdrtsys;ComparerDBXDXE8;dxPSdxFCLnkRS23;ZDbc;TeeDB;cxSchedulerTreeBrowserRS23;JvCore;ACBr_Comum;JvCrypt;RaizeComponentsVcl230;FireDACPgDriver;NxStandard6Run_d10;dxSkinsdxNavBarPainterRS23;dxGaugeControlRS23;ibxpress;Tee;dxSkinSharpRS23;dacvcl240;ibxbindings;FireDACDSDriver;ACBr_OpenSSL;dxSkinBlueprintRS23;dxSkinOffice2007BlackRS23;ACBr_DFeComum;vcldsnap;dxSkinOffice2013LightGrayRS23;ACBr_Serial;dxPScxPivotGridLnkRS23;dxorgcRS23;ACBr_BlocoX;dxPSdxDBTVLnkRS23;dbrtl;inetdbxpress;IndyProtocols;dxSkinOffice2016DarkRS23;JclContainers;ACBr_MTER;dxSkinscxSchedulerPainterRS23;tmsdXE9;lmdrtcore;$(DCC_UsePackage)</DCC_UsePackage>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;soaprtl;$(DCC_UsePackage)</DCC_UsePackage>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <BT_BuildType>Debug</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
-        <BT_BuildType>Debug</BT_BuildType>
-        <VerInfo_Locale>1033</VerInfo_Locale>
-        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;soaprtl;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>DBXSqliteDriver;fmxase;DBXDb2Driver;vclFireDAC;tethering;cxDataRS23;dxPSdxOCLnkRS23;dxSkinLondonLiquidSkyRS23;dxSkinBlackRS23;NxLayout6Run_d10;FireDACMSSQLDriver;dxPScxCommonRS23;dxSkinOffice2007BlueRS23;dxBarRS23;dxSkinOffice2013WhiteRS23;dxPSTeeChartRS23;lmdrtdialog;cxPivotGridChartRS23;dxSkinSummer2008RS23;dxGDIPlusRS23;FireDACDBXDriver;dxSkinFoggyRS23;dxSkinOffice2010SilverRS23;RESTBackendComponents;dxPSPrVwRibbonRS23;dxSkinDevExpressStyleRS23;dxSkinWhiteprintRS23;CloudService;dxSkinOffice2013DarkGrayRS23;DataSnapClient;bindcompdbx;lmdrttoolsdb;cxTreeListdxBarPopupMenuRS23;FireDACMSAccDriver;FireDACInfxDriver;lmdrtchart;vclimg;emshosting;dxFlowChartRS23;vclZipForged23;DBXOdbcDriver;soaprtl;DbxCommonDriver;dxSpreadSheetRS23;dxSkinOffice2007PinkRS23;soapmidas;rtl;dxSkinDevExpressDarkStyleRS23;DBXSybaseASADriver;dxSkinMetropolisDarkRS23;dxRichEditControlRS23;lmdrtprint;appanalytics;dxRibbonRS23;dxSkinOffice2007SilverRS23;dxMapControlRS23;TeeUI;VclSmp;dxPScxSchedulerLnkRS23;cxTreeListRS23;FireDACODBCDriver;dxRibbonCustomizationFormRS23;dxBarExtDBItemsRS23;DataSnapProviderClient;dxSkiniMaginaryRS23;lmdrtstorage;DataSnapServerMidas;RESTComponents;lmdrtsearch;dxPSDBTeeChartRS23;dxSkinLiquidSkyRS23;lmdrtl;dxdbtrRS23;dxSkinscxPCPainterRS23;DBXMSSQLDriver;RESTDriverZEOS;lmdrtbar;CurrencyEditFMX;bindcompfmx;dxSkinValentineRS23;emsedge;FireDACIBDriver;dxServerModeRS23;cxPageControlRS23;dbexpress;IndyCore;ZParseSql;lmdrtrtlx;FireDACCommon;dxSkinOffice2010BlueRS23;dxSkinVS2010RS23;dxSkinMetropolisRS23;DataSnapConnectors;cxVerticalGridRS23;lmdrtelcore;cxGridRS23;DBXMySQLDriver;FireDACCommonDriver;inet;dxDockingRS23;dxSkinOffice2007GreenRS23;dxSkinsCoreRS23;NxInspector6Run_d10;dxSkinsdxRibbonPainterRS23;dxSkinMoneyTwinsRS23;dxtrmdRS23;FireDAC;dxFireDACServerModeRS23;dxSkinBlueRS23;FireDACSqliteDriver;ibmonitor;FireDACASADriver;cxEditorsRS23;dxSkinGlassOceansRS23;cxPivotGridOLAPRS23;DataSnapServer;lmdrtscript;vclwinx;NxDBGrid6Run_d10;lmdrtrtfdb;CustomIPTransport;bindcomp;fgx;ZPlain;DBXInformixDriver;dxPSdxGaugeControlLnkRS23;dbxcds;adortl;dxComnRS23;dsnapxml;cxExportRS23;dxSkinVisualStudio2013DarkRS23;RestEasyObjects;dxCoreRS23;vclactnband;dxPSdxLCLnkRS23;dxPSLnksRS23;lmdrtplugin;dxTabbedMDIRS23;FireDACADSDriver;dxDBXServerModeRS23;dxHttpIndyRequestRS23;dxPScxGridLnkRS23;cxSchedulerRS23;vcltouch;vcldb;lmdrtchartdb;dxWizardControlRS23;dxSkinMcSkinRS23;cxSchedulerRibbonStyleEventEditorRS23;cxLibraryRS23;dxSkinVisualStudio2013LightRS23;lmdrttools;vclib;dxPSdxDBOCLnkRS23;lmdrtrtf;dxSkinDarkSideRS23;dxSkinSevenRS23;vclx;lmdrtelpro;dxdborRS23;dxLayoutControlRS23;VCLRESTComponents;vclie;bindengine;FireDACMySQLDriver;dxPScxPCProdRS23;DBXSybaseASEDriver;IndyIPServer;dxSkinPumpkinRS23;IndySystem;dsnapcon;fmxFireDAC;dxSkinLilianRS23;tmsexdXE9;lmdrttxt;dxBarDBNavRS23;dxSkinOffice2016ColorfulRS23;FireDACTDataDriver;FMXTee;NxGrid6Run_d10;dxPSdxSpreadSheetLnkRS23;xmlrtl;DataSnapNativeClient;fmxobj;dxSkinTheAsphaltWorldRS23;dxSkinSevenClassicRS23;dxSkinHighContrastRS23;DbxClientDriver;dxNavBarRS23;lmdrtdocking;cxPivotGridRS23;dxPScxVGridLnkRS23;IndyIPClient;dxSkinsdxDLPainterRS23;bindcompvcl;dxPScxTLLnkRS23;lmdrtsyntax;lmdrttxtdb;DataSnapIndy10ServerTransport;dxPSRichEditControlLnkRS23;lmdrtscriptimp;FireDACMongoDBDriver;dxSpellCheckerRS23;dxSkinsdxBarPainterRS23;lmdrtshell;NxCollection6Run_d10;dxSkinCoffeeRS23;lmdrtweb;ZComponent;CurrencyEditVCL;DBXInterBaseDriver;ZCore;dxADOServerModeRS23;emsclientfiredac;DataSnapFireDAC;dxmdsRS23;dxSkinSpringTimeRS23;dxPSCoreRS23;dxSkinXmas2008BlueRS23;DatasnapConnectorsFreePascal;lmdrteldb;DBXOracleDriver;dxSkinSilverRS23;inetdb;FmxTeeUI;dxBarExtItemsRS23;fmx;fmxdae;dxPsPrVwAdvRS23;dxSkinOffice2010BlackRS23;dxSkinStardustRS23;cxSchedulerGridRS23;dxSkinSharpPlusRS23;RestEasyObjectsCORE;dsnap;DataSnapCommon;emsclient;soapserver;dxSkinCaramelRS23;dxTileControlRS23;lmdrtinspector;lmdrtfx;FireDACOracleDriver;DBXFirebirdDriver;lmdrtsearchdb;FireDACCommonODBC;RESTDriverFD;IndyIPCommon;dxSkinDarkRoomRS23;vcl;dxPScxExtCommonRS23;FireDACDb2Driver;dxThemeRS23;dxSkinVisualStudio2013BlueRS23;lmdrtsys;dxPSdxFCLnkRS23;ZDbc;TeeDB;cxSchedulerTreeBrowserRS23;FireDACPgDriver;NxStandard6Run_d10;dxSkinsdxNavBarPainterRS23;dxGaugeControlRS23;ibxpress;Tee;dxSkinSharpRS23;ibxbindings;FireDACDSDriver;dxSkinBlueprintRS23;dxSkinOffice2007BlackRS23;vcldsnap;dxSkinOffice2013LightGrayRS23;dxPScxPivotGridLnkRS23;dxorgcRS23;dxPSdxDBTVLnkRS23;dbrtl;inetdbxpress;IndyProtocols;dxSkinOffice2016DarkRS23;dxSkinscxSchedulerPainterRS23;tmsdXE9;lmdrtcore;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -140,12 +80,8 @@
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Build>1</VerInfo_Build>
-        <VerInfo_Release>1</VerInfo_Release>
-        <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=$(MSBuildProjectName);FileVersion=1.0.1.1;InternalName=REST Dataware CORE Version;LegalCopyright=REST Dataware CORE Version;LegalTrademarks=REST Dataware;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.1;Comments=</VerInfo_Keys>
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <AppEnableHighDPI>true</AppEnableHighDPI>
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -154,33 +90,18 @@
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <AppEnableHighDPI>true</AppEnableHighDPI>
+    </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="IndySystem.dcp"/>
-        <DCCReference Include="IndyProtocols.dcp"/>
-        <DCCReference Include="IndyCore.dcp"/>
-        <DCCReference Include="soaprtl.dcp"/>
-        <DCCReference Include="..\..\Source\uRESTDWBase.pas"/>
-        <DCCReference Include="..\..\Source\uRESTDWReg.pas"/>
-        <DCCReference Include="..\..\Source\libs\ServerUtils.pas"/>
-        <DCCReference Include="..\..\Source\libs\StringBuilderUnit.pas"/>
-        <DCCReference Include="..\..\Source\libs\SysTypes.pas"/>
-        <DCCReference Include="..\..\Source\libs\uDWConsts.pas"/>
-        <DCCReference Include="..\..\Source\libs\uDWJSONTools.pas"/>
-        <DCCReference Include="..\..\Source\libs\uDWJSONObject.pas"/>
-        <DCCReference Include="..\..\Source\libs\uKBDynamic.pas"/>
-        <DCCReference Include="..\..\Source\libs\JSON\uDWJSONParser.pas"/>
-        <RcItem Include="..\..\Images\TRESTServicePooler.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>TRESTServicePooler</ResourceId>
-        </RcItem>
-        <RcItem Include="..\..\Images\TRESTClientPooler.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>TRESTClientPooler</ResourceId>
-        </RcItem>
+        <DCCReference Include="uLoadJSON.pas">
+            <Form>Form3</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -195,45 +116,17 @@
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Delphi.Personality.12</Borland.Personality>
-        <Borland.ProjectType>Package</Borland.ProjectType>
+        <Borland.ProjectType>Application</Borland.ProjectType>
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">RestEasyObjectsCORE.dpk</Source>
+                    <Source Name="MainSource">LoadfromJSON.dpr</Source>
                 </Source>
-                <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclIntraweb_140_240.bpl">File c:\program files (x86)\embarcadero\studio\18.0\bin\dclIntraweb_140_240.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k240.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp240.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k240.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp240.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dfmxinfopower240.bpl">Woll2Woll FirePower 7.0 Components</Excluded_Packages>
-                </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\18.0\Bpl\RestEasyObjectsCORE.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\LoadfromJSON.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>RestEasyObjectsCORE.bpl</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
-                    <Platform Name="OSX32">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libcgunwind.1.0.dylib" Class="DependencyModule">
-                    <Platform Name="iOSSimulator">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libPCRE.dylib" Class="DependencyModule">
-                    <Platform Name="iOSSimulator">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\Redist\osx32\libcgsqlite3.dylib" Class="DependencyModule">
-                    <Platform Name="OSX32">
+                        <RemoteName>LoadfromJSON.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -242,7 +135,20 @@
                         <Operation>0</Operation>
                         <Extensions>.dll;.bpl</Extensions>
                     </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
                     <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
                         <Operation>1</Operation>
                         <Extensions>.dylib</Extensions>
                     </Platform>
@@ -264,7 +170,11 @@
                         <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>0</Operation>
                     </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
                     <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -305,6 +215,7 @@
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="Android">
@@ -320,6 +231,7 @@
                         <Operation>0</Operation>
                     </Platform>
                     <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>1</Operation>
                         <Extensions>.framework</Extensions>
                     </Platform>
@@ -375,7 +287,17 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectiOSInfoPList"/>
+                <DeployClass Name="ProjectiOSInfoPList">
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="AndroidLibnativeArmeabiFile">
                     <Platform Name="Android">
                         <RemoteDir>library\lib\armeabi</RemoteDir>
@@ -390,6 +312,7 @@
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -443,7 +366,16 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectiOSEntitlements"/>
+                <DeployClass Name="ProjectiOSEntitlements">
+                    <Platform Name="iOSDevice64">
+                        <RemoteDir>..\</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice32">
+                        <RemoteDir>..\</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="Android_LauncherIcon72">
                     <Platform Name="Android">
                         <RemoteDir>res\drawable-hdpi</RemoteDir>
@@ -456,8 +388,18 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectOSXInfoPList"/>
-                <DeployClass Name="ProjectOSXEntitlements"/>
+                <DeployClass Name="ProjectOSXInfoPList">
+                    <Platform Name="OSX32">
+                        <RemoteDir>Contents</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="ProjectOSXEntitlements">
+                    <Platform Name="OSX32">
+                        <RemoteDir>..\</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="UWP_DelphiLogo150">
                     <Platform Name="Win32">
                         <RemoteDir>Assets</RemoteDir>
@@ -527,6 +469,7 @@
                         <Operation>0</Operation>
                     </Platform>
                     <Platform Name="OSX32">
+                        <RemoteDir>Contents\Resources\StartUp\</RemoteDir>
                         <Operation>0</Operation>
                     </Platform>
                     <Platform Name="iOSDevice32">
@@ -555,6 +498,7 @@
                         <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>1</Operation>
                         <Extensions>.dylib</Extensions>
                     </Platform>
@@ -585,24 +529,26 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
+                <DeployClass Name="ProjectiOSDeviceResourceRules">
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Platforms>
-                <Platform value="Android">True</Platform>
-                <Platform value="iOSDevice32">True</Platform>
-                <Platform value="iOSDevice64">True</Platform>
-                <Platform value="iOSSimulator">True</Platform>
-                <Platform value="OSX32">True</Platform>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">True</Platform>
+                <Platform value="Win64">False</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

@@ -3,33 +3,34 @@ unit uDWJSONObject;
 interface
 
 Uses {$IFDEF LCL}
-     SysUtils, SysTypes, Classes, uDWJSONTools, uDWConsts, IdGlobal, uKBDynamic, DB;
+     SysUtils, SysTypes, Classes, uDWJSONTools, uDWConsts, IdGlobal, uKBDynamic, DB,
+     uDWJSONParser;
      {$ELSE}
-     System.SysUtils, SysTypes,   System.Classes, uDWJSONTools, uDWConsts,
+     System.SysUtils, SysTypes,   System.Classes, uDWJSONTools, uDWConsts, uDWJSONParser,
      IdGlobal,        uKBDynamic, System.Rtti,    Data.DB,      Soap.EncdDecd;
      {$ENDIF}
 
 Type
  TJSONValue = Class
  Private
-  vtagName                      : String;
-  vTypeObject                   : TTypeObject;
-  vObjectDirection              : TObjectDirection;
-  vObjectValue                  : TObjectValue;
-  aValue                        : TIdBytes;
-  vEncoding                     : TEncoding;
-  Function  GetValue            : String;
-  Procedure WriteValue  (bValue : String);
-  Function  FormatValue (bValue : String) : String;
-  Function  GetValueJSON(bValue : String) : String;
+  vtagName                           : String;
+  vTypeObject                        : TTypeObject;
+  vObjectDirection                   : TObjectDirection;
+  vObjectValue                       : TObjectValue;
+  aValue                             : TIdBytes;
+  vEncoding                          : TEncoding;
+  Function    GetValue               : String;
+  Procedure   WriteValue     (bValue : String);
+  Function    FormatValue    (bValue : String)        : String;
+  Function    GetValueJSON   (bValue : String)        : String;
   Function    DatasetValues  (bValue      : TDataset) : String;
  Public
   Procedure   ToStream       (Var bValue  : TMemoryStream);
   Procedure   LoadFromDataset(TableName   : String;
                               bValue      : TDataset);
   Procedure   WriteToDataset (DatasetType : TDatasetType;
-                              TableName   : String;
-                              var DestDS  : TDataset);
+                              JSONValue   : String;
+                              DestDS      : TDataset);
   Constructor Create;
   Destructor  Destroy;Override;
   Property    TypeObject                  : TTypeObject      Read vTypeObject      Write vTypeObject;
@@ -221,10 +222,70 @@ Begin
 End;
 
 Procedure TJSONValue.WriteToDataset(DatasetType : TDatasetType;
-                                    TableName   : String;
-                                    var DestDS  : TDataset);
-Begin
+                                    JSONValue   : String;
+                                    DestDS      : TDataset);
+var
+ JsonParser : TJsonParser;
+ bJsonValue : TJsonObject;
+ JsonArray  : TJsonArray;
+ J, I       : Integer;
+ vTableName : String;
+ FieldDef   : TFieldDef;
+ Field      : TField;
+begin
+ ClearJsonParser(JsonParser);
+ ParseJson(JsonParser, JSONValue);
+ bJsonValue       := JsonParser.Output.Objects[0];
+ vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
+ vObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
+ vObjectValue     := GetValueType    (bJsonValue[2].Value.Value);
+ vtagName         := lowercase       (bJsonValue[3].Key);
+ //Add Field Defs
+ DestDS.Close;
+ DestDS.FieldDefs.Clear;
+ For J := 1 To Length(JsonParser.Output.Objects) -1 Do
+  Begin
+   bJsonValue         := JsonParser.Output.Objects[J];
+   FieldDef           := DestDS.FieldDefs.AddFieldDef;
+   FieldDef.Name      := bJsonValue[0].Value.Value;
+   FieldDef.DataType  := GetFieldType(bJsonValue[1].Value.Value);
+   FieldDef.Required  := UpperCase(bJsonValue[3].Value.Value) = 'S';
+   FieldDef.Size      := StrToInt(bJsonValue[4].Value.Value);
+   FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
+  End;
+ DestDS.Open;
+ //Add Set PK Fields
+ For J := 1 To Length(JsonParser.Output.Objects) -1 Do
+  Begin
+   bJsonValue         := JsonParser.Output.Objects[J];
+   If UpperCase(bJsonValue[2].Value.Value) = 'S' Then
+    Begin
+     Field := DestDS.FieldByName(bJsonValue[0].Value.Value);
+     If Field <> Nil Then
+      Field.ProviderFlags := [pfInUpdate, pfInWhere, pfInKey];
+    End;
+  End;
+ For J := 3 To Length(JsonParser.Output.Arrays) -1 Do
+  Begin
+   JsonArray  := JsonParser.Output.Arrays[J];
+   DestDS.Append;
+   For I := 0 To Length(JsonArray) -1 Do
+    Begin
+     If DestDS.Fields[I].DataType In [ftMemo, ftGraphic, ftFmtMemo,
+                                      ftParadoxOle,      ftDBaseOle,
+                                      ftTypedBinary,     ftCursor,
+                                      ftDataSet,         ftOraBlob,
+                                      ftOraClob,         ftWideMemo,
+                                      ftParams,          ftStream]  Then
+      Begin
 
+      End
+     Else
+      DestDS.Fields[I].Value := JsonArray[I].Value;
+    End;
+   DestDS.Post;
+  End;
+ DestDS.First;
 End;
 
 Procedure TJSONValue.WriteValue(bValue : String);
