@@ -242,67 +242,73 @@ var
  vBlobStream : TStringStream;
 begin
  ClearJsonParser(JsonParser);
- ParseJson(JsonParser, JSONValue);
- bJsonValue       := JsonParser.Output.Objects[0];
- vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
- vObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
- vObjectValue     := GetValueType    (bJsonValue[2].Value.Value);
- vtagName         := lowercase       (bJsonValue[3].Key);
- //Add Field Defs
- DestDS.DisableControls;
- DestDS.Close;
- DestDS.FieldDefs.Clear;
- For J := 1 To Length(JsonParser.Output.Objects) -1 Do
-  Begin
-   bJsonValue         := JsonParser.Output.Objects[J];
-   FieldDef           := DestDS.FieldDefs.AddFieldDef;
-   FieldDef.Name      := bJsonValue[0].Value.Value;
-   FieldDef.DataType  := GetFieldType(bJsonValue[1].Value.Value);
-   FieldDef.Required  := UpperCase(bJsonValue[3].Value.Value) = 'S';
-   FieldDef.Size      := StrToInt(bJsonValue[4].Value.Value);
-   FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
-  End;
- DestDS.Open;
- //Add Set PK Fields
- For J := 1 To Length(JsonParser.Output.Objects) -1 Do
-  Begin
-   bJsonValue         := JsonParser.Output.Objects[J];
-   If UpperCase(bJsonValue[2].Value.Value) = 'S' Then
-    Begin
-     Field := DestDS.FieldByName(bJsonValue[0].Value.Value);
-     If Field <> Nil Then
-      Field.ProviderFlags := [pfInUpdate, pfInWhere, pfInKey];
-    End;
-  End;
- For J := 3 To Length(JsonParser.Output.Arrays) -1 Do
-  Begin
-   JsonArray  := JsonParser.Output.Arrays[J];
-   DestDS.Append;
-   For I := 0 To Length(JsonArray) -1 Do
-    Begin
-     If DestDS.Fields[I].DataType In [ftMemo, ftGraphic, ftFmtMemo,
-                                      ftParadoxOle,      ftDBaseOle,
-                                      ftTypedBinary,     ftCursor,
-                                      ftDataSet,         ftOraBlob,
-                                      ftOraClob,         ftWideMemo,
-                                      ftParams,          ftStream]  Then
-      Begin
-       vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[I].Value{$IFNDEF LCL}, vEncoding{$ENDIF}));
-       Try
-        vBlobStream.Position := 0;
-        DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
-       Finally
-        vBlobStream.Clear;
-        vBlobStream.Free;
+ Try
+  ParseJson(JsonParser, JSONValue);
+  bJsonValue       := JsonParser.Output.Objects[0];
+  vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
+  vObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
+  vObjectValue     := GetValueType    (bJsonValue[2].Value.Value);
+  vtagName         := lowercase       (bJsonValue[3].Key);
+  //Add Field Defs
+  DestDS.DisableControls;
+  DestDS.Close;
+  DestDS.FieldDefs.Clear;
+  For J := 1 To Length(JsonParser.Output.Objects) -1 Do
+   Begin
+    bJsonValue         := JsonParser.Output.Objects[J];
+    FieldDef           := DestDS.FieldDefs.AddFieldDef;
+    FieldDef.Name      := bJsonValue[0].Value.Value;
+    FieldDef.DataType  := GetFieldType(bJsonValue[1].Value.Value);
+    FieldDef.Required  := UpperCase(bJsonValue[3].Value.Value) = 'S';
+    FieldDef.Size      := StrToInt(bJsonValue[4].Value.Value);
+    FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
+   End;
+  DestDS.Open;
+  //Add Set PK Fields
+  For J := 1 To Length(JsonParser.Output.Objects) -1 Do
+   Begin
+    bJsonValue         := JsonParser.Output.Objects[J];
+    If UpperCase(bJsonValue[2].Value.Value) = 'S' Then
+     Begin
+      Field := DestDS.FieldByName(bJsonValue[0].Value.Value);
+      If Field <> Nil Then
+       Field.ProviderFlags := [pfInUpdate, pfInWhere, pfInKey];
+     End;
+   End;
+  For J := 3 To Length(JsonParser.Output.Arrays) -1 Do
+   Begin
+    JsonArray  := JsonParser.Output.Arrays[J];
+    DestDS.Append;
+    For I := 0 To Length(JsonArray) -1 Do
+     Begin
+      If DestDS.Fields[I].DataType In [ftMemo, ftGraphic, ftFmtMemo,
+                                       ftParadoxOle,      ftDBaseOle,
+                                       ftTypedBinary,     ftCursor,
+                                       ftDataSet,         ftOraBlob,
+                                       ftOraClob,         ftWideMemo,
+                                       ftParams,          ftStream]  Then
+       Begin
+        vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[I].Value{$IFNDEF LCL}, vEncoding{$ENDIF}));
+        Try
+         vBlobStream.Position := 0;
+         DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
+        Finally
+         vBlobStream.Clear;
+         vBlobStream.Free;
+        End;
+       End
+      Else
+       Begin
+        If JsonArray[I].Value <> '' Then
+         DestDS.Fields[I].Value := JsonArray[I].Value;
        End;
-      End
-     Else
-      DestDS.Fields[I].Value := JsonArray[I].Value;
-    End;
-   DestDS.Post;
-  End;
- DestDS.First;
- DestDS.EnableControls;
+     End;
+    DestDS.Post;
+   End;
+ Finally
+  DestDS.First;
+  DestDS.EnableControls;
+ End;
 End;
 
 Procedure TJSONValue.WriteValue(bValue : String);
