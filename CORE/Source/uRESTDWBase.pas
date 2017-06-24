@@ -23,7 +23,7 @@ unit uRESTDWBase;
 interface
 
 Uses
-     {$IFDEF LCL}
+     {$IFDEF FPC}
      SysUtils,         Classes, SysTypes, ServerUtils, Windows,
      IdContext,        IdHTTPServer,      IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
      IdAuthentication, IdHTTPHeaderInfo,  uDWJSONTools,          uDWConsts,    IdHTTP;
@@ -432,7 +432,7 @@ Begin
  vProxyOptions                   := TProxyOptions.Create;
  HTTPServer                      := TIdHTTPServer.Create(Nil);
  lHandler                        := TIdServerIOHandlerSSLOpenSSL.Create;
- {$IFDEF LCL}
+ {$IFDEF FPC}
  HTTPServer.OnCommandGet         := @aCommandGet;
  HTTPServer.OnCommandOther       := @aCommandOther;
  {$ELSE}
@@ -481,7 +481,7 @@ Begin
        (ASSLCertFile <> '')           Then
      Begin
       lHandler.SSLOptions.Method                := aSSLVersion;
-      {$IFDEF LCL}
+      {$IFDEF FPC}
       lHandler.OnGetPassword                    := @GetSSLPassword;
       {$ELSE}
       lHandler.OnGetPassword                    := GetSSLPassword;

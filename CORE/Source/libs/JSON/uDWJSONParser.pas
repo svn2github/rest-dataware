@@ -2,7 +2,7 @@ unit uDWJSONParser;
 
 interface
 
-Uses {$IFDEF LCL}
+Uses {$IFDEF FPC}
      SysUtils, SysTypes, Classes;
      {$ELSE}
      System.SysUtils, SysTypes,   System.Classes;
@@ -39,7 +39,7 @@ type
     Text: TJsonString;
     Output: TJsonParserOutput;
   end;
-  TJsonValueParser = function (var JsonParser: TJsonParser): TJsonValue;
+ TJsonValueParser = function (var JsonParser: TJsonParser): TJsonValue;
 
  procedure Error(var JsonParser: TJsonParser; Msg: TJsonString);
  Function  Next(var JsonParser: TJsonParser; C: TJsonChar): TJsonChar;
@@ -53,7 +53,7 @@ type
  procedure ParseJson(var JsonParser: TJsonParser; const Source: WideString);
  procedure ClearJsonParser(var JsonParser: TJsonParser);
  function  IndentString(Indent: Integer): TJsonString;
- procedure PrintJsonObject(const Output: TJsonParserOutput; Index, Indent: Integer; Lines: TStringList; CommaAfter: TJsonString); forward;
+ procedure PrintJsonObject(const Output: TJsonParserOutput; Index, Indent: Integer; Lines: TStringList; CommaAfter: TJsonString); {$IFNDEF FPC}forward;{$ENDIF}
  procedure PrintJsonArray(const Output: TJsonParserOutput; Index, Indent: Integer; Lines: TStringList; CommaAfter: TJsonString);
  procedure PrintJsonParserOutput(const Output: TJsonParserOutput; Lines: TStringList);
 
@@ -342,7 +342,7 @@ begin
     begin
       N := Length(JsonParser.Output.Arrays);
       SetLength(JsonParser.Output.Arrays, N + 1);
-      JsonParser.Output.Arrays[N] := Array_(JsonParser, @ResultJsonValue);
+      JsonParser.Output.Arrays[N] := Array_(JsonParser, TJsonValueParser(@ResultJsonValue));
       Result.Kind := JVKArray;
       Result.Index := N;
       Result.Value := '[]';
@@ -351,7 +351,7 @@ begin
     begin
       N := Length(JsonParser.Output.Objects);
       SetLength(JsonParser.Output.Objects, N + 1);
-      JsonParser.Output.Objects[N] := Object_(JsonParser, @ResultJsonValue);
+      JsonParser.Output.Objects[N] := Object_(JsonParser, TJsonValueParser(@ResultJsonValue));
       Result.Kind := JVKObject;
       Result.Index := N;
       Result.Value := '[]';

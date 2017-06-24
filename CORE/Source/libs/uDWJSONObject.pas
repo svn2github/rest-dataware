@@ -2,7 +2,7 @@ unit uDWJSONObject;
 
 interface
 
-Uses {$IFDEF LCL}
+Uses {$IFDEF FPC}
      SysUtils, SysTypes, Classes, uDWJSONTools, uDWConsts, IdGlobal, uKBDynamic, DB,
      uDWJSONParser;
      {$ELSE}
@@ -93,9 +93,9 @@ Begin
                      ovDataSet,         ovOraBlob,
                      ovOraClob,         ovWideMemo,
                      ovParams,          ovStream]  Then
-  {$IFDEF LCL}
+  {$IFDEF FPC}
    //Encode String Base64 Here
-   aResult := EncodeStrings(bValue{$IFNDEF LCL}, vEncoding{$ENDIF});
+   aResult := EncodeStrings(bValue{$IFNDEF FPC}, vEncoding{$ENDIF})
   {$ELSE}
    aResult := EncodeString(bValue)
   {$ENDIF}
@@ -130,7 +130,7 @@ Var
     vRequired := 'N';
     If bValue.Fields[I].Required Then
      vRequired := 'S';
-    If bValue.Fields[I].DataType in [ftExtended, ftFloat, ftCurrency, ftFMTBcd, ftBCD] Then
+    If bValue.Fields[I].DataType in [{$IFNDEF FPC}ftExtended, {$ENDIF}ftFloat, ftCurrency, ftFMTBcd, ftBCD] Then
      vGenerateLine := Format(TJsonDatasetHeader, [bValue.Fields[I].FieldName,
                                                    GetFieldType(bValue.Fields[I].DataType),
                                                    vPrimary, vRequired,
@@ -151,25 +151,24 @@ Var
  Function GenerateLine : String;
  Var
   I : Integer;
-  vTempValue,
-  vGenerateLine : String;
+  vTempValue    : String;
   bStream       : TStream;
   vStringStream : TStringStream;
  Begin
   For I := 0 To bValue.Fields.Count -1 Do
    Begin
-    If bValue.Fields[I].DataType      in [ftExtended, ftFloat, ftCurrency, ftFMTBcd,  ftBCD]     Then
+    If bValue.Fields[I].DataType      in [{$IFNDEF FPC}ftExtended, {$ENDIF}ftFloat, ftCurrency, ftFMTBcd,  ftBCD]     Then
      vTempValue := Format('"%s"', [StringFloat(bValue.Fields[I].AsString)])
     Else If bValue.Fields[I].DataType in [ftWideMemo, ftBytes, ftVarBytes, ftBlob,
                                           ftMemo,   ftGraphic, ftFmtMemo,  ftOraBlob, ftOraClob] Then
      Begin
-      vStringStream     := TStringStream.Create;
+      vStringStream     := TStringStream.Create('');
       Try
        bStream           := bValue.CreateBlobStream(TBlobField(bValue.Fields[I]), bmRead);
        bStream.Position := 0;
        vStringStream.CopyFrom(bStream, bStream.Size);
        vStringStream.Position := 0;
-       vTempValue := Format('"%s"', [EncodeStrings(vStringStream.DataString{$IFNDEF LCL}, vEncoding{$ENDIF})]);
+       vTempValue := Format('"%s"', [EncodeStrings(vStringStream.DataString{$IFNDEF FPC}, vEncoding{$ENDIF})]);
       Finally
        vStringStream.Free;
       End;
@@ -236,7 +235,6 @@ var
  bJsonValue  : TJsonObject;
  JsonArray   : TJsonArray;
  J, I        : Integer;
- vTableName  : String;
  FieldDef    : TFieldDef;
  Field       : TField;
  vBlobStream : TStringStream;
@@ -285,15 +283,18 @@ begin
                                        ftParadoxOle,      ftDBaseOle,
                                        ftTypedBinary,     ftCursor,
                                        ftDataSet,         ftOraBlob,
-                                       ftOraClob,         ftWideMemo,
-                                       ftParams,          ftStream]  Then
+                                       ftOraClob,         ftWideMemo
+                                       {$IFNDEF FPC}
+                                       ,ftParams,         ftStream{$ENDIF}]  Then
        Begin
-        vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[I].Value{$IFNDEF LCL}, vEncoding{$ENDIF}));
+        vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF}));
         Try
          vBlobStream.Position := 0;
          DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
         Finally
+         {$IFNDEF FPC}
          vBlobStream.Clear;
+         {$ENDIF}
          vBlobStream.Free;
         End;
        End

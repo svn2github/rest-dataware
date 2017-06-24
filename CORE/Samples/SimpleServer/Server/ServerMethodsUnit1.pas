@@ -4,7 +4,7 @@ interface
 
 uses SysUtils, Classes, Windows, uDWConsts, uDWJSONTools, uDWJSONObject,
      System.JSON, Dialogs, ServerUtils, SysTypes,
-     {$IFDEF LCL}
+     {$IFDEF FPC}
      {$ELSE}
      FireDAC.Dapt,
      FireDAC.Phys.FBDef,
@@ -227,13 +227,13 @@ Function TServerMethods1.ConsultaBanco(SQL: String): String;
 Var
  vSQL : String;
  JSONValue : uDWJSONObject.TJSONValue;
- {$IFDEF LCL}
+ {$IFDEF FPC}
  {$ELSE}
  fdQuery : TFDQuery;
  {$ENDIF}
 Begin
- vSQL := DecodeStrings(SQL{$IFNDEF LCL}, GetEncoding(RestDWForm.RESTServicePooler1.Encoding){$ENDIF});
- {$IFDEF LCL}
+ vSQL := DecodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RestDWForm.RESTServicePooler1.Encoding){$ENDIF});
+ {$IFDEF FPC}
  {$ELSE}
   fdQuery   := TFDQuery.Create(Nil);
   JSONValue := uDWJSONObject.TJSONValue.Create;

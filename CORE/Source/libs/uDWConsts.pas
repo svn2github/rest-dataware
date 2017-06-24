@@ -2,7 +2,7 @@ unit uDWConsts;
 
 Interface
 
-Uses {$IFDEF LCL}
+Uses {$IFDEF FPC}
      SysUtils, DB;
      {$ELSE}
      System.SysUtils,
@@ -320,6 +320,7 @@ Begin
   ftFMTBcd          : Result := 'ftFMTBcd';
   ftFixedWideChar   : Result := 'ftFixedWideChar';
   ftWideMemo        : Result := 'ftWideMemo';
+  {$IFNDEF FPC}
   ftOraTimeStamp    : Result := 'ftOraTimeStamp';
   ftOraInterval     : Result := 'ftOraInterval';
   ftLongWord        : Result := 'ftLongWord';
@@ -332,6 +333,7 @@ Begin
   ftTimeStampOffset : Result := 'ftTimeStampOffset';
   ftObject          : Result := 'ftObject';
   ftSingle          : Result := 'ftSingle';
+  {$ENDIF}
  End;
 End;
 
@@ -420,6 +422,7 @@ Begin
   Result := ftFixedWideChar
  Else If vFieldType = Uppercase('ftWideMemo')        Then
   Result := ftWideMemo
+ {$IFNDEF FPC}
  Else If vFieldType = Uppercase('ftOraTimeStamp')    Then
   Result := ftOraTimeStamp
  Else If vFieldType = Uppercase('ftOraInterval')     Then
@@ -443,7 +446,8 @@ Begin
  Else If vFieldType = Uppercase('ftObject')          Then
   Result := ftObject
  Else If vFieldType = Uppercase('ftSingle')          Then
-  Result := ftSingle;
+  Result := ftSingle
+ {$ENDIF};
 End;
 
 Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;

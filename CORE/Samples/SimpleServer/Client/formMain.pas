@@ -50,7 +50,7 @@ var
 
 implementation
 
-{$IFDEF LCL}
+{$IFDEF FPC}
 {$R *.lfm}
 {$ELSE}
 {$R *.dfm}
@@ -72,7 +72,7 @@ Begin
    Try
     RESTClientPooler1.Host := eHost.Text;
     RESTClientPooler1.Port := StrToInt(ePort.Text);
-    lResponse := RESTClientPooler1.SendEvent('ConsultaBanco/' + EncodeStrings(SQL{$IFNDEF LCL}, GetEncoding(RESTClientPooler1.Encoding){$ENDIF}));
+    lResponse := RESTClientPooler1.SendEvent('ConsultaBanco/' + EncodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RESTClientPooler1.Encoding){$ENDIF}));
     JSONValue := uDWJSONObject.TJSONValue.Create;
     Try
      JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);

@@ -3,7 +3,7 @@ unit uDWJSONTools;
 interface
 
 Uses
-  {$IFDEF LCL}
+  {$IFDEF FPC}
   SysUtils, SysTypes, ServerUtils, Classes, uDWConsts, Base64;
   {$ELSE}
   System.SysUtils, SysTypes, ServerUtils, System.Classes, Soap.EncdDecd, uDWConsts;
@@ -17,25 +17,25 @@ Function GetPairJSON  (Tag,
                        MessageText : String;
                        Encoding    : TEncodeSelect = esUtf8) : String;Overload;
 Function EncodeStrings(Value       : String
-                      {$IFNDEF LCL};
+                      {$IFNDEF FPC};
                           Encoding : TEncoding
                                       {$ENDIF})              : String;
 Function DecodeStrings(Value       : String
-                      {$IFNDEF LCL};
+                      {$IFNDEF FPC};
                           Encoding : TEncoding
                                       {$ENDIF})              : String;
 
 implementation
 
-Function EncodeStrings(Value : String{$IFNDEF LCL}; Encoding : TEncoding{$ENDIF}) : String;
+Function EncodeStrings(Value : String{$IFNDEF FPC}; Encoding : TEncoding{$ENDIF}) : String;
 Var
  Input,
  Output : TStringStream;
- {$IFDEF LCL}
+ {$IFDEF FPC}
  Encoder : TBase64EncodingStream;
  {$ENDIF}
 Begin
- {$IFDEF LCL}
+ {$IFDEF FPC}
  Input := TStringStream.Create(Value);
  Try
   Input.Position := 0;
@@ -68,17 +68,17 @@ Begin
  {$ENDIF}
 End;
 
-Function DecodeStrings(Value : String{$IFNDEF LCL};Encoding : TEncoding{$ENDIF}) : String;
+Function DecodeStrings(Value : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF}) : String;
 Var
  Input,
  Output : TStringStream;
- {$IFDEF LCL}
+ {$IFDEF FPC}
  Decoder: TBase64DecodingStream;
  {$ENDIF}
 Begin
  If Length(Value) > 0 Then
   Begin
-   {$IFDEF LCL}
+   {$IFDEF FPC}
    Input := TStringStream.Create(Value);
    Try
     Output := TStringStream.Create('');
@@ -127,7 +127,7 @@ Var
 Begin
  WSResult.STATUS      := Tag;
  WSResult.MessageText := MessageText;
- Result               := EncodeStrings(TServerUtils.Result2JSON(WSResult), GetEncoding(Encoding));
+ Result               := EncodeStrings(TServerUtils.Result2JSON(WSResult){$IFNDEF FPC}, GetEncoding(Encoding){$ENDIF});
 End;
 
 Function GetPairJSON(Status      : Integer;
@@ -138,7 +138,7 @@ Var
 Begin
  WSResult.STATUS      := IntToStr(Status);
  WSResult.MessageText := MessageText;
- Result               := EncodeStrings(TServerUtils.Result2JSON(WSResult), GetEncoding(Encoding));
+ Result               := EncodeStrings(TServerUtils.Result2JSON(WSResult){$IFNDEF FPC}, GetEncoding(Encoding){$ENDIF});
 End;
 
 end.

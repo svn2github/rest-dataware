@@ -3,7 +3,7 @@ unit uRESTDWReg;
 interface
 
 uses
-  {$IFDEF LCL}
+  {$IFDEF FPC}
    LResources, Classes, uRESTDWBase;
   {$ELSE}
    System.Classes, uRESTDWBase;
@@ -18,7 +18,7 @@ Begin
  RegisterComponents('REST Dataware - Service',     [TRESTServicePooler, TRESTClientPooler]);
 End;
 
-{$IFDEF LCL}
+{$IFDEF FPC}
 initialization
 {$I resteasyobjectscore.lrs}
 {$ENDIF}

@@ -8,7 +8,7 @@ interface
 
 uses
   ServerUtils, uDWConsts, uDWJSONObject, uDWJSONTools, uKBDynamic, SysTypes, 
-  uRESTDWBase, uRESTDWReg, LazarusPackageIntf;
+  uRESTDWBase, uRESTDWReg, uDWJSONParser, LazarusPackageIntf;
 
 implementation
 

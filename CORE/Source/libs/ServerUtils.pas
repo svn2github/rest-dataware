@@ -3,7 +3,7 @@ unit ServerUtils;
 interface
 
 Uses
-  {$IFDEF LCL}
+  {$IFDEF FPC}
   Classes, SysUtils, IdURI, IdGlobal;
   {$ELSE}
   Classes, StringBuilderUnit,

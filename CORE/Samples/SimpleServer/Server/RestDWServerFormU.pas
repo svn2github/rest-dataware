@@ -110,7 +110,7 @@ var
 
 implementation
 
-{$IFDEF LCL}
+{$IFDEF FPC}
 {$R *.lfm}
 {$ELSE}
 {$R *.dfm}
