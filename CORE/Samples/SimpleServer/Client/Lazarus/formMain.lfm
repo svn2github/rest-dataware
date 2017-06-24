@@ -1,98 +1,21 @@
 object Form2: TForm2
   Left = 321
-  Height = 558
+  Height = 430
   Top = 87
-  Width = 565
+  Width = 510
   Caption = 'RESTClientPooler Test'
-  ClientHeight = 558
-  ClientWidth = 565
+  ClientHeight = 430
+  ClientWidth = 510
   Color = clBtnFace
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Position = poDesktopCenter
   LCLVersion = '1.6.4.0'
-  object Memo1: TMemo
-    Left = 13
-    Height = 92
-    Top = 455
-    Width = 538
-    TabOrder = 0
-  end
-  object Label1: TLabel
-    Left = 13
-    Height = 13
-    Top = 436
-    Width = 171
-    Caption = 'Lista de alunos (dados brutos)'
-    Color = clBtnFace
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-    Transparent = False
-  end
-  object Memo2: TMemo
-    Left = 13
-    Height = 89
-    Top = 344
-    Width = 538
-    TabOrder = 1
-  end
-  object Label2: TLabel
-    Left = 13
-    Height = 13
-    Top = 325
-    Width = 55
-    Caption = 'Response'
-    Color = clBtnFace
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-    Transparent = False
-  end
-  object DBGrid1: TDBGrid
-    Left = 13
-    Height = 119
-    Top = 202
-    Width = 538
-    Color = clWindow
-    Columns = <    
-      item
-        Title.Caption = 'Alunos'
-        Width = 502
-        FieldName = 'Alunos'
-      end>
-    DataSource = DataSource1
-    TabOrder = 2
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-  end
-  object Label3: TLabel
-    Left = 13
-    Height = 13
-    Top = 185
-    Width = 200
-    Caption = 'Lista de alunos (dados formatados)'
-    Color = clBtnFace
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-    Transparent = False
-  end
   object Image1: TImage
-    Left = 418
+    Left = 366
     Height = 100
-    Top = 4
+    Top = 27
     Width = 133
     Picture.Data = {
       1754506F727461626C654E6574776F726B47726170686963C868000089504E47
@@ -940,14 +863,14 @@ object Form2: TForm2
   object Bevel1: TBevel
     Left = 10
     Height = 2
-    Top = 32
+    Top = 25
     Width = 402
     Shape = bsTopLine
   end
   object Label7: TLabel
     Left = 9
     Height = 13
-    Top = 13
+    Top = 6
     Width = 196
     Caption = 'CONFIGURAÇÃO SERVIDOR RestDW'
     Font.Color = clNavy
@@ -960,15 +883,15 @@ object Form2: TForm2
   object eHost: TEdit
     Left = 13
     Height = 21
-    Top = 55
+    Top = 48
     Width = 136
-    TabOrder = 3
+    TabOrder = 0
     Text = 'localhost'
   end
   object Label4: TLabel
     Left = 13
     Height = 13
-    Top = 38
+    Top = 31
     Width = 26
     Caption = 'Host'
     Color = clBtnFace
@@ -983,15 +906,15 @@ object Form2: TForm2
   object ePort: TEdit
     Left = 155
     Height = 21
-    Top = 55
+    Top = 48
     Width = 40
-    TabOrder = 4
+    TabOrder = 1
     Text = '8082'
   end
   object Label5: TLabel
     Left = 155
     Height = 13
-    Top = 40
+    Top = 33
     Width = 31
     Caption = 'Porta'
     Color = clBtnFace
@@ -1004,17 +927,17 @@ object Form2: TForm2
     Transparent = False
   end
   object edUserNameDW: TEdit
-    Left = 202
+    Left = 13
     Height = 21
-    Top = 55
+    Top = 91
     Width = 100
-    TabOrder = 5
+    TabOrder = 2
     Text = 'testserver'
   end
   object Label8: TLabel
-    Left = 202
+    Left = 13
     Height = 13
-    Top = 37
+    Top = 73
     Width = 43
     AutoSize = False
     Caption = 'Usuário'
@@ -1026,19 +949,19 @@ object Form2: TForm2
     ParentFont = False
   end
   object edPasswordDW: TEdit
-    Left = 312
+    Left = 123
     Height = 21
-    Top = 55
+    Top = 91
     Width = 100
     EchoMode = emPassword
     PasswordChar = '*'
-    TabOrder = 6
+    TabOrder = 3
     Text = 'testserver'
   end
   object Label6: TLabel
-    Left = 312
+    Left = 123
     Height = 13
-    Top = 37
+    Top = 73
     Width = 35
     AutoSize = False
     Caption = 'Senha'
@@ -1049,74 +972,104 @@ object Form2: TForm2
     ParentColor = False
     ParentFont = False
   end
-  object btnPost: TButton
-    Left = 129
-    Height = 25
-    Top = 91
-    Width = 105
-    Caption = 'Post (atualiza)'
-    OnClick = btnPostClick
-    TabOrder = 7
+  object Bevel2: TBevel
+    Left = 9
+    Height = 2
+    Top = 130
+    Width = 491
+    Shape = bsTopLine
   end
-  object btnDelete: TButton
-    Left = 129
-    Height = 25
-    Top = 122
-    Width = 105
-    Caption = 'Delete (apaga)'
-    OnClick = btnDeleteClick
-    TabOrder = 8
+  object Label1: TLabel
+    Left = 9
+    Height = 13
+    Top = 115
+    Width = 80
+    Caption = 'COMANDO SQL'
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
   end
-  object btnIDHttpPostTeste: TButton
-    Left = 129
-    Height = 25
-    Top = 153
-    Width = 105
-    Caption = 'idHTTP POST test'
-    OnClick = btnIDHttpPostTesteClick
-    TabOrder = 9
+  object Bevel3: TBevel
+    Left = 9
+    Height = 2
+    Top = 227
+    Width = 491
+    Shape = bsTopLine
   end
-  object btnIDHttpGetTest: TButton
-    Left = 24
-    Height = 25
-    Top = 153
-    Width = 99
-    Caption = 'idHTTP GET test'
-    OnClick = btnIDHttpGetTestClick
-    TabOrder = 10
+  object Label2: TLabel
+    Left = 9
+    Height = 13
+    Top = 212
+    Width = 66
+    Caption = 'RESULTADO'
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
   end
-  object btnGet: TButton
-    Left = 24
-    Height = 25
-    Top = 122
-    Width = 99
-    Caption = 'Get (consulta)'
-    OnClick = btnGetClick
-    TabOrder = 11
+  object DBGrid1: TDBGrid
+    Left = 9
+    Height = 187
+    Top = 235
+    Width = 491
+    Color = clWindow
+    Columns = <>
+    DataSource = DataSource1
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs]
+    ParentFont = False
+    TabOrder = 4
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = [fsBold]
   end
-  object btnPut: TButton
-    Left = 24
-    Height = 25
-    Top = 91
-    Width = 99
-    Caption = 'Put (inclui)'
-    OnClick = btnPutClick
-    TabOrder = 12
+  object mComando: TMemo
+    Left = 9
+    Height = 72
+    Top = 138
+    Width = 354
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    Lines.Strings = (
+      'SELECT * FROM EMPLOYEE'
+    )
+    ParentFont = False
+    TabOrder = 5
+  end
+  object Button1: TButton
+    Left = 366
+    Height = 24
+    Top = 162
+    Width = 133
+    Caption = 'Open'
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    OnClick = Button1Click
+    ParentFont = False
+    TabOrder = 6
   end
   object DataSource1: TDataSource
     DataSet = MemDataset1
     left = 176
-    top = 280
+    top = 273
   end
   object MemDataset1: TMemDataset
-    FieldDefs = <    
-      item
-        Name = 'Alunos'
-        DataType = ftString
-        Size = 100
-      end>
+    FieldDefs = <>
     left = 312
-    top = 272
+    top = 265
   end
   object RESTClientPooler1: TRESTClientPooler
     Encoding = esUtf8
@@ -1127,6 +1080,6 @@ object Form2: TForm2
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 10000
     left = 257
-    top = 109
+    top = 102
   end
 end

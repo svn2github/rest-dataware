@@ -31,26 +31,9 @@ Function EncodeStrings(Value : String{$IFNDEF FPC}; Encoding : TEncoding{$ENDIF}
 Var
  Input,
  Output : TStringStream;
- {$IFDEF FPC}
- Encoder : TBase64EncodingStream;
- {$ENDIF}
 Begin
  {$IFDEF FPC}
- Input := TStringStream.Create(Value);
- Try
-  Input.Position := 0;
-  Output := TStringStream.Create('');
-  Try
-   Encoder := TBase64EncodingStream.Create(Output);
-   Encoder.CopyFrom(Input, Input.Size);
-   Encoder.Position := 0;
-   Result := Encoder.ReadAnsiString;
-  Finally
-   Output.Free;
-  End;
- Finally
-  Input.Free;
- End;
+ Result := EncodeStringBase64(Value);
  {$ELSE}
  Input := TStringStream.Create(Value, Encoding);
  Try
@@ -72,31 +55,11 @@ Function DecodeStrings(Value : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF})
 Var
  Input,
  Output : TStringStream;
- {$IFDEF FPC}
- Decoder: TBase64DecodingStream;
- {$ENDIF}
 Begin
  If Length(Value) > 0 Then
   Begin
    {$IFDEF FPC}
-   Input := TStringStream.Create(Value);
-   Try
-    Output := TStringStream.Create('');
-    Try
-     Decoder       := TBase64DecodingStream.Create(Input);
-     Output.CopyFrom(Decoder, Decoder.Size);
-     Output.Position := 0;
-     Try
-      Result := Output.ReadAnsiString;
-     Except
-      Raise;
-     End;
-    Finally
-     Output.Free;
-    End;
-   Finally
-    Input.Free;
-   End;
+   Result := DecodeStringBase64(Value);
    {$ELSE}
    Input := TStringStream.Create(Value, Encoding);
    Try

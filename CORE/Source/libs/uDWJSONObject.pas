@@ -93,12 +93,8 @@ Begin
                      ovDataSet,         ovOraBlob,
                      ovOraClob,         ovWideMemo,
                      ovParams,          ovStream]  Then
-  {$IFDEF FPC}
-   //Encode String Base64 Here
-   aResult := EncodeStrings(bValue{$IFNDEF FPC}, vEncoding{$ENDIF})
-  {$ELSE}
-   aResult := EncodeString(bValue)
-  {$ENDIF}
+  //Encode String Base64 Here
+  aResult := EncodeStrings(bValue{$IFNDEF FPC}, vEncoding{$ENDIF})
  Else
   aResult := bValue;
  Result  := Format(TValueFormatJSON, ['ObjectType', GetObjectName(vTypeObject),
