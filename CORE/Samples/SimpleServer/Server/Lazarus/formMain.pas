@@ -3,9 +3,9 @@ unit formMain;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics,
-  Controls, Forms, Dialogs, StdCtrls, ExtCtrls, IdContext,
-  Buttons, ComCtrls, MaskEdit, Menus, uRESTDWBase, IniFiles;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, IdContext, Buttons, ComCtrls, MaskEdit, Menus,
+  uRESTDWBase, IniFiles, IBConnection, sqldb, uSock;
 
 Type
 
@@ -31,6 +31,7 @@ Type
     edUserNameDW: TEdit;
     ePrivKeyFile: TEdit;
     ePrivKeyPass: TMaskEdit;
+    IBConnection1: TIBConnection;
     Image1: TImage;
     Label1: TLabel;
     Label10: TLabel;
@@ -59,19 +60,24 @@ Type
     RestaurarAplicao1: TMenuItem;
     RESTServicePooler1: TRESTServicePooler;
     SairdaAplicao1: TMenuItem;
+    SQLTransaction1: TSQLTransaction;
     tsConfigs: TTabSheet;
     tsLogs: TTabSheet;
     procedure ButtonStartClick(Sender: TObject);
     procedure ButtonStopClick(Sender: TObject);
+    procedure cbAdaptadoresChange(Sender: TObject);
     procedure ctiPrincipalDblClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure IBConnection1BeforeConnect(Sender: TObject);
     procedure RESTServicePooler1LastRequest(Value: String);
     procedure RESTServicePooler1LastResponse(Value: String);
     procedure SairdaAplicao1Click(Sender: TObject);
   private
     { Private declarations }
     FCfgName,
+    vDatabaseName,
     vDatabaseIP,
     vUsername,
     vPassword  : String;
@@ -125,6 +131,7 @@ begin
    RESTServicePooler1.Active                := True;
    If Not RESTServicePooler1.Active Then
     Exit;
+   IBConnection1.Connected                  := True;
    PageControl1.ActivePage := tsLogs;
    HideApplication;
   End;
@@ -161,8 +168,14 @@ end;
 procedure TfrmMain.ButtonStopClick(Sender: TObject);
 begin
  RESTServicePooler1.Active := False;
+ IBConnection1.Connected   := False;
  PageControl1.ActivePage := tsConfigs;
  ShowApplication;
+end;
+
+procedure TfrmMain.cbAdaptadoresChange(Sender: TObject);
+begin
+ vDatabaseIP := Trim(Copy(cbAdaptadores.Text, Pos('-' , cbAdaptadores.Text ) + 1 , 100));
 end;
 
 procedure TfrmMain.ButtonStartClick(Sender: TObject);
@@ -224,6 +237,89 @@ begin
  FCfgName := ExtractFilePath(ParamSTR(0)) + 'Config_' + FCfgName + '.ini' ;
  RESTServicePooler1.ServerMethodClass := TServerMethods1;
  PageControl1.ActivePage              := tsConfigs;
+end;
+
+procedure TfrmMain.FormShow(Sender: TObject);
+Var
+ porta_fb,
+ porta_dw,
+ servidor,
+ database,
+ pasta,
+ usuarioDW,
+ senhaDW,
+ usuarioBD,
+ senhaBD           : String;
+ ini               : TIniFile;
+ vTag, i           : Integer;
+ aNetInterfaceList : tNetworkInterfaceList;
+ Function ServerIpIndex(Items : TStrings; ChooseIP : String) : Integer;
+ Var
+  I : Integer;
+ Begin
+  Result := -1;
+  For I := 0 To Items.Count -1 Do
+   Begin
+    If Pos(ChooseIP, Items[I]) > 0 Then
+     Begin
+      Result := I;
+      Break;
+     End;
+   End;
+ End;
+Begin
+ vTag := 0;
+ If (GetNetworkInterfaces(aNetInterfaceList)) THen
+  Begin
+   cbAdaptadores.Items.Clear;
+   For i := 0 to High (aNetInterfaceList) do
+    Begin
+     cbAdaptadores.Items.Add( 'Placa #' + IntToStr( i ) + ' - ' + aNetInterfaceList[i].AddrIP);
+     If ( i <= 1 ) or ( Pos( '127.0.0.1' , aNetInterfaceList[i].AddrIP ) > 0 ) then
+      Begin
+       vDatabaseIP := aNetInterfaceList[i].AddrIP;
+       vTag        := 1;
+      End;
+    End;
+   cbAdaptadores.ItemIndex := vTag;
+  End;
+ ini                     := TIniFile.Create(FCfgName);
+ cbAdaptadores.ItemIndex := ServerIpIndex(cbAdaptadores.Items,
+                            ini.ReadString('BancoDados', 'Servidor',  '127.0.0.1'));
+ edBD.Text               := ini.ReadString('BancoDados', 'BD',        'EMPLOYEE.FDB');
+ edPasta.Text            := ini.ReadString('BancoDados', 'Pasta',     ExtractFilePath(ParamSTR(0)) + '..\');
+ edPortaBD.Text          := ini.ReadString('BancoDados', 'PortaBD',   '3050');
+ edPortaDW.Text          := ini.ReadString('BancoDados', 'PortaDW',   '8082' );
+ edUserNameBD.Text       := ini.ReadString('BancoDados', 'UsuarioBD', 'SYSDBA');
+ edPasswordBD.Text       := ini.ReadString('BancoDados', 'SenhaBD',   'masterkey');
+ edUserNameDW.Text       := ini.ReadString('BancoDados', 'UsuarioDW', 'testserver');
+ edPasswordDW.Text       := ini.ReadString('BancoDados', 'SenhaDW',   'testserver');
+ ePrivKeyFile.Text       := ini.ReadString('SSL',        'PKF',       '');
+ ePrivKeyPass.Text       := ini.ReadString('SSL',        'PKP',       '');
+ eCertFile.Text          := ini.ReadString('SSL',        'CF',        '');
+ ini.Free;
+End;
+
+procedure TfrmMain.IBConnection1BeforeConnect(Sender: TObject);
+Var
+ porta_BD,
+ servidor,
+ database,
+ pasta,
+ usuario_BD,
+ senha_BD      : String;
+Begin
+ servidor      := vDatabaseIP;
+ database      := edBD.Text;
+ pasta         := IncludeTrailingPathDelimiter(edPasta.Text);
+ porta_BD      := edPortaBD.Text;
+ usuario_BD    := edUserNameBD.Text;
+ senha_BD      := edPasswordBD.Text;
+ vDatabaseName := pasta + database;
+ TIBConnection(Sender).HostName     := Servidor;
+ TIBConnection(Sender).UserName     := usuario_BD;
+ TIBConnection(Sender).Password     := senha_BD;
+ TIBConnection(Sender).DatabaseName := vDatabaseName;
 end;
 
 procedure TfrmMain.RESTServicePooler1LastRequest(Value: String);

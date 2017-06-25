@@ -3,7 +3,8 @@ unit ServerMethodsUnit1;
 interface
 
 uses SysUtils, Classes, Windows, uDWConsts,
-     fpjson, Dialogs, ServerUtils, SysTypes;
+     fpjson, Dialogs, ServerUtils, SysTypes,
+     uDWJSONObject, sqldb, uDWJSONTools;
 
 Type
 {$METHODINFO ON}
@@ -24,6 +25,7 @@ Type
    Function CallPUTServerMethod   (Argumentos : TArguments) : string;
    Function CallDELETEServerMethod(Argumentos : TArguments) : string;
    Function CallPOSTServerMethod  (Argumentos : TArguments) : string;
+   Function ConsultaBanco(SQL: String): String;
   public
    { Public declarations }
    Constructor Create    (aOwner : TComponent); Override;
@@ -36,7 +38,7 @@ Type
 implementation
 
 
-uses StrUtils;
+uses StrUtils, formMain;
 
 
 Constructor TServerMethods1.Create (aOwner : TComponent);
@@ -69,6 +71,14 @@ begin
      FoundMethod := True;
      If Length (Argumentos) >= 1 Then
       Result := GetListaAlunos
+     Else
+      Result := ReturnIncorrectArgs;
+    End;
+   If UpperCase(Argumentos[0]) = UpperCase('ConsultaBanco') Then
+    Begin
+     FoundMethod := True;
+     If Length (Argumentos) >= 2 Then
+      Result := ConsultaBanco(Argumentos[1])
      Else
       Result := ReturnIncorrectArgs;
     End;
@@ -299,6 +309,25 @@ Begin
  End;
 End;
 
+Function TServerMethods1.ConsultaBanco(SQL: String): String;
+Var
+ vSQL : String;
+ JSONValue : TJSONValue;
+ fdQuery   : TSQLQuery;
+Begin
+ vSQL := DecodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RestDWForm.RESTServicePooler1.Encoding){$ENDIF});
+ fdQuery   := TSQLQuery.Create(Nil);
+ JSONValue := TJSONValue.Create;
+ Try
+  fdQuery.DataBase := frmMain.IBConnection1;
+  fdQuery.SQL.Add(vSQL);
+  JSONValue.LoadFromDataset('sql', fdQuery);
+  Result             := JSONValue.Value;
+ Finally
+  JSONValue.Free;
+  fdQuery.Free;
+ End;
+End;
 
 End.
 

@@ -12,6 +12,7 @@ object frmMain: TfrmMain
   Font.Name = 'Tahoma'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  OnShow = FormShow
   Position = poDesktopCenter
   LCLVersion = '1.6.4.0'
   object PageControl1: TPageControl
@@ -47,7 +48,7 @@ object frmMain: TfrmMain
         Top = 37
         Width = 43
         AutoSize = False
-        Caption = 'Usuário'
+        Caption = 'UsuÃ¡rio'
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
@@ -187,7 +188,7 @@ object frmMain: TfrmMain
         Align = alBottom
         Alignment = taCenter
         AutoSize = False
-        Caption = 'Obs: A porta do servidor RestDW deve estar adicionada nas regras do FIREWALL do Windows/Antivírus'
+        Caption = 'Obs: A porta do servidor RestDW deve estar adicionada nas regras do FIREWALL do Windows/Anti­vírus'
         Font.Color = clRed
         Font.Height = -11
         Font.Name = 'Tahoma'
@@ -1147,6 +1148,7 @@ object frmMain: TfrmMain
         Top = 137
         Width = 212
         ItemHeight = 13
+        OnChange = cbAdaptadoresChange
         TabOrder = 3
         Text = 'cbAdaptadores'
       end
@@ -1303,9 +1305,9 @@ object frmMain: TfrmMain
     Left = 14
     Height = 13
     Top = 361
-    Width = 70
+    Width = 90
     AutoSize = False
-    Caption = 'Seguro : Não'
+    Caption = 'Seguro : NÃO'
     Font.Color = clRed
     Font.Height = -11
     Font.Name = 'Tahoma'
@@ -4454,14 +4456,39 @@ object frmMain: TfrmMain
     left = 220
     top = 108
     object RestaurarAplicao1: TMenuItem
-      Caption = 'Restaurar Aplica��o'
+      Caption = 'Restaurar Aplicação'
     end
     object N5: TMenuItem
       Caption = '-'
     end
     object SairdaAplicao1: TMenuItem
-      Caption = 'Sair da Aplica��o'
+      Caption = 'Sair da Aplicação'
       OnClick = SairdaAplicao1Click
     end
+  end
+  object IBConnection1: TIBConnection
+    Connected = False
+    LoginPrompt = False
+    BeforeConnect = IBConnection1BeforeConnect
+    DatabaseName = 'D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\EMPLOYEE.FDB'
+    KeepConnection = False
+    Params.Strings = (
+      ''
+    )
+    Password = 'masterkey'
+    Transaction = SQLTransaction1
+    UserName = 'SYSDBA'
+    HostName = 'localhost'
+    Options = []
+    CheckTransactionParams = False
+    left = 101
+    top = 169
+  end
+  object SQLTransaction1: TSQLTransaction
+    Active = False
+    Database = IBConnection1
+    Options = []
+    left = 135
+    top = 173
   end
 end
