@@ -24,7 +24,7 @@ interface
 
 Uses
      {$IFDEF FPC}
-     SysUtils,         Classes, SysTypes, ServerUtils, Windows,
+     SysUtils,         Classes, SysTypes, ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
      IdContext,        IdHTTPServer,      IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
      IdAuthentication, IdHTTPHeaderInfo,  uDWJSONTools,          uDWConsts,    IdHTTP;
      {$ELSE}
@@ -446,7 +446,7 @@ Begin
  vServerParams.Password          := 'testserver';
  vServerContext                  := 'restdataware';
  VEncondig                       := esUtf8;
- InitializeCriticalSection(vCriticalSection);
+ {$IFDEF WINDOWS}InitializeCriticalSection(vCriticalSection);{$ENDIF}
 End;
 
 Destructor TRESTServicePooler.Destroy;
@@ -456,7 +456,7 @@ Begin
  HTTPServer.Free;
  vServerParams.Free;
  lHandler.Free;
- DeleteCriticalSection(vCriticalSection);
+ {$IFDEF WINDOWS}DeleteCriticalSection(vCriticalSection);{$ENDIF}
  Inherited;
 End;
 
