@@ -3,7 +3,7 @@ unit formMain;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics,
+  {$IFDEF WINDOWS}Windows, {$ELSE}LCLType, {$ENDIF}Messages, SysUtils, Variants, Classes, Graphics,
   Controls, Forms, Dialogs, StdCtrls, fpjson, jsonparser,
   DB, BufDataset, memds, Grids, DBGrids, ExtCtrls, uRESTDWBase,
   uDWConsts, uDWJSONObject, uDWJSONTools;
@@ -62,6 +62,13 @@ Var
  SQL : String;
  JSONValue : TJSONValue;
 Begin
+ {$IFDEF UNIX}
+ DateSeparator    := '/';
+ ShortDateFormat  := 'd/m/yy';
+ LongDateFormat   := 'd mmmm yyyy';
+ DecimalSeparator := ',';
+ CurrencyDecimals := 2;
+ {$ENDIF}
  RESTClientPooler1.Host     := eHost.Text;
  RESTClientPooler1.Port     := StrToInt(ePort.Text);
  RESTClientPooler1.UserName := edUserNameDW.Text;

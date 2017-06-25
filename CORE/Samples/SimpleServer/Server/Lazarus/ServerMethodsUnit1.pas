@@ -2,7 +2,7 @@ unit ServerMethodsUnit1;
 
 interface
 
-uses SysUtils, Classes, Windows, uDWConsts,
+uses SysUtils, Classes, uDWConsts,
      fpjson, Dialogs, ServerUtils, SysTypes,
      uDWJSONObject, sqldb, uDWJSONTools;
 

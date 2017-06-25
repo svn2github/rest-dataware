@@ -3,9 +3,9 @@ unit formMain;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  {$IFDEF WINDOWS}Windows, {$ELSE}LCLType, {$ENDIF}Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, IdContext, Buttons, ComCtrls, MaskEdit, Menus,
-  uRESTDWBase, IniFiles, IBConnection, sqldb, uSock;
+  uRESTDWBase, IniFiles, IBConnection, sqldb {$IFDEF WINDOWS}, uSock{$ENDIF};
 
 Type
 
@@ -156,7 +156,7 @@ Begin
    Self.Visible     := True;
    Self.WindowState := wsNormal;
   End;
- ShowWindow(GetHandleOnTaskBar, SW_SHOW);
+ {$IFDEF WINDOWS}ShowWindow(GetHandleOnTaskBar, SW_SHOW);{$ENDIF}
  ChangeStatusWindow;
 End;
 
@@ -210,7 +210,7 @@ Begin
  If Self <> Nil Then
   Self.Visible := False;
  Application.Minimize;
- ShowWindow(GetHandleOnTaskBar, SW_HIDE);
+ {$IFDEF WINDOWS}ShowWindow(GetHandleOnTaskBar, SW_HIDE);{$ENDIF}
  ChangeStatusWindow;
 End;
 
@@ -252,7 +252,7 @@ Var
  senhaBD           : String;
  ini               : TIniFile;
  vTag, i           : Integer;
- aNetInterfaceList : tNetworkInterfaceList;
+ {$IFDEF WINDOWS}aNetInterfaceList : tNetworkInterfaceList;{$ENDIF}
  Function ServerIpIndex(Items : TStrings; ChooseIP : String) : Integer;
  Var
   I : Integer;
@@ -269,6 +269,7 @@ Var
  End;
 Begin
  vTag := 0;
+ {$IFDEF WINDOWS}
  If (GetNetworkInterfaces(aNetInterfaceList)) THen
   Begin
    cbAdaptadores.Items.Clear;
@@ -283,6 +284,10 @@ Begin
     End;
    cbAdaptadores.ItemIndex := vTag;
   End;
+ {$ELSE}
+ cbAdaptadores.Items.Clear;
+ cbAdaptadores.Items.Add('127.0.0.1');
+ {$ENDIF}
  ini                     := TIniFile.Create(FCfgName);
  cbAdaptadores.ItemIndex := ServerIpIndex(cbAdaptadores.Items,
                             ini.ReadString('BancoDados', 'Servidor',  '127.0.0.1'));
