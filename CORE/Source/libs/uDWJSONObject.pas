@@ -170,7 +170,12 @@ Var
       End;
      End
     Else
-     vTempValue := Format('"%s"', [EscapeQuotes(bValue.Fields[I].AsString)]);
+     Begin
+      If bValue.Fields[I].DataType in [ftString, ftWideString, ftFixedWideChar, ftFixedChar] Then
+       vTempValue := Format('"%s"', [EncodeStrings(bValue.Fields[I].AsString{$IFNDEF FPC}, vEncoding{$ENDIF})])
+      Else
+       vTempValue := Format('"%s"', [EscapeQuotes(bValue.Fields[I].AsString)]);
+     End;
     If I = 0 Then
      Result := vTempValue
     Else
@@ -351,12 +356,17 @@ begin
        Begin
         If JsonArray[I].Value <> '' Then
          Begin
-          {$IFNDEF FPC}
-          DestDS.Fields[I].Value := JsonArray[I].Value;
-          {$ELSE}
-          SetValue(DestDS.Fields[I], JsonArray[I].Value);
-          {$ENDIF}
-         end;
+          If DestDS.Fields[I].DataType in [ftString, ftWideString, ftFixedWideChar, ftFixedChar] Then
+           DestDS.Fields[I].AsString := DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF})
+          Else
+           Begin
+            {$IFNDEF FPC}
+            DestDS.Fields[I].Value := JsonArray[I].Value;
+            {$ELSE}
+            SetValue(DestDS.Fields[I], JsonArray[I].Value);
+            {$ENDIF}
+           End;
+         End;
        End;
      End;
     DestDS.Post;

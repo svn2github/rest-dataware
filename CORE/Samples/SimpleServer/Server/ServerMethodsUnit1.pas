@@ -237,6 +237,7 @@ Begin
  {$ELSE}
   fdQuery   := TFDQuery.Create(Nil);
   JSONValue := uDWJSONObject.TJSONValue.Create;
+  JSONValue.Encoding := GetEncoding(RestDWForm.RESTServicePooler1.Encoding);
   Try
    fdQuery.Connection := RestDWForm.Server_FDConnection;
    fdQuery.SQL.Add(vSQL);

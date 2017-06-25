@@ -2,12 +2,22 @@ Alterações :
 
 1.0.1.257 :
 ===========
+
  Adicionadas as cláusulas de compilação para Delphi XE5 e superiores(Laelson).
  Modificado o código para adaptar as versões(Laelson).
  Melhorias na versão CORE(XyberX).
+ Ajustes na versão core.
+ Criação do TJSONObject.
+ Criação das funções de geração e load dos dados.
+ Ajustes para compilação em Linux/Windows com Lazarus.
+ Ajustes para Delphi/Lazarus, compilação.
+ Ajustes de codificação de dados.
+ Criação e ajustes dos DEMOS da versção CORE para consumo de JSON a partir do Dataset.
+ Criação de DEMOS Lazarus.
 
 1.0.1.1 (CORE Version) :
 ===========
+
  Novo componente criado o RESTClientPooler, o Exemplo também está criado e Funcionando.
 
 1.0.1.252 :

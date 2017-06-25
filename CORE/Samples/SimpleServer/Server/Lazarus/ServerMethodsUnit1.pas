@@ -321,6 +321,7 @@ Begin
  Try
   fdQuery.DataBase := frmMain.IBConnection1;
   fdQuery.SQL.Add(vSQL);
+  JSONValue.Encoding := GetEncoding(frmMain.RESTServicePooler1.Encoding);
   JSONValue.LoadFromDataset('sql', fdQuery);
   Result             := JSONValue.Value;
  Finally

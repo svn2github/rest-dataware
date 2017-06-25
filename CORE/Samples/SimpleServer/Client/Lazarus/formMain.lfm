@@ -1072,7 +1072,7 @@ object Form2: TForm2
     top = 265
   end
   object RESTClientPooler1: TRESTClientPooler
-    Encoding = esUtf8
+    Encoding = esASCII
     Host = 'localhost'
     UserName = 'testserver'
     Password = 'testserver'

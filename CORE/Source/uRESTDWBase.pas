@@ -77,7 +77,9 @@ Type
   vServerParams    : TServerParams;
   vLastRequest     : TLastRequest;
   vLastResponse    : TLastResponse;
+  {$IFDEF FPC} {$IFDEF WINDOWS}
   vCriticalSection : TRTLCriticalSection;
+  {$ENDIF}{$ENDIF}
   lHandler         : TIdServerIOHandlerSSLOpenSSL;
   aSSLVersion      : TIdSSLVersion;
   vServerContext,
@@ -334,10 +336,14 @@ Begin
      Try
       If Assigned(vLastRequest) Then
        Begin
+        {$IFDEF FPC} {$IFDEF WINDOWS}
         EnterCriticalSection(vCriticalSection);
+        {$ENDIF}{$ENDIF}
         vLastRequest(ARequestInfo.UserAgent + #13#10 +
                      ARequestInfo.RawHTTPCommand);
+        {$IFDEF FPC} {$IFDEF WINDOWS}
         LeaveCriticalSection(vCriticalSection);
+        {$ENDIF}{$ENDIF}
        End;
       If Assigned(vServerMethod) Then
        Begin
@@ -352,9 +358,13 @@ Begin
       AResponseInfo.ContentText := JSONStr;
       If Assigned(vLastResponse) Then
        Begin
+        {$IFDEF FPC} {$IFDEF WINDOWS}
         EnterCriticalSection(vCriticalSection);
+        {$ENDIF}{$ENDIF}
         vLastResponse(AResponseInfo.ContentText);
+        {$IFDEF FPC} {$IFDEF WINDOWS}
         LeaveCriticalSection(vCriticalSection);
+        {$ENDIF}{$ENDIF}
        End;
       AResponseInfo.WriteContent;
      Finally
@@ -396,10 +406,14 @@ Begin
    Try
     If Assigned(vLastRequest) Then
      Begin
+      {$IFDEF FPC} {$IFDEF WINDOWS}
       EnterCriticalSection(vCriticalSection);
+      {$ENDIF}{$ENDIF}
       vLastRequest(ARequestInfo.UserAgent + #13#10 +
                    ARequestInfo.RawHTTPCommand);
+      {$IFDEF FPC} {$IFDEF WINDOWS}
       LeaveCriticalSection(vCriticalSection);
+      {$ENDIF}{$ENDIF}
      End;
     If Assigned(vServerMethod) Then
      Begin
@@ -414,9 +428,13 @@ Begin
     AResponseInfo.ContentText := JSONStr;
     If Assigned(vLastResponse) Then
      Begin
+      {$IFDEF FPC} {$IFDEF WINDOWS}
       EnterCriticalSection(vCriticalSection);
+      {$ENDIF}{$ENDIF}
       vLastResponse(AResponseInfo.ContentText);
+      {$IFDEF FPC} {$IFDEF WINDOWS}
       LeaveCriticalSection(vCriticalSection);
+      {$ENDIF}{$ENDIF}
      End;
     AResponseInfo.WriteContent;
    Finally
@@ -446,7 +464,9 @@ Begin
  vServerParams.Password          := 'testserver';
  vServerContext                  := 'restdataware';
  VEncondig                       := esUtf8;
- {$IFDEF WINDOWS}InitializeCriticalSection(vCriticalSection);{$ENDIF}
+ {$IFDEF FPC} {$IFDEF WINDOWS}
+ InitializeCriticalSection(vCriticalSection);
+ {$ENDIF}{$ENDIF}
 End;
 
 Destructor TRESTServicePooler.Destroy;
@@ -456,7 +476,7 @@ Begin
  HTTPServer.Free;
  vServerParams.Free;
  lHandler.Free;
- {$IFDEF WINDOWS}DeleteCriticalSection(vCriticalSection);{$ENDIF}
+ {$IFDEF FPC}{$IFDEF WINDOWS}DeleteCriticalSection(vCriticalSection);{$ENDIF}{$ENDIF}
  Inherited;
 End;
 
