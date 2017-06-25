@@ -261,7 +261,14 @@ var
    ftFMTBcd         :
     Begin
      If Value <> '' Then
-      Field.AsFloat := StrToFloat(Value);
+      Begin
+       Case Field.DataType Of
+        ftFloat     : Field.AsFloat := StrToFloat(Value);
+        ftCurrency,
+        ftBCD,
+        ftFMTBcd    : Field.AsCurrency := StrToFloat(Value);
+       End;
+      End;
     End;
    ftDate,
    ftTime,
@@ -297,8 +304,11 @@ begin
     FieldDef.Name      := bJsonValue[0].Value.Value;
     FieldDef.DataType  := GetFieldType(bJsonValue[1].Value.Value);
     FieldDef.Required  := UpperCase(bJsonValue[3].Value.Value) = 'S';
-    FieldDef.Size      := StrToInt(bJsonValue[4].Value.Value);
-    FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
+    If Not(FieldDef.DataType In [ftFloat, ftCurrency, ftBCD, ftFMTBcd]) Then
+     Begin
+      FieldDef.Size      := StrToInt(bJsonValue[4].Value.Value);
+      FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
+     End;
    End;
   DestDS.Open;
   //Add Set PK Fields
