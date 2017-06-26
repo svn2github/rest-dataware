@@ -69,8 +69,9 @@ Begin
  RESTClientPooler1.UserName := edUserNameDW.Text;
  RESTClientPooler1.Password := edPasswordDW.Text;
  SQL := mComando.Text;
- DWParams  := TDWParams.Create;
- JSONParam := TJSONParam.Create;
+ DWParams            := TDWParams.Create;
+ DWParams.Encoding   := GetEncoding(RESTClientPooler1.Encoding);
+ JSONParam           := TJSONParam.Create(DWParams.Encoding);
  JSONParam.ParamName := 'SQL';
  JSONParam.Value     := EncodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RESTClientPooler1.Encoding){$ENDIF});
  DWParams.Add(JSONParam);

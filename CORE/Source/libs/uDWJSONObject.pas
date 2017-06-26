@@ -58,12 +58,10 @@ Type
   Procedure   WriteValue     (bValue : String);
   Procedure   SetParamName   (bValue : String);
  Public
-  Constructor Create;
+  Constructor Create(Encoding : TEncoding);
   Destructor  Destroy;Override;
-  Property    TypeObject                  : TTypeObject      Read vTypeObject      Write vTypeObject;
   Property    ObjectDirection             : TObjectDirection Read vObjectDirection Write vObjectDirection;
   Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
-  Property    Encoding                    : TEncoding        Read vEncoding        Write vEncoding;
   Property    Value                       : String           Read GetValue         Write WriteValue;
   Property    ParamName                   : String           Read vParamName       Write SetParamName;
 End;
@@ -71,12 +69,15 @@ End;
 Type
  TDWParams = Class(TList)
  Private
+  vEncoding  : TEncoding;
   Function  GetRec(Index    : Integer)      : TJSONParam; Overload;
   Procedure PutRec(Index    : Integer; Item : TJSONParam);Overload;
  Public
+  Constructor Create;
   Procedure Delete(Index : Integer);                      Overload;
   Function  Add   (Item  : TJSONParam) : Integer;         Overload;
-  Property  Items[Index  : Integer]    : TJSONParam  Read GetRec Write PutRec; Default;
+  Property  Items[Index  : Integer]    : TJSONParam  Read GetRec    Write PutRec; Default;
+  Property  Encoding                   : TEncoding   Read vEncoding Write vEncoding;
 End;
 
 implementation
@@ -87,7 +88,14 @@ Var
 Begin
  New(vItem);
  vItem^ := Item;
+ vItem^.vEncoding := vEncoding;
  Result := TList(Self).Add(vItem);
+End;
+
+Constructor TDWParams.Create;
+Begin
+ Inherited;
+ vEncoding := TEncoding.ANSI;
 End;
 
 Procedure TDWParams.Delete(Index : Integer);
@@ -474,11 +482,11 @@ End;
 
 { TJSONParam }
 
-constructor TJSONParam.Create;
+constructor TJSONParam.Create(Encoding : TEncoding);
 begin
- vJSONValue := TJSONValue.Create;
- vEncoding       := TEncoding.ANSI;
- vTypeObject     := toObject;
+ vJSONValue      := TJSONValue.Create;
+ vEncoding       := Encoding;
+ vTypeObject     := toParam;
  ObjectDirection := odINOUT;
  vObjectValue    := ovString;
 end;
