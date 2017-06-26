@@ -175,10 +175,16 @@ Begin
   aResult := EncodeStrings(bValue{$IFNDEF FPC}, vEncoding{$ENDIF})
  Else
   aResult := bValue;
- Result  := Format(TValueFormatJSON, ['ObjectType', GetObjectName(vTypeObject),
-                                      'Direction',  GetDirectionName(vObjectDirection),
-                                      'ValueType',  GetValueType(vObjectValue),
-                                      vTAGName,     GetValueJSON(aResult)]);
+ If vTypeObject = toDataset Then
+  Result  := Format(TValueFormatJSON, ['ObjectType', GetObjectName(vTypeObject),
+                                       'Direction',  GetDirectionName(vObjectDirection),
+                                       'ValueType',  GetValueType(vObjectValue),
+                                       vTAGName,     GetValueJSON(aResult)])
+ Else
+  Result  := Format(TValueFormatJSONValue, ['ObjectType', GetObjectName(vTypeObject),
+                                            'Direction',  GetDirectionName(vObjectDirection),
+                                            'ValueType',  GetValueType(vObjectValue),
+                                            vTAGName,     GetValueJSON(aResult)])
 End;
 
 function TJSONValue.GetValue: String;
@@ -491,16 +497,16 @@ begin
  vObjectValue    := ovString;
 end;
 
-destructor TJSONParam.Destroy;
-begin
-  vJSONValue.Free;
-  inherited;
-end;
+Destructor TJSONParam.Destroy;
+Begin
+ vJSONValue.Free;
+ inherited;
+End;
 
-function TJSONParam.GetValue: String;
-begin
+Function TJSONParam.GetValue: String;
+Begin
  Result := vJSONValue.Value;
-end;
+End;
 
 procedure TJSONParam.SetParamName(bValue: String);
 begin

@@ -79,10 +79,9 @@
       </Unit9>
       <Unit10>
         <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="6"/>
-        <TopLine Value="443"/>
-        <CursorPos X="29" Y="458"/>
+        <TopLine Value="444"/>
+        <CursorPos X="23" Y="453"/>
         <UsageCount Value="11"/>
         <Bookmarks Count="2">
           <Item0 Y="360" ID="2"/>
@@ -108,6 +107,7 @@
       </Unit12>
       <Unit13>
         <Filename Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <TopLine Value="447"/>
         <CursorPos X="24" Y="462"/>
