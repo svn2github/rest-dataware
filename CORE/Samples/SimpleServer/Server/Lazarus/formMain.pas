@@ -3,9 +3,10 @@ unit formMain;
 interface
 
 uses
-  {$IFDEF WINDOWS}Windows, {$ELSE}LCLType, {$ENDIF}Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, IdContext, Buttons, ComCtrls, MaskEdit, Menus,
-  uRESTDWBase, IniFiles, IBConnection, sqldb {$IFDEF WINDOWS}, uSock{$ENDIF};
+  {$IFDEF WINDOWS}Windows, uSock, {$ELSE}LCLType, {$ENDIF}Messages, SysUtils,
+  Variants, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
+  IdContext, Buttons, ComCtrls, MaskEdit, Menus, uRESTDWBase, IniFiles, IBConnection,
+  sqldb;
 
 Type
 
