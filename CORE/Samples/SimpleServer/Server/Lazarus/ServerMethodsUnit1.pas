@@ -100,6 +100,14 @@ Begin
    Else
     Result := ReturnIncorrectArgs;
   End;
+ If UpperCase(Argumentos[0]) = UpperCase('ConsultaBanco') Then
+  Begin
+   FoundMethod := True;
+   If Length (Argumentos) >= 2 Then
+    Result := ConsultaBanco(Argumentos[1])
+   Else
+    Result := ReturnIncorrectArgs;
+  End;
  If Not FoundMethod Then
   Result := ReturnMethodNotFound;
 End;
@@ -315,19 +323,23 @@ Var
  JSONValue : TJSONValue;
  fdQuery   : TSQLQuery;
 Begin
- vSQL := DecodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RestDWForm.RESTServicePooler1.Encoding){$ENDIF});
  fdQuery   := TSQLQuery.Create(Nil);
  JSONValue := TJSONValue.Create;
- Try
-  fdQuery.DataBase := frmMain.IBConnection1;
-  fdQuery.SQL.Add(vSQL);
-  JSONValue.Encoding := GetEncoding(frmMain.RESTServicePooler1.Encoding);
-  JSONValue.LoadFromDataset('sql', fdQuery);
-  Result             := JSONValue.Value;
- Finally
-  JSONValue.Free;
-  fdQuery.Free;
- End;
+ JSONValue.LoadFromJSON(SQL);
+ If JSONValue.Value <> '' Then
+  Begin
+   vSQL      := DecodeStrings(JSONValue.Value{$IFNDEF FPC}, GetEncoding(RestDWForm.RESTServicePooler1.Encoding){$ENDIF});
+   Try
+    fdQuery.DataBase := frmMain.IBConnection1;
+    fdQuery.SQL.Add(vSQL);
+    JSONValue.Encoding := GetEncoding(frmMain.RESTServicePooler1.Encoding);
+    JSONValue.LoadFromDataset('sql', fdQuery);
+    Result             := JSONValue.Value;
+   Finally
+    JSONValue.Free;
+    fdQuery.Free;
+   End;
+  End;
 End;
 
 End.

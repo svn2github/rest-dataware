@@ -11,6 +11,9 @@ Uses {$IFDEF FPC}
      {$ENDIF}
 
 Type
+
+ { TJSONValue }
+
  TJSONValue = Class
  Private
   vtagName                           : String;
@@ -31,6 +34,7 @@ Type
   Procedure   WriteToDataset (DatasetType : TDatasetType;
                               JSONValue   : String;
                               DestDS      : TDataset);
+  Procedure   LoadFromJSON   (bValue       : String);
   Constructor Create;
   Destructor  Destroy;Override;
   Property    TypeObject                  : TTypeObject      Read vTypeObject      Write vTypeObject;
@@ -41,7 +45,73 @@ Type
   Property    Tagname                     : String           Read vtagName         Write vtagName;
 End;
 
+Type
+ TJSONParam = Class(TObject)
+ Private
+  vJSONValue                         : TJSONValue;
+  vEncoding                          : TEncoding;
+  vTypeObject                        : TTypeObject;
+  vObjectDirection                   : TObjectDirection;
+  vObjectValue                       : TObjectValue;
+  vParamName                         : String;
+  Function    GetValue               : String;
+  Procedure   WriteValue     (bValue : String);
+  Procedure   SetParamName   (bValue : String);
+ Public
+  Constructor Create;
+  Destructor  Destroy;Override;
+  Property    TypeObject                  : TTypeObject      Read vTypeObject      Write vTypeObject;
+  Property    ObjectDirection             : TObjectDirection Read vObjectDirection Write vObjectDirection;
+  Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
+  Property    Encoding                    : TEncoding        Read vEncoding        Write vEncoding;
+  Property    Value                       : String           Read GetValue         Write WriteValue;
+  Property    ParamName                   : String           Read vParamName       Write SetParamName;
+End;
+
+Type
+ TDWParams = Class(TList)
+ Private
+  Function  GetRec(Index    : Integer)      : TJSONParam; Overload;
+  Procedure PutRec(Index    : Integer; Item : TJSONParam);Overload;
+ Public
+  Procedure Delete(Index : Integer);                      Overload;
+  Function  Add   (Item  : TJSONParam) : Integer;         Overload;
+  Property  Items[Index  : Integer]    : TJSONParam  Read GetRec Write PutRec; Default;
+End;
+
 implementation
+
+Function  TDWParams.Add(Item : TJSONParam) : Integer;
+Var
+ vItem : ^TJSONParam;
+Begin
+ New(vItem);
+ vItem^ := Item;
+ Result := TList(Self).Add(vItem);
+End;
+
+Procedure TDWParams.Delete(Index : Integer);
+Begin
+ If (Index < Self.Count) And (Index > -1) Then
+  Begin
+   If Assigned(TList(Self).Items[Index]) Then
+    FreeMem(TList(Self).Items[Index]);
+   TList(Self).Delete(Index);
+  End;
+End;
+
+Function  TDWParams.GetRec(Index : Integer) : TJSONParam;
+Begin
+ Result := Nil;
+ If (Index < Self.Count) And (Index > -1) Then
+  Result := TJSONParam(TList(Self).Items[Index]^);
+End;
+
+Procedure TDWParams.PutRec(Index : Integer; Item : TJSONParam);
+Begin
+ If (Index < Self.Count) And (Index > -1) Then
+  TJSONParam(TList(Self).Items[Index]^) := Item;
+End;
 
 Function EscapeQuotes(Const S : String) : String;
 Begin
@@ -59,7 +129,7 @@ End;
 
 { TJSONValue }
 
-Constructor TJSONValue.Create;
+constructor TJSONValue.Create;
 Begin
  vEncoding       := TEncoding.ANSI;
  vTypeObject     := toObject;
@@ -68,13 +138,13 @@ Begin
  vTAGName        := 'TAGJSON';
 End;
 
-Destructor TJSONValue.Destroy;
+destructor TJSONValue.Destroy;
 Begin
  SetLength(aValue, 0);
  inherited;
 End;
 
-Function TJSONValue.GetValueJSON(bValue : String): String;
+function TJSONValue.GetValueJSON(bValue: String): String;
 Begin
  Result := bValue;
  If vObjectValue In [ovString, ovFixedChar,   ovWideString,
@@ -83,7 +153,7 @@ Begin
   Result := '"' + EscapeQuotes(bValue) + '"';
 End;
 
-Function TJSONValue.FormatValue(bValue : String): String;
+function TJSONValue.FormatValue(bValue: String): String;
 Var
  aResult  : String;
 Begin
@@ -100,15 +170,15 @@ Begin
  Result  := Format(TValueFormatJSON, ['ObjectType', GetObjectName(vTypeObject),
                                       'Direction',  GetDirectionName(vObjectDirection),
                                       'ValueType',  GetValueType(vObjectValue),
-                                      vTAGName,     Format(TJsonValueFormat, [Length(aResult), GetValueJSON(aResult)])]);
+                                      vTAGName,     GetValueJSON(aResult)]);
 End;
 
-Function  TJSONValue.GetValue : String;
+function TJSONValue.GetValue: String;
 Begin
  Result := vEncoding.GetString(TBytes(aValue));
 End;
 
-Function TJSONValue.DatasetValues(bValue : TDataset) : String;
+function TJSONValue.DatasetValues(bValue: TDataset): String;
 Var
  vLines : String;
  Function GenerateHeader : String;
@@ -201,8 +271,7 @@ Begin
  bValue.EnableControls;
 End;
 
-Procedure TJSONValue.LoadFromDataset(TableName : String;
-                                     bValue    : TDataset);
+procedure TJSONValue.LoadFromDataset(TableName: String; bValue: TDataset);
 Var
  vTagGeral : String;
 Begin
@@ -217,7 +286,7 @@ Begin
  aValue := tIdBytes(vEncoding.GetBytes(vTagGeral));
 End;
 
-Procedure TJSONValue.ToStream(var bValue : TMemoryStream);
+procedure TJSONValue.ToStream(var bValue: TMemoryStream);
 Begin
  If Length(aValue) > 0 Then
   Begin
@@ -228,9 +297,8 @@ Begin
   bValue := Nil;
 End;
 
-Procedure TJSONValue.WriteToDataset(DatasetType : TDatasetType;
-                                    JSONValue   : String;
-                                    DestDS      : TDataset);
+procedure TJSONValue.WriteToDataset(DatasetType: TDatasetType;
+  JSONValue: String; DestDS: TDataset);
 var
  JsonParser  : TJsonParser;
  bJsonValue  : TJsonObject;
@@ -378,10 +446,67 @@ begin
  End;
 End;
 
-Procedure TJSONValue.WriteValue(bValue : String);
+Procedure TJSONValue.LoadFromJSON(bValue : String);
+Var
+ JsonParser  : TJsonParser;
+ bJsonValue  : TJsonObject;
+Begin
+ ClearJsonParser(JsonParser);
+ Try
+  ParseJson(JsonParser, bValue);
+  bJsonValue       := JsonParser.Output.Objects[0];
+  vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
+  vObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
+  vObjectValue     := GetValueType    (bJsonValue[2].Value.Value);
+  vtagName         := Lowercase       (bJsonValue[3].Key);
+  SetLength(aValue, 0);
+  aValue := tIdBytes(vEncoding.GetBytes(bJsonValue[3].Value.Value));
+ Finally
+
+ End;
+End;
+
+procedure TJSONValue.WriteValue(bValue: String);
 Begin
  SetLength(aValue, 0);
  aValue := tIdBytes(vEncoding.GetBytes(FormatValue(bValue)));
 End;
+
+{ TJSONParam }
+
+constructor TJSONParam.Create;
+begin
+ vJSONValue := TJSONValue.Create;
+ vEncoding       := TEncoding.ANSI;
+ vTypeObject     := toObject;
+ ObjectDirection := odINOUT;
+ vObjectValue    := ovString;
+end;
+
+destructor TJSONParam.Destroy;
+begin
+  vJSONValue.Free;
+  inherited;
+end;
+
+function TJSONParam.GetValue: String;
+begin
+ Result := vJSONValue.Value;
+end;
+
+procedure TJSONParam.SetParamName(bValue: String);
+begin
+ vParamName := Uppercase(bValue);
+end;
+
+procedure TJSONParam.WriteValue(bValue: String);
+begin
+ vJSONValue.Encoding         := vEncoding;
+ vJSONValue.vtagName         := vParamName;
+ vJSONValue.vTypeObject      := vTypeObject;
+ vJSONValue.vObjectDirection := vObjectDirection;
+ vJSONValue.vObjectValue     := vObjectValue;
+ vJSONValue.WriteValue(bValue);
+end;
 
 end.

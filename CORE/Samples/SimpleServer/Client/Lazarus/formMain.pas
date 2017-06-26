@@ -61,6 +61,8 @@ Var
  lResponse,
  SQL : String;
  JSONValue : TJSONValue;
+ DWParams  : TDWParams;
+ JSONParam : TJSONParam;
 Begin
  {$IFDEF UNIX}
  DateSeparator    := '/';
@@ -73,13 +75,18 @@ Begin
  RESTClientPooler1.Port     := StrToInt(ePort.Text);
  RESTClientPooler1.UserName := edUserNameDW.Text;
  RESTClientPooler1.Password := edPasswordDW.Text;
- SQL := mComando.Text;
+ SQL                 := mComando.Text;
+ DWParams            := TDWParams.Create;
+ JSONParam           := TJSONParam.Create;
+ JSONParam.ParamName := 'SQL';
+ JSONParam.Value     := EncodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RESTClientPooler1.Encoding){$ENDIF});
+ DWParams.Add(JSONParam);
  If SQL <> '' Then
   Begin
    Try
     RESTClientPooler1.Host := eHost.Text;
     RESTClientPooler1.Port := StrToInt(ePort.Text);
-    lResponse := RESTClientPooler1.SendEvent('ConsultaBanco/' + EncodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RESTClientPooler1.Encoding){$ENDIF}));
+    lResponse := RESTClientPooler1.SendEvent('ConsultaBanco', DWParams);
     JSONValue := TJSONValue.Create;
     Try
      DBGrid1.DataSource := Nil;

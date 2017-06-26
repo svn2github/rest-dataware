@@ -109,6 +109,14 @@ Begin
    Else
     Result := ReturnIncorrectArgs;
   End;
+ If UpperCase(Argumentos[0]) = UpperCase('ConsultaBanco') Then
+  Begin
+   FoundMethod := True;
+   If Length (Argumentos) >= 2 Then
+    Result := ConsultaBanco(Argumentos[1])
+   Else
+    Result := ReturnIncorrectArgs;
+  End;
  If Not FoundMethod Then
   Result := ReturnMethodNotFound;
 End;
@@ -232,22 +240,26 @@ Var
  fdQuery : TFDQuery;
  {$ENDIF}
 Begin
- vSQL := DecodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RestDWForm.RESTServicePooler1.Encoding){$ENDIF});
- {$IFDEF FPC}
- {$ELSE}
-  fdQuery   := TFDQuery.Create(Nil);
-  JSONValue := uDWJSONObject.TJSONValue.Create;
-  JSONValue.Encoding := GetEncoding(RestDWForm.RESTServicePooler1.Encoding);
-  Try
-   fdQuery.Connection := RestDWForm.Server_FDConnection;
-   fdQuery.SQL.Add(vSQL);
-   JSONValue.LoadFromDataset('sql', fdQuery);
-   Result             := JSONValue.Value;
-  Finally
-   JSONValue.Free;
-   fdQuery.Free;
+ JSONValue := uDWJSONObject.TJSONValue.Create;
+ JSONValue.Encoding := GetEncoding(RestDWForm.RESTServicePooler1.Encoding);
+ JSONValue.LoadFromJSON(SQL);
+ If JSONValue.Value <> '' Then
+  Begin
+   vSQL      := DecodeStrings(JSONValue.Value{$IFNDEF FPC}, GetEncoding(RestDWForm.RESTServicePooler1.Encoding){$ENDIF});
+   {$IFDEF FPC}
+   {$ELSE}
+    fdQuery   := TFDQuery.Create(Nil);
+    Try
+     fdQuery.Connection := RestDWForm.Server_FDConnection;
+     fdQuery.SQL.Add(vSQL);
+     JSONValue.LoadFromDataset('sql', fdQuery);
+     Result             := JSONValue.Value;
+    Finally
+     JSONValue.Free;
+     fdQuery.Free;
+    End;
+   {$ENDIF}
   End;
- {$ENDIF}
 End;
 
 Function TServerMethods1.GetListaAlunos : String;

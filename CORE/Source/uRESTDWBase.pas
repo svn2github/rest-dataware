@@ -26,11 +26,13 @@ Uses
      {$IFDEF FPC}
      SysUtils,         Classes, SysTypes, ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
      IdContext,        IdHTTPServer,      IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
-     IdAuthentication, IdHTTPHeaderInfo,  uDWJSONTools,          uDWConsts,    IdHTTP;
+     IdAuthentication, IdHTTPHeaderInfo,  uDWJSONTools,          uDWConsts,    IdHTTP,
+     uDWJSONObject;
      {$ELSE}
      System.SysUtils,  System.Classes,   SysTypes, ServerUtils, Windows,
      IdContext,        IdHTTPServer,     IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
-     IdAuthentication, IdHTTPHeaderInfo, uDWJSONTools,          uDWConsts,    IdHTTP;
+     IdAuthentication, IdHTTPHeaderInfo, uDWJSONTools,          uDWConsts,    IdHTTP,
+     uDWJSONObject;
      {$ENDIF}
 
 Type
@@ -135,6 +137,8 @@ Type
   Function    SendEvent(EventData : String;
                         RBody     : TStringList;
                         EventType : TSendEvent = sePOST) : String;Overload;
+  Function    SendEvent(EventData : String;
+                        Params    : TDWParams)         : String;Overload;
   Constructor Create(AOwner: TComponent);Override;
   Destructor  Destroy;Override;
  Published
@@ -197,15 +201,23 @@ Begin
   Else If vRSCharset = esASCII Then
    HttpRequest.Request.Charset := 'ansi';
   Case EventType Of
-   seGET : Result := HttpRequest.Get(vURL);
+   seGET :
+    Begin
+     HttpRequest.Request.ContentType := 'application/json';
+     Result := HttpRequest.Get(vURL);
+    End;
    sePOST,
    sePUT,
    seDELETE :
     Begin;
      If EventType = sePOST Then
-      Result := HttpRequest.Post(vURL, RBody)
+      Begin
+       HttpRequest.Request.ContentType := 'application/x-www-form-urlencoded';
+       Result := HttpRequest.Post(vURL, RBody);
+      End
      Else If EventType = sePUT Then
       Begin
+       HttpRequest.Request.ContentType := 'application/x-www-form-urlencoded';
        StringStream := TStringStream.Create(RBody.Text);
        Result := HttpRequest.Put(vURL, StringStream);
        StringStream.Free;
@@ -213,6 +225,7 @@ Begin
      Else If EventType = seDELETE Then
       Begin
        Try
+         HttpRequest.Request.ContentType := 'application/json';
          HttpRequest.Delete(vURL);
          Result := GetPairJSON('OK', 'DELETE COMMAND OK');
        Except
@@ -524,6 +537,22 @@ Begin
  Else If Not(Value) Then
   HTTPServer.Active := False;
  vActive := HTTPServer.Active;
+End;
+
+Function TRESTClientPooler.SendEvent(EventData : String;
+                                     Params    : TDWParams): String;
+Var
+ I : Integer;
+ vStringList : TStringList;
+Begin
+ vStringList := TStringList.Create;
+ Try
+  For I := 0 To Params.Count -1 Do
+   vStringList.Add(Format('%s=%s', [Params[I].ParamName, Params[I].Value]));
+  Result := SendEvent(EventData, vStringList, sePOST);
+ Finally
+  vStringList.Free;
+ End;
 End;
 
 end.
