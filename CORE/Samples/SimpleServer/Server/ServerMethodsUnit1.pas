@@ -31,7 +31,8 @@ Type
    // http://localhost:8080/ExcluiAluno/NomeAluno
    Function ExcluiAluno  (NomeAluno : String) : String;
    // http://localhost:8080/ConsultaBanco/SQL ENCODE64
-   Function ConsultaBanco(SQL       : String) : String;
+   Function ConsultaBanco(SQL        : String)    : String;Overload;
+   Function ConsultaBanco(Var Params : TDWParams) : String;Overload;
    Function CallGETServerMethod   (Argumentos : TArguments) : String;
    Function CallPUTServerMethod   (Argumentos : TArguments) : string;
    Function CallDELETEServerMethod(Argumentos : TArguments) : string;
@@ -42,6 +43,9 @@ Type
    Destructor  Destroy; Override;
    Function    ReplyEvent(SendType  : TSendEvent;
                           Arguments : TArguments) : String;Override;
+   Function    ReplyEvent(SendType   : TSendEvent;
+                          Context    : String;
+                          Var Params : TDWParams) : String;Override;
   End;
 {$METHODINFO OFF}
 
@@ -187,6 +191,29 @@ Begin
  End;
 End;
 
+Function TServerMethods1.ReplyEvent(SendType   : TSendEvent;
+                                    Context    : String;
+                                    Var Params : TDWParams) : String;
+Var
+ JSONObject : TJSONObject;
+Begin
+ JSONObject := TJSONObject.Create;
+ Case SendType Of
+  sePOST   :
+   Begin
+    If UpperCase(Context) = Uppercase('ConsultaBanco') Then
+     Result := ConsultaBanco(Params)
+    Else
+     Begin
+      JSONObject.AddPair(TJSONPair.Create('STATUS',   'NOK'));
+      JSONObject.AddPair(TJSONPair.Create('MENSAGEM', 'Método não encontrado'));
+      Result := JSONObject.ToJSON;
+     End;
+   End;
+ End;
+ JSONObject.Free;
+End;
+
 Function TServerMethods1.ReplyEvent(SendType  : TSendEvent;
                                     Arguments : TArguments) : String;
 Begin
@@ -231,7 +258,39 @@ Begin
  End;
 End;
 
-Function TServerMethods1.ConsultaBanco(SQL: String): String;
+Function TServerMethods1.ConsultaBanco(Var Params : TDWParams) : String;
+Var
+ vSQL : String;
+ JSONValue : uDWJSONObject.TJSONValue;
+ fdQuery : TFDQuery;
+Begin
+ If Params.ItemsString['SQL'] <> Nil Then
+  Begin
+   JSONValue          := uDWJSONObject.TJSONValue.Create;
+   JSONValue.Encoding := GetEncoding(RestDWForm.RESTServicePooler1.Encoding);
+   If Params.ItemsString['SQL'].value <> '' Then
+    Begin
+     If Params.ItemsString['TESTPARAM'] <> Nil Then
+      Params.ItemsString['TESTPARAM'].Value := 'OK';
+     vSQL      := Params.ItemsString['SQL'].value;
+     {$IFDEF FPC}
+     {$ELSE}
+      fdQuery   := TFDQuery.Create(Nil);
+      Try
+       fdQuery.Connection := RestDWForm.Server_FDConnection;
+       fdQuery.SQL.Add(vSQL);
+       JSONValue.LoadFromDataset('sql', fdQuery);
+       Result             := JSONValue.ToJSON;
+      Finally
+       JSONValue.Free;
+       fdQuery.Free;
+      End;
+     {$ENDIF}
+    End;
+  End;
+End;
+
+Function TServerMethods1.ConsultaBanco(SQL : String): String;
 Var
  vSQL : String;
  JSONValue : uDWJSONObject.TJSONValue;

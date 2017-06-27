@@ -10,22 +10,26 @@ Uses {$IFDEF FPC}
      {$ENDIF}
 
 Const
+ TSepParams            = '|$%|';
  TValueFormatJSON      = '{"%s":"%s", "%s":"%s", "%s":"%s", "%s":[%s]}';
+ TValueDisp            = '{"PARAMS":[%s], "RESULT":[%s]}';
+ TValueArrayJSON       = '[%s]';
  TValueFormatJSONValue = '{"%s":"%s", "%s":"%s", "%s":"%s", "%s":%s}';
  TJsonDatasetHeader    = '{"Field":"%s", "Type":"%s", "Primary":"%s", "Required":"%s", "Size":%d, "Precision":%d}';
  TJsonValueFormat      = '%s';
+ TJsonStringValue      = '"%s"';
  TSepValueMemString    = '\\';
  TQuotedValueMemString = '\"';
  AuthRealm             = 'Provide Authentication';
  UrlBase               = '%s://%s:%d/';
 
 Type
- TEncodeSelect    = (esASCII,    esUtf8);
- TSendEvent       = (seGET,      sePOST,
-                     sePUT,      seDELETE);
- TTypeRequest     = (trHttp,     trHttps);
- TTypeObject      = (toDataset,  toParam,
-                     toVariable, toObject);
+ TEncodeSelect    = (esASCII,     esUtf8);
+ TSendEvent       = (seGET,       sePOST,
+                     sePUT,       seDELETE);
+ TTypeRequest     = (trHttp,      trHttps);
+ TTypeObject      = (toDataset,   toParam,
+                     toVariable,  toObject);
  TObjectDirection = (odIN, odOUT, odINOUT);
  TObjectValue     = (ovUnknown,         ovString,       ovSmallint,         ovInteger,    ovWord,                            // 0..4
                      ovBoolean,         ovFloat,        ovCurrency,         ovBCD,        ovDate,      ovTime,    ovDateTime,// 5..11

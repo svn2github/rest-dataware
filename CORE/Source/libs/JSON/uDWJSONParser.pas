@@ -3,9 +3,9 @@ unit uDWJSONParser;
 interface
 
 Uses {$IFDEF FPC}
-     SysUtils, SysTypes, Classes;
+     SysUtils, Classes;
      {$ELSE}
-     System.SysUtils, SysTypes,   System.Classes;
+     System.SysUtils, System.Classes;
      {$ENDIF}
 
 type

@@ -75,6 +75,10 @@ Begin
  JSONParam.ParamName := 'SQL';
  JSONParam.Value     := EncodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RESTClientPooler1.Encoding){$ENDIF});
  DWParams.Add(JSONParam);
+ JSONParam           := TJSONParam.Create(DWParams.Encoding);
+ JSONParam.ParamName := 'TESTPARAM';
+ JSONParam.Value     := '';
+ DWParams.Add(JSONParam);
  Try
   If SQL <> '' Then
    Begin
@@ -82,12 +86,17 @@ Begin
      RESTClientPooler1.Host := eHost.Text;
      RESTClientPooler1.Port := StrToInt(ePort.Text);
      lResponse := RESTClientPooler1.SendEvent('ConsultaBanco', DWParams);
-     JSONValue := uDWJSONObject.TJSONValue.Create;
-     Try
-      JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);
-     Finally
-      JSONValue.Free;
-     End;
+     If lResponse <> '' Then
+      Begin
+       JSONValue := uDWJSONObject.TJSONValue.Create;
+       Try
+        JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);
+       Finally
+        JSONValue.Free;
+       End;
+      End;
+     Showmessage(Format('Mostrando o Parametro "TESTPARAM" Retornando o valor "%s" do Servidor',
+                        [DWParams.ItemsString['TESTPARAM'].Value]));
     Except
     End;
    End;

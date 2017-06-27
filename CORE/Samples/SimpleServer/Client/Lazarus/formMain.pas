@@ -75,12 +75,16 @@ Begin
  RESTClientPooler1.Port     := StrToInt(ePort.Text);
  RESTClientPooler1.UserName := edUserNameDW.Text;
  RESTClientPooler1.Password := edPasswordDW.Text;
- SQL                 := mComando.Text;
- DWParams            := TDWParams.Create;
- DWParams.Encoding   := GetEncoding(RESTClientPooler1.Encoding);
+ SQL                        := mComando.Text;
+ DWParams                   := TDWParams.Create;
+ DWParams.Encoding          := GetEncoding(RESTClientPooler1.Encoding);
+ JSONParam                  := TJSONParam.Create(DWParams.Encoding);
+ JSONParam.ParamName        := 'SQL';
+ JSONParam.Value            := EncodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RESTClientPooler1.Encoding){$ENDIF});
+ DWParams.Add(JSONParam);
  JSONParam           := TJSONParam.Create(DWParams.Encoding);
- JSONParam.ParamName := 'SQL';
- JSONParam.Value     := EncodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RESTClientPooler1.Encoding){$ENDIF});
+ JSONParam.ParamName := 'TESTPARAM';
+ JSONParam.Value     := '';
  DWParams.Add(JSONParam);
  If SQL <> '' Then
   Begin
@@ -97,6 +101,8 @@ Begin
     Finally
      JSONValue.Free;
     End;
+    Showmessage(Format('Mostrando o Parametro "TESTPARAM" Retornando o valor "%s" do Servidor',
+                       [DWParams.ItemsString['TESTPARAM'].Value]));
    Except
    End;
   End;

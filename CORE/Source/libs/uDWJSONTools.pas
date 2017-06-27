@@ -4,9 +4,9 @@ interface
 
 Uses
   {$IFDEF FPC}
-  SysUtils, SysTypes, ServerUtils, Classes, uDWConsts, Base64;
+  SysUtils, ServerUtils, Classes, uDWConsts, Base64;
   {$ELSE}
-  System.SysUtils, SysTypes, ServerUtils, System.Classes, Soap.EncdDecd, uDWConsts;
+  System.SysUtils, ServerUtils, System.Classes, Soap.EncdDecd, uDWConsts;
   {$ENDIF}
 
 
@@ -26,6 +26,8 @@ Function DecodeStrings(Value       : String
                                       {$ENDIF})              : String;
 
 implementation
+
+uses SysTypes;
 
 Function EncodeStrings(Value : String{$IFNDEF FPC}; Encoding : TEncoding{$ENDIF}) : String;
 Var
