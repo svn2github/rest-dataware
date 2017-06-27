@@ -371,87 +371,95 @@ begin
  ClearJsonParser(JsonParser);
  Try
   ParseJson(JsonParser, JSONValue);
-  bJsonValue       := JsonParser.Output.Objects[0];
-  vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
-  vObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
-  vObjectValue     := GetValueType    (bJsonValue[2].Value.Value);
-  vtagName         := Lowercase       (bJsonValue[3].Key);
-  //Add Field Defs
-  DestDS.DisableControls;
-  If DestDS.Active Then
-   DestDS.Close;
-  DestDS.FieldDefs.Clear;
-  {$IFDEF FPC}
-  DestDS.Fields.Clear;
-  {$ENDIF}
-  For J := 1 To Length(JsonParser.Output.Objects) -1 Do
+  If Length(JsonParser.Output.Objects) > 0 Then
    Begin
-    bJsonValue         := JsonParser.Output.Objects[J];
-    FieldDef           := DestDS.FieldDefs.AddFieldDef;
-    FieldDef.Name      := bJsonValue[0].Value.Value;
-    FieldDef.DataType  := GetFieldType(bJsonValue[1].Value.Value);
-    FieldDef.Required  := UpperCase(bJsonValue[3].Value.Value) = 'S';
-    If Not(FieldDef.DataType In [ftFloat, ftCurrency, ftBCD, ftFMTBcd]) Then
+    bJsonValue       := JsonParser.Output.Objects[0];
+    vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
+    vObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
+    vObjectValue     := GetValueType    (bJsonValue[2].Value.Value);
+    vtagName         := Lowercase       (bJsonValue[3].Key);
+    //Add Field Defs
+    DestDS.DisableControls;
+    If DestDS.Active Then
+     DestDS.Close;
+    DestDS.FieldDefs.Clear;
+    {$IFDEF FPC}
+    DestDS.Fields.Clear;
+    {$ENDIF}
+    For J := 1 To Length(JsonParser.Output.Objects) -1 Do
      Begin
-      FieldDef.Size      := StrToInt(bJsonValue[4].Value.Value);
-      FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
-     End;
-   End;
-  DestDS.Open;
-  //Add Set PK Fields
-  For J := 1 To Length(JsonParser.Output.Objects) -1 Do
-   Begin
-    bJsonValue         := JsonParser.Output.Objects[J];
-    If UpperCase(bJsonValue[2].Value.Value) = 'S' Then
-     Begin
-      Field := DestDS.FieldByName(bJsonValue[0].Value.Value);
-      If Field <> Nil Then
-       Field.ProviderFlags := [pfInUpdate, pfInWhere, pfInKey];
-     End;
-   End;
-  For J := 3 To Length(JsonParser.Output.Arrays) -1 Do
-   Begin
-    JsonArray  := JsonParser.Output.Arrays[J];
-    DestDS.Append;
-    For I := 0 To Length(JsonArray) -1 Do
-     Begin
-      If DestDS.Fields[I].DataType In [ftMemo, ftGraphic, ftFmtMemo,
-                                       ftParadoxOle,      ftDBaseOle,
-                                       ftTypedBinary,     ftCursor,
-                                       ftDataSet,         ftOraBlob,
-                                       ftOraClob,         ftWideMemo
-                                       {$IFNDEF FPC}
-                                       ,ftParams,         ftStream{$ENDIF}]  Then
+      bJsonValue         := JsonParser.Output.Objects[J];
+      FieldDef           := DestDS.FieldDefs.AddFieldDef;
+      FieldDef.Name      := bJsonValue[0].Value.Value;
+      FieldDef.DataType  := GetFieldType(bJsonValue[1].Value.Value);
+      FieldDef.Required  := UpperCase(bJsonValue[3].Value.Value) = 'S';
+      If Not(FieldDef.DataType In [ftFloat, ftCurrency, ftBCD, ftFMTBcd]) Then
        Begin
-        vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF}));
-        Try
-         vBlobStream.Position := 0;
-         DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
-        Finally
-         {$IFNDEF FPC}
-         vBlobStream.Clear;
-         {$ENDIF}
-         vBlobStream.Free;
-        End;
-       End
-      Else
+        FieldDef.Size      := StrToInt(bJsonValue[4].Value.Value);
+        FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
+       End;
+     End;
+    DestDS.Open;
+    //Add Set PK Fields
+    For J := 1 To Length(JsonParser.Output.Objects) -1 Do
+     Begin
+      bJsonValue         := JsonParser.Output.Objects[J];
+      If UpperCase(bJsonValue[2].Value.Value) = 'S' Then
        Begin
-        If JsonArray[I].Value <> '' Then
+        Field := DestDS.FieldByName(bJsonValue[0].Value.Value);
+        If Field <> Nil Then
+         Field.ProviderFlags := [pfInUpdate, pfInWhere, pfInKey];
+       End;
+     End;
+    For J := 3 To Length(JsonParser.Output.Arrays) -1 Do
+     Begin
+      JsonArray  := JsonParser.Output.Arrays[J];
+      DestDS.Append;
+      For I := 0 To Length(JsonArray) -1 Do
+       Begin
+        If DestDS.Fields[I].DataType In [ftMemo, ftGraphic, ftFmtMemo,
+                                         ftParadoxOle,      ftDBaseOle,
+                                         ftTypedBinary,     ftCursor,
+                                         ftDataSet,         ftOraBlob,
+                                         ftOraClob,         ftWideMemo
+                                         {$IFNDEF FPC}
+                                         ,ftParams,         ftStream{$ENDIF}]  Then
          Begin
-          If DestDS.Fields[I].DataType in [ftString, ftWideString, ftFixedWideChar, ftFixedChar] Then
-           DestDS.Fields[I].AsString := DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF})
-          Else
+          vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF}));
+          Try
+           vBlobStream.Position := 0;
+           DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
+          Finally
+           {$IFNDEF FPC}
+           vBlobStream.Clear;
+           {$ENDIF}
+           vBlobStream.Free;
+          End;
+         End
+        Else
+         Begin
+          If JsonArray[I].Value <> '' Then
            Begin
-            {$IFNDEF FPC}
-            DestDS.Fields[I].Value := JsonArray[I].Value;
-            {$ELSE}
-            SetValue(DestDS.Fields[I], JsonArray[I].Value);
-            {$ENDIF}
+            If DestDS.Fields[I].DataType in [ftString, ftWideString, ftFixedWideChar, ftFixedChar] Then
+             DestDS.Fields[I].AsString := DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF})
+            Else
+             Begin
+              {$IFNDEF FPC}
+              DestDS.Fields[I].Value := JsonArray[I].Value;
+              {$ELSE}
+              SetValue(DestDS.Fields[I], JsonArray[I].Value);
+              {$ENDIF}
+             End;
            End;
          End;
        End;
+      DestDS.Post;
      End;
-    DestDS.Post;
+   End
+  Else
+   Begin
+    DestDS.Close;
+    Raise Exception.Create('Invalid JSON Data...');
    End;
  Finally
   If DestDS.Active Then

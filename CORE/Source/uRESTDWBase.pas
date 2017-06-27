@@ -135,7 +135,7 @@ Type
   //Métodos, Propriedades, Variáveis, Procedures e Funções Publicas
   Function    SendEvent(EventData : String)              : String;Overload;
   Function    SendEvent(EventData : String;
-                        RBody     : TStringList;
+                        RBody     : TStringStream;
                         EventType : TSendEvent = sePOST) : String;Overload;
   Function    SendEvent(EventData : String;
                         Params    : TDWParams)         : String;Overload;
@@ -179,13 +179,15 @@ Begin
 End;
 
 Function TRESTClientPooler.SendEvent(EventData : String;
-                                     RBody     : TStringList;
+                                     RBody     : TStringStream;
                                      EventType : TSendEvent = sePOST) : String;
 Var
- StringStream : TStringStream;
- vURL         : String;
- vTpRequest : String;
+ vURL,
+ vTpRequest  : String;
+ vResultParams : TMemoryStream;
+ StringStream  : TStringStream;
 Begin
+ vResultParams := TMemoryStream.Create;
  If vTypeRequest = trHttp Then
   vTpRequest := 'http'
  Else If vTypeRequest = trHttps Then
@@ -213,14 +215,32 @@ Begin
      If EventType = sePOST Then
       Begin
        HttpRequest.Request.ContentType := 'application/x-www-form-urlencoded';
-       Result := HttpRequest.Post(vURL, RBody);
+       HttpRequest.Post(vURL, RBody, vResultParams);
+       vResultParams.WriteBuffer(#0' ', 1);
+       vResultParams.Position := 0;
+       StringStream  := TStringStream.Create('');
+       Try
+        StringStream.CopyFrom(vResultParams, vResultParams.Size);
+        StringStream.Position := 0;
+        Result := StringStream.DataString;
+       Finally
+        StringStream.Free;
+       End;
       End
      Else If EventType = sePUT Then
       Begin
        HttpRequest.Request.ContentType := 'application/x-www-form-urlencoded';
-       StringStream := TStringStream.Create(RBody.Text);
-       Result := HttpRequest.Put(vURL, StringStream);
-       StringStream.Free;
+       HttpRequest.Put(vURL, RBody, vResultParams);
+       vResultParams.WriteBuffer(#0' ', 1);
+       vResultParams.Position := 0;
+       StringStream  := TStringStream.Create('');
+       Try
+        StringStream.CopyFrom(vResultParams, vResultParams.Size);
+        StringStream.Position := 0;
+        Result := StringStream.DataString;
+       Finally
+        StringStream.Free;
+       End;
       End
      Else If EventType = seDELETE Then
       Begin
@@ -240,14 +260,15 @@ Begin
  Except
 
  End;
+ vResultParams.Free;
 End;
 
 Function TRESTClientPooler.SendEvent(EventData : String) : String;
 Var
- RBody      : TStringList;
+ RBody      : TStringStream;
  vTpRequest : String;
 Begin
- RBody   := TStringList.Create;
+ RBody   := TStringStream.Create('');
  Try
   If vTypeRequest = trHttp Then
    vTpRequest := 'http'
@@ -315,9 +336,9 @@ Procedure TRESTServicePooler.aCommandGet(AContext      : TIdContext;
                                          ARequestInfo  : TIdHTTPRequestInfo;
                                          AResponseInfo : TIdHTTPResponseInfo);
 Var
- Cmd           : String;
- Argumentos    : TArguments;
- JSONStr       : String;
+ Cmd                : String;
+ Argumentos         : TArguments;
+ JSONStr            : String;
  vTempServerMethods : TObject;
 Begin
  vTempServerMethods := Nil;
@@ -368,7 +389,14 @@ Begin
            JSONStr := TServerMethods(vTempServerMethods).ReplyEvent(sePOST, Argumentos);
          End;
        End;
-      AResponseInfo.ContentText := JSONStr;
+      Try
+       AResponseInfo.FreeContentStream := True;
+       AResponseInfo.ContentStream     := TStringStream.Create(JSONStr);
+       AResponseInfo.ContentStream.Position := 0;
+       AResponseInfo.ContentLength     := AResponseInfo.ContentStream.Size;
+       AResponseInfo.WriteHeader;
+      Finally
+      End;
       If Assigned(vLastResponse) Then
        Begin
         {$IFDEF FPC} {$IFDEF WINDOWS}
@@ -389,8 +417,8 @@ Begin
 End;
 
 Procedure TRESTServicePooler.aCommandOther(AContext      : TIdContext;
-                                          ARequestInfo  : TIdHTTPRequestInfo;
-                                          AResponseInfo : TIdHTTPResponseInfo);
+                                           ARequestInfo  : TIdHTTPRequestInfo;
+                                           AResponseInfo : TIdHTTPResponseInfo);
 Var
  Argumentos         : TArguments;
  Cmd, JSONStr       : String;
@@ -438,7 +466,15 @@ Begin
          JSONStr := TServerMethods(vTempServerMethods).ReplyEvent(seDELETE, Argumentos);
        End;
      End;
-    AResponseInfo.ContentText := JSONStr;
+    Try
+     AResponseInfo.FreeContentStream := True;
+     AResponseInfo.ContentStream := TStringStream.Create(JSONStr);
+     AResponseInfo.ContentStream.Position := 0;
+     AResponseInfo.ContentLength := AResponseInfo.ContentStream.Size;
+     AResponseInfo.WriteHeader;
+    Finally
+    End;
+//    AResponseInfo.ContentText := JSONStr;
     If Assigned(vLastResponse) Then
      Begin
       {$IFDEF FPC} {$IFDEF WINDOWS}
@@ -543,12 +579,13 @@ Function TRESTClientPooler.SendEvent(EventData : String;
                                      Params    : TDWParams): String;
 Var
  I : Integer;
- vStringList : TStringList;
+ vStringList : TStringStream;
 Begin
- vStringList := TStringList.Create;
+ vStringList := TStringStream.Create('');
  Try
   For I := 0 To Params.Count -1 Do
-   vStringList.Add(Format('%s=%s', [Params[I].ParamName, Params[I].Value]));
+   vStringList.WriteString(Format('%s=%s', [Params[I].ParamName, Params[I].Value]));
+  vStringList.Position := 0;
   Result := SendEvent(EventData, vStringList, sePOST);
  Finally
   vStringList.Free;
