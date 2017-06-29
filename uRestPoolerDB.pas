@@ -275,7 +275,7 @@ Type
   Procedure   GotoRec(Const RecNo : Integer);
   Function    ParamCount : Integer;
   Procedure   DynamicFilter(Field, Value : String; InText : Boolean = False);
-  procedure   Refresh;
+  Procedure   Refresh;
  Published
   Property MasterDataSet       : TRESTClientSQL      Read vMasterDataSet            Write SetMasterDataSet;
   Property MasterCascadeDelete : Boolean             Read vCascadeDelete            Write vCascadeDelete;
@@ -1669,6 +1669,8 @@ Begin
       Self.MoveBy(Distance);
      Finally
       Self.EnableControls;
+      If Assigned(vOnAfterScroll) Then
+       vOnAfterScroll(Self);
      End;
     End;
   End;
@@ -1742,25 +1744,25 @@ Begin
 End;
 
 procedure TRESTClientSQL.Refresh;
-var
-  Curso:integer;
+Var
+ Curso : Integer;
 begin
-  try
-    if Active then
-    begin
-      if RecordCount > 0 then
-      Curso:= self.CurrentRecord;
-      close;
-      Open;
-      if Active then
-      begin
-        if RecordCount > 0 then
-        MoveBy(Curso);
-      end;
-    end;
-  finally
-  end;
-end;
+ Try
+  If Active Then
+   Begin
+    If RecordCount > 0 Then
+     Curso := CurrentRecord;
+    Close;
+    Open;
+    If Active Then
+     Begin
+      If RecordCount > 0 Then
+       MoveBy(Curso);
+     End;
+   End;
+ Finally
+ End;
+End;
 
 Procedure TRESTClientSQL.ProcAfterClose(DataSet: TDataSet);
 Var
