@@ -21,32 +21,40 @@ Type
   vObjectDirection    : TObjectDirection;
   vObjectValue        : TObjectValue;
   aValue              : TIdBytes;
+  vEncoded            : Boolean;
   vEncoding           : TEncoding;
   Function    GetValue                    : String;
   Procedure   WriteValue     (bValue      : String);
   Function    FormatValue    (bValue      : String)   : String;
   Function    GetValueJSON   (bValue      : String)   : String;
   Function    DatasetValues  (bValue      : TDataset) : String;
+  Function    EncodedString  : String;
  Public
   Procedure   ToStream       (Var bValue  : TMemoryStream);
-  Procedure   LoadFromDataset(TableName   : String;
-                              bValue      : TDataset);
-  Procedure   WriteToDataset (DatasetType : TDatasetType;
-                              JSONValue   : String;
-                              DestDS      : TDataset);
-  Procedure   LoadFromJSON   (bValue      : String);
-  Function    ToJSON                      : String;
+  Procedure   LoadFromDataset(TableName    : String;
+                              bValue       : TDataset;
+                              EncodedValue : Boolean = True);
+  Procedure   WriteToDataset (DatasetType  : TDatasetType;
+                              JSONValue    : String;
+                              DestDS       : TDataset);
+  Procedure   LoadFromJSON   (bValue       : String);
+  Function    ToJSON                       : String;
+  Procedure   SetValue(Value : String; Encode : Boolean = True);
+  Function    Value : String;
   Constructor Create;
   Destructor  Destroy;Override;
   Property    TypeObject                  : TTypeObject      Read vTypeObject      Write vTypeObject;
   Property    ObjectDirection             : TObjectDirection Read vObjectDirection Write vObjectDirection;
   Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
   Property    Encoding                    : TEncoding        Read vEncoding        Write vEncoding;
-  Property    Value                       : String           Read GetValue         Write WriteValue;
   Property    Tagname                     : String           Read vtagName         Write vtagName;
+  Property    Encoded                     : Boolean          Read vEncoded;
 End;
 
 Type
+
+ { TJSONParam }
+
  TJSONParam = Class(TObject)
  Private
   vJSONValue                         : TJSONValue;
@@ -55,20 +63,23 @@ Type
   vObjectDirection                   : TObjectDirection;
   vObjectValue                       : TObjectValue;
   vParamName                         : String;
+  vEncoded                           : Boolean;
+  Function    EncodedString  : String;
   Function    FormatValue    (bValue : String) : String;
-  Function    GetValue               : String;
   Procedure   WriteValue     (bValue : String);
   Procedure   SetParamName   (bValue : String);
   Function    GetValueJSON   (bValue : String) : String;
  Public
   Constructor Create(Encoding : TEncoding);
   Destructor  Destroy;Override;
-  Procedure   FromJSON(JSON : String; DecodeValue : Boolean = True);
+  Procedure   FromJSON(JSON : String);
   Function    ToJSON        : String;
+  Function    Value : String;
+  Procedure   SetValue(aValue : String; Encode : Boolean = True);
   Property    ObjectDirection             : TObjectDirection Read vObjectDirection Write vObjectDirection;
   Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
-  Property    Value                       : String           Read GetValue         Write WriteValue;
   Property    ParamName                   : String           Read vParamName       Write SetParamName;
+  Property    Encoded                     : Boolean          Read vEncoded         Write vEncoded;
 End;
 
 Type
@@ -221,7 +232,7 @@ Begin
   Result := bValue;
 End;
 
-Function TJSONValue.FormatValue(bValue: String): String;
+function TJSONValue.FormatValue(bValue: String): String;
 Var
  aResult  : String;
 Begin
@@ -229,11 +240,13 @@ Begin
  If vTypeObject = toDataset Then
   Result  := Format(TValueFormatJSON, ['ObjectType', GetObjectName(vTypeObject),
                                        'Direction',  GetDirectionName(vObjectDirection),
+                                       'Encoded',    EncodedString,
                                        'ValueType',  GetValueType(vObjectValue),
                                        vTAGName,     GetValueJSON(aResult)])
  Else
   Result  := Format(TValueFormatJSONValue, ['ObjectType', GetObjectName(vTypeObject),
                                             'Direction',  GetDirectionName(vObjectDirection),
+                                            'Encoded',    EncodedString,
                                             'ValueType',  GetValueType(vObjectValue),
                                             vTAGName,     GetValueJSON(aResult)])
 End;
@@ -242,15 +255,18 @@ function TJSONValue.GetValue: String;
 Var
  vTempString : String;
 Begin
- vTempString := vEncoding.GetString(TBytes(aValue));
+ If vEncoded Then
+  vTempString := DecodeStrings(vEncoding.GetString(TBytes(aValue)){$IFNDEF FPC}, vEncoding{$ENDIF})
+ Else
+  vTempString := BytesToString(aValue);
  If vObjectValue = ovString Then
   Begin
    If Pos('"', vTempString) > 0 Then
     Begin
      Delete(vTempString, 1, 1);
      Delete(vTempString, Length(vTempString), 1);
-     Result := vTempString;
     End;
+   Result := vTempString;
   End
  Else
   Result := vTempString;
@@ -312,7 +328,10 @@ Var
        bStream.Position := 0;
        vStringStream.CopyFrom(bStream, bStream.Size);
        vStringStream.Position := 0;
-       vTempValue := Format('"%s"', [EncodeStrings(vStringStream.DataString{$IFNDEF FPC}, vEncoding{$ENDIF})]);
+       If vEncoded Then
+        vTempValue := Format('"%s"', [EncodeStrings(vStringStream.DataString{$IFNDEF FPC}, vEncoding{$ENDIF})])
+       Else
+        vTempValue := Format('"%s"', [vStringStream.DataString])
       Finally
        vStringStream.Free;
       End;
@@ -320,7 +339,12 @@ Var
     Else
      Begin
       If bValue.Fields[I].DataType in [ftString, ftWideString, ftFixedWideChar, ftFixedChar] Then
-       vTempValue := Format('"%s"', [EncodeStrings(bValue.Fields[I].AsString{$IFNDEF FPC}, vEncoding{$ENDIF})])
+       Begin
+        If vEncoded Then
+         vTempValue := Format('"%s"', [EncodeStrings(bValue.Fields[I].AsString{$IFNDEF FPC}, vEncoding{$ENDIF})])
+        Else
+         vTempValue := Format('"%s"', [bValue.Fields[I].AsString])
+       End
       Else
        vTempValue := Format('"%s"', [bValue.Fields[I].AsString]);
      End;
@@ -349,7 +373,17 @@ Begin
  bValue.EnableControls;
 End;
 
-procedure TJSONValue.LoadFromDataset(TableName: String; bValue: TDataset);
+Function TJSONValue.EncodedString : String;
+Begin
+ If vEncoded Then
+  Result := 'true'
+ Else
+  Result := 'false';
+End;
+
+procedure TJSONValue.LoadFromDataset(TableName : String;
+                                     bValue    : TDataset;
+                                     EncodedValue : Boolean = True);
 Var
  vTagGeral : String;
 Begin
@@ -357,13 +391,20 @@ Begin
  vObjectDirection := odINOUT;
  vObjectValue     := ovDataSet;
  vtagName         := lowercase(TableName);
+ vEncoded         := EncodedValue;
  vTagGeral        := DatasetValues(bValue);
  aValue           := tIdBytes(vEncoding.GetBytes(vTagGeral));
 End;
 
-Function TJSONValue.ToJSON : String;
+Function TJSONValue.ToJSON: String;
+Var
+ vTempValue : String;
 Begin
- Result := FormatValue(vEncoding.GetString(TBytes(aValue)));
+ If vEncoded Then
+  vTempValue := FormatValue(vEncoding.GetString(TBytes(aValue)))
+ Else
+  vTempValue := FormatValue(BytesToString(aValue));
+ Result := vTempValue;
 End;
 
 procedure TJSONValue.ToStream(var bValue: TMemoryStream);
@@ -377,8 +418,14 @@ Begin
   bValue := Nil;
 End;
 
-procedure TJSONValue.WriteToDataset(DatasetType: TDatasetType;
-  JSONValue: String; DestDS: TDataset);
+function TJSONValue.Value : String;
+Begin
+ Result := GetValue;
+End;
+
+procedure TJSONValue.WriteToDataset(DatasetType  : TDatasetType;
+                                    JSONValue    : String;
+                                    DestDS       : TDataset);
 var
  JsonParser  : TJsonParser;
  bJsonValue  : TJsonObject;
@@ -387,7 +434,7 @@ var
  FieldDef    : TFieldDef;
  Field       : TField;
  vBlobStream : TStringStream;
- Procedure SetValue(Field : TField; Value : String);
+ Procedure SetValueA(Field : TField; Value : String);
  Begin
   Case Field.DataType Of
    ftUnknown,
@@ -442,8 +489,9 @@ begin
     bJsonValue       := JsonParser.Output.Objects[0];
     vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
     vObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
-    vObjectValue     := GetValueType    (bJsonValue[2].Value.Value);
-    vtagName         := Lowercase       (bJsonValue[3].Key);
+    vEncoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
+    vObjectValue     := GetValueType    (bJsonValue[3].Value.Value);
+    vtagName         := Lowercase       (bJsonValue[4].Key);
     //Add Field Defs
     DestDS.DisableControls;
     If DestDS.Active Then
@@ -491,7 +539,10 @@ begin
                                          {$IFNDEF FPC}
                                          ,ftParams,         ftStream{$ENDIF}]  Then
          Begin
-          vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF}));
+          If vEncoded Then
+           vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF}))
+          Else
+           vBlobStream := TStringStream.Create(JsonArray[I].Value);
           Try
            vBlobStream.Position := 0;
            DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
@@ -507,13 +558,18 @@ begin
           If JsonArray[I].Value <> '' Then
            Begin
             If DestDS.Fields[I].DataType in [ftString, ftWideString, ftFixedWideChar, ftFixedChar] Then
-             DestDS.Fields[I].AsString := DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF})
+             Begin
+              If vEncoded Then
+               DestDS.Fields[I].AsString := DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF})
+              Else
+               DestDS.Fields[I].AsString := JsonArray[I].Value;
+             End
             Else
              Begin
               {$IFNDEF FPC}
               DestDS.Fields[I].Value := JsonArray[I].Value;
               {$ELSE}
-              SetValue(DestDS.Fields[I], JsonArray[I].Value);
+              SetValueA(DestDS.Fields[I], JsonArray[I].Value);
               {$ENDIF}
              End;
            End;
@@ -534,31 +590,63 @@ begin
  End;
 End;
 
-Procedure TJSONValue.LoadFromJSON(bValue : String);
+procedure TJSONValue.LoadFromJSON(bValue: String);
 Var
  JsonParser  : TJsonParser;
  bJsonValue  : TJsonObject;
+ vTempValue  : String;
+ Function CopyValue : String;
+ Var
+  vStringBase,
+  vTempString   : String;
+  vLengthString : Integer;
+ Begin
+  vStringBase   := '"ValueType":"';
+  vLengthString := Length(vStringBase);
+  vTempString   := Copy(bValue, Pos(vStringBase, bValue) +  vLengthString, Length(bValue));
+  vTempString   := Copy(vTempString, Pos(':', vTempString) + 2, Length(vTempString));
+  If vTempString <> '' Then
+   If vTempString[Length(vTempString)-1] = '"' Then
+    Delete(vTempString, Length(vTempString) -1, 2);
+  Result := vTempString;
+  bValue := StringReplace(bValue, Result, '', [rfReplaceAll]);
+ End;
 Begin
  ClearJsonParser(JsonParser);
  Try
+  vTempValue := CopyValue;
   ParseJson(JsonParser, bValue);
   bJsonValue       := JsonParser.Output.Objects[0];
   vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
   vObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
-  vObjectValue     := GetValueType    (bJsonValue[2].Value.Value);
-  vtagName         := Lowercase       (bJsonValue[3].Key);
-  SetLength(aValue, 0);
-  aValue := tIdBytes(vEncoding.GetBytes(bJsonValue[3].Value.Value));
+  vEncoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
+  vObjectValue     := GetValueType    (bJsonValue[3].Value.Value);
+  vtagName         := Lowercase       (bJsonValue[4].Key);
+  SetValue(vTempValue, False);
  Finally
 
  End;
 End;
 
+procedure TJSONValue.SetValue(Value: String; Encode: Boolean);
+begin
+ vEncoded := Encode;
+ If Encode Then
+  WriteValue(EncodeStrings(Value{$IFNDEF FPC}, vEncoding{$ENDIF}))
+ Else
+  WriteValue(Value);
+end;
+
 procedure TJSONValue.WriteValue(bValue: String);
 Begin
  SetLength(aValue, 0);
  If vObjectValue = ovString Then
-  aValue := tIdBytes(vEncoding.GetBytes(Format(TJsonStringValue, [bValue])))
+  Begin
+   If vEncoded Then
+    aValue := tIdBytes(vEncoding.GetBytes(Format(TJsonStringValue, [bValue])))
+   Else
+    aValue := ToBytes(Format(TJsonStringValue, [bValue]));
+  End
  Else
   aValue := tIdBytes(vEncoding.GetBytes(bValue));
 End;
@@ -574,13 +662,13 @@ begin
  vObjectValue    := ovString;
 end;
 
-Destructor TJSONParam.Destroy;
+destructor TJSONParam.Destroy;
 Begin
  vJSONValue.Free;
  inherited;
 End;
 
-Function TJSONParam.FormatValue(bValue: String): String;
+function TJSONParam.FormatValue(bValue: String): String;
 Var
  aResult  : String;
 Begin
@@ -588,13 +676,23 @@ Begin
  If vTypeObject = toDataset Then
   Result  := Format(TValueFormatJSON, ['ObjectType', GetObjectName(vTypeObject),
                                        'Direction',  GetDirectionName(vObjectDirection),
+                                       'Encoded',    EncodedString,
                                        'ValueType',  GetValueType(vObjectValue),
                                        vParamName,   GetValueJSON(aResult)])
  Else
   Result  := Format(TValueFormatJSONValue, ['ObjectType', GetObjectName(vTypeObject),
                                             'Direction',  GetDirectionName(vObjectDirection),
+                                            'Encoded',    EncodedString,
                                             'ValueType',  GetValueType(vObjectValue),
                                             vParamName,   GetValueJSON(aResult)])
+End;
+
+Function TJSONParam.EncodedString : String;
+Begin
+ If vEncoded Then
+  Result := 'true'
+ Else
+  Result := 'false';
 End;
 
 function TJSONParam.GetValueJSON(bValue : String): String;
@@ -606,7 +704,7 @@ Begin
   Result := '"' + bValue + '"';
 End;
 
-Procedure TJSONParam.FromJSON(JSON: String; DecodeValue : Boolean = True);
+procedure TJSONParam.FromJSON(JSON: String);
 Var
  JsonParser  : TJsonParser;
  bJsonValue  : TJsonObject;
@@ -619,21 +717,14 @@ Begin
     bJsonValue       := JsonParser.Output.Objects[0];
     vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
     vObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
-    vObjectValue     := GetValueType    (bJsonValue[2].Value.Value);
-    vParamName       := Lowercase       (bJsonValue[3].Key);
-    If DecodeValue Then
-     WriteValue(DecodeStrings(bJsonValue[3].Value.Value{$IFNDEF FPC}, vEncoding{$ENDIF}))
-    Else
-     WriteValue(bJsonValue[3].Value.Value);
+    vEncoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
+    vObjectValue     := GetValueType    (bJsonValue[3].Value.Value);
+    vParamName       := Lowercase       (bJsonValue[4].Key);
+    WriteValue(bJsonValue[4].Value.Value);
    End;
  Finally
 
  End;
-End;
-
-Function TJSONParam.GetValue: String;
-Begin
- Result := vJSONValue.Value;
 End;
 
 procedure TJSONParam.SetParamName(bValue: String);
@@ -641,9 +732,24 @@ begin
  vParamName := Uppercase(bValue);
 end;
 
-Function TJSONParam.ToJSON: String;
+procedure TJSONParam.SetValue(aValue: String; Encode: Boolean);
+Begin
+ vEncoded            := Encode;
+ vJSONValue.vEncoded := vEncoded;
+ If Encode Then
+  WriteValue(EncodeStrings(aValue{$IFNDEF FPC}, vEncoding{$ENDIF}))
+ Else
+  WriteValue(aValue);
+End;
+
+function TJSONParam.ToJSON: String;
 begin
  Result := vJSONValue.ToJSON;
+end;
+
+Function TJSONParam.Value : String;
+begin
+ Result := vJSONValue.Value;
 end;
 
 procedure TJSONParam.WriteValue(bValue: String);
@@ -653,6 +759,7 @@ begin
  vJSONValue.vTypeObject      := vTypeObject;
  vJSONValue.vObjectDirection := vObjectDirection;
  vJSONValue.vObjectValue     := vObjectValue;
+ vJSONValue.vEncoded         := vEncoded;
  vJSONValue.WriteValue(bValue);
 end;
 

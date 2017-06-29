@@ -168,7 +168,7 @@ Begin
  vPort                           := 8082;
  vUserName                       := 'testserver';
  vPassword                       := 'testserver';
- vRSCharset                      := esUtf8;
+ vRSCharset                      := esASCII;
  vAutenticacao                   := True;
  vRequestTimeOut                 := 10000;
 End;
@@ -196,6 +196,7 @@ Var
   bJsonValue  : TJsonObject;
   JSONParam   : TJSONParam;
   A, I, InitPos : Integer;
+  vValue,
   vTempValue  : String;
  Begin
   ClearJsonParser(JsonParser);
@@ -215,10 +216,15 @@ Var
         Break;
        JSONParam := TJSONParam.Create(GetEncoding(vRSCharset));
        Try
-        JSONParam.ParamName       := bJsonValue[3].Key;
-        JSONParam.ObjectValue     := GetValueType(bJsonValue[2].Value.Value);
+        JSONParam.ParamName       := bJsonValue[4].Key;
+        JSONParam.ObjectValue     := GetValueType(bJsonValue[3].Value.Value);
         JSONParam.ObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
-        JSONParam.Value           := bJsonValue[3].Value.Value;
+        JSONParam.Encoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
+        If JSONParam.Encoded Then
+         vValue := DecodeStrings(bJsonValue[4].Value.Value{$IFNDEF FPC}, GetEncoding(vRSCharset){$ENDIF})
+        Else
+         vValue := bJsonValue[4].Value.Value;
+        JSONParam.SetValue(vValue);
         ParamsData.WriteString(Format('%s=%s', [JSONParam.ParamName, JSONParam.ToJSON]) + TSepParams);
        Finally
         JSONParam.Free;
@@ -388,6 +394,7 @@ Var
 Begin
  vTempServerMethods := Nil;
  DWParams           := TDWParams.Create;
+ DWParams.Encoding  := GetEncoding(VEncondig);
  Try
   Cmd := Trim(ARequestInfo.RawHTTPCommand);
   If (vServerParams.HasAuthentication) Then
@@ -566,7 +573,7 @@ Begin
  vServerParams.UserName          := 'testserver';
  vServerParams.Password          := 'testserver';
  vServerContext                  := 'restdataware';
- VEncondig                       := esUtf8;
+ VEncondig                       := esASCII;
  {$IFDEF FPC} {$IFDEF WINDOWS}
  InitializeCriticalSection(vCriticalSection);
  {$ENDIF}{$ENDIF}
@@ -648,10 +655,10 @@ Var
    While Not (vTempValue = '') Do
     Begin
      vInitPos  := Pos('=', vTempValue) +1;
-     JSONParam.FromJSON(Copy(vTempValue, vInitPos, Pos(TSepParams, vTempValue) - vInitPos), False);
+     JSONParam.FromJSON(Copy(vTempValue, vInitPos, Pos(TSepParams, vTempValue) - vInitPos));
      Delete(vTempValue, 1, Pos(TSepParams, vTempValue) + Length(TSepParams) -1);
      If DWParams.ItemsString[JSONParam.ParamName] <> Nil Then
-      DWParams.ItemsString[JSONParam.ParamName].Value := JSONParam.Value;
+      DWParams.ItemsString[JSONParam.ParamName].SetValue(JSONParam.Value);
     End;
   Finally
 

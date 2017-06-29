@@ -11,10 +11,10 @@ Uses {$IFDEF FPC}
 
 Const
  TSepParams            = '|$%|';
- TValueFormatJSON      = '{"%s":"%s", "%s":"%s", "%s":"%s", "%s":[%s]}';
+ TValueFormatJSON      = '{"%s":"%s", "%s":"%s", "%s":"%s", "%s":"%s", "%s":[%s]}';
  TValueDisp            = '{"PARAMS":[%s], "RESULT":[%s]}';
  TValueArrayJSON       = '[%s]';
- TValueFormatJSONValue = '{"%s":"%s", "%s":"%s", "%s":"%s", "%s":%s}';
+ TValueFormatJSONValue = '{"%s":"%s", "%s":"%s", "%s":"%s", "%s":"%s", "%s":%s}';
  TJsonDatasetHeader    = '{"Field":"%s", "Type":"%s", "Primary":"%s", "Required":"%s", "Size":%d, "Precision":%d}';
  TJsonValueFormat      = '%s';
  TJsonStringValue      = '"%s"';
@@ -47,6 +47,7 @@ Type
  Function GetObjectName   (TypeObject      : String)           : TTypeObject;     Overload;
  Function GetDirectionName(ObjectDirection : TObjectDirection) : String;          Overload;
  Function GetDirectionName(ObjectDirection : String)           : TObjectDirection;Overload;
+ Function GetBooleanFromString(Value       : String)           : Boolean;
  Function GetValueType    (ObjectValue     : TObjectValue)     : String;          Overload;
  Function GetValueType    (ObjectValue     : String)           : TObjectValue;    Overload;
  Function GetFieldType    (FieldType       : TFieldType)       : String;          Overload;
@@ -96,6 +97,11 @@ Begin
   odIN    : Result := 'odIN';
   odOUT   : Result := 'odOUT';
  End;
+End;
+
+Function GetBooleanFromString(Value : String) : Boolean;
+Begin
+ Result := Uppercase(Value) = 'TRUE';
 End;
 
 Function GetDirectionName(ObjectDirection : String) : TObjectDirection;

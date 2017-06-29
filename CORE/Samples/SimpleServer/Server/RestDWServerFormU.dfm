@@ -107,10 +107,6 @@ object RestDWForm: TRestDWForm
     TabOrder = 3
     object tsConfigs: TTabSheet
       Caption = 'Configuration'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 7
         Top = 37
@@ -1297,14 +1293,20 @@ object RestDWForm: TRestDWForm
         TabOrder = 11
         Text = ''
       end
+      object cbEncode: TCheckBox
+        Left = 274
+        Top = 56
+        Width = 91
+        Height = 19
+        Caption = 'Encode Strings'
+        Checked = True
+        State = cbChecked
+        TabOrder = 12
+      end
     end
     object tsLogs: TTabSheet
       Caption = 'Logs'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label19: TLabel
         Left = 7
         Top = 147

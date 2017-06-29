@@ -271,7 +271,7 @@ Begin
    If Params.ItemsString['SQL'].value <> '' Then
     Begin
      If Params.ItemsString['TESTPARAM'] <> Nil Then
-      Params.ItemsString['TESTPARAM'].Value := 'OK';
+      Params.ItemsString['TESTPARAM'].SetValue('OK');
      vSQL      := Params.ItemsString['SQL'].value;
      {$IFDEF FPC}
      {$ELSE}
@@ -279,7 +279,7 @@ Begin
       Try
        fdQuery.Connection := RestDWForm.Server_FDConnection;
        fdQuery.SQL.Add(vSQL);
-       JSONValue.LoadFromDataset('sql', fdQuery);
+       JSONValue.LoadFromDataset('sql', fdQuery, RestDWForm.cbEncode.Checked);
        Result             := JSONValue.ToJSON;
       Finally
        JSONValue.Free;

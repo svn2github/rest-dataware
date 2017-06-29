@@ -80,11 +80,11 @@ Begin
  DWParams.Encoding          := GetEncoding(RESTClientPooler1.Encoding);
  JSONParam                  := TJSONParam.Create(DWParams.Encoding);
  JSONParam.ParamName        := 'SQL';
- JSONParam.Value            := EncodeStrings(SQL{$IFNDEF FPC}, GetEncoding(RESTClientPooler1.Encoding){$ENDIF});
+ JSONParam.SetValue(SQL);
  DWParams.Add(JSONParam);
- JSONParam           := TJSONParam.Create(DWParams.Encoding);
- JSONParam.ParamName := 'TESTPARAM';
- JSONParam.Value     := '';
+ JSONParam                  := TJSONParam.Create(DWParams.Encoding);
+ JSONParam.ParamName        := 'TESTPARAM';
+ JSONParam.SetValue('');
  DWParams.Add(JSONParam);
  If SQL <> '' Then
   Begin

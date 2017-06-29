@@ -20,6 +20,7 @@ Type
     ButtonStop: TButton;
     cbAdaptadores: TComboBox;
     cbPoolerState: TCheckBox;
+    cbEncode: TCheckBox;
     ctiPrincipal: TTrayIcon;
     eCertFile: TEdit;
     edBD: TEdit;

@@ -72,6 +72,7 @@ type
     FDPhysFBDriverLink1: TFDPhysFBDriverLink;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     Server_FDConnection: TFDConnection;
+    cbEncode: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);
@@ -166,6 +167,7 @@ end;
 
 procedure TRestDWForm.RESTServicePooler1LastResponse(Value: string);
 begin
+ memoResp.Lines.Clear;
  memoResp.Lines.Add(Value);
 end;
 

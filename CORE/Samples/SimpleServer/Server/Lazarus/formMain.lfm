@@ -1216,6 +1216,16 @@ object frmMain: TfrmMain
         TabOrder = 11
         SpaceChar = '_'
       end
+      object cbEncode: TCheckBox
+        Left = 277
+        Height = 19
+        Top = 55
+        Width = 91
+        Caption = 'Encode Strings'
+        Checked = True
+        State = cbChecked
+        TabOrder = 12
+      end
     end
     object tsLogs: TTabSheet
       Caption = 'Logs'

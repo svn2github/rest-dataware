@@ -361,13 +361,13 @@ Begin
    If Params.ItemsString['SQL'].value <> '' Then
     Begin
      If Params.ItemsString['TESTPARAM'] <> Nil Then
-      Params.ItemsString['TESTPARAM'].Value := 'OK';
+      Params.ItemsString['TESTPARAM'].SetValue('OK');
      vSQL      := Params.ItemsString['SQL'].value;
      Try
       fdQuery.DataBase := frmMain.IBConnection1;
       fdQuery.SQL.Add(vSQL);
       JSONValue.Encoding := GetEncoding(frmMain.RESTServicePooler1.Encoding);
-      JSONValue.LoadFromDataset('sql', fdQuery);
+      JSONValue.LoadFromDataset('sql', fdQuery, frmMain.cbEncode.Checked);
       Result             := JSONValue.ToJSON;
      Finally
       JSONValue.Free;

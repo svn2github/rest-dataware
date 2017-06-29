@@ -1,5 +1,13 @@
 Alterações :
 
+1.0.1.26 (CORE Version) :
+===========
+
+ Novo sistema de Encode dos Caracteres String, permitindo escolher encodar ou não nativamente para envio, tanto JSON comum como Parametros de JSON.
+ Correções de estabilidade.
+ Retirada a transmissão e recebimento de dados por string e mudado para Stream.
+ Melhorias no recebimento de Stream dos Dados.
+
 1.0.1.257 :
 ===========
 
