@@ -37,7 +37,7 @@ Const
    FExecuteProcedureCommand,
    FExecuteProcedurePureCommand  : TDSRestCommand;
    Function DecompressJSON(Value : String) : TJSONObject;
-   Function CompressJSON  (Value : String) : TJSONObject;
+
   Public
    Property Compression                 : Boolean   Read vCompression Write vCompression;
    Property Encoding                    : TEncoding Read vEncoding    Write vEncoding;
@@ -338,12 +338,12 @@ Begin
  Value := '';
  If S <> '' Then
   Begin
-   Try
     strInput          := TStringStream.Create(S, CompressionDecoding);
     strOutput         := TStringStream.Create('', CompressionEncoding);
+    strInput.Position := 0;
+    zipFile := TZDecompressionStream.Create(strInput, 31);
+   Try
     Try
-     strInput.Position := 0;
-     zipFile := TZDecompressionStream.Create(strInput, 31);
      zipFile.Position := 0;
      strOutput.CopyFrom(zipFile, zipFile.Size);
      strOutput.Position := 0;
@@ -1017,10 +1017,6 @@ Begin
  inherited Create(ARestConnection, AInstanceOwner);
 End;
 
-Function TSMPoolerMethodClient.CompressJSON  (Value : String) : TJSONObject;
-Begin
- Result := TJSONObject.ParseJSONValue(TBytes(ZCompressStr(Value, ZCompressionLevel)), 0) as TJSONObject;
-End;
 
 Function TSMPoolerMethodClient.DecompressJSON(Value : String) : TJSONObject;
 Var

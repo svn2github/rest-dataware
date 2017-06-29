@@ -87,7 +87,6 @@ type
     procedure Button3Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
    Function GetGenID(GenName  : String;
@@ -168,11 +167,6 @@ Begin
      End;
   End;
 End;
-
-procedure TfEmployee.FormCreate(Sender: TObject);
-begin
- RESTClientSQL1.Open
-end;
 
 procedure TfEmployee.rEmployeeAfterInsert(DataSet: TDataSet);
 begin
