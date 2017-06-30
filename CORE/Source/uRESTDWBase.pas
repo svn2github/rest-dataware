@@ -122,6 +122,7 @@ Type
   //Variáveis, Procedures e Funções Privadas
   vTypeRequest      : TTypeRequest;
   vRSCharset        : TEncodeSelect;
+  vUrlPath,
   vUserName,
   vPassword,
   vHost             : String;
@@ -130,7 +131,8 @@ Type
   vTransparentProxy : TIdProxyConnectionInfo;
   vRequestTimeOut   : Integer;
   Procedure SetUserName(Value : String);
-  procedure SetPassword(Value : String);
+  Procedure SetPassword(Value : String);
+  Procedure SetUrlPath(Value : String);
  Public
   //Métodos, Propriedades, Variáveis, Procedures e Funções Publicas
   Function    SendEvent(EventData : String)              : String;Overload;
@@ -143,6 +145,7 @@ Type
   Destructor  Destroy;Override;
  Published
   //Métodos e Propriedades
+  Property UrlPath          : String                 Read vUrlPath          Write SetUrlPath;
   Property Encoding         : TEncodeSelect          Read vRSCharset        Write vRSCharset;
   Property TypeRequest      : TTypeRequest           Read vTypeRequest      Write vTypeRequest       Default trHttp;
   Property Host             : String                 Read vHost             Write vHost;
@@ -244,8 +247,8 @@ Begin
   vTpRequest := 'https';
  SetParams;
  Try
-  If Pos(Uppercase(Format(UrlBase, [vTpRequest, vHost, vPort])), Uppercase(EventData)) = 0 Then
-   vURL := LowerCase(Format(UrlBase, [vTpRequest, vHost, vPort])) + EventData
+  If Pos(Uppercase(Format(UrlBase, [vTpRequest, vHost, vPort, vUrlPath])), Uppercase(EventData)) = 0 Then
+   vURL := LowerCase(Format(UrlBase, [vTpRequest, vHost, vPort, vUrlPath])) + EventData
   Else
    vURL := EventData;
   If vRSCharset = esUtf8 Then
@@ -349,6 +352,14 @@ begin
  vPassword := Value;
  HttpRequest.Request.Password := vPassword;
 end;
+
+Procedure TRESTClientPooler.SetUrlPath(Value : String);
+Begin
+ vUrlPath := Value;
+ If Length(vUrlPath) > 0 Then
+  If vUrlPath[Length(vUrlPath)] <> '/' Then
+   vUrlPath := vUrlPath + '/';
+End;
 
 procedure TRESTClientPooler.SetUserName(Value : String);
 begin

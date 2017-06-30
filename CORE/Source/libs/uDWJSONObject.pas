@@ -11,9 +11,11 @@ Uses {$IFDEF FPC}
      {$ENDIF}
 
 Type
+ TJSONBufferObject = Class
 
- { TJSONValue }
+End;
 
+Type
  TJSONValue = Class
  Private
   vtagName            : String;

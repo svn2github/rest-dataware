@@ -12,7 +12,7 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="15">
+    <Files Count="17">
       <Item1>
         <Filename Value="..\..\Source\libs\backup\ServerUtils.pas"/>
         <UnitName Value="ServerUtils"/>
@@ -74,6 +74,14 @@
         <Filename Value="..\..\Source\libs\JSON\uDWJSONParser.pas"/>
         <UnitName Value="uDWJSONParser"/>
       </Item15>
+      <Item16>
+        <Filename Value="..\..\Source\uRESTDWMasterDetailData.pas"/>
+        <UnitName Value="uRESTDWMasterDetailData"/>
+      </Item16>
+      <Item17>
+        <Filename Value="..\..\Source\uRESTDWPoolerDB.pas"/>
+        <UnitName Value="uRESTDWPoolerDB"/>
+      </Item17>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>

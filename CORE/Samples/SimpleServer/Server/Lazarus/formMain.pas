@@ -232,9 +232,9 @@ end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
-   // define o nome do .ini de acordo c o EXE
- // dessa forma se quiser testar várias instâncias do servidor em
- // portas diferentes os arquivos não irão conflitar
+ // Define o nome do .ini de acordo c o EXE
+ // Dessa forma se quiser testar várias instâncias do servidor em
+ // Portas diferentes os arquivos não irão conflitar
  FCfgName := StringReplace(ExtractFileName(ParamStr(0) ), '.exe' , '' , [rfReplaceAll]);
  FCfgName := ExtractFilePath(ParamSTR(0)) + 'Config_' + FCfgName + '.ini' ;
  RESTServicePooler1.ServerMethodClass := TServerMethods1;

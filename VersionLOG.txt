@@ -1,5 +1,9 @@
 Alterações :
 
+1.0.1.27 (CORE Version) :
+
+Início da Conversão dos Componentes Datasnap DW para CORE DW.
+
 1.0.1.26 (CORE Version) :
 ===========
 

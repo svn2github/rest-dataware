@@ -1,8 +1,8 @@
-unit uMasterDetailData;
+unit uRESTDWMasterDetailData;
 
 Interface
 
-Uses System.SysUtils, System.Classes;
+Uses SysUtils, Classes;
 
 Type
  TRESTClient = Class End;
@@ -37,7 +37,7 @@ End;
 
 Implementation
 
-Uses uRestPoolerDB;
+Uses uRESTDWPoolerDB;
 
 { TMasterDetailList }
 

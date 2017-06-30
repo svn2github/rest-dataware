@@ -21,7 +21,7 @@ Const
  TSepValueMemString    = '\\';
  TQuotedValueMemString = '\"';
  AuthRealm             = 'Provide Authentication';
- UrlBase               = '%s://%s:%d/';
+ UrlBase               = '%s://%s:%d/%s';
 
 Type
  TEncodeSelect    = (esASCII,     esUtf8);
