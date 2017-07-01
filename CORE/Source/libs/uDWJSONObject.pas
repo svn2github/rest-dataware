@@ -94,7 +94,7 @@ Type
   Procedure PutRecName(Index    : String; Item : TJSONParam);Overload;
  Public
   Constructor Create;
-  Function  ToJSON(ObjectDirection : TObjectDirection = odINOUT) : String;
+  Function  ToJSON        : String;
   Procedure FromJSON(JSON : String);
   Procedure Delete      (Index : Integer);                 Overload;
   Function  Add         (Item  : TJSONParam) : Integer;    Overload;
@@ -104,6 +104,42 @@ Type
 End;
 
 implementation
+
+Function CopyValue(Var bValue : String) : String;
+Var
+ vOldString,
+ vStringBase,
+ vTempString      : String;
+ A, vLengthString : Integer;
+Begin
+ vOldString    := bValue;
+ vStringBase   := '"ValueType":"';
+ vLengthString := Length(vStringBase);
+ vTempString   := Copy(bValue, Pos(vStringBase, bValue) +  vLengthString, Length(bValue));
+ A             := Pos(':', vTempString);
+ vTempString   := Copy(vTempString, A, Length(vTempString));
+ If vTempString[InitStrPos] = ':' Then
+  Delete(vTempString, InitStrPos, 1);
+ If vTempString[InitStrPos] = '"' Then
+  Delete(vTempString, InitStrPos, 1);
+ If vTempString <> '' Then
+  Begin
+   For A := Length(vTempString) Downto InitStrPos Do
+    Begin
+     If vTempString[Length(vTempString)] <> '}' Then
+      Delete(vTempString, Length(vTempString), 1)
+     Else
+      Begin
+       Delete(vTempString, Length(vTempString), 1);
+       Break;
+      End;
+    End;
+   If vTempString[Length(vTempString)] = '"' Then
+    Delete(vTempString, Length(vTempString), 1);
+  End;
+ Result := vTempString;
+ bValue := StringReplace(bValue, Result, '', [rfReplaceAll]);
+End;
 
 Function  TDWParams.Add(Item : TJSONParam) : Integer;
 Var
@@ -118,22 +154,19 @@ End;
 Constructor TDWParams.Create;
 Begin
  Inherited;
- vEncoding := TEncoding.ANSI;
+ vEncoding := TEncoding.ASCII;
 End;
 
-Function  TDWParams.ToJSON(ObjectDirection : TObjectDirection = odINOUT) : String;
+Function  TDWParams.ToJSON : String;
 Var
  I : Integer;
 Begin
  For I := 0 To Self.Count -1 Do
   Begin
-   If TJSONParam(TList(Self).Items[I]^).ObjectDirection = ObjectDirection Then
-    Begin
-     If I = 0 Then
-      Result := TJSONParam(TList(Self).Items[I]^).ToJSON
-     Else
-      Result := Result + ', ' + TJSONParam(TList(Self).Items[I]^).ToJSON;
-    End;
+   If I = 0 Then
+    Result := TJSONParam(TList(Self).Items[I]^).ToJSON
+   Else
+    Result := Result + ', ' + TJSONParam(TList(Self).Items[I]^).ToJSON;
   End;
 End;
 
@@ -212,7 +245,7 @@ End;
 
 constructor TJSONValue.Create;
 Begin
- vEncoding       := TEncoding.ANSI;
+ vEncoding       := TEncoding.ASCII;
  vTypeObject     := toObject;
  ObjectDirection := odINOUT;
  vObjectValue    := ovString;
@@ -263,11 +296,13 @@ Begin
   vTempString := BytesToString(aValue);
  If vObjectValue = ovString Then
   Begin
-   If Pos('"', vTempString) > 0 Then
-    Begin
-     Delete(vTempString, 1, 1);
-     Delete(vTempString, Length(vTempString), 1);
-    End;
+   If vTempString <> '' Then
+    If vTempString[InitStrPos] = '"' Then
+     Begin
+      Delete(vTempString, 1, 1);
+      If vTempString[Length(vTempString)] = '"' Then
+       Delete(vTempString, Length(vTempString), 1);
+     End;
    Result := vTempString;
   End
  Else
@@ -597,26 +632,10 @@ Var
  JsonParser  : TJsonParser;
  bJsonValue  : TJsonObject;
  vTempValue  : String;
- Function CopyValue : String;
- Var
-  vStringBase,
-  vTempString   : String;
-  vLengthString : Integer;
- Begin
-  vStringBase   := '"ValueType":"';
-  vLengthString := Length(vStringBase);
-  vTempString   := Copy(bValue, Pos(vStringBase, bValue) +  vLengthString, Length(bValue));
-  vTempString   := Copy(vTempString, Pos(':', vTempString) + 2, Length(vTempString));
-  If vTempString <> '' Then
-   If vTempString[Length(vTempString)-1] = '"' Then
-    Delete(vTempString, Length(vTempString) -1, 2);
-  Result := vTempString;
-  bValue := StringReplace(bValue, Result, '', [rfReplaceAll]);
- End;
 Begin
  ClearJsonParser(JsonParser);
  Try
-  vTempValue := CopyValue;
+  vTempValue := CopyValue(bValue);
   ParseJson(JsonParser, bValue);
   bJsonValue       := JsonParser.Output.Objects[0];
   vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
@@ -710,9 +729,11 @@ procedure TJSONParam.FromJSON(JSON: String);
 Var
  JsonParser  : TJsonParser;
  bJsonValue  : TJsonObject;
+ vValue      : String;
 Begin
  ClearJsonParser(JsonParser);
  Try
+  vValue     := CopyValue(JSON);
   ParseJson(JsonParser, JSON);
   If Length(JsonParser.Output.Objects) > 0 Then
    Begin
@@ -722,7 +743,7 @@ Begin
     vEncoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
     vObjectValue     := GetValueType    (bJsonValue[3].Value.Value);
     vParamName       := Lowercase       (bJsonValue[4].Key);
-    WriteValue(bJsonValue[4].Value.Value);
+    WriteValue(vValue);
    End;
  Finally
 

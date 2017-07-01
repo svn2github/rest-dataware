@@ -24,15 +24,19 @@ interface
 
 Uses
      {$IFDEF FPC}
-     SysUtils,         Classes, SysTypes, ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
-     IdContext,        IdHTTPServer,      IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
-     IdAuthentication, IdHTTPHeaderInfo,  uDWJSONTools,          uDWConsts,    IdHTTP,
-     uDWJSONObject;
+     SysUtils,           Classes, SysTypes,   ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
+     IdContext,          IdHTTPServer,        IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
+     IdAuthentication,   IdHTTPHeaderInfo,    uDWJSONTools,          uDWConsts,    IdHTTP,
+     uDWJSONObject,      IdMultipartFormData, IdHeaderList,          IdMessageCoder,
+     IdMessageCoderMIME, IdMessageParts,      IdMessage,             IdGlobal,
+     IdGlobalProtocols;
      {$ELSE}
-     System.SysUtils,  System.Classes,   SysTypes, ServerUtils, Windows,
-     IdContext,        IdHTTPServer,     IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
-     IdAuthentication, IdHTTPHeaderInfo, uDWJSONTools,          uDWConsts,    IdHTTP,
-     uDWJSONObject;
+     System.SysUtils,    System.Classes,      SysTypes, ServerUtils, Windows,
+     IdContext,          IdHTTPServer,        IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
+     IdAuthentication,   IdHTTPHeaderInfo,    uDWJSONTools,          uDWConsts,    IdHTTP,
+     uDWJSONObject,      IdMultipartFormData, IdHeaderList,          IdMessageCoder,
+     IdMessageCoderMIME, IdMessageParts,      IdMessage,             IdGlobal,
+     IdGlobalProtocols;
      {$ENDIF}
 
 Type
@@ -135,12 +139,10 @@ Type
   Procedure SetUrlPath(Value : String);
  Public
   //Métodos, Propriedades, Variáveis, Procedures e Funções Publicas
-  Function    SendEvent(EventData : String)              : String;Overload;
-  Function    SendEvent(EventData : String;
-                        Var RBody : TStringStream;
-                        EventType : TSendEvent = sePOST) : String;Overload;
+  Function    SendEvent(EventData : String)               : String;Overload;
   Function    SendEvent(EventData  : String;
-                        Var Params : TDWParams) : String;Overload;
+                        Var Params : TDWParams;
+                        EventType  : TSendEvent = sePOST) : String;Overload;
   Constructor Create(AOwner: TComponent);Override;
   Destructor  Destroy;Override;
  Published
@@ -183,16 +185,18 @@ Begin
  Inherited;
 End;
 
-Function TRESTClientPooler.SendEvent(EventData : String;
-                                     Var RBody : TStringStream;
-                                     EventType : TSendEvent = sePOST) : String;
+Function TRESTClientPooler.SendEvent(EventData  : String;
+                                     Var Params : TDWParams;
+                                     EventType  : TSendEvent = sePOST) : String;
 Var
  vURL,
- vTpRequest  : String;
+ vTpRequest    : String;
  vResultParams : TMemoryStream;
  StringStream  : TStringStream;
+ SendParams    : TIdMultipartFormDataStream;
+ ss            : TStringStream;
  Procedure SetData(InputValue     : String;
-                   Var ParamsData : TStringStream;
+                   Var ParamsData : TDWParams;
                    Var ResultJSON : String);
  Var
   JsonParser  : TJsonParser;
@@ -204,8 +208,6 @@ Var
  Begin
   ClearJsonParser(JsonParser);
   Try
-   ParamsData.Free;
-   ParamsData := TStringStream.Create('');
    InitPos    := Pos('"RESULT":[', InputValue) + 10;
    vTempValue := Copy(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
    Delete(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
@@ -228,7 +230,8 @@ Var
         Else
          vValue := bJsonValue[4].Value.Value;
         JSONParam.SetValue(vValue);
-        ParamsData.WriteString(Format('%s=%s', [JSONParam.ParamName, JSONParam.ToJSON]) + TSepParams);
+        ParamsData.ItemsString[JSONParam.ParamName].SetValue(JSONParam.Value, JSONParam.Encoded);
+//        ParamsData.WriteString(Format('%s=%s', [JSONParam.ParamName, JSONParam.ToJSON]) + TSepParams);
        Finally
         JSONParam.Free;
        End;
@@ -239,7 +242,27 @@ Var
     ResultJSON := DecodeStrings(vTempValue{$IFNDEF FPC}, GetEncoding(vRSCharset){$ENDIF});
   End;
  End;
+ Procedure SetParamsValues(DWParams : TDWParams; SendParamsData : TIdMultipartFormDataStream);
+ Var
+  I : Integer;
+ Begin
+  If DWParams <> Nil Then
+   Begin
+    For I := 0 To DWParams.Count -1 Do
+     Begin
+      If DWParams.Items[I].ObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
+                                           ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob, ovOraClob] Then
+       Begin
+        ss := TStringStream.Create(DWParams.Items[I].ToJSON);
+        SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, ss);
+       End
+      Else
+       SendParamsData.AddFormField(DWParams.Items[I].ParamName, DWParams.Items[I].ToJSON);
+     End;
+   End;
+ End;
 Begin
+ ss            := Nil;
  vResultParams := TMemoryStream.Create;
  If vTypeRequest = trHttp Then
   vTpRequest := 'http'
@@ -267,15 +290,16 @@ Begin
     Begin;
      If EventType = sePOST Then
       Begin
-       HttpRequest.Request.ContentType := 'application/x-www-form-urlencoded';
-       HttpRequest.Post(vURL, RBody, vResultParams);
-       vResultParams.WriteBuffer(#0' ', 1);
-       vResultParams.Position := 0;
+       SendParams := TIdMultiPartFormDataStream.Create;
+       SetParamsValues(Params, SendParams);
+       HttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
+       HttpRequest.Request.ContentEncoding := 'multipart/form-data';
        StringStream  := TStringStream.Create('');
+       HttpRequest.Post(vURL, SendParams, StringStream);
+       StringStream.WriteBuffer(#0' ', 1);
+       StringStream.Position := 0;
        Try
-        StringStream.CopyFrom(vResultParams, vResultParams.Size);
-        StringStream.Position := 0;
-        SetData(StringStream.DataString, RBody, Result);
+        SetData(StringStream.DataString, Params, Result);
        Finally
         StringStream.Free;
        End;
@@ -283,14 +307,12 @@ Begin
      Else If EventType = sePUT Then
       Begin
        HttpRequest.Request.ContentType := 'application/x-www-form-urlencoded';
-       HttpRequest.Put(vURL, RBody, vResultParams);
-       vResultParams.WriteBuffer(#0' ', 1);
-       vResultParams.Position := 0;
        StringStream  := TStringStream.Create('');
+       HttpRequest.Post(vURL, SendParams, StringStream);
+       StringStream.WriteBuffer(#0' ', 1);
+       StringStream.Position := 0;
        Try
-        StringStream.CopyFrom(vResultParams, vResultParams.Size);
-        StringStream.Position := 0;
-        SetData(StringStream.DataString, RBody, Result);
+        SetData(StringStream.DataString, Params, Result);
        Finally
         StringStream.Free;
        End;
@@ -320,6 +342,7 @@ Function TRESTClientPooler.SendEvent(EventData : String) : String;
 Var
  RBody      : TStringStream;
  vTpRequest : String;
+ Params     : TDWParams;
 Begin
  RBody   := TStringStream.Create('');
  Try
@@ -327,7 +350,7 @@ Begin
    vTpRequest := 'http'
   Else If vTypeRequest = trHttps Then
    vTpRequest := 'https';
-  Result := SendEvent(Format(UrlBase, [vTpRequest, vHost, vPort]) + EventData, RBody, seGET);
+  Result := SendEvent(Format(UrlBase, [vTpRequest, vHost, vPort]) + EventData, Params, seGET);
  Except
  End;
  RBody.Free;
@@ -398,16 +421,54 @@ Procedure TRESTServicePooler.aCommandGet(AContext      : TIdContext;
                                          AResponseInfo : TIdHTTPResponseInfo);
 Var
  DWParams           : TDWParams;
+ boundary,
+ startboundary,
  vReplyString,
  Cmd , UrlMethod,
- JSONStr            : String;
+ tmp, JSONStr       : String;
  vTempServerMethods : TObject;
+ newdecoder,
+ Decoder            : TIdMessageDecoder;
+ JSONParam          : TJSONParam;
+ msgEnd             : Boolean;
+ I                  : Integer;
+ ms                 : TStringStream;
+ Function GetParamsReturn(Params : TDWParams) : String;
+ Var
+  A, I : Integer;
+ Begin
+  A := 0;
+  For I := 0 To Params.Count -1 Do
+   Begin
+    If TJSONParam(TList(Params).Items[I]^).ObjectDirection in [odOUT, odINOUT] Then
+     Begin
+      If A = 0 Then
+       Result := TJSONParam(TList(Params).Items[I]^).ToJSON
+      Else
+       Result := Result + ', ' + TJSONParam(TList(Params).Items[I]^).ToJSON;
+      Inc(A);
+     End;
+   End;
+ End;
 Begin
  vTempServerMethods := Nil;
  DWParams           := TDWParams.Create;
  DWParams.Encoding  := GetEncoding(VEncondig);
+ If ARequestInfo.PostStream <> Nil Then
+  Begin
+   ARequestInfo.PostStream.Position := 0;
+   msgEnd   := False;
+   boundary := ExtractHeaderSubItem(ARequestInfo.ContentType, 'boundary', QuoteHTTP);
+   startboundary := '--' + boundary;
+   Repeat
+    tmp := ReadLnFromStream(ARequestInfo.PostStream, -1, True);
+   until tmp = startboundary;
+  End;
  Try
   Cmd := Trim(ARequestInfo.RawHTTPCommand);
+  Cmd := StringReplace(Cmd, ' HTTP/1.0', '', [rfReplaceAll]);
+  Cmd := StringReplace(Cmd, ' HTTP/1.1', '', [rfReplaceAll]);
+  Cmd := StringReplace(Cmd, ' HTTP/2.0', '', [rfReplaceAll]);
   If (vServerParams.HasAuthentication) Then
    Begin
     If Not ((ARequestInfo.AuthUsername = vServerParams.Username)  And
@@ -428,7 +489,56 @@ Begin
        DWParams  := TServerUtils.ParseWebFormsParams (ARequestInfo.Params, ARequestInfo.URI,
                                                       UrlMethod, GetEncoding(VEncondig))
       Else
-       DWParams  := TServerUtils.ParseRESTURL (ARequestInfo.URI, GetEncoding(VEncondig));
+       Begin
+//        DWParams  := TServerUtils.ParseRESTURL (ARequestInfo.URI, GetEncoding(VEncondig));
+        Try
+         Repeat
+          decoder              := TIdMessageDecoderMIME.Create(nil);
+          TIdMessageDecoderMIME(decoder).MIMEBoundary := boundary;
+          decoder.SourceStream := ARequestInfo.PostStream;
+          decoder.FreeSourceStream := false;
+          decoder.ReadHeader;
+          Inc(I);
+          Case Decoder.PartType of
+           mcptAttachment,
+           mcptText :
+            Begin
+             ms          := TStringStream.Create('');
+             ms.Position := 0;
+             newdecoder  := Decoder.ReadBody(ms, msgEnd);
+             tmp         := Decoder.Headers.Text;
+//             fname       := decoder.Filename;
+             Decoder.Free;
+             Decoder     := newdecoder;
+             If Decoder <> Nil Then
+              TIdMessageDecoderMIME(Decoder).MIMEBoundary := Boundary;
+             JSONParam   := TJSONParam.Create(DWParams.Encoding);
+             JSONParam.FromJSON(ms.DataString);
+             DWParams.Add(JSONParam);
+             FreeAndNil(ms);
+            End;
+           mcptIgnore :
+            Begin
+             Try
+              If decoder <> Nil Then
+               FreeAndNil(decoder);
+              decoder := TIdMessageDecoderMIME.Create(nil);
+              TIdMessageDecoderMIME(decoder).MIMEBoundary := boundary;
+             Finally
+             End;
+            End;
+           mcptEOF:
+            Begin
+             FreeAndNil(decoder);
+             msgEnd := True
+            End;
+           End;
+         Until (Decoder = Nil) Or (msgEnd);
+        Finally
+         If decoder <> nil then
+          decoder.Free;
+        End;
+       End;
       If Assigned(vServerMethod) Then
        vTempServerMethods := vServerMethod.Create
       Else
@@ -447,6 +557,20 @@ Begin
         End;
        If Assigned(vServerMethod) Then
         Begin
+         If UrlMethod = '' Then
+          Begin
+           UrlMethod := Cmd;
+           While (Length(UrlMethod) > 0) Do
+            Begin
+             If Pos('/', UrlMethod) > 0 then
+              Delete(UrlMethod, 1, 1)
+             Else
+              Begin
+               UrlMethod := Trim(UrlMethod);
+               Break;
+              End;
+            End;
+          End;
          If vTempServerMethods <> Nil Then
           Begin
            If UpperCase(Copy (Cmd, 1, 3)) = 'GET' Then
@@ -457,7 +581,7 @@ Begin
         End;
        Try
         JSONStr                         := EncodeStrings(JSONStr{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
-        vReplyString                    := Format(TValueDisp, [DWParams.ToJSON, JSONStr]);
+        vReplyString                    := Format(TValueDisp, [GetParamsReturn(DWParams), JSONStr]);
         AResponseInfo.FreeContentStream := True;
         AResponseInfo.ContentStream     := TStringStream.Create(vReplyString);
         AResponseInfo.ContentStream.Position := 0;
@@ -645,52 +769,6 @@ Begin
  Else If Not(Value) Then
   HTTPServer.Active := False;
  vActive := HTTPServer.Active;
-End;
-
-Function TRESTClientPooler.SendEvent(EventData  : String;
-                                     Var Params : TDWParams): String;
-Var
- I : Integer;
- vStringList : TStringStream;
- Procedure SetDWParams(StringList   : TStringStream;
-                       Var DWParams : TDWParams);
- Var
-  vTempValue,
-  vTempLine   : String;
-  JSONParam   : TJSONParam;
-  vInitPos    : Integer;
- Begin
-  vTempValue := StringList.DataString;
-  JSONParam := TJSONParam.Create(GetEncoding(vRSCharset));
-  Try
-   While Not (vTempValue = '') Do
-    Begin
-     vInitPos  := Pos('=', vTempValue) +1;
-     JSONParam.FromJSON(Copy(vTempValue, vInitPos, Pos(TSepParams, vTempValue) - vInitPos));
-     Delete(vTempValue, 1, Pos(TSepParams, vTempValue) + Length(TSepParams) -1);
-     If DWParams.ItemsString[JSONParam.ParamName] <> Nil Then
-      DWParams.ItemsString[JSONParam.ParamName].SetValue(JSONParam.Value);
-    End;
-  Finally
-
-  End;
- End;
-Begin
- vStringList := TStringStream.Create('');
- Try
-  For I := 0 To Params.Count -1 Do
-   Begin
-    If I = 0 Then
-     vStringList.WriteString(Format('%s=%s',  [Params.Items[I].ParamName, Params.Items[I].ToJSON]))
-    Else
-     vStringList.WriteString(Format('&%s=%s', [Params.Items[I].ParamName, Params.Items[I].ToJSON]))
-   End;
-  vStringList.Position := 0;
-  Result := SendEvent(EventData, vStringList, sePOST);
-  SetDWParams(vStringList, Params);
- Finally
-  vStringList.Free;
- End;
 End;
 
 end.

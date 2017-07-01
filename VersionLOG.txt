@@ -1,6 +1,14 @@
 Alterações :
 
+1.0.1.40 (CORE Version) :
+===========
+
+ Atualização para POST enviar dados Binários em pacotes JSON.
+ Ajuste para envio e recebimento do Servidor.
+ Ajustes do Parser de dados.
+
 1.0.1.27 (CORE Version) :
+===========
 
 Início da Conversão dos Componentes Datasnap DW para CORE DW.
 

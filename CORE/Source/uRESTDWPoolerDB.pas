@@ -478,7 +478,7 @@ Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;
 Begin
  Result := TEncoding.utf8; // definido como padrão para suprimir Warn no delphi
  Case Avalue of
-  esUtf8  : Result := TEncoding.utf8;
+  esUtf8 : Result := TEncoding.utf8;
   esASCII : Result := TEncoding.ASCII;
  End;
 End;

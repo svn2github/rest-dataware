@@ -18,7 +18,6 @@
         <ComponentName Value="Form2"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
         <TopLine Value="84"/>
         <CursorPos Y="99"/>
         <UsageCount Value="53"/>
@@ -263,13 +262,15 @@
       </Unit33>
       <Unit34>
         <Filename Value="..\..\..\..\Source\uRESTDWBase.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="582"/>
-        <CursorPos X="21" Y="663"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="351"/>
+        <CursorPos Y="362"/>
         <UsageCount Value="17"/>
         <Bookmarks Count="1">
           <Item0 X="106" Y="224" ID="1"/>
         </Bookmarks>
+        <Loaded Value="True"/>
       </Unit34>
       <Unit35>
         <Filename Value="C:\lazarus\components\indy\trunk\Lib\Core\IdIOHandler.pas"/>
@@ -310,10 +311,15 @@
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit39>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="1">
+      <Position1>
+        <Filename Value="formMain.pas"/>
+        <Caret Line="99" TopLine="84"/>
+      </Position1>
+    </JumpHistory>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="15">
+    <BreakPoints Count="14">
       <Item1>
         <Kind Value="bpkSource"/>
         <WatchScope Value="wpsLocal"/>
@@ -412,13 +418,6 @@
         <Source Value="..\..\..\..\Source\uRESTDWBase.pas"/>
         <Line Value="429"/>
       </Item14>
-      <Item15>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="..\..\..\..\Source\uRESTDWBase.pas"/>
-        <Line Value="357"/>
-      </Item15>
     </BreakPoints>
   </Debugging>
 </CONFIG>

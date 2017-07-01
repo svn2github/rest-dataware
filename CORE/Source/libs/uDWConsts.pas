@@ -3,14 +3,15 @@ unit uDWConsts;
 Interface
 
 Uses {$IFDEF FPC}
-     SysUtils, DB;
+     SysUtils, DB, Classes;
      {$ELSE}
      System.SysUtils,
-     Data.DB;
+     Data.DB, System.Classes;
      {$ENDIF}
 
 Const
- TSepParams            = '|$%|';
+ InitStrPos            = 1;
+ TSepParams            = '|xxx|xxx|%';
  TValueFormatJSON      = '{"%s":"%s", "%s":"%s", "%s":"%s", "%s":"%s", "%s":[%s]}';
  TValueDisp            = '{"PARAMS":[%s], "RESULT":[%s]}';
  TValueArrayJSON       = '[%s]';
@@ -42,23 +43,49 @@ Type
                      ovTimeStampOffset, ovObject,       ovSingle);                                                           //49..51
  TDatasetType     = (dtReflection,      dtFull,         dtDiff);
 
- Function GetEncoding     (Avalue          : TEncodeSelect)    : TEncoding;
- Function GetObjectName   (TypeObject      : TTypeObject)      : String;          Overload;
- Function GetObjectName   (TypeObject      : String)           : TTypeObject;     Overload;
- Function GetDirectionName(ObjectDirection : TObjectDirection) : String;          Overload;
- Function GetDirectionName(ObjectDirection : String)           : TObjectDirection;Overload;
- Function GetBooleanFromString(Value       : String)           : Boolean;
- Function GetValueType    (ObjectValue     : TObjectValue)     : String;          Overload;
- Function GetValueType    (ObjectValue     : String)           : TObjectValue;    Overload;
- Function GetFieldType    (FieldType       : TFieldType)       : String;          Overload;
- Function GetFieldType    (FieldType       : String)           : TFieldType;      Overload;
- Function StringFloat     (aValue          : String)           : String;
+ Function GetEncoding             (Avalue          : TEncodeSelect)    : TEncoding;
+ Function GetObjectName           (TypeObject      : TTypeObject)      : String;          Overload;
+ Function GetObjectName           (TypeObject      : String)           : TTypeObject;     Overload;
+ Function GetDirectionName        (ObjectDirection : TObjectDirection) : String;          Overload;
+ Function GetDirectionName        (ObjectDirection : String)           : TObjectDirection;Overload;
+ Function GetBooleanFromString    (Value           : String)           : Boolean;
+ Function GetStringFromBoolean    (Value           : Boolean)          : String;
+ Function GetValueType            (ObjectValue     : TObjectValue)     : String;          Overload;
+ Function GetValueType            (ObjectValue     : String)           : TObjectValue;    Overload;
+ Function GetFieldType            (FieldType       : TFieldType)       : String;          Overload;
+ Function GetFieldType            (FieldType       : String)           : TFieldType;      Overload;
+ Function StringFloat             (aValue          : String)           : String;
+ Function GenerateStringFromStream(Stream          : TMemoryStream;
+                                   AEncoding       : TEncoding) : String;
 
 implementation
+
+Function GenerateStringFromStream(Stream : TMemoryStream; AEncoding: TEncoding) : String;
+Var
+ StringStream  : TStringStream;
+Begin
+ StringStream  := TStringStream.Create(''{$IFNDEF FPC}, AEncoding{$ENDIF});
+ Try
+  Stream.Position := 0;
+  StringStream.CopyFrom(Stream, Stream.Size);
+  StringStream.Position := 0;
+  Result := StringStream.DataString;
+ Finally
+  {$IFNDEF FPC}StringStream.Clear;{$ENDIF}
+  StringStream.Free;
+ End;
+End;
 
 Function StringFloat     (aValue          : String)           : String;
 Begin
  Result := StringReplace(aValue, '.', '', [rfReplaceall]);
+End;
+
+Function GetStringFromBoolean(Value       : Boolean)          : String;
+Begin
+ Result := 'false';
+ If Value Then
+  Result := 'true';
 End;
 
 Function GetObjectName   (TypeObject      : TTypeObject)       : String;
@@ -469,8 +496,8 @@ Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;
 Begin
  Result := TEncoding.utf8;
  Case Avalue of
-  esUtf8  : Result := TEncoding.utf8;
-  esASCII : Result := TEncoding.ASCII;
+  esUtf8 : Result := TEncoding.utf8;
+  esASCII : Result := TEncoding.ANSI;
  End;
 End;
 

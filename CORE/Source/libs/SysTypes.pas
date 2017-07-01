@@ -107,7 +107,7 @@ Begin
  For I := 0 To Params.Count -1 Do
   Begin
    JSONParam := TJSONParam.Create(Result.Encoding);
-   JSONParam.FromJSON(Trim(Copy(Params[I], Pos('=', Params[I]) + 1, 255)));
+   JSONParam.FromJSON(Trim(Copy(Params[I], Pos('=', Params[I]) + 1, Length(Params[I]))));
    Result.Add(JSONParam);
   End;
 End;
