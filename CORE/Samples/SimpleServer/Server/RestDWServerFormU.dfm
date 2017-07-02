@@ -56,6 +56,7 @@ object RestDWForm: TRestDWForm
     Top = 356
     Width = 121
     Height = 25
+    Cursor = crHandPoint
     Caption = 'Iniciar'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -71,6 +72,7 @@ object RestDWForm: TRestDWForm
     Top = 356
     Width = 121
     Height = 25
+    Cursor = crHandPoint
     Caption = 'Parar'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -122,7 +124,7 @@ object RestDWForm: TRestDWForm
         ParentFont = False
       end
       object Label2: TLabel
-        Left = 59
+        Left = 57
         Top = 37
         Width = 43
         Height = 13
@@ -136,7 +138,7 @@ object RestDWForm: TRestDWForm
         ParentFont = False
       end
       object Label3: TLabel
-        Left = 169
+        Left = 167
         Top = 37
         Width = 35
         Height = 13
@@ -1202,22 +1204,40 @@ object RestDWForm: TRestDWForm
         Top = 55
         Width = 40
         Height = 21
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
         TabOrder = 0
         Text = '8082'
       end
       object edUserNameDW: TEdit
-        Left = 59
+        Left = 57
         Top = 55
         Width = 100
         Height = 21
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
         TabOrder = 1
         Text = 'testserver'
       end
       object edPasswordDW: TEdit
-        Left = 169
+        Left = 167
         Top = 55
         Width = 100
         Height = 21
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
         PasswordChar = '*'
         TabOrder = 2
         Text = 'testserver'
@@ -1294,12 +1314,18 @@ object RestDWForm: TRestDWForm
         Text = ''
       end
       object cbEncode: TCheckBox
-        Left = 274
+        Left = 270
         Top = 56
         Width = 91
         Height = 19
         Caption = 'Encode Strings'
         Checked = True
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
         State = cbChecked
         TabOrder = 12
       end

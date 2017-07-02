@@ -643,7 +643,9 @@ Begin
   vEncoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
   vObjectValue     := GetValueType    (bJsonValue[3].Value.Value);
   vtagName         := Lowercase       (bJsonValue[4].Key);
-  SetValue(vTempValue, False);
+  If vEncoded Then
+   vTempValue := DecodeStrings(vTempValue{$IFNDEF FPC}, vEncoding{$ENDIF});
+  SetValue(vTempValue, vEncoded);
  Finally
 
  End;

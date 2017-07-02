@@ -382,6 +382,8 @@ procedure TRestDWForm.StartServer;
 begin
  If Not RESTServicePooler1.Active Then
   Begin
+   RESTServicePooler1.ServerParams.UserName := edUserNameDW.Text;
+   RESTServicePooler1.ServerParams.Password := edPasswordDW.Text;
    RESTServicePooler1.ServicePort           := StrToInt(edPortaDW.Text);
    RESTServicePooler1.SSLPrivateKeyFile     := ePrivKeyFile.Text;
    RESTServicePooler1.SSLPrivateKeyPassword := ePrivKeyPass.Text;

@@ -469,6 +469,7 @@ Begin
   Cmd := StringReplace(Cmd, ' HTTP/1.0', '', [rfReplaceAll]);
   Cmd := StringReplace(Cmd, ' HTTP/1.1', '', [rfReplaceAll]);
   Cmd := StringReplace(Cmd, ' HTTP/2.0', '', [rfReplaceAll]);
+  Cmd := StringReplace(Cmd, ' HTTP/2.1', '', [rfReplaceAll]);
   If (vServerParams.HasAuthentication) Then
    Begin
     If Not ((ARequestInfo.AuthUsername = vServerParams.Username)  And
@@ -496,7 +497,7 @@ Begin
           decoder              := TIdMessageDecoderMIME.Create(nil);
           TIdMessageDecoderMIME(decoder).MIMEBoundary := boundary;
           decoder.SourceStream := ARequestInfo.PostStream;
-          decoder.FreeSourceStream := false;
+          decoder.FreeSourceStream := False;
           decoder.ReadHeader;
           Inc(I);
           Case Decoder.PartType of
@@ -522,7 +523,7 @@ Begin
              Try
               If decoder <> Nil Then
                FreeAndNil(decoder);
-              decoder := TIdMessageDecoderMIME.Create(nil);
+              decoder := TIdMessageDecoderMIME.Create(Nil);
               TIdMessageDecoderMIME(decoder).MIMEBoundary := boundary;
              Finally
              End;
@@ -580,13 +581,15 @@ Begin
           End;
         End;
        Try
-        JSONStr                         := EncodeStrings(JSONStr{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
-        vReplyString                    := Format(TValueDisp, [GetParamsReturn(DWParams), JSONStr]);
-        AResponseInfo.FreeContentStream := True;
-        AResponseInfo.ContentStream     := TStringStream.Create(vReplyString);
+        JSONStr                              := EncodeStrings(JSONStr{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
+        vReplyString                         := Format(TValueDisp, [GetParamsReturn(DWParams), JSONStr]);
+        AResponseInfo.ContentStream          := TStringStream.Create(vReplyString{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
         AResponseInfo.ContentStream.Position := 0;
-        AResponseInfo.ContentLength     := AResponseInfo.ContentStream.Size;
+        AResponseInfo.ContentLength          := AResponseInfo.ContentStream.Size;
         AResponseInfo.WriteHeader;
+        AResponseInfo.WriteContent;
+        AResponseInfo.ContentStream          := Nil;
+        AResponseInfo.ContentStream.Free;
        Finally
        End;
        If Assigned(vLastResponse) Then
@@ -599,7 +602,6 @@ Begin
          LeaveCriticalSection(vCriticalSection);
          {$ENDIF}{$ENDIF}
         End;
-       AResponseInfo.WriteContent;
       Finally
        If Assigned(vServerMethod) Then
         vTempServerMethods.Free;

@@ -1583,7 +1583,8 @@ Begin
      vParamName := GetParamName;
      If Trim(vParamName) <> '' Then
       Begin
-       Result.Add(vParamName);
+       If Result.IndexOf(Uppercase(vParamName)) = -1 Then
+        Result.Add(Uppercase(vParamName));
        Inc(FCurrentPos);
       End;
     End
