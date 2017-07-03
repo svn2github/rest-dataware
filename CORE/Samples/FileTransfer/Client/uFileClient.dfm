@@ -1,8 +1,10 @@
-object Form2: TForm2
-  Left = 426
-  Top = 153
-  Caption = 'RESTClientPooler Test'
-  ClientHeight = 437
+object Form4: TForm4
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'FileClient'
+  ClientHeight = 345
   ClientWidth = 507
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -10,8 +12,9 @@ object Form2: TForm2
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = True
-  Position = poDesktopCenter
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Label4: TLabel
@@ -938,19 +941,12 @@ object Form2: TForm2
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Bevel2: TBevel
-    Left = 8
-    Top = 137
-    Width = 491
-    Height = 2
-    Shape = bsTopLine
-  end
   object Label1: TLabel
     Left = 8
     Top = 122
-    Width = 80
+    Width = 56
     Height = 13
-    Caption = 'COMANDO SQL'
+    Caption = 'COMANDO'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy
     Font.Height = -11
@@ -958,25 +954,12 @@ object Form2: TForm2
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Bevel3: TBevel
+  object Bevel2: TBevel
     Left = 8
-    Top = 234
+    Top = 138
     Width = 491
     Height = 2
     Shape = bsTopLine
-  end
-  object Label2: TLabel
-    Left = 8
-    Top = 219
-    Width = 66
-    Height = 13
-    Caption = 'RESULTADO'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
   end
   object eHost: TEdit
     Left = 13
@@ -1011,47 +994,35 @@ object Form2: TForm2
     TabOrder = 3
     Text = 'testserver'
   end
-  object DBGrid1: TDBGrid
-    Left = 8
-    Top = 242
-    Width = 491
-    Height = 187
-    DataSource = DataSource1
+  object Button1: TButton
+    Left = 393
+    Top = 197
+    Width = 106
+    Height = 24
+    Caption = 'File List'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
-    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgTitleClick, dgTitleHotTrack]
     ParentFont = False
     TabOrder = 4
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = [fsBold]
+    OnClick = Button1Click
   end
-  object mComando: TMemo
+  object lbLocalFiles: TListBox
     Left = 8
-    Top = 145
-    Width = 354
-    Height = 72
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    Lines.Strings = (
-      'SELECT * FROM EMPLOYEE')
-    ParentFont = False
+    Top = 141
+    Width = 381
+    Height = 200
+    ItemHeight = 13
     TabOrder = 5
   end
-  object Button1: TButton
-    Left = 366
-    Top = 169
-    Width = 133
+  object Button2: TButton
+    Left = 393
+    Top = 221
+    Width = 106
     Height = 24
-    Caption = 'Open'
+    Caption = 'Download File'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -1059,13 +1030,7 @@ object Form2: TForm2
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 6
-    OnClick = Button1Click
-  end
-  object DataSource1: TDataSource
-    AutoEdit = False
-    DataSet = MemDataset1
-    Left = 128
-    Top = 88
+    OnClick = Button2Click
   end
   object RESTClientPooler1: TRESTClientPooler
     Encoding = esASCII
@@ -1074,27 +1039,8 @@ object Form2: TForm2
     Password = 'testserver'
     ProxyOptions.BasicAuthentication = False
     ProxyOptions.ProxyPort = 0
-    RequestTimeOut = 60000
+    RequestTimeOut = 10000
     Left = 77
     Top = 41
-  end
-  object MemDataset1: TFDMemTable
-    FieldDefs = <
-      item
-        Name = 'Alunos'
-        DataType = ftString
-        Size = 100
-      end>
-    IndexDefs = <>
-    FetchOptions.AssignedValues = [evMode]
-    FetchOptions.Mode = fmAll
-    ResourceOptions.AssignedValues = [rvSilentMode]
-    ResourceOptions.SilentMode = True
-    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
-    UpdateOptions.CheckRequired = False
-    UpdateOptions.AutoCommitUpdates = True
-    StoreDefs = True
-    Left = 80
-    Top = 88
   end
 end
