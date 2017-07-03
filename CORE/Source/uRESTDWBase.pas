@@ -349,7 +349,11 @@ Begin
     End;
   End;
  Except
-
+  On E : Exception Do
+   Begin
+    {Todo: Acrescentado}
+    Raise Exception.Create(e.Message);
+   End;
  End;
  vResultParams.Free;
 End;

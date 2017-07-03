@@ -107,19 +107,25 @@ Begin
        JSONValue := TJSONValue.Create;
        Try
         JSONValue.LoadFromJSON(lResponse);
-        StringStream          := TStringStream.Create(JSONValue.Value, JSONValue.Encoding);
-        StringStream.Position := 0;
-        StrToFile(ExtractFilePath(ParamSTR(0)) + 'tempClient.txt', StringStream.DataString);
-        MemoryStream          := TMemoryStream.Create;
+        StringStream          := TStringStream.Create('');
+        JSONValue.SaveToStream(StringStream);
+//        StringStream          := TStringStream.Create(JSONValue.Value, JSONValue.Encoding);
+//        StringStream.Position := 0;
+//        StrToFile(ExtractFilePath(ParamSTR(0)) + 'tempClient.txt', StringStream.DataString);
+//        MemoryStream          := TMemoryStream.Create;
         Try
-         MemoryStream.CopyFrom(StringStream, StringStream.Size);
-         MemoryStream.Position := 0;
-         StringStream.Free;
-        Finally
+//         MemoryStream.CopyFrom(StringStream, StringStream.Size);
+//         MemoryStream.Position := 0;
+//         StringStream.Free;
          If FileExists(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]) Then
           DeleteFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
-         MemoryStream.SaveToFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
-         MemoryStream.Free;
+         StringStream.SaveToFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
+        Finally
+//         If FileExists(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]) Then
+//          DeleteFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
+//         MemoryStream.SaveToFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
+//         MemoryStream.Free;
+         StringStream.Free;
         End;
        Finally
         JSONValue.Free;

@@ -3,9 +3,9 @@ unit uDWConsts;
 Interface
 
 Uses {$IFDEF FPC}
-     SysUtils, DB, Classes, IdCoderMIME;
+     SysUtils, DB, Classes, IdGlobal, IdCoderMIME;
      {$ELSE}
-     System.SysUtils,
+     System.SysUtils, IdGlobal,
      Data.DB, System.Classes, IdCoderMIME;
      {$ENDIF}
 
@@ -62,11 +62,39 @@ Type
  Function  FileToStr   (Const FileName     : String) : String;
  Procedure StrToFile   (Const FileName,
                               SourceString : String);
+ Function  StreamToHex (Stream : TMemoryStream) : String;
+ Procedure HexToStream (Str    : String;
+                        Stream : TMemoryStream);
+ Function StreamToBytes(Stream : TMemoryStream) : tidBytes;
 
 
 implementation
 
-Function FileToStr(Const FileName : string):string;
+Function StreamToBytes(Stream : TMemoryStream) : tidBytes;
+Begin
+ Try
+  Stream.Position := 0;
+  SetLength  (Result, Stream.Size);
+  Stream.Read(Result[0], Stream.Size);
+ Finally
+ End;
+end;
+
+Procedure HexToStream(Str    : String;
+                      Stream : TMemoryStream);
+Begin
+ Stream.SetSize(Length(Str)    Div 2);
+ HexToBin      (PChar (Str),   Stream.Memory, Stream.Size);
+End;
+
+Function StreamToHex(Stream  : TMemoryStream): string;
+Begin
+ Stream.Position := 0;
+ SetLength     (Result,        Stream.Size * 2);
+ BinToHex      (Stream.Memory, PChar(Result), Stream.Size);
+End;
+
+Function FileToStr(Const FileName : String):string;
 Var
  Stream : TFileStream;
 Begin
@@ -118,15 +146,14 @@ End;
 
 Function GenerateStringFromStream(Stream : TMemoryStream; AEncoding: TEncoding) : String;
 Var
- StringStream  : TStringStream;
+ StringStream : TStringStream;
 Begin
- StringStream  := TStringStream.Create(''{$IFNDEF FPC}, AEncoding{$ENDIF});
+ StringStream := TStringStream.Create(''{$IFNDEF FPC}, AEncoding{$ENDIF});
  Try
-  Stream.Position := 0;
+  Stream.Position       := 0;
   StringStream.CopyFrom(Stream, Stream.Size);
   StringStream.Position := 0;
-  Result := StringStream.DataString;
-  StrToFile(ExtractFilePath(ParamSTR(0)) + 'tempsrc.txt', Result);
+  Result                := StringStream.DataString;
  Finally
   {$IFNDEF FPC}StringStream.Clear;{$ENDIF}
   StringStream.Free;

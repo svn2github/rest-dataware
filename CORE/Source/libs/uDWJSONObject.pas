@@ -42,6 +42,7 @@ Type
   Procedure   LoadFromJSON   (bValue       : String);
   Procedure   LoadFromStream (Stream       : TMemoryStream;
                               Encode       : Boolean = True);
+  Procedure   SaveToStream   (Stream       : TMemoryStream);
   Function    ToJSON                       : String;
   Procedure   SetValue(Value : String; Encode : Boolean = True);
   Function    Value : String;
@@ -305,7 +306,7 @@ Begin
    If vObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
                        ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob,
                        ovOraClob] Then
-    vTempString := StringFromHex(vTempString{$IFNDEF FPC}, vEncoding{$ENDIF})
+    vTempString := vTempString
    Else
     vTempString := DecodeStrings(vTempString{$IFNDEF FPC}, vEncoding{$ENDIF})
   End
@@ -644,11 +645,21 @@ begin
  End;
 End;
 
-procedure TJSONValue.LoadFromJSON(bValue: String);
+Procedure TJSONValue.SaveToStream(Stream : TMemoryStream);
+Begin
+ Try
+  Stream.Write(aValue[0], Length(aValue));
+ Finally
+  Stream.Position := 0;
+ End;
+End;
+
+procedure TJSONValue.LoadFromJSON(bValue : String);
 Var
- JsonParser  : TJsonParser;
- bJsonValue  : TJsonObject;
- vTempValue  : String;
+ JsonParser    : TJsonParser;
+ bJsonValue    : TJsonObject;
+ vTempValue    : String;
+ vStringStream : TStringStream;
 Begin
  ClearJsonParser(JsonParser);
  Try
@@ -665,11 +676,24 @@ Begin
     If vObjectValue In [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
                         ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob,
                         ovOraClob] Then
-     vTempValue := StringFromHex(vTempValue{$IFNDEF FPC}, vEncoding{$ENDIF})
+     Begin
+      Try
+//       vTempValue := StringFromHex(vTempValue{$IFNDEF FPC}, vEncoding{$ENDIF});
+       vStringStream := TStringStream.Create(''{$IFNDEF FPC}, vEncoding{$ENDIF});
+       HexToStream(vTempValue, vStringStream);
+       aValue := tIdBytes(StreamToBytes(vStringStream));
+//       vTempValue := vStringStream.DataString;
+      Finally
+       vStringStream.Free;
+      End;
+     End
     Else
      vTempValue := DecodeStrings(vTempValue{$IFNDEF FPC}, vEncoding{$ENDIF});
    End;
-  SetValue(vTempValue, vEncoded);
+  If Not(vObjectValue In [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
+                          ovMemo,     ovGraphic, ovFmtMemo,  ovOraBlob,
+                          ovOraClob]) Then
+   SetValue(vTempValue, vEncoded);
  Finally
 
  End;
@@ -679,7 +703,7 @@ Procedure TJSONValue.LoadFromStream(Stream    : TMemoryStream;
                                     Encode    : Boolean = True);
 Begin
  ObjectValue := ovBlob;
- SetValue(GenerateStringFromStream(Stream, vEncoding), Encode);
+ SetValue(StreamToHex(Stream), Encode); //GenerateStringFromStream(Stream, vEncoding), Encode);
 End;
 
 procedure TJSONValue.SetValue(Value: String; Encode: Boolean);
@@ -690,7 +714,7 @@ begin
    If vObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
                        ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob,
                        ovOraClob] Then
-    WriteValue(HexFromString(Value{$IFNDEF FPC}, vEncoding{$ENDIF}))
+    WriteValue(Value)
    Else
     WriteValue(EncodeStrings(Value{$IFNDEF FPC}, vEncoding{$ENDIF}))
   End
