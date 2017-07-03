@@ -57,8 +57,6 @@ Type
  Function StringFloat             (aValue          : String)           : String;
  Function GenerateStringFromStream(Stream          : TMemoryStream;
                                    AEncoding       : TEncoding) : String;
- Function HexFromString(Hex : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF}) : String;
- Function StringFromHex(Hex : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF}) : String;
  Function  FileToStr   (Const FileName     : String) : String;
  Procedure StrToFile   (Const FileName,
                               SourceString : String);
@@ -120,28 +118,6 @@ Begin
  Finally
   Stream.Free;
  End;
-End;
-
-Function StringFromHex(Hex : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF}) : String;
-Begin
- {$IFDEF FPC}
-  SetLength(Result, Length(Hex) div 2);
-  HexToBin(PWideChar(Hex), Result[InitStrPos], Length(Hex));
- {$ELSE}
-  SetLength(Result, Length(Hex) div 4);
-  HexToBin(PWideChar(Hex), Result[InitStrPos], Length(Hex) div SizeOf(Char));
- {$ENDIF}
-End;
-
-Function HexFromString(Hex : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF}) : String;
-Begin
- {$IFDEF FPC}
-  SetLength(Result, Length(Hex) * 2);
-  BinToHex(Hex[InitStrPos], PWideChar(Result), Length(Hex));
- {$ELSE}
-  SetLength(Result, Length(Hex) * 4);
-  BinToHex(Hex[InitStrPos], PWideChar(Result), Length(Hex) * SizeOf(Char));
- {$ENDIF}
 End;
 
 Function GenerateStringFromStream(Stream : TMemoryStream; AEncoding: TEncoding) : String;

@@ -659,7 +659,7 @@ Var
  JsonParser    : TJsonParser;
  bJsonValue    : TJsonObject;
  vTempValue    : String;
- vStringStream : TStringStream;
+ vStringStream : TMemoryStream;
 Begin
  ClearJsonParser(JsonParser);
  Try
@@ -678,11 +678,9 @@ Begin
                         ovOraClob] Then
      Begin
       Try
-//       vTempValue := StringFromHex(vTempValue{$IFNDEF FPC}, vEncoding{$ENDIF});
-       vStringStream := TStringStream.Create(''{$IFNDEF FPC}, vEncoding{$ENDIF});
+       vStringStream := TMemoryStream.Create;
        HexToStream(vTempValue, vStringStream);
        aValue := tIdBytes(StreamToBytes(vStringStream));
-//       vTempValue := vStringStream.DataString;
       Finally
        vStringStream.Free;
       End;

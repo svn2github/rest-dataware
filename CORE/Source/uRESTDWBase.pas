@@ -301,7 +301,7 @@ Begin
         Begin
          HttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
          HttpRequest.Request.ContentEncoding := 'multipart/form-data';
-         StringStream  := TStringStream.Create('');
+         StringStream          := TStringStream.Create('');
          HttpRequest.Post(vURL, SendParams, StringStream);
          StringStream.Position := 0;
         End
@@ -607,29 +607,27 @@ Begin
           End;
         End;
        Try
-//        JSONStr                              := EncodeStrings(JSONStr{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
         vReplyString                         := Format(TValueDisp, [GetParamsReturn(DWParams), JSONStr]);
         mb                                   := TStringStream.Create(vReplyString{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
         mb.Position                          := 0;
-        AResponseInfo.ContentStream          := TIdMemoryBufferStream.Create(mb.Memory, mb.Size);//TStringStream.Create(vReplyString{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
+        AResponseInfo.ContentStream          := mb;
         AResponseInfo.ContentStream.Position := 0;
         AResponseInfo.ContentLength          := mb.Size;
         AResponseInfo.ContentType            := 'application/octet-stream';
         AResponseInfo.ResponseNo             := 200;
         AResponseInfo.WriteHeader;
-//        AContext.Connection.IOHandler.Write(mb, mb.Size);
         AResponseInfo.WriteContent;
-//        AResponseInfo.ContentStream          := Nil;
-//        AResponseInfo.ContentStream.Free;
+        AResponseInfo.ContentStream          := Nil;
+        AResponseInfo.ContentStream.Free;
        Finally
-        mb.Free;
+//        mb.Free;
        End;
        If Assigned(vLastResponse) Then
         Begin
          {$IFDEF FPC} {$IFDEF WINDOWS}
          EnterCriticalSection(vCriticalSection);
          {$ENDIF}{$ENDIF}
-         vLastResponse(DecodeStrings(JSONStr{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF}));
+         vLastResponse(vReplyString);
          {$IFDEF FPC} {$IFDEF WINDOWS}
          LeaveCriticalSection(vCriticalSection);
          {$ENDIF}{$ENDIF}
