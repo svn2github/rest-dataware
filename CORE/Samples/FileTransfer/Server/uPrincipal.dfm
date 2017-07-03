@@ -5,7 +5,7 @@ object fServer: TfServer
   BorderStyle = bsSingle
   Caption = 'File Transfer Server'
   ClientHeight = 333
-  ClientWidth = 512
+  ClientWidth = 484
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,8 +18,8 @@ object fServer: TfServer
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
-    Left = 370
-    Top = 6
+    Left = 341
+    Top = 8
     Width = 133
     Height = 100
     Picture.Data = {
@@ -865,7 +865,7 @@ object fServer: TfServer
   end
   object Label3: TLabel
     Left = 161
-    Top = 37
+    Top = 39
     Width = 35
     Height = 13
     AutoSize = False
@@ -880,7 +880,7 @@ object fServer: TfServer
   object Bevel1: TBevel
     Left = 8
     Top = 28
-    Width = 344
+    Width = 329
     Height = 2
     Shape = bsTopLine
   end
@@ -899,7 +899,7 @@ object fServer: TfServer
   end
   object Label2: TLabel
     Left = 54
-    Top = 37
+    Top = 39
     Width = 43
     Height = 13
     AutoSize = False
@@ -913,7 +913,7 @@ object fServer: TfServer
   end
   object Label4: TLabel
     Left = 7
-    Top = 37
+    Top = 39
     Width = 31
     Height = 13
     AutoSize = False
@@ -941,22 +941,22 @@ object fServer: TfServer
   object Bevel2: TBevel
     Left = 8
     Top = 112
-    Width = 495
+    Width = 466
     Height = 2
     Shape = bsTopLine
   end
   object lbLocalFiles: TListBox
     Left = 8
     Top = 120
-    Width = 495
+    Width = 466
     Height = 206
     ItemHeight = 13
     TabOrder = 0
   end
   object cbEncode: TCheckBox
-    Left = 265
-    Top = 56
-    Width = 100
+    Left = 233
+    Top = 84
+    Width = 104
     Height = 19
     Caption = 'Encode Strings'
     Checked = True
@@ -971,7 +971,7 @@ object fServer: TfServer
   end
   object edPasswordDW: TEdit
     Left = 161
-    Top = 55
+    Top = 57
     Width = 100
     Height = 21
     Font.Charset = DEFAULT_CHARSET
@@ -986,7 +986,7 @@ object fServer: TfServer
   end
   object edUserNameDW: TEdit
     Left = 54
-    Top = 55
+    Top = 57
     Width = 100
     Height = 21
     Font.Charset = DEFAULT_CHARSET
@@ -1000,7 +1000,7 @@ object fServer: TfServer
   end
   object edPortaDW: TEdit
     Left = 7
-    Top = 55
+    Top = 57
     Width = 40
     Height = 21
     Font.Charset = DEFAULT_CHARSET
@@ -1013,10 +1013,10 @@ object fServer: TfServer
     Text = '8082'
   end
   object ButtonStart: TButton
-    Left = 243
-    Top = 81
-    Width = 121
-    Height = 25
+    Left = 263
+    Top = 39
+    Width = 74
+    Height = 39
     Cursor = crHandPoint
     Caption = 'Ativar'
     Font.Charset = DEFAULT_CHARSET
@@ -1029,9 +1029,9 @@ object fServer: TfServer
     OnClick = ButtonStartClick
   end
   object cbPoolerState: TCheckBox
-    Left = 143
+    Left = 126
     Top = 85
-    Width = 97
+    Width = 101
     Height = 17
     Caption = 'Pooler Active?'
     Checked = True

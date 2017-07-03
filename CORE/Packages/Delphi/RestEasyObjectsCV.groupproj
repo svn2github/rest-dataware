@@ -21,6 +21,9 @@
         <Projects Include="..\..\Samples\FileTransfer\Server\FileServer.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\..\Samples\FileTransfer\Client\FileClient.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -83,14 +86,23 @@
     <Target Name="FileServer:Make">
         <MSBuild Projects="..\..\Samples\FileTransfer\Server\FileServer.dproj" Targets="Make"/>
     </Target>
+    <Target Name="FileClient">
+        <MSBuild Projects="..\..\Samples\FileTransfer\Client\FileClient.dproj"/>
+    </Target>
+    <Target Name="FileClient:Clean">
+        <MSBuild Projects="..\..\Samples\FileTransfer\Client\FileClient.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FileClient:Make">
+        <MSBuild Projects="..\..\Samples\FileTransfer\Client\FileClient.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestEasyObjectsCORE;RestDWServerProject;RestDWClientProject;JSONDatasetSample;LoadfromJSON;FileServer"/>
+        <CallTarget Targets="RestEasyObjectsCORE;RestDWServerProject;RestDWClientProject;JSONDatasetSample;LoadfromJSON;FileServer;FileClient"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestEasyObjectsCORE:Clean;RestDWServerProject:Clean;RestDWClientProject:Clean;JSONDatasetSample:Clean;LoadfromJSON:Clean;FileServer:Clean"/>
+        <CallTarget Targets="RestEasyObjectsCORE:Clean;RestDWServerProject:Clean;RestDWClientProject:Clean;JSONDatasetSample:Clean;LoadfromJSON:Clean;FileServer:Clean;FileClient:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestEasyObjectsCORE:Make;RestDWServerProject:Make;RestDWClientProject:Make;JSONDatasetSample:Make;LoadfromJSON:Make;FileServer:Make"/>
+        <CallTarget Targets="RestEasyObjectsCORE:Make;RestDWServerProject:Make;RestDWClientProject:Make;JSONDatasetSample:Make;LoadfromJSON:Make;FileServer:Make;FileClient:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

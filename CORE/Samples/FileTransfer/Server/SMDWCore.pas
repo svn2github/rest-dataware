@@ -2,14 +2,15 @@ unit SMDWCore;
 
 interface
 
-uses Windows, SysUtils, Classes, uDWConsts, uDWJSONTools, uDWJSONObject,
-     Winapi.ShellAPI, TypInfo, System.JSON, Dialogs, ServerUtils, SysTypes;
+uses Windows, SysUtils, Classes, uDWConsts, uDWJSONTools, System.JSON, uDWJSONObject,
+     Winapi.ShellAPI, TypInfo, Dialogs, ServerUtils, SysTypes;
 
 Type
 {$METHODINFO ON}
   TSMDWCore = class(TServerMethods)
   Private
    Function ChangeBar          (Value        : String)    : String;
+   Function FileList : String;
    Function DownloadFile       (Var Params   : TDWParams) : String;Overload;
    Function SendReplicationFile(Var Params   : TDWParams) : String;
    Function GetPathFile(Empresa, TipoEmpresa : String) : String;
@@ -35,12 +36,14 @@ Var
 Begin
  JSONObject := TJSONObject.Create;
  Case SendType Of
-  sePOST   :
+  seGET, sePOST :
    Begin
     If UpperCase(Context) = Uppercase('DownloadFile') Then
      Result := DownloadFile(Params)
     Else If UpperCase(Context) = Uppercase('SendReplicationFile') Then
      Result := SendReplicationFile(Params)
+    Else If UpperCase(Context) = Uppercase('FileList') Then
+     Result := FileList
     Else
      Begin
       JSONObject.AddPair(TJSONPair.Create('STATUS',   'NOK'));
@@ -84,11 +87,8 @@ End;
 
 Function TSMDWCore.SendReplicationFile(Var Params : TDWParams) : String;
 Var
- vEmpresa,
- vArquivo,
- vTipoEmpresa,
- vLocalFile   : String;
- JSONValue    : uDWJSONObject.TJSONValue;
+ vArquivo     : String;
+ JSONValue    : TJSONValue;
  vFileIn      : TStringStream;
  vFile        : TMemoryStream;
  Procedure DelFilesFromDir(Directory, FileMask : String; Const DelSubDirs: Boolean = False);
@@ -110,23 +110,17 @@ Var
   SHFileOperation(FOS);
  End;
 Begin
- If (Params.ItemsString['Empresa']     <> Nil) And
-    (Params.ItemsString['Arquivo']     <> Nil) And
-    (Params.ItemsString['TipoEmpresa'] <> Nil) Then
+ If (Params.ItemsString['Arquivo']     <> Nil) Then
   Begin
-   JSONValue          := uDWJSONObject.TJSONValue.Create;
+   JSONValue          := TJSONValue.Create;
    JSONValue.Encoding := GetEncoding(fServer.rspServerFiles.Encoding);
-   vEmpresa           := Trim(Params.ItemsString['Empresa'].Value);
-   vArquivo           := Trim(Params.ItemsString['Arquivo'].Value);
-   vTipoEmpresa       := Trim(Params.ItemsString['TipoEmpresa'].Value);
-   vLocalFile         := GetPathFile(vEmpresa, vTipoEmpresa) + vArquivo;
-   ForceDirectories(ExtractFilePath(vLocalFile));
-   If FileExists(vLocalFile) Then
-    DeleteFile(vLocalFile);
+   vArquivo           := fServer.DirName + Trim(Params.ItemsString['Arquivo'].Value);
+   If FileExists(vArquivo) Then
+    DeleteFile(vArquivo);
    vFileIn            := TStringStream.Create(Params.ItemsString['FileSend'].Value, JSONValue.Encoding);
    Try
     vFileIn.Position   := 0;
-    vFileIn.SaveToFile(vLocalFile);
+    vFileIn.SaveToFile(vArquivo);
    Finally
     Params.ItemsString['Result'].SetValue(GetStringFromBoolean(vFileIn.Size > 0));
     Result := 'SEND(OK)';
@@ -138,37 +132,31 @@ End;
 
 Function TSMDWCore.DownloadFile(Var Params : TDWParams) : String;
 Var
- JSONValue    : uDWJSONObject.TJSONValue;
+ JSONValue    : TJSONValue;
  vFile        : TMemoryStream;
- vLocalFile,
- vArquivo,
- vTipoEmpresa : String;
+ vArquivo     : String;
  vFileExport  : TStringStream;
 Begin
- If (Params.ItemsString['Arquivo']     <> Nil) And
-    (Params.ItemsString['TipoEmpresa'] <> Nil) Then
+ If (Params.ItemsString['Arquivo']     <> Nil) Then
   Begin
-   JSONValue             := uDWJSONObject.TJSONValue.Create;
+   JSONValue             := TJSONValue.Create;
    JSONValue.Encoding    := Params.Encoding;
    JSONValue.ObjectValue := ovBlob;
-   vArquivo           := Trim(Params.ItemsString['Arquivo'].Value);
-   vTipoEmpresa       := Trim(Params.ItemsString['TipoEmpresa'].Value);
-   If (vArquivo     <> '') And
-      (vTipoEmpresa <> '') Then
+   vArquivo              := fServer.DirName + Trim(Params.ItemsString['Arquivo'].Value);
+   If (vArquivo     <> '') Then
     Begin
      Try
-      vLocalFile := IncludeTrailingPathDelimiter(ExtractFilePath(ParamSTR(0)) + ChangeBar(vTipoEmpresa)) + vArquivo;
-      If FileExists(vLocalFile) Then
+      If FileExists(vArquivo) Then
        Begin
         vFile := TMemoryStream.Create;
         Try
-         vFile.LoadFromFile(vLocalFile);
+         vFile.LoadFromFile(vArquivo);
          vFile.Position  := 0;
         Except
 
         End;
-        JSONValue.SetValue(GenerateStringFromStream(vFile, JSONValue.Encoding));
-        Result          := JSONValue.ToJSON;
+        JSONValue.LoadFromStream(vFile);
+        Result  := JSONValue.ToJSON;
        End;
      Finally
       FreeAndNil(vFile);
@@ -176,6 +164,29 @@ Begin
      End;
     End;
   End;
+End;
+
+Function TSMDWCore.FileList : String;
+Var
+ JSONValue   : TJSONValue;
+ vArquivo    : String;
+ vFileExport : TStringStream;
+ List        : TStringList;
+Begin
+ List               := TStringList.Create;
+ GetFilesServer(List);
+ JSONValue          := TJSONValue.Create;
+ JSONValue.Encoding := GetEncoding(fServer.rspServerFiles.Encoding);
+ Try
+  vFileExport       := TStringStream.Create(List.Text, JSONValue.Encoding);
+  vFileExport.Position  := 0;
+  JSONValue.LoadFromStream(vFileExport);
+  Result := JSONValue.ToJSON;
+ Finally
+  FreeAndNil(vFileExport);
+  FreeAndNil(List);
+  FreeAndNil(JSONValue);
+ End;
 End;
 
 End.

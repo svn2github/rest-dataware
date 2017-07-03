@@ -40,6 +40,8 @@ Type
                               JSONValue    : String;
                               DestDS       : TDataset);
   Procedure   LoadFromJSON   (bValue       : String);
+  Procedure   LoadFromStream (Stream       : TMemoryStream;
+                              Encode       : Boolean = True);
   Function    ToJSON                       : String;
   Procedure   SetValue(Value : String; Encode : Boolean = True);
   Function    Value : String;
@@ -290,8 +292,16 @@ function TJSONValue.GetValue: String;
 Var
  vTempString : String;
 Begin
+ vTempString := BytesToString(aValue);
+ If Length(vTempString) > 0 Then
+  Begin
+   If vTempString[InitStrPos] = '"' Then
+    Delete(vTempString, InitStrPos, 1);
+   If vTempString[Length(vTempString)] = '"' Then
+    Delete(vTempString, Length(vTempString), 1);
+  End;
  If vEncoded Then
-  vTempString := DecodeStrings(vEncoding.GetString(TBytes(aValue)){$IFNDEF FPC}, vEncoding{$ENDIF})
+  vTempString := DecodeStrings(vTempString{$IFNDEF FPC}, vEncoding{$ENDIF})
  Else
   vTempString := BytesToString(aValue);
  If vObjectValue = ovString Then
@@ -430,7 +440,7 @@ Begin
  vtagName         := lowercase(TableName);
  vEncoded         := EncodedValue;
  vTagGeral        := DatasetValues(bValue);
- aValue           := tIdBytes(vEncoding.GetBytes(vTagGeral));
+ aValue           := tIdBytes(ToBytes(vTagGeral));
 End;
 
 Function TJSONValue.ToJSON: String;
@@ -649,6 +659,13 @@ Begin
  Finally
 
  End;
+End;
+
+Procedure TJSONValue.LoadFromStream(Stream    : TMemoryStream;
+                                    Encode    : Boolean = True);
+Begin
+ ObjectValue := ovBlob;
+ SetValue(GenerateStringFromStream(Stream, vEncoding), Encode);
 End;
 
 procedure TJSONValue.SetValue(Value: String; Encode: Boolean);

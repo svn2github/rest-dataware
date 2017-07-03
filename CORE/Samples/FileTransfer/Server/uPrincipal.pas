@@ -32,19 +32,64 @@ type
    Procedure LoadLocalFiles;
   public
     { Public declarations }
+   DirName : String;
   end;
+
+ Function GetFilesServer(Const List : TStrings) : Boolean;
 
 var
   fServer: TfServer;
+  StartDir : String;
 
 implementation
 
 {$R *.dfm}
 
+Function GetFilesServer(Const List : TStrings) : Boolean;
+Var
+ SRec : TSearchRec;
+ Res  : Integer;
+Begin
+ If Not Assigned(List) Then
+  Begin
+   Result := False;
+   Exit;
+  End;
+ Res := FindFirst(IncludeTrailingPathDelimiter(StartDir) + '*.*', faAnyfile, SRec);
+ If Res = 0 Then
+  Begin
+   Try
+    While res = 0 do
+     Begin
+      If (SRec.Attr And faDirectory <> faDirectory) Then
+       List.Add(SRec.Name);
+      Res := FindNext(SRec);
+     End;
+   Finally
+    FindClose(SRec)
+   End;
+  End;
+ Result := (List.Count > 0);
+End;
+
 Procedure TfServer.LoadLocalFiles;
+Var
+ List    : TStringList;
+ I       : Integer;
 Begin
  lbLocalFiles.Clear;
-
+ List     := TStringList.Create;
+ DirName  := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName)) +
+             IncludeTrailingPathDelimiter('filelist');
+ StartDir := DirName;
+ If Not DirectoryExists(DirName) Then
+  ForceDirectories(DirName);
+ If GetFilesServer(List) Then
+  Begin
+   For I := 0 To List.Count -1 Do
+    lbLocalFiles.AddItem(List[I], Nil);
+  End;
+ List.Free;
 End;
 
 procedure TfServer.ButtonStartClick(Sender: TObject);

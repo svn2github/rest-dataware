@@ -4,9 +4,9 @@ interface
 
 Uses
   {$IFDEF FPC}
-  SysUtils, ServerUtils, Classes, uDWConsts, Base64;
+  SysUtils, ServerUtils, Classes, uDWConsts, IdGlobal, IdCoderMIME;
   {$ELSE}
-  System.SysUtils, ServerUtils, System.Classes, Soap.EncdDecd, uDWConsts;
+  System.SysUtils, ServerUtils, System.Classes, IdGlobal, IdCoderMIME, uDWConsts;
   {$ENDIF}
 
 
@@ -24,64 +24,49 @@ Function DecodeStrings(Value       : String
                       {$IFNDEF FPC};
                           Encoding : TEncoding
                                       {$ENDIF})              : String;
+Function EncodeBytes  (Value : String{$IFNDEF FPC}; Encoding : TEncoding{$ENDIF}) : TIdBytes;
 
 implementation
 
 uses SysTypes;
 
+Function EncodeBytes(Value : String{$IFNDEF FPC}; Encoding : TEncoding{$ENDIF}) : TIdBytes;
+Var
+ Encoder: TIdEncoderMIME;
+Begin
+ Encoder := TIdEncoderMIME.Create(nil);
+ {$IFDEF FPC}
+ Result := ToBytes(Encoder.Encode(Value, IndyTextEncoding_ASCII));
+ {$ELSE}
+ Result := ToBytes(Encoder.Encode(Value, IndyTextEncoding(Encoding)));
+ {$ENDIF}
+ Encoder.Free;
+End;
+
 Function EncodeStrings(Value : String{$IFNDEF FPC}; Encoding : TEncoding{$ENDIF}) : String;
 Var
- Input,
- Output : TStringStream;
+ Encoder: TIdEncoderMIME;
 Begin
+ Encoder := TIdEncoderMIME.Create(nil);
  {$IFDEF FPC}
- Result := EncodeStringBase64(Value);
+ Result := Encoder.EncodeString(Value, IndyTextEncoding_ASCII);
  {$ELSE}
- Input := TStringStream.Create(Value, Encoding);
- Try
-  Input.Position := 0;
-  Output := TStringStream.Create('', Encoding);
-  Try
-   Soap.EncdDecd.EncodeStream(Input, Output);
-   Result := Output.DataString;
-  Finally
-   Output.Free;
-  End;
- Finally
-  Input.Free;
- End;
+ Result := Encoder.EncodeString(Value, IndyTextEncoding(Encoding));
  {$ENDIF}
+ Encoder.Free;
 End;
 
 Function DecodeStrings(Value : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF}) : String;
 Var
- Input,
- Output : TStringStream;
+ Encoder: TIdDecoderMIME;
 Begin
- If Length(Value) > 0 Then
-  Begin
-   {$IFDEF FPC}
-   Result := DecodeStringBase64(Value);
-   {$ELSE}
-   Input := TStringStream.Create(Value, Encoding);
-   Try
-    Output := TStringStream.Create('', Encoding);
-    Try
-     Input.Position := 0;
-     Soap.EncdDecd.DecodeStream(Input, Output);
-     Try
-      Result := Output.DataString;
-     Except
-      Raise;
-     End;
-    Finally
-     Output.Free;
-    End;
-   Finally
-    Input.Free;
-   End;
-   {$ENDIF}
-  End;
+ Encoder := TIdDecoderMIME.Create(nil);
+ {$IFDEF FPC}
+ Result := Encoder.DecodeString(Value, IndyTextEncoding_ASCII);
+ {$ELSE}
+ Result := Encoder.DecodeString(Value, IndyTextEncoding(Encoding));
+ {$ENDIF}
+ Encoder.Free;
 End;
 
 Function GetPairJSON(Tag,

@@ -3,10 +3,10 @@ unit uDWConsts;
 Interface
 
 Uses {$IFDEF FPC}
-     SysUtils, DB, Classes;
+     SysUtils, DB, Classes, IdCoderMIME;
      {$ELSE}
      System.SysUtils,
-     Data.DB, System.Classes;
+     Data.DB, System.Classes, IdCoderMIME;
      {$ENDIF}
 
 Const
