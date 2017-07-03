@@ -52,7 +52,7 @@ Type
   Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
   Property    Encoding                    : TEncoding        Read vEncoding        Write vEncoding;
   Property    Tagname                     : String           Read vtagName         Write vtagName;
-  Property    Encoded                     : Boolean          Read vEncoded;
+  Property    Encoded                     : Boolean          Read vEncoded         Write vEncoded;
 End;
 
 Type
@@ -301,7 +301,14 @@ Begin
     Delete(vTempString, Length(vTempString), 1);
   End;
  If vEncoded Then
-  vTempString := DecodeStrings(vTempString{$IFNDEF FPC}, vEncoding{$ENDIF})
+  Begin
+   If vObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
+                       ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob,
+                       ovOraClob] Then
+    vTempString := StringFromHex(vTempString{$IFNDEF FPC}, vEncoding{$ENDIF})
+   Else
+    vTempString := DecodeStrings(vTempString{$IFNDEF FPC}, vEncoding{$ENDIF})
+  End
  Else
   vTempString := BytesToString(aValue);
  If vObjectValue = ovString Then
@@ -654,7 +661,14 @@ Begin
   vObjectValue     := GetValueType    (bJsonValue[3].Value.Value);
   vtagName         := Lowercase       (bJsonValue[4].Key);
   If vEncoded Then
-   vTempValue := DecodeStrings(vTempValue{$IFNDEF FPC}, vEncoding{$ENDIF});
+   Begin
+    If vObjectValue In [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
+                        ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob,
+                        ovOraClob] Then
+     vTempValue := StringFromHex(vTempValue{$IFNDEF FPC}, vEncoding{$ENDIF})
+    Else
+     vTempValue := DecodeStrings(vTempValue{$IFNDEF FPC}, vEncoding{$ENDIF});
+   End;
   SetValue(vTempValue, vEncoded);
  Finally
 
@@ -672,7 +686,14 @@ procedure TJSONValue.SetValue(Value: String; Encode: Boolean);
 begin
  vEncoded := Encode;
  If Encode Then
-  WriteValue(EncodeStrings(Value{$IFNDEF FPC}, vEncoding{$ENDIF}))
+  Begin
+   If vObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
+                       ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob,
+                       ovOraClob] Then
+    WriteValue(HexFromString(Value{$IFNDEF FPC}, vEncoding{$ENDIF}))
+   Else
+    WriteValue(EncodeStrings(Value{$IFNDEF FPC}, vEncoding{$ENDIF}))
+  End
  Else
   WriteValue(Value);
 end;

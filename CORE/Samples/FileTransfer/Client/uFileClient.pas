@@ -77,11 +77,12 @@ End;
 
 procedure TForm4.Button2Click(Sender: TObject);
 Var
- lResponse : String;
- JSONValue : TJSONValue;
- DWParams  : TDWParams;
- JSONParam : TJSONParam;
+ lResponse    : String;
+ JSONValue    : TJSONValue;
+ DWParams     : TDWParams;
+ JSONParam    : TJSONParam;
  StringStream : TStringStream;
+ MemoryStream : TMemoryStream;
 Begin
  If lbLocalFiles.ItemIndex > -1 Then
   Begin
@@ -106,9 +107,20 @@ Begin
        JSONValue := TJSONValue.Create;
        Try
         JSONValue.LoadFromJSON(lResponse);
-        StringStream          := TStringStream.Create(JSONValue.Value);
+        StringStream          := TStringStream.Create(JSONValue.Value, JSONValue.Encoding);
         StringStream.Position := 0;
-        StringStream.SaveToFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
+        StrToFile(ExtractFilePath(ParamSTR(0)) + 'tempClient.txt', StringStream.DataString);
+        MemoryStream          := TMemoryStream.Create;
+        Try
+         MemoryStream.CopyFrom(StringStream, StringStream.Size);
+         MemoryStream.Position := 0;
+         StringStream.Free;
+        Finally
+         If FileExists(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]) Then
+          DeleteFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
+         MemoryStream.SaveToFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
+         MemoryStream.Free;
+        End;
        Finally
         JSONValue.Free;
        End;

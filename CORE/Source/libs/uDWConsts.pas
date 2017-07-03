@@ -57,8 +57,64 @@ Type
  Function StringFloat             (aValue          : String)           : String;
  Function GenerateStringFromStream(Stream          : TMemoryStream;
                                    AEncoding       : TEncoding) : String;
+ Function HexFromString(Hex : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF}) : String;
+ Function StringFromHex(Hex : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF}) : String;
+ Function  FileToStr   (Const FileName     : String) : String;
+ Procedure StrToFile   (Const FileName,
+                              SourceString : String);
+
 
 implementation
+
+Function FileToStr(Const FileName : string):string;
+Var
+ Stream : TFileStream;
+Begin
+ Stream:= TFileStream.Create(FileName, fmOpenRead);
+ Try
+  SetLength(Result, Stream.Size);
+  Stream.Position := 0;
+  Stream.ReadBuffer(Pointer(Result)^, Stream.Size);
+ Finally
+  Stream.Free;
+ End;
+End;
+
+Procedure StrToFile(Const FileName, SourceString : string);
+Var
+ Stream : TFileStream;
+Begin
+ If FileExists(FileName) Then
+  DeleteFile(FileName);
+ Stream:= TFileStream.Create(FileName, fmCreate);
+ Try
+  Stream.WriteBuffer(Pointer(SourceString)^, Length(SourceString));
+ Finally
+  Stream.Free;
+ End;
+End;
+
+Function StringFromHex(Hex : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF}) : String;
+Begin
+ {$IFDEF FPC}
+  SetLength(Result, Length(Hex) div 2);
+  HexToBin(PWideChar(Hex), Result[InitStrPos], Length(Hex));
+ {$ELSE}
+  SetLength(Result, Length(Hex) div 4);
+  HexToBin(PWideChar(Hex), Result[InitStrPos], Length(Hex) div SizeOf(Char));
+ {$ENDIF}
+End;
+
+Function HexFromString(Hex : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF}) : String;
+Begin
+ {$IFDEF FPC}
+  SetLength(Result, Length(Hex) * 2);
+  BinToHex(Hex[InitStrPos], PWideChar(Result), Length(Hex));
+ {$ELSE}
+  SetLength(Result, Length(Hex) * 4);
+  BinToHex(Hex[InitStrPos], PWideChar(Result), Length(Hex) * SizeOf(Char));
+ {$ENDIF}
+End;
 
 Function GenerateStringFromStream(Stream : TMemoryStream; AEncoding: TEncoding) : String;
 Var
@@ -70,6 +126,7 @@ Begin
   StringStream.CopyFrom(Stream, Stream.Size);
   StringStream.Position := 0;
   Result := StringStream.DataString;
+  StrToFile(ExtractFilePath(ParamSTR(0)) + 'tempsrc.txt', Result);
  Finally
   {$IFNDEF FPC}StringStream.Clear;{$ENDIF}
   StringStream.Free;

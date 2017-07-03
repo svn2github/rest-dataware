@@ -241,7 +241,10 @@ Var
     End;
   Finally
    If vTempValue <> '' Then
-    ResultJSON := DecodeStrings(vTempValue{$IFNDEF FPC}, GetEncoding(vRSCharset){$ENDIF});
+    Begin
+//     ResultJSON := DecodeStrings(vTempValue{$IFNDEF FPC}, GetEncoding(vRSCharset){$ENDIF});
+     ResultJSON := vTempValue;
+    End;
   End;
  End;
  Procedure SetParamsValues(DWParams : TDWParams; SendParamsData : TIdMultipartFormDataStream);
@@ -300,6 +303,7 @@ Begin
          HttpRequest.Request.ContentEncoding := 'multipart/form-data';
          StringStream  := TStringStream.Create('');
          HttpRequest.Post(vURL, SendParams, StringStream);
+         StringStream.Position := 0;
         End
        Else
         Begin
@@ -308,7 +312,7 @@ Begin
          vResult      := HttpRequest.Get(EventData);
          StringStream := TStringStream.Create(vResult);
         End;
-       StringStream.WriteBuffer(#0' ', 1);
+//       StringStream.WriteBuffer(#0' ', 1);
        StringStream.Position := 0;
        Try
         SetData(StringStream.DataString, Params, Result);
@@ -445,6 +449,7 @@ Var
  JSONParam          : TJSONParam;
  msgEnd             : Boolean;
  I                  : Integer;
+ mb,
  ms                 : TStringStream;
  Function GetParamsReturn(Params : TDWParams) : String;
  Var
@@ -598,16 +603,22 @@ Begin
           End;
         End;
        Try
-        JSONStr                              := EncodeStrings(JSONStr{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
+//        JSONStr                              := EncodeStrings(JSONStr{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
         vReplyString                         := Format(TValueDisp, [GetParamsReturn(DWParams), JSONStr]);
-        AResponseInfo.ContentStream          := TStringStream.Create(vReplyString{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
+        mb                                   := TStringStream.Create(vReplyString{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
+        mb.Position                          := 0;
+        AResponseInfo.ContentStream          := TIdMemoryBufferStream.Create(mb.Memory, mb.Size);//TStringStream.Create(vReplyString{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
         AResponseInfo.ContentStream.Position := 0;
-        AResponseInfo.ContentLength          := AResponseInfo.ContentStream.Size;
+        AResponseInfo.ContentLength          := mb.Size;
+        AResponseInfo.ContentType            := 'application/octet-stream';
+        AResponseInfo.ResponseNo             := 200;
         AResponseInfo.WriteHeader;
+//        AContext.Connection.IOHandler.Write(mb, mb.Size);
         AResponseInfo.WriteContent;
-        AResponseInfo.ContentStream          := Nil;
-        AResponseInfo.ContentStream.Free;
+//        AResponseInfo.ContentStream          := Nil;
+//        AResponseInfo.ContentStream.Free;
        Finally
+        mb.Free;
        End;
        If Assigned(vLastResponse) Then
         Begin
