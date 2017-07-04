@@ -168,6 +168,7 @@ Type
   vPassword,
   vHost             : String;
   vPort             : Integer;
+  vThreadRequest,
   vAutenticacao     : Boolean;
   vTransparentProxy : TIdProxyConnectionInfo;
   vRequestTimeOut   : Integer;
@@ -176,11 +177,12 @@ Type
   Procedure SetUrlPath(Value : String);
  Public
   //Métodos, Propriedades, Variáveis, Procedures e Funções Publicas
-  Function    SendEvent(EventData : String;CallBack : TCallBack): String;Overload;
+  Function    SendEvent(EventData  : String;
+                        CallBack   : TCallBack = Nil) : String;Overload;
   Function    SendEvent(EventData  : String;
                         Var Params : TDWParams;
-                        EventType : TSendEvent = sePOST;
-                        CallBack : TCallBack =nil ) : String;Overload;
+                        EventType  : TSendEvent = sePOST;
+                        CallBack   : TCallBack = Nil) : String;Overload;
   Constructor Create(AOwner: TComponent);Override;
   Destructor  Destroy;Override;
  Published
@@ -195,6 +197,7 @@ Type
   Property Autenticacao     : Boolean                Read vAutenticacao     Write vAutenticacao      Default True;
   Property ProxyOptions     : TIdProxyConnectionInfo Read vTransparentProxy Write vTransparentProxy;
   Property RequestTimeOut   : Integer                Read vRequestTimeOut   Write vRequestTimeOut;
+  Property ThreadRequest    : Boolean                Read vThreadRequest    Write vThreadRequest;
 End;
 
 implementation
@@ -214,6 +217,7 @@ Begin
  vRSCharset                      := esASCII;
  vAutenticacao                   := True;
  vRequestTimeOut                 := 10000;
+ vThreadRequest                  := False;
 End;
 
 Destructor  TRESTClientPooler.Destroy;
@@ -323,35 +327,33 @@ Var
    End;
  End;
 Begin
-
-     thd := TThread_Request.Create;
-     try
-       thd.FreeOnTerminate := true;
-       thd.Priority        := tpHighest;
-       thd.EventData       := EventData;
-       {TODO CRISTIANO}
-       thd.Params.CopyFrom(Params);
-       thd.EventType       := EventType;
-       thd.vUserName       := vUserName;
-       thd.vPassword       := vPassword;
-       thd.vUrlPath        := vUrlPath;
-       thd.vHost           :=   vHost;
-       thd.vPort           :=   vPort;
-       thd.vAutenticacao   :=   vAutenticacao;
-       thd.vTransparentProxy:=   vTransparentProxy;
-       thd.vRequestTimeOut :=   vRequestTimeOut;
-       thd.vTypeRequest    :=   vTypeRequest;
-       thd.vRSCharset      :=   vRSCharset;
-       thd.FCallBack       :=  CallBack;
-
-     finally
-       thd.START;
-     end;
-
-  exit;
-
-
-ss            := Nil;
+ If vThreadRequest Then
+  Begin
+   thd := TThread_Request.Create;
+   Try
+    thd.FreeOnTerminate := true;
+    thd.Priority        := tpHighest;
+    thd.EventData       := EventData;
+    {TODO CRISTIANO}
+    thd.Params.CopyFrom(Params);
+    thd.EventType       := EventType;
+    thd.vUserName       := vUserName;
+    thd.vPassword       := vPassword;
+    thd.vUrlPath        := vUrlPath;
+    thd.vHost           :=   vHost;
+    thd.vPort           :=   vPort;
+    thd.vAutenticacao   :=   vAutenticacao;
+    thd.vTransparentProxy:=   vTransparentProxy;
+    thd.vRequestTimeOut :=   vRequestTimeOut;
+    thd.vTypeRequest    :=   vTypeRequest;
+    thd.vRSCharset      :=   vRSCharset;
+    thd.FCallBack       :=  CallBack;
+   Finally
+    thd.START;
+   End;
+   Exit;
+  End;
+ ss            := Nil;
  vResultParams := TMemoryStream.Create;
  If vTypeRequest = trHttp Then
   vTpRequest := 'http'
@@ -442,7 +444,8 @@ ss            := Nil;
  vResultParams.Free;
 End;
 
-Function TRESTClientPooler.SendEvent(EventData : String;CallBack : TCallBack) : String;
+Function TRESTClientPooler.SendEvent(EventData : String;
+                                     CallBack  : TCallBack = Nil) : String;
 Var
  RBody      : TStringStream;
  vTpRequest : String;
@@ -858,6 +861,7 @@ Begin
  vServerParams.Password          := 'testserver';
  vServerContext                  := 'restdataware';
  VEncondig                       := esASCII;
+ vServicePort                    := 8082;
  {$IFDEF FPC} {$IFDEF WINDOWS}
  InitializeCriticalSection(vCriticalSection);
  {$ENDIF}{$ENDIF}

@@ -1075,6 +1075,7 @@ object Form2: TForm2
     ProxyOptions.BasicAuthentication = False
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 60000
+    ThreadRequest = False
     Left = 77
     Top = 41
   end

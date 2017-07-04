@@ -1429,4 +1429,16 @@ object RestDWForm: TRestDWForm
     Left = 294
     Top = 186
   end
+  object RESTServicePooler1: TRESTServicePooler
+    Active = False
+    ServicePort = 8082
+    ProxyOptions.Port = 8888
+    SSLVersion = sslvSSLv2
+    OnLastRequest = RESTServicePooler1LastRequest
+    OnLastResponse = RESTServicePooler1LastResponse
+    Encoding = esASCII
+    ServerContext = 'restdataware'
+    Left = 132
+    Top = 192
+  end
 end

@@ -63,7 +63,6 @@ type
     RestaurarAplicao1: TMenuItem;
     N5: TMenuItem;
     SairdaAplicao1: TMenuItem;
-    RESTServicePooler1: TRESTServicePooler;
     memoReq: TMemo;
     memoResp: TMemo;
     Label19: TLabel;
@@ -73,6 +72,7 @@ type
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     Server_FDConnection: TFDConnection;
     cbEncode: TCheckBox;
+    RESTServicePooler1: TRESTServicePooler;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);
