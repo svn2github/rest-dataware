@@ -167,7 +167,6 @@ Begin
  JSONParam           := TJSONParam.Create(DWParams.Encoding);
  JSONParam.ParamName := 'SQL';
 
- //;;SQL := mComando1.Text;
  JSONParam.SetValue(SQL);
  DWParams.Add(JSONParam);
 
@@ -176,14 +175,9 @@ Begin
  JSONParam.SetValue('');
  DWParams.Add(JSONParam);
 
- {JSONParam           := TJSONParam.Create(DWParams.Encoding);
- JSONParam.ParamName := 'PARAM_CRIADO_NO_SERVER';
- JSONParam.SetValue('');
- DWParams.Add(JSONParam);
-  }
-
  lResponse := RESTClientPooler1.SendEvent('ConsultaBanco', DWParams {$IFDEF INTHREAD},sePOST,CallBack {$ENDIF});// {$IFDEF INTHREAD},CallBack {$ENDIF});
- {$IFNDEF INTHREAD}
+
+ { o retorno deve ser imprelmentado por CallBack
  If lResponse <> '' Then
       Begin
        JSONValue := uDWJSONObject.TJSONValue.Create;
@@ -200,21 +194,21 @@ Begin
      Showmessage(Format('Mostrando os Parametros %s %s',       [#13,sb.ToString]));
   sb.Free;
 
- {$ENDIF}
+}
  freeAndnil(DWParams);
 End;
 
 procedure TForm2.Button2Click(Sender: TObject);
 begin
-  mComando1.Lines.Text:= 'SELECT FIRST 1 CD_FUNC,NM_FUNC FROM POFUNC';
-  mComando2.Lines.Text:= 'SELECT FIRST 1 CD_FUNC,NM_FUNC FROM POFUNC';
+  mComando1.Lines.Text:= 'SELECT FIRST 1 * FROM EMPLOYEE';
+  mComando2.Lines.Text:= 'SELECT FIRST 1 * FROM EMPLOYEE';
   Button1.Click;
 end;
 
 procedure TForm2.Button4Click(Sender: TObject);
 begin
-  mComando1.Lines.Text:= 'SELECT FIRST 500 CD_FUNC,NM_FUNC FROM POFUNC';
-  mComando2.Lines.Text:= 'SELECT FIRST 5 CD_FUNC,NM_FUNC FROM POFUNC';
+  mComando1.Lines.Text:= 'SELECT FIRST 5 * FROM EMPLOYEE';
+  mComando2.Lines.Text:= 'SELECT   * FROM EMPLOYEE';
 
 end;
 
@@ -226,9 +220,9 @@ begin
   MemDataset2:= TJvMemoryData.Create(SELF);
   DataSource2.DataSet:=MemDataset2;
 
-  ehost.Text:='achadoouperdido.com.br';
-  mComando1.Lines.Text:='SELECT FIRST 5 * FROM POFUNC';
-  mComando2.Lines.Text:='SELECT FIRST 5 * FROM POFUNC';
+  //ehost.Text:='achadoouperdido.com.br';
+  mComando1.Lines.Text:='SELECT FIRST 1 * FROM EMPLOYEE';
+  mComando2.Lines.Text:='SELECT FIRST 1 * FROM EMPLOYEE';
 end;
 
 procedure TForm2.CallBackListAlunos(lResponse : String;DWParams  : TDWParams);

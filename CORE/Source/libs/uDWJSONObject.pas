@@ -81,6 +81,7 @@ Type
   Destructor  Destroy;Override;
   Procedure   FromJSON(JSON : String);
   Function    ToJSON        : String;
+  Procedure   CopyFrom(JSONParam:TJSONParam );
   Function    Value : String;
   Procedure   SetValue(aValue : String; Encode : Boolean = True);
   Procedure   LoadFromStream (Stream       : TMemoryStream;
@@ -105,6 +106,7 @@ Type
   Function  ParamsReturn  : Boolean;
   Function  ToJSON        : String;
   Procedure FromJSON(JSON : String);
+  Procedure CopyFrom(DWParams:TDWParams );
   Procedure Delete      (Index : Integer);                 Overload;
   Function  Add         (Item  : TJSONParam) : Integer;    Overload;
   Property  Items      [Index  : Integer]    : TJSONParam  Read GetRec     Write PutRec;Default;
@@ -184,6 +186,21 @@ Begin
 
 End;
 
+Procedure TDWParams.CopyFrom(DWParams:TDWParams );
+ Var
+  i:integer;
+  p    : TJSONParam;
+  JSONParam : TJSONParam;
+ Begin
+  Clear;
+  for i:=0 to DWParams.Count-1 do
+  begin
+     p:=DWParams.Items[i];
+     JSONParam := TJSONParam.Create(DWParams.Encoding);
+     JSONParam.CopyFrom(p);
+     Add(JSONParam);
+  end;
+End;
 Procedure TDWParams.Delete(Index : Integer);
 Begin
  If (Index < Self.Count) And (Index > -1) Then
@@ -841,6 +858,27 @@ Begin
 
  End;
 End;
+
+Procedure TJSONParam.CopyFrom(JSONParam:TJSONParam );
+Var
+ //JsonParser  : TJsonParser;
+ //bJsonValue  : TJsonObject;
+ vValue      : String;
+Begin
+ Try
+    vValue          := JSONParam.Value;
+    //bJsonValue       := JSONParam.vJSONValue; //JsonParser.Output.Objects[0];
+    Self.vTypeObject      := JSONParam.vTypeObject; //GetObjectName   (bJsonValue[0].Value.Value);
+    Self.vObjectDirection := JSONParam.vObjectDirection;// GetDirectionName(bJsonValue[1].Value.Value);
+    Self.vEncoded         := JSONParam.vEncoded;// GetBooleanFromString(bJsonValue[2].Value.Value);
+    Self.vObjectValue     := JSONParam.vObjectValue;// GetValueType    (bJsonValue[3].Value.Value);
+    Self.vParamName       := JSONParam.vParamName;// Lowercase       (bJsonValue[4].Key);
+    Self.SetValue(vValue);
+ Finally
+
+ End;
+
+end;
 
 procedure TJSONParam.SaveToStream(Stream: TMemoryStream);
 Var

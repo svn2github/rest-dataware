@@ -1,10 +1,10 @@
 [Stats]
 <<<<<<< .mine
-EditorSecs=31729
-DesignerSecs=615
-InspectorSecs=131
-CompileSecs=479279
-OtherSecs=1967
+EditorSecs=31796
+DesignerSecs=633
+InspectorSecs=136
+CompileSecs=485313
+OtherSecs=1973
 ||||||| .r228
 EditorSecs=6765
 DesignerSecs=387
@@ -21,4 +21,4 @@ OtherSecs=749
 StartTime=22/06/2017 09:35:49
 RealKeys=0
 EffectiveKeys=0
-DebugSecs=36153
+DebugSecs=36395

@@ -1,55 +1,27 @@
-object Form2: TForm2
-  Left = 426
-  Top = 153
-  Caption = 'Teste servidor Rest com Thread'
-  ClientHeight = 637
-  ClientWidth = 631
+object Form3: TForm3
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Load JSON to Dataset'
+  ClientHeight = 286
+  ClientWidth = 629
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = True
-  Position = poDesktopCenter
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object Label4: TLabel
-    Left = 13
-    Top = 38
-    Width = 26
-    Height = 13
-    Caption = 'Host'
-    Color = clBtnFace
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-  end
-  object Label5: TLabel
-    Left = 155
-    Top = 40
-    Width = 31
-    Height = 13
-    Caption = 'Porta'
-    Color = clBtnFace
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-  end
   object Image1: TImage
-    Left = 366
-    Top = 35
+    Left = 496
+    Top = 10
     Width = 133
-    Height = 100
+    Height = 109
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D49484452000000870000
       00640806000000AC372326000000097048597300000EC400000EC401952B0E1B
@@ -890,311 +862,51 @@ object Form2: TForm2
       629A799FD0572C2462B90152733EAFE7F8BC86A14A2A06F110786951FABFD9D5
       78A2C7BA508FC03148832468101C83D42D0D826390BAA541700C52B7F4BFB752
       4E92F100CAA80000000049454E44AE426082}
-    Visible = False
-  end
-  object Bevel1: TBevel
-    Left = 8
-    Top = 32
-    Width = 491
-    Height = 2
-    Shape = bsTopLine
-  end
-  object Label7: TLabel
-    Left = 8
-    Top = 13
-    Width = 177
-    Height = 13
-    Caption = 'CONFIGURA'#199#195'O SERVIDOR Rest'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Label6: TLabel
-    Left = 123
-    Top = 79
-    Width = 35
-    Height = 13
-    AutoSize = False
-    Caption = 'Senha'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Label8: TLabel
-    Left = 13
-    Top = 79
-    Width = 43
-    Height = 13
-    AutoSize = False
-    Caption = 'Usu'#225'rio'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Bevel2: TBevel
-    Left = 8
-    Top = 137
-    Width = 491
-    Height = 2
-    Shape = bsTopLine
-  end
-  object Label1: TLabel
-    Left = 8
-    Top = 122
-    Width = 80
-    Height = 13
-    Caption = 'COMANDO SQL'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Bevel3: TBevel
-    Left = 8
-    Top = 243
-    Width = 491
-    Height = 2
-    Shape = bsTopLine
-  end
-  object Label2: TLabel
-    Left = 8
-    Top = 228
-    Width = 66
-    Height = 13
-    Caption = 'RESULTADO'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Label3: TLabel
-    Left = 515
-    Top = 269
-    Width = 110
-    Height = 13
-    Caption = 'Retorno parametro'
-    Color = clBtnFace
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-  end
-  object eHost: TEdit
-    Left = 13
-    Top = 55
-    Width = 136
-    Height = 21
-    TabOrder = 0
-    Text = 'localhost'
-  end
-  object ePort: TEdit
-    Left = 155
-    Top = 55
-    Width = 40
-    Height = 21
-    TabOrder = 1
-    Text = '8082'
-  end
-  object edPasswordDW: TEdit
-    Left = 123
-    Top = 97
-    Width = 100
-    Height = 21
-    PasswordChar = '*'
-    TabOrder = 2
-    Text = 'testserver'
-  end
-  object edUserNameDW: TEdit
-    Left = 13
-    Top = 97
-    Width = 100
-    Height = 21
-    TabOrder = 3
-    Text = 'testserver'
   end
   object DBGrid1: TDBGrid
-    Left = 8
-    Top = 251
-    Width = 491
-    Height = 187
-    DataSource = DataSource1
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgTitleClick, dgTitleHotTrack]
-    ParentFont = False
-    TabOrder = 4
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = [fsBold]
-  end
-  object mComando1: TMemo
-    Left = 8
-    Top = 145
-    Width = 409
-    Height = 40
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    Lines.Strings = (
-      'SELECT * FROM EMPLOYEE')
-    ParentFont = False
-    TabOrder = 5
-  end
-  object Button1: TButton
-    Left = 485
-    Top = 169
-    Width = 133
-    Height = 24
-    Caption = 'Open'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-    TabOrder = 6
-    OnClick = Button1Click
-  end
-  object DBGrid2: TDBGrid
-    Left = 8
-    Top = 464
-    Width = 491
+    Left = 0
+    Top = 128
+    Width = 629
     Height = 158
-    DataSource = DataSource2
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgTitleClick, dgTitleHotTrack]
-    ParentFont = False
-    TabOrder = 7
+    Align = alBottom
+    DataSource = DataSource1
+    TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
-    TitleFont.Style = [fsBold]
+    TitleFont.Style = []
   end
-  object mComando2: TMemo
-    Left = 8
-    Top = 188
-    Width = 409
-    Height = 40
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    Lines.Strings = (
-      'SELECT FIRST 5 * FROM EMPLOYEE')
-    ParentFont = False
-    TabOrder = 8
+  object Memo1: TMemo
+    Left = 0
+    Top = 10
+    Width = 383
+    Height = 109
+    TabOrder = 1
   end
-  object Button2: TButton
-    Left = 485
-    Top = 199
-    Width = 133
-    Height = 24
-    Caption = 'ZERA'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-    TabOrder = 9
-    OnClick = Button2Click
-  end
-  object Button3: TButton
-    Left = 505
-    Top = 243
-    Width = 133
-    Height = 24
-    Caption = 'Open'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-    TabOrder = 10
-    OnClick = Button1Click
-  end
-  object Button4: TButton
-    Left = 485
-    Top = 138
-    Width = 133
+  object ButtonStart: TButton
+    Left = 385
+    Top = 94
+    Width = 109
     Height = 25
-    Caption = 'Select p/Text'
-    TabOrder = 11
-    OnClick = Button4Click
+    Caption = 'Carregar de JSON'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 2
+    OnClick = ButtonStartClick
   end
-  object lbret1: TListBox
-    Left = 505
-    Top = 288
-    Width = 106
-    Height = 150
-    ItemHeight = 13
-    TabOrder = 12
-  end
-  object lbret2: TListBox
-    Left = 505
-    Top = 464
-    Width = 106
-    Height = 150
-    ItemHeight = 13
-    TabOrder = 13
-  end
-  object cheParams: TCheckBox
-    Left = 232
-    Top = 57
-    Width = 128
-    Height = 17
-    Caption = 'Mostrar Mensagem'
-    TabOrder = 14
+  object FDMemTable1: TJvMemoryData
+    FieldDefs = <>
+    Left = 88
+    Top = 136
   end
   object DataSource1: TDataSource
-    AutoEdit = False
-    Left = 128
-    Top = 88
-  end
-  object RESTClientPooler1: TRESTClientPooler
-    Encoding = esASCII
-    Host = 'localhost'
-    UserName = 'testserver'
-    Password = 'testserver'
-    ProxyOptions.BasicAuthentication = False
-    ProxyOptions.ProxyPort = 0
-    RequestTimeOut = 10000
-    Left = 77
-    Top = 41
-  end
-  object DataSource2: TDataSource
-    AutoEdit = False
-    Left = 136
-    Top = 96
+    DataSet = FDMemTable1
+    Left = 152
+    Top = 136
   end
 end
