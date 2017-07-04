@@ -271,7 +271,7 @@ Begin
    If Params.ItemsString['SQL'].value <> '' Then
     Begin
      If Params.ItemsString['TESTPARAM'] <> Nil Then
-      Params.ItemsString['TESTPARAM'].SetValue('OK');
+      Params.ItemsString['TESTPARAM'].SetValue('OK, OK');
      vSQL      := Params.ItemsString['SQL'].value;
      {$IFDEF FPC}
      {$ELSE}

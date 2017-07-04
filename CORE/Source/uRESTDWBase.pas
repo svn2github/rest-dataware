@@ -1076,15 +1076,14 @@ ss            := Nil;
     Begin
      HttpRequest.Request.ContentType := 'application/json';
      SResult := HttpRequest.Get(EventData);
-                    if assigned(FCallBack) then
-                   Synchronize(CurrentThread,
-                     procedure ()
-                        begin
-                          FCallBack(SResult,Params)
-
-                        end);
-           terminate;
-
+     If Assigned(FCallBack) Then
+      {$IFDEF FPC}FCallBack(SResult, Params);{$ELSE}
+      Synchronize(CurrentThread, Procedure ()
+                                 Begin
+                                  FCallBack(SResult,Params)
+                                 End);
+      {$ENDIF}
+     Terminate;
     End;
    sePOST,
    sePUT,
@@ -1116,15 +1115,14 @@ ss            := Nil;
        StringStream.Position := 0;
        Try
         SetData(StringStream.DataString, Params, SResult);
-               if assigned(FCallBack) then
-                   Synchronize(CurrentThread,
-                     procedure ()
-                        begin
-                          FCallBack(SResult,Params)
-
-                        end);
-           terminate;
-
+        If Assigned(FCallBack) Then
+         {$IFDEF FPC}FCallBack(SResult, Params);{$ELSE}
+         Synchronize(CurrentThread, Procedure ()
+                                    Begin
+                                     FCallBack(SResult,Params)
+                                    End);
+         {$ENDIF}
+        Terminate;
        Finally
         StringStream.Free;
        End;
@@ -1138,14 +1136,14 @@ ss            := Nil;
        StringStream.Position := 0;
        Try
         SetData(StringStream.DataString, Params, SResult);
-               if assigned(FCallBack) then
-                   Synchronize(CurrentThread,
-                     procedure ()
-                        begin
-                          FCallBack(SResult,Params)
-
-                        end);
-           terminate;
+        If Assigned(FCallBack) Then
+         {$IFDEF FPC}FCallBack(SResult, Params);{$ELSE}
+         Synchronize(CurrentThread, Procedure ()
+                                    Begin
+                                     FCallBack(SResult,Params)
+                                    End);
+         {$ENDIF}
+        Terminate;
        Finally
         StringStream.Free;
        End;
@@ -1156,27 +1154,26 @@ ss            := Nil;
          HttpRequest.Request.ContentType := 'application/json';
          HttpRequest.Delete(vURL);
          SResult := GetPairJSON('OK', 'DELETE COMMAND OK');
-               if assigned(FCallBack) then
-                   Synchronize(CurrentThread,
-                     procedure ()
-                        begin
-                          FCallBack(SResult,Params)
-
-                        end);
-           terminate;
+         If Assigned(FCallBack) Then
+         {$IFDEF FPC}FCallBack(SResult, Params);{$ELSE}
+         Synchronize(CurrentThread, Procedure ()
+                                    Begin
+                                     FCallBack(SResult,Params)
+                                    End);
+         {$ENDIF}
+         Terminate;
        Except
         On e:exception Do
          Begin
           SResult := GetPairJSON('NOK', e.Message);
-               if assigned(FCallBack) then
-                   Synchronize(CurrentThread,
-                     procedure ()
-                        begin
-                          FCallBack(SResult,Params)
-
-                        end);
-           terminate;
-
+          If Assigned(FCallBack) Then
+          {$IFDEF FPC}FCallBack(SResult, Params);{$ELSE}
+          Synchronize(CurrentThread, Procedure ()
+                                     Begin
+                                      FCallBack(SResult,Params)
+                                     End);
+          {$ENDIF}
+          Terminate;
          End;
        End;
       End;

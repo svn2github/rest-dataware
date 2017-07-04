@@ -109,10 +109,6 @@ object RestDWForm: TRestDWForm
     TabOrder = 3
     object tsConfigs: TTabSheet
       Caption = 'Configuration'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 7
         Top = 37
@@ -1401,18 +1397,6 @@ object RestDWForm: TRestDWForm
       Caption = 'Sair da Aplica'#231#227'o'
       OnClick = SairdaAplicao1Click
     end
-  end
-  object RESTServicePooler1: TRESTServicePooler
-    Active = False
-    ServicePort = 8082
-    ProxyOptions.Port = 8888
-    SSLVersion = sslvSSLv2
-    OnLastRequest = RESTServicePooler1LastRequest
-    OnLastResponse = RESTServicePooler1LastResponse
-    Encoding = esASCII
-    ServerContext = 'restdataware'
-    Left = 192
-    Top = 128
   end
   object FDStanStorageJSONLink1: TFDStanStorageJSONLink
     Left = 293

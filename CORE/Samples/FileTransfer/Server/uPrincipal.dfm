@@ -1051,7 +1051,7 @@ object fServer: TfServer
     SSLVersion = sslvSSLv2
     Encoding = esASCII
     ServerContext = 'restdataware'
-    Left = 120
-    Top = 104
+    Left = 200
+    Top = 160
   end
 end
