@@ -1,11 +1,11 @@
 object Form2: TForm2
-  Left = 237
-  Height = 658
-  Top = 8
-  Width = 780
+  Left = 329
+  Height = 637
+  Top = 33
+  Width = 649
   Caption = 'RESTClientPooler Test'
-  ClientHeight = 658
-  ClientWidth = 780
+  ClientHeight = 637
+  ClientWidth = 649
   Color = clBtnFace
   Font.Color = clWindowText
   Font.Height = -11
