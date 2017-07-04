@@ -1,4 +1,4 @@
-program RestDWClientProjectZEOS;
+program RestDWClientProjectThread;
 {$APPTYPE GUI}
 
 uses
