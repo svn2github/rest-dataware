@@ -961,6 +961,21 @@ object Form4: TForm4
     Height = 2
     Shape = bsTopLine
   end
+  object Label2: TLabel
+    Left = 225
+    Top = 40
+    Width = 48
+    Height = 13
+    Caption = 'TimeOut'
+    Color = clBtnFace
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
   object eHost: TEdit
     Left = 13
     Top = 55
@@ -1047,6 +1062,19 @@ object Form4: TForm4
     TabOrder = 7
     OnClick = Button3Click
   end
+  object cmb_tmp: TComboBox
+    Left = 224
+    Top = 55
+    Width = 113
+    Height = 21
+    TabOrder = 8
+    Text = '1 minuto'
+    Items.Strings = (
+      '1 minuto'
+      '2 minutos'
+      '3 minutos'
+      '5 minutos')
+  end
   object RESTClientPooler1: TRESTClientPooler
     Encoding = esASCII
     Host = 'localhost'
@@ -1055,6 +1083,7 @@ object Form4: TForm4
     ProxyOptions.BasicAuthentication = False
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 60000
+    ThreadRequest = False
     Left = 77
     Top = 41
   end

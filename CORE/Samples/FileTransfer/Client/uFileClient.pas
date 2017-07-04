@@ -28,6 +28,8 @@ type
     Button2: TButton;
     Button3: TButton;
     OpenDialog1: TOpenDialog;
+    cmb_tmp: TComboBox;
+    Label2: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -142,7 +144,8 @@ Var
  lResponse           : String;
  MemoryStream        : TMemoryStream;
 Begin
- If OpenDialog1.Execute Then
+  RESTClientPooler1.RequestTimeOut:= Copy(cmb_tmp.Text, 1,1) + * 1000;
+  If OpenDialog1.Execute Then
   Begin
    DWParams                     := TDWParams.Create;
    DWParams.Encoding            := GetEncoding(vCMWebServiceOnLine.Encoding);
