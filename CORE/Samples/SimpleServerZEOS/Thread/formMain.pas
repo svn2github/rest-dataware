@@ -46,6 +46,7 @@ Type
     Bevel4: TBevel;
     Label9: TLabel;
     Image1: TImage;
+    cheThread: TCheckBox;
 
     procedure btnGetClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -123,6 +124,7 @@ begin
   sb:=TStringBuilder.Create;
   for i:=0 to DWParams.Count-1 do
     sb.Append(Format('"%s" = "%s" %s',[DWParams.Items[i].ParamName,DWParams.Items[i].Value,#13]));
+
   if cheParams.Checked then
     Showmessage(Format('Mostrando os Parametros %s %s',  [#13,sb.ToString]));
    lbret2.Items.Add(Format('"%s" - %d',[{sb.ToString}DWParams.ItemsString['TESTPARAM'].Value,lbret2.Items.Count]));
@@ -160,6 +162,7 @@ Begin
  RESTClientPooler1.Port     := StrToInt(ePort.Text);
  RESTClientPooler1.UserName := edUserNameDW.Text;
  RESTClientPooler1.Password := edPasswordDW.Text;
+ RESTClientPooler1.ThreadRequest :=  cheThread.Checked;
 
  DWParams            := TDWParams.Create;
  DWParams.Encoding   := GetEncoding(RESTClientPooler1.Encoding);
@@ -176,24 +179,26 @@ Begin
 
  lResponse := RESTClientPooler1.SendEvent('ConsultaBanco', DWParams {$IFDEF INTHREAD},sePOST,CallBack {$ENDIF});// {$IFDEF INTHREAD},CallBack {$ENDIF});
 
- { o retorno deve ser imprelmentado por CallBack
- If lResponse <> '' Then
-      Begin
-       JSONValue := uDWJSONObject.TJSONValue.Create;
-       Try
-        JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);
-       Finally
-        JSONValue.Free;
-       End;
-      End;
+ if not cheThread.Checked then
+ begin
+   If lResponse <> '' Then
+        Begin
+         JSONValue := uDWJSONObject.TJSONValue.Create;
+         Try
+          JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);
+         Finally
+          JSONValue.Free;
+         End;
+        End;
 
-  sb:=TStringBuilder.Create;
-  for i:=0 to DWParams.Count-1 do
-    sb.Append(Format('"%s" = "%s" %s',[DWParams.Items[i].ParamName,DWParams.Items[i].Value,#13]));
-     Showmessage(Format('Mostrando os Parametros %s %s',       [#13,sb.ToString]));
-  sb.Free;
+    sb:=TStringBuilder.Create;
+    for i:=0 to DWParams.Count-1 do
+      sb.Append(Format('"%s" = "%s" %s',[DWParams.Items[i].ParamName,DWParams.Items[i].Value,#13]));
 
-}
+    Showmessage(Format('Mostrando os Parametros %s %s',       [#13,sb.ToString]));
+    sb.Free;
+ end
+
  freeAndnil(DWParams);
 End;
 

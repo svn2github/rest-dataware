@@ -1201,6 +1201,14 @@ object Form2: TForm2
     Caption = 'Mostrar Mensagem'
     TabOrder = 14
   end
+  object cheThread: TCheckBox
+    Left = 232
+    Top = 80
+    Width = 128
+    Height = 17
+    Caption = 'Usa Thread'
+    TabOrder = 15
+  end
   object DataSource1: TDataSource
     AutoEdit = False
     Left = 392
@@ -1214,7 +1222,6 @@ object Form2: TForm2
     ProxyOptions.BasicAuthentication = False
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 10000
-    ThreadRequest = True
     Left = 285
     Top = 145
   end
