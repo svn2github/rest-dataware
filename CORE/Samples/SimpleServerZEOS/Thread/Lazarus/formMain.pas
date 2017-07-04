@@ -95,7 +95,7 @@ end;
 procedure TForm2.Button4Click(Sender: TObject);
 begin
   mComando1.Lines.Text:= 'SELECT FIRST 5 * FROM EMPLOYEE';
-  mComando2.Lines.Text:= 'SELECT   * FROM EMPLOYEE';
+  mComando2.Lines.Text:= 'SELECT * FROM EMPLOYEE';
 
 end;
 
@@ -111,6 +111,7 @@ begin
    Try
     DBGrid1.DataSource := Nil;
     DBGrid1.Columns.Clear;
+    MemDataset1.Clear;   //corrige bug no TMemDataset
     JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);
     DBGrid1.DataSource := DataSource1;
    Finally
@@ -141,6 +142,7 @@ begin
    Try
     DBGrid2.DataSource := Nil;
     DBGrid2.Columns.Clear;
+    MemDataset2.Clear;   //corrige bug no TMemDataset
     JSONValue.WriteToDataset(dtFull, lResponse, MemDataset2);
     DBGrid2.DataSource := DataSource2;
    Finally
@@ -156,9 +158,6 @@ begin
   if cheParams.Checked then
     Showmessage(Format('Mostrando os Parametros %s %s',   [#13,sb.Text]));
   sb.Free;
-
-
-
 
 end;
 
@@ -207,6 +206,7 @@ Begin
     Try
      DBGrid1.DataSource := Nil;
      DBGrid1.Columns.Clear;
+     MemDataset1.Clear;
      JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);
      DBGrid1.DataSource := DataSource1;
     Finally
@@ -240,7 +240,7 @@ Begin
  RESTClientPooler1.UserName := edUserNameDW.Text;
  RESTClientPooler1.Password := edPasswordDW.Text;
  RESTClientPooler1.ThreadRequest :=  cheThread.Checked;
- SQL                        := mComando1.Text;
+ SQL                        := mComando2.Text;
  DWParams                   := TDWParams.Create;
  DWParams.Encoding          := GetEncoding(RESTClientPooler1.Encoding);
  JSONParam                  := TJSONParam.Create(DWParams.Encoding);
@@ -262,9 +262,10 @@ Begin
 
     JSONValue := TJSONValue.Create;
     Try
+     MemDataset2.Clear;
      DBGrid2.DataSource := Nil;
      DBGrid2.Columns.Clear;
-     JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);
+     JSONValue.WriteToDataset(dtFull, lResponse, MemDataset2);
      DBGrid2.DataSource := DataSource1;
     Finally
      JSONValue.Free;

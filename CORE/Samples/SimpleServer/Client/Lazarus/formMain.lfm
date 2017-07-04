@@ -1042,7 +1042,7 @@ object Form2: TForm2
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     Lines.Strings = (
-      'SELECT * FROM EMPLOYEE'
+      'SELECT FIRST 1 * FROM EMPLOYEE'
     )
     ParentFont = False
     TabOrder = 5

@@ -96,6 +96,7 @@ Begin
     Try
      DBGrid1.DataSource := Nil;
      DBGrid1.Columns.Clear;
+     MemDataset1.Clear;   //corrige bug no TMemDataset
      JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);
      DBGrid1.DataSource := DataSource1;
     Finally

@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="40">
+    <Units Count="42">
       <Unit0>
         <Filename Value="RestClient.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -18,10 +18,10 @@
         <ComponentName Value="Form2"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <CursorPos X="34" Y="10"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="27"/>
+        <CursorPos X="7" Y="99"/>
         <UsageCount Value="55"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="urestrequest.pas"/>
@@ -179,31 +179,26 @@
       </Unit22>
       <Unit23>
         <Filename Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="50"/>
         <CursorPos Y="60"/>
         <UsageCount Value="18"/>
-        <Loaded Value="True"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\..\..\..\Source\libs\uDWJSONTools.pas"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="38"/>
-        <CursorPos X="40" Y="57"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="18"/>
-        <Loaded Value="True"/>
       </Unit24>
       <Unit25>
         <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="671"/>
-        <CursorPos X="38" Y="681"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="575"/>
+        <CursorPos Y="592"/>
         <UsageCount Value="18"/>
         <Bookmarks Count="2">
           <Item0 X="56" Y="393" ID="2"/>
           <Item1 X="13" Y="232" ID="3"/>
         </Bookmarks>
-        <Loaded Value="True"/>
       </Unit25>
       <Unit26>
         <Filename Value="..\..\..\..\Source\libs\JSON\uDWJSONParser.pas"/>
@@ -264,15 +259,11 @@
       </Unit33>
       <Unit34>
         <Filename Value="..\..\..\..\Source\uRESTDWBase.pas"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="609"/>
-        <CursorPos Y="621"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="18"/>
         <Bookmarks Count="1">
           <Item0 X="106" Y="222" ID="1"/>
         </Bookmarks>
-        <Loaded Value="True"/>
       </Unit34>
       <Unit35>
         <Filename Value="C:\lazarus\components\indy\trunk\Lib\Core\IdIOHandler.pas"/>
@@ -312,56 +303,29 @@
         <UsageCount Value="11"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit39>
+      <Unit40>
+        <Filename Value="Q:\RestDB\rest-dataware-componentes-dataware\CORE\Source\libs\uDWJSONObject.pas"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="574"/>
+        <CursorPos Y="592"/>
+        <UsageCount Value="10"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="Q:\RESTDataware\CORE\Samples\SimpleServerZEOS\Thread\Lazarus\formMain.pas"/>
+        <ComponentName Value="Form2"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="123"/>
+        <CursorPos X="16" Y="145"/>
+        <UsageCount Value="10"/>
+      </Unit41>
     </Units>
-    <JumpHistory Count="11" HistoryIndex="10">
-      <Position1>
-        <Filename Value="formMain.pas"/>
-        <Caret Line="99" TopLine="84"/>
-      </Position1>
-      <Position2>
-        <Filename Value="formMain.pas"/>
-        <Caret Line="10" Column="34"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\..\..\..\Source\uRESTDWBase.pas"/>
-        <Caret Line="361" Column="55" TopLine="351"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
-        <Caret Line="50" Column="31" TopLine="35"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
-        <Caret Line="129" Column="13" TopLine="119"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
-        <Caret Line="125" TopLine="119"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
-        <Caret Line="124" TopLine="119"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <Caret Line="523" Column="45" TopLine="513"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <Caret Line="684" TopLine="674"/>
-      </Position9>
-      <Position10>
-        <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <Caret Line="662" Column="31" TopLine="652"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\..\..\..\Source\uRESTDWBase.pas"/>
-        <Caret Line="31" Column="47" TopLine="20"/>
-      </Position11>
-    </JumpHistory>
+    <JumpHistory HistoryIndex="-1"/>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="14">
+    <BreakPoints Count="15">
       <Item1>
         <Kind Value="bpkSource"/>
         <WatchScope Value="wpsLocal"/>
@@ -460,6 +424,21 @@
         <Source Value="..\..\..\..\Source\uRESTDWBase.pas"/>
         <Line Value="427"/>
       </Item14>
+      <Item15>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
+        <Line Value="592"/>
+      </Item15>
     </BreakPoints>
+    <Watches Count="2">
+      <Item1>
+        <Expression Value="DestDS.RECORDCOUNT"/>
+      </Item1>
+      <Item2>
+        <Expression Value="DestDS"/>
+      </Item2>
+    </Watches>
   </Debugging>
 </CONFIG>
