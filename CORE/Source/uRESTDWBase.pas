@@ -209,8 +209,9 @@ Var
   Try
    InitPos    := Pos('"RESULT":[', InputValue) + 10;
    vTempValue := Copy(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
-   Delete(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
+   InputValue := Copy(InputValue, 1, InitPos) + '}]}'; //Delete(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
    If Params <> Nil Then
+   If Params.ParamsReturn Then
     Begin
      ParseJson(JsonParser, InputValue);
      If Length(JsonParser.Output.Objects) > 0 Then
@@ -218,6 +219,8 @@ Var
        For A := 1 To Length(JsonParser.Output.Objects) -1 Do
         Begin
          bJsonValue := JsonParser.Output.Objects[A];
+         If Length(bJsonValue) = 0 Then
+          Continue;
          If GetObjectName(bJsonValue[0].Value.Value) <> toParam Then
           Break;
          JSONParam := TJSONParam.Create(GetEncoding(vRSCharset));

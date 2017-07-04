@@ -102,6 +102,7 @@ Type
   Procedure PutRecName(Index    : String; Item : TJSONParam);Overload;
  Public
   Constructor Create;
+  Function  ParamsReturn  : Boolean;
   Function  ToJSON        : String;
   Procedure FromJSON(JSON : String);
   Procedure Delete      (Index : Integer);                 Overload;
@@ -212,6 +213,18 @@ Begin
      Result := TJSONParam(TList(Self).Items[I]^);
      Break;
     End;
+  End;
+End;
+
+Function TDWParams.ParamsReturn : Boolean;
+Var
+ I : Integer;
+Begin
+ For I := 0 To Self.Count -1 Do
+  Begin
+   Result := Items[I].vObjectDirection In [odOUT, odINOUT];
+   If Result Then
+    Break;
   End;
 End;
 
@@ -712,6 +725,7 @@ End;
 
 procedure TJSONValue.SetValue(Value: String; Encode: Boolean);
 begin
+ vBinary  := False;
  vEncoded := Encode;
  If Encode Then
   Begin
@@ -849,14 +863,14 @@ end;
 
 procedure TJSONParam.SetValue(aValue: String; Encode: Boolean);
 Begin
- vBinary             := False;
- vJSONValue.vBinary  := vBinary;
  vEncoded            := Encode;
  vJSONValue.vEncoded := vEncoded;
  If Encode Then
   WriteValue(EncodeStrings(aValue{$IFNDEF FPC}, vEncoding{$ENDIF}))
  Else
   WriteValue(aValue);
+ vBinary             := False;
+ vJSONValue.vBinary  := vBinary;
 End;
 
 function TJSONParam.ToJSON: String;
