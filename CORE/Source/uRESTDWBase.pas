@@ -207,9 +207,9 @@ Var
  Begin
   ClearJsonParser(JsonParser);
   Try
-   InitPos    := Pos('"RESULT":[', InputValue) + 10;
-   vTempValue := Copy(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
-   InputValue := Copy(InputValue, 1, InitPos) + '}]}'; //Delete(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
+   InitPos    := Pos('"RESULT":[', InputValue) + Length('"RESULT":[') -1;
+   vTempValue := Copy(InputValue, InitPos +1, Pos(']}', InputValue) - InitPos - 1);
+   InputValue := Copy(InputValue, 1, InitPos) + ']}'; //Delete(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
    If Params <> Nil Then
    If Params.ParamsReturn Then
     Begin
