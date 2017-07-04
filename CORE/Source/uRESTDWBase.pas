@@ -198,12 +198,12 @@ Var
                    Var ParamsData : TDWParams;
                    Var ResultJSON : String);
  Var
-  JsonParser  : TJsonParser;
-  bJsonValue  : TJsonObject;
-  JSONParam   : TJSONParam;
+  JsonParser    : TJsonParser;
+  bJsonValue    : TJsonObject;
+  JSONParam     : TJSONParam;
   A, I, InitPos : Integer;
   vValue,
-  vTempValue  : String;
+  vTempValue    : String;
  Begin
   ClearJsonParser(JsonParser);
   Try
@@ -232,7 +232,6 @@ Var
            vValue := bJsonValue[4].Value.Value;
           JSONParam.SetValue(vValue);
           ParamsData.ItemsString[JSONParam.ParamName].SetValue(JSONParam.Value, JSONParam.Encoded);
-  //        ParamsData.WriteString(Format('%s=%s', [JSONParam.ParamName, JSONParam.ToJSON]) + TSepParams);
          Finally
           JSONParam.Free;
          End;

@@ -26,9 +26,12 @@ type
     Bevel2: TBevel;
     lbLocalFiles: TListBox;
     Button2: TButton;
+    Button3: TButton;
+    OpenDialog1: TOpenDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -109,22 +112,12 @@ Begin
         JSONValue.LoadFromJSON(lResponse);
         StringStream          := TStringStream.Create('');
         JSONValue.SaveToStream(StringStream);
-//        StringStream          := TStringStream.Create(JSONValue.Value, JSONValue.Encoding);
-//        StringStream.Position := 0;
-//        StrToFile(ExtractFilePath(ParamSTR(0)) + 'tempClient.txt', StringStream.DataString);
-//        MemoryStream          := TMemoryStream.Create;
         Try
-//         MemoryStream.CopyFrom(StringStream, StringStream.Size);
-//         MemoryStream.Position := 0;
-//         StringStream.Free;
          If FileExists(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]) Then
           DeleteFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
          StringStream.SaveToFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
+         Showmessage('Download concluído...');
         Finally
-//         If FileExists(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]) Then
-//          DeleteFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
-//         MemoryStream.SaveToFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
-//         MemoryStream.Free;
          StringStream.Free;
         End;
        Finally
@@ -140,6 +133,49 @@ Begin
  Else
   Showmessage('Escolha um arquivo para Download...');
 End;
+
+procedure TForm4.Button3Click(Sender: TObject);
+Var
+ vCMWebServiceOnLine : TRESTClientPooler;
+ DWParams            : TDWParams;
+ JSONParam           : TJSONParam;
+ lResponse           : String;
+ MemoryStream        : TMemoryStream;
+Begin
+ If OpenDialog1.Execute Then
+  Begin
+   DWParams                     := TDWParams.Create;
+   DWParams.Encoding            := GetEncoding(vCMWebServiceOnLine.Encoding);
+   JSONParam                    := TJSONParam.Create(DWParams.Encoding);
+   JSONParam.ParamName          := 'Arquivo';
+   JSONParam.ObjectDirection    := odIN;
+   JSONParam.SetValue(OpenDialog1.FileName);
+   DWParams.Add(JSONParam);
+   JSONParam                    := TJSONParam.Create(DWParams.Encoding);
+   JSONParam.ParamName          := 'FileSend';
+   JSONParam.ObjectDirection    := odIN;
+   JSONParam.ObjectValue        := ovBlob;
+   MemoryStream                 := TMemoryStream.Create;
+   MemoryStream.LoadFromFile(OpenDialog1.FileName);
+   JSONParam.LoadFromStream(MemoryStream);
+   MemoryStream.Free;
+   DWParams.Add(JSONParam);
+   JSONParam                    := TJSONParam.Create(DWParams.Encoding);
+   JSONParam.ParamName          := 'Result';
+   JSONParam.ObjectDirection    := odOUT;
+   JSONParam.SetValue('');
+   DWParams.Add(JSONParam);
+   lResponse := RESTClientPooler1.SendEvent('SendReplicationFile', DWParams, sePost);
+   If lResponse <> '' Then
+    Begin
+      Try
+       If GetBooleanFromString(DWParams.ItemsString['Result'].Value) Then
+        Showmessage('Upload concluído...');
+      Finally
+      End;
+    End;
+  End;
+end;
 
 procedure TForm4.FormCreate(Sender: TObject);
 begin

@@ -29,10 +29,10 @@ type
     procedure ButtonStartClick(Sender: TObject);
   private
     { Private declarations }
-   Procedure LoadLocalFiles;
   public
     { Public declarations }
    DirName : String;
+   Procedure LoadLocalFiles;
   end;
 
  Function GetFilesServer(Const List : TStrings) : Boolean;

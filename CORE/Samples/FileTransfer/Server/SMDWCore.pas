@@ -114,13 +114,14 @@ Begin
   Begin
    JSONValue          := TJSONValue.Create;
    JSONValue.Encoding := GetEncoding(fServer.rspServerFiles.Encoding);
-   vArquivo           := fServer.DirName + Trim(Params.ItemsString['Arquivo'].Value);
+   vArquivo           := fServer.DirName + Trim(ExtractFileName(Params.ItemsString['Arquivo'].Value));
    If FileExists(vArquivo) Then
     DeleteFile(vArquivo);
    vFileIn            := TStringStream.Create(Params.ItemsString['FileSend'].Value, JSONValue.Encoding);
    Try
     vFileIn.Position   := 0;
     vFileIn.SaveToFile(vArquivo);
+    fServer.LoadLocalFiles;
    Finally
     Params.ItemsString['Result'].SetValue(GetStringFromBoolean(vFileIn.Size > 0));
     Result := 'SEND(OK)';

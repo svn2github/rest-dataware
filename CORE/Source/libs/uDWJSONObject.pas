@@ -18,6 +18,7 @@ End;
 Type
  TJSONValue = Class
  Private
+  vBinary             : Boolean;
   vtagName            : String;
   vTypeObject         : TTypeObject;
   vObjectDirection    : TObjectDirection;
@@ -68,6 +69,7 @@ Type
   vObjectDirection                   : TObjectDirection;
   vObjectValue                       : TObjectValue;
   vParamName                         : String;
+  vBinary,
   vEncoded                           : Boolean;
   Function    EncodedString  : String;
   Function    FormatValue    (bValue : String) : String;
@@ -81,6 +83,9 @@ Type
   Function    ToJSON        : String;
   Function    Value : String;
   Procedure   SetValue(aValue : String; Encode : Boolean = True);
+  Procedure   LoadFromStream (Stream       : TMemoryStream;
+                              Encode       : Boolean = True);
+  Procedure   SaveToStream   (Stream       : TMemoryStream);
   Property    ObjectDirection             : TObjectDirection Read vObjectDirection Write vObjectDirection;
   Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
   Property    ParamName                   : String           Read vParamName       Write SetParamName;
@@ -253,6 +258,7 @@ Begin
  ObjectDirection := odINOUT;
  vObjectValue    := ovString;
  vTAGName        := 'TAGJSON';
+ vBinary         := True;
 End;
 
 destructor TJSONValue.Destroy;
@@ -303,12 +309,12 @@ Begin
   End;
  If vEncoded Then
   Begin
-   If vObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
-                       ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob,
-                       ovOraClob] Then
+   If (vObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
+                        ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob,
+                        ovOraClob]) And (vBinary) Then
     vTempString := vTempString
    Else
-    vTempString := DecodeStrings(vTempString{$IFNDEF FPC}, vEncoding{$ENDIF})
+    vTempString := DecodeStrings(vTempString{$IFNDEF FPC}, vEncoding{$ENDIF});
   End
  Else
   vTempString := BytesToString(aValue);
@@ -738,11 +744,13 @@ End;
 
 constructor TJSONParam.Create(Encoding : TEncoding);
 begin
- vJSONValue      := TJSONValue.Create;
- vEncoding       := Encoding;
- vTypeObject     := toParam;
- ObjectDirection := odINOUT;
- vObjectValue    := ovString;
+ vJSONValue         := TJSONValue.Create;
+ vEncoding          := Encoding;
+ vTypeObject        := toParam;
+ ObjectDirection    := odINOUT;
+ vObjectValue       := ovString;
+ vBinary            := False;
+ vJSONValue.vBinary := vBinary;
 end;
 
 destructor TJSONParam.Destroy;
@@ -787,6 +795,14 @@ Begin
   Result := '"' + bValue + '"';
 End;
 
+procedure TJSONParam.LoadFromStream(Stream: TMemoryStream; Encode: Boolean);
+begin
+ ObjectValue        := ovBlob;
+ vBinary            := False;
+ vJSONValue.vBinary := vBinary;
+ SetValue(GenerateStringFromStream(Stream, vEncoding), Encode);
+end;
+
 procedure TJSONParam.FromJSON(JSON: String);
 Var
  JsonParser  : TJsonParser;
@@ -812,6 +828,20 @@ Begin
  End;
 End;
 
+procedure TJSONParam.SaveToStream(Stream: TMemoryStream);
+Var
+ StringStream : TStringStream;
+begin
+ StringStream := TStringStream.Create(vJSONValue.Value{$IFNDEF FPC}, vEncoding{$ENDIF});
+ Try
+  StringStream.Position := 0;
+  Stream.CopyFrom(StringStream, StringStream.Size);
+ Finally
+  StringStream.Free;
+  Stream.Position := 0;
+ End;
+end;
+
 procedure TJSONParam.SetParamName(bValue: String);
 begin
  vParamName := Uppercase(bValue);
@@ -819,6 +849,8 @@ end;
 
 procedure TJSONParam.SetValue(aValue: String; Encode: Boolean);
 Begin
+ vBinary             := False;
+ vJSONValue.vBinary  := vBinary;
  vEncoded            := Encode;
  vJSONValue.vEncoded := vEncoded;
  If Encode Then

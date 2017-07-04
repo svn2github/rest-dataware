@@ -5,7 +5,7 @@ object Form4: TForm4
   BorderStyle = bsSingle
   Caption = 'FileClient'
   ClientHeight = 345
-  ClientWidth = 507
+  ClientWidth = 505
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -995,10 +995,10 @@ object Form4: TForm4
     Text = 'testserver'
   end
   object Button1: TButton
-    Left = 393
-    Top = 197
-    Width = 106
-    Height = 24
+    Left = 374
+    Top = 173
+    Width = 119
+    Height = 37
     Caption = 'File List'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1012,16 +1012,16 @@ object Form4: TForm4
   object lbLocalFiles: TListBox
     Left = 8
     Top = 141
-    Width = 381
+    Width = 358
     Height = 200
     ItemHeight = 13
     TabOrder = 5
   end
   object Button2: TButton
-    Left = 393
-    Top = 221
-    Width = 106
-    Height = 24
+    Left = 374
+    Top = 216
+    Width = 119
+    Height = 37
     Caption = 'Download File'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1032,6 +1032,21 @@ object Form4: TForm4
     TabOrder = 6
     OnClick = Button2Click
   end
+  object Button3: TButton
+    Left = 374
+    Top = 260
+    Width = 119
+    Height = 37
+    Caption = 'Upload File'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 7
+    OnClick = Button3Click
+  end
   object RESTClientPooler1: TRESTClientPooler
     Encoding = esASCII
     Host = 'localhost'
@@ -1039,8 +1054,13 @@ object Form4: TForm4
     Password = 'testserver'
     ProxyOptions.BasicAuthentication = False
     ProxyOptions.ProxyPort = 0
-    RequestTimeOut = 10000
+    RequestTimeOut = 60000
     Left = 77
     Top = 41
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Arquivo a enviar'
+    Left = 184
+    Top = 200
   end
 end
