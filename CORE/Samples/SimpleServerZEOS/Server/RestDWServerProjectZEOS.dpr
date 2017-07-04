@@ -1,4 +1,4 @@
-program RestDWServerProject;
+program RestDWServerProjectZEOS;
 {$APPTYPE GUI}
 //https://stackoverflow.com/questions/19124701/get-image-using-jquery-ajax-and-decode-it-to-base64
 //https://stackoverflow.com/questions/42214527/posting-a-base64-encoded-pdf-file-with-ajax

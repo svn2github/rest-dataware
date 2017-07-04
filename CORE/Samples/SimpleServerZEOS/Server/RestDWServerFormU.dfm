@@ -1307,10 +1307,6 @@ object RestDWForm: TRestDWForm
     object tsLogs: TTabSheet
       Caption = 'Logs'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label19: TLabel
         Left = 7
         Top = 147
@@ -1384,25 +1380,23 @@ object RestDWForm: TRestDWForm
     Left = 192
     Top = 128
   end
+  object ZQuery1: TZQuery
+    Connection = Server_FDConnection
+    Params = <>
+    Left = 252
+    Top = 232
+  end
   object Server_FDConnection: TZConnection
     ControlsCodePage = cCP_UTF16
     Catalog = ''
     BeforeConnect = Server_FDConnectionBeforeConnect
     HostName = ''
-    Port = 3050
-    Database = 
-      '192.168.1.28/3050:I:\fontes\delphi\components\RestDB\rest-datawa' +
-      're-componentes-dataware\DEMO\EMPLOYEE.FDB'
-    User = 'SYSDBA'
-    Password = 'masterkey'
-    Protocol = 'firebird-2.5'
-    LibraryLocation = 'C:\Windows\SysWOW64\fbclient.dll'
-    Left = 294
-    Top = 186
-  end
-  object ZQuery1: TZQuery
-    Params = <>
-    Left = 252
-    Top = 232
+    Port = 0
+    Database = ''
+    User = ''
+    Password = ''
+    Protocol = ''
+    Left = 172
+    Top = 200
   end
 end

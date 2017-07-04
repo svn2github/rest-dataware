@@ -46,8 +46,8 @@ object Form2: TForm2
     ParentFont = False
   end
   object Image1: TImage
-    Left = 366
-    Top = 35
+    Left = 490
+    Top = 32
     Width = 133
     Height = 100
     Picture.Data = {
@@ -1064,8 +1064,8 @@ object Form2: TForm2
     TabOrder = 5
   end
   object Button1: TButton
-    Left = 485
-    Top = 169
+    Left = 423
+    Top = 177
     Width = 133
     Height = 24
     Caption = 'Open'
@@ -1114,8 +1114,8 @@ object Form2: TForm2
     TabOrder = 8
   end
   object Button2: TButton
-    Left = 485
-    Top = 199
+    Left = 423
+    Top = 207
     Width = 133
     Height = 24
     Caption = 'ZERA'
@@ -1130,7 +1130,7 @@ object Form2: TForm2
   end
   object Button3: TButton
     Left = 505
-    Top = 243
+    Top = 239
     Width = 133
     Height = 24
     Caption = 'Open'
@@ -1144,8 +1144,8 @@ object Form2: TForm2
     OnClick = Button1Click
   end
   object Button4: TButton
-    Left = 485
-    Top = 138
+    Left = 423
+    Top = 146
     Width = 133
     Height = 25
     Caption = 'Select p/Text'
@@ -1189,6 +1189,7 @@ object Form2: TForm2
     ProxyOptions.BasicAuthentication = False
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 10000
+    ThreadRequest = True
     Left = 77
     Top = 41
   end

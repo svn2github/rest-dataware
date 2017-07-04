@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{AA6AC3D6-AD66-41B6-A3E2-D4720C1F1114}</ProjectGuid>
-        <MainSource>RestDWServerProject.dpr</MainSource>
+        <ProjectGuid>{9A4F8D07-483F-48FE-84A7-545999F08FCE}</ProjectGuid>
+        <MainSource>RestDWServerProjectZEOS.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
@@ -48,7 +48,7 @@
         <DCC_K>false</DCC_K>
         <DCC_E>false</DCC_E>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=;CFBundleName=</VerInfo_Keys>
-        <SanitizedProjectName>RestDWServerProject</SanitizedProjectName>
+        <SanitizedProjectName>RestDWServerProjectZEOS</SanitizedProjectName>
         <VerInfo_Locale>1046</VerInfo_Locale>
         <DCC_F>false</DCC_F>
         <BRCC_Defines>FZEOSDB;$(BRCC_Defines)</BRCC_Defines>
@@ -116,7 +116,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">RestDWServerProject.dpr</Source>
+                    <Source Name="MainSource">RestDWServerProjectZEOS.dpr</Source>
                 </Source>
                 <Excluded_Packages/>
             </Delphi.Personality>
@@ -124,15 +124,15 @@
                 <Platform value="Win32">True</Platform>
             </Platforms>
             <Deployment Version="3">
-                <DeployFile LocalName="RestDWServerProject.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="\RestDWServerProjectZEOS.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>RestDWServerProject.exe</RemoteName>
+                        <RemoteName>RestDWServerProjectZEOS.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="RestDWServerProject.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="RestDWServerProjectZEOS.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>RestDWServerProject.exe</RemoteName>
+                        <RemoteName>RestDWServerProjectZEOS.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
