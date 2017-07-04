@@ -10,7 +10,7 @@ Uses Winapi.Windows,    Winapi.Messages, System.SysUtils,         System.Variant
      uRESTDWBase,
      ServerMethodsUnit1, Vcl.ComCtrls, Data.DB,
      ZAbstractConnection, ZConnection, ZAbstractRODataset, ZAbstractDataset,
-  ZDataset;
+  ZDataset, JvMemoryDataset;
 
 type
   TRestDWForm = class(TForm)

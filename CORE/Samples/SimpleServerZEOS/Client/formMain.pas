@@ -7,14 +7,11 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics,
   Controls, Forms, Dialogs, StdCtrls, uDWJSONObject, System.JSON,
-  DB, {memds,} Grids, DBGrids,
-    uDWJSONTools,
-    Vcl.ExtCtrls, Vcl.Imaging.pngimage, JvMemoryDataset, uRESTDWBase,
-  uDWConsts;
+  DB, Grids, DBGrids, uDWJSONTools, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
+  JvMemoryDataset, uRESTDWBase, uDWConsts;
 
 
-type
-
+Type
   { TForm2 }
   TForm2 = class(TForm)
     eHost: TEdit;
@@ -23,7 +20,6 @@ type
     Label5: TLabel;
     DataSource1: TDataSource;
     RESTClientPooler1: TRESTClientPooler;
-    Image1: TImage;
     Bevel1: TBevel;
     Label7: TLabel;
     edPasswordDW: TEdit;
@@ -47,6 +43,9 @@ type
     lbret2: TListBox;
     Label3: TLabel;
     cheParams: TCheckBox;
+    Bevel4: TBevel;
+    Label9: TLabel;
+    Image1: TImage;
 
     procedure btnGetClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -59,7 +58,7 @@ type
   public
     { Public declarations }
     MemDataset1,
-    MemDataset2: TJvMemoryData;//TJvMemoryData;
+    MemDataset2: TJvMemoryData;
     Procedure CallBack1(lResponse:String;DWParams  : TDWParams);
     Procedure CallBack2(lResponse:String;DWParams  : TDWParams);
     procedure CallBackListAlunos(lResponse : String;DWParams  : TDWParams);

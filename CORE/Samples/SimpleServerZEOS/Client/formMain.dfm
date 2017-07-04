@@ -3,7 +3,7 @@ object Form2: TForm2
   Top = 153
   Caption = 'Teste servidor Rest com Thread'
   ClientHeight = 637
-  ClientWidth = 631
+  ClientWidth = 646
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -45,9 +45,132 @@ object Form2: TForm2
     ParentColor = False
     ParentFont = False
   end
-  object Image1: TImage
-    Left = 490
+  object Bevel1: TBevel
+    Left = 8
     Top = 32
+    Width = 497
+    Height = 2
+    Shape = bsTopLine
+  end
+  object Label7: TLabel
+    Left = 8
+    Top = 13
+    Width = 177
+    Height = 13
+    Caption = 'CONFIGURA'#199#195'O SERVIDOR Rest'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Label6: TLabel
+    Left = 123
+    Top = 79
+    Width = 35
+    Height = 13
+    AutoSize = False
+    Caption = 'Senha'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Label8: TLabel
+    Left = 13
+    Top = 79
+    Width = 43
+    Height = 13
+    AutoSize = False
+    Caption = 'Usu'#225'rio'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Bevel2: TBevel
+    Left = 8
+    Top = 137
+    Width = 497
+    Height = 2
+    Shape = bsTopLine
+  end
+  object Label1: TLabel
+    Left = 8
+    Top = 122
+    Width = 80
+    Height = 13
+    Caption = 'COMANDO SQL'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Bevel3: TBevel
+    Left = 8
+    Top = 245
+    Width = 491
+    Height = 2
+    Shape = bsTopLine
+  end
+  object Label2: TLabel
+    Left = 8
+    Top = 230
+    Width = 83
+    Height = 13
+    Caption = 'RESULTADO 01'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Label3: TLabel
+    Left = 515
+    Top = 269
+    Width = 110
+    Height = 13
+    Caption = 'Retorno parametro'
+    Color = clBtnFace
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Bevel4: TBevel
+    Left = 8
+    Top = 457
+    Width = 491
+    Height = 2
+    Shape = bsTopLine
+  end
+  object Label9: TLabel
+    Left = 8
+    Top = 442
+    Width = 83
+    Height = 13
+    Caption = 'RESULTADO 02'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Image1: TImage
+    Left = 505
+    Top = 35
     Width = 133
     Height = 100
     Picture.Data = {
@@ -890,110 +1013,6 @@ object Form2: TForm2
       629A799FD0572C2462B90152733EAFE7F8BC86A14A2A06F110786951FABFD9D5
       78A2C7BA508FC03148832468101C83D42D0D826390BAA541700C52B7F4BFB752
       4E92F100CAA80000000049454E44AE426082}
-    Visible = False
-  end
-  object Bevel1: TBevel
-    Left = 8
-    Top = 32
-    Width = 491
-    Height = 2
-    Shape = bsTopLine
-  end
-  object Label7: TLabel
-    Left = 8
-    Top = 13
-    Width = 177
-    Height = 13
-    Caption = 'CONFIGURA'#199#195'O SERVIDOR Rest'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Label6: TLabel
-    Left = 123
-    Top = 79
-    Width = 35
-    Height = 13
-    AutoSize = False
-    Caption = 'Senha'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Label8: TLabel
-    Left = 13
-    Top = 79
-    Width = 43
-    Height = 13
-    AutoSize = False
-    Caption = 'Usu'#225'rio'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Bevel2: TBevel
-    Left = 8
-    Top = 137
-    Width = 491
-    Height = 2
-    Shape = bsTopLine
-  end
-  object Label1: TLabel
-    Left = 8
-    Top = 122
-    Width = 80
-    Height = 13
-    Caption = 'COMANDO SQL'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Bevel3: TBevel
-    Left = 8
-    Top = 243
-    Width = 491
-    Height = 2
-    Shape = bsTopLine
-  end
-  object Label2: TLabel
-    Left = 8
-    Top = 228
-    Width = 66
-    Height = 13
-    Caption = 'RESULTADO'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
-  end
-  object Label3: TLabel
-    Left = 515
-    Top = 269
-    Width = 110
-    Height = 13
-    Caption = 'Retorno parametro'
-    Color = clBtnFace
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
   end
   object eHost: TEdit
     Left = 13
@@ -1051,7 +1070,7 @@ object Form2: TForm2
   object mComando1: TMemo
     Left = 8
     Top = 145
-    Width = 409
+    Width = 491
     Height = 40
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1064,7 +1083,7 @@ object Form2: TForm2
     TabOrder = 5
   end
   object Button1: TButton
-    Left = 423
+    Left = 505
     Top = 177
     Width = 133
     Height = 24
@@ -1101,7 +1120,7 @@ object Form2: TForm2
   object mComando2: TMemo
     Left = 8
     Top = 188
-    Width = 409
+    Width = 491
     Height = 40
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1114,7 +1133,7 @@ object Form2: TForm2
     TabOrder = 8
   end
   object Button2: TButton
-    Left = 423
+    Left = 505
     Top = 207
     Width = 133
     Height = 24
@@ -1144,18 +1163,24 @@ object Form2: TForm2
     OnClick = Button1Click
   end
   object Button4: TButton
-    Left = 423
+    Left = 505
     Top = 146
     Width = 133
     Height = 25
     Caption = 'Select p/Text'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 11
     OnClick = Button4Click
   end
   object lbret1: TListBox
     Left = 505
     Top = 288
-    Width = 106
+    Width = 133
     Height = 150
     ItemHeight = 13
     TabOrder = 12
@@ -1163,8 +1188,8 @@ object Form2: TForm2
   object lbret2: TListBox
     Left = 505
     Top = 464
-    Width = 106
-    Height = 150
+    Width = 133
+    Height = 158
     ItemHeight = 13
     TabOrder = 13
   end
@@ -1178,8 +1203,8 @@ object Form2: TForm2
   end
   object DataSource1: TDataSource
     AutoEdit = False
-    Left = 128
-    Top = 88
+    Left = 392
+    Top = 56
   end
   object RESTClientPooler1: TRESTClientPooler
     Encoding = esASCII
@@ -1190,12 +1215,12 @@ object Form2: TForm2
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 10000
     ThreadRequest = True
-    Left = 77
-    Top = 41
+    Left = 285
+    Top = 145
   end
   object DataSource2: TDataSource
     AutoEdit = False
-    Left = 136
-    Top = 96
+    Left = 376
+    Top = 104
   end
 end
