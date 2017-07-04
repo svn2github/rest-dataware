@@ -144,7 +144,7 @@ Var
  lResponse           : String;
  MemoryStream        : TMemoryStream;
 Begin
-  RESTClientPooler1.RequestTimeOut:= Copy(cmb_tmp.Text, 1,1) + * 1000;
+  RESTClientPooler1.RequestTimeOut:= StrToInt(Copy(cmb_tmp.Text, 1,1)) * 60000;
   If OpenDialog1.Execute Then
   Begin
    DWParams                     := TDWParams.Create;
