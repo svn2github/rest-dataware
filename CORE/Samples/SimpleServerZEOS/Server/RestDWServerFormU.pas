@@ -1,5 +1,7 @@
 unit RestDWServerFormU;
 
+//URL para teste http://localhost:8082/TesteAJAX.html
+
 Interface
 
 Uses Winapi.Windows,    Winapi.Messages, System.SysUtils,         System.Variants,
@@ -70,7 +72,6 @@ type
     cbEncode: TCheckBox;
     Server_FDConnection: TZConnection;
     cheAutenticar: TCheckBox;
-    Edit1: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);

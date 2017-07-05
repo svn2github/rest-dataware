@@ -1313,18 +1313,14 @@ object RestDWForm: TRestDWForm
         State = cbChecked
         TabOrder = 13
       end
-      object Edit1: TEdit
-        Left = 228
-        Top = 1
-        Width = 205
-        Height = 21
-        TabOrder = 14
-        Text = 'http://localhost:8082/TesteAJAX.html'
-      end
     end
     object tsLogs: TTabSheet
       Caption = 'Logs'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label19: TLabel
         Left = 7
         Top = 147

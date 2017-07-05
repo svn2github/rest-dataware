@@ -2,11 +2,11 @@
 <BorlandProject>
 	<Transactions>
     <Transaction>2017/07/01 07:58:52.000.444,=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2017/07/01 08:00:00.000.128,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\uPrincipal.dfm=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
-    <Transaction>2017/07/01 08:00:00.000.128,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\uPrincipal.pas=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2017/07/01 08:00:04.000.876,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\Server.dproj=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2017/07/01 08:00:00.000.128,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit1.dfm=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\uPrincipal.dfm</Transaction>
+    <Transaction>2017/07/01 08:00:00.000.128,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit1.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\uPrincipal.pas</Transaction>
+    <Transaction>2017/07/01 08:00:04.000.876,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Project1.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\Server.dproj</Transaction>
     <Transaction>2017/07/01 08:04:07.000.004,=D:\connectronic\VisualControlStable\VisualCenter_XE6\WebService\RESTDataware\SMDWCore.pas</Transaction>
-    <Transaction>2017/07/01 08:04:40.000.645,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\SMDWCore.pas=D:\connectronic\VisualControlStable\VisualCenter_XE6\WebService\RESTDataware\SMDWCore.pas</Transaction>
-    <Transaction>2017/07/01 08:05:00.000.985,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\FileServer.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\Server.dproj</Transaction>
+    <Transaction>2017/07/01 08:04:40.000.645,D:\connectronic\VisualControlStable\VisualCenter_XE6\WebService\RESTDataware\SMDWCore.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\SMDWCore.pas</Transaction>
+    <Transaction>2017/07/01 08:05:00.000.985,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\Server.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\FileServer.dproj</Transaction>
   </Transactions>
 </BorlandProject>
