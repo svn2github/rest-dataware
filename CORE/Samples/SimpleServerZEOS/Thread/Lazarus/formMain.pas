@@ -181,7 +181,9 @@ Begin
  RESTClientPooler1.Port     := StrToInt(ePort.Text);
  RESTClientPooler1.UserName := edUserNameDW.Text;
  RESTClientPooler1.Password := edPasswordDW.Text;
+
  RESTClientPooler1.ThreadRequest :=  cheThread.Checked;
+
  SQL                        := mComando1.Text;
  DWParams                   := TDWParams.Create;
  DWParams.Encoding          := GetEncoding(RESTClientPooler1.Encoding);

@@ -8,7 +8,6 @@
 <script type="text/javascript">
 
  
-
 function myRequest(sql,username,password,retorno1,retorno2,params3)
 {
     var contentType ="application/x-www-form-urlencoded";
@@ -27,20 +26,11 @@ function myRequest(sql,username,password,retorno1,retorno2,params3)
                      "TESTPARAM":'{"ObjectType":"toParam", "Direction":"odINOUT", "Encoded":"true", "ValueType":"ovString", "TESTPARAM":""}'
                 },
                 beforeSend: function(xhr){
-                 //xhr.withCredentials = true;
-                 //xhr.setRequestHeader("Accept", "application/json");
-                 //xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
-                 //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                 //xhr.overrideMimeType( "application/x-www-form-urlencoded" );
-
-                 //xhr.setRequestHeader("If-Modified-Since", "Mon, 1 Oct 1990 05:00:00 GMT");
-                 //xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));  
               }
             }).done(function( InputValue, textStatus, jqXHR ) {
                   var  ParamsData=[];
                   var  Data=[];
                   parseJSON(InputValue, Data,ParamsData);
-                  console.log(Data);
 
                   //pegar parametro pelo nome
                   //param =getValueOfParam('testparam',ParamsData)[0];
@@ -52,14 +42,21 @@ function myRequest(sql,username,password,retorno1,retorno2,params3)
                   for(var i = 0; i < ParamsData.length; i++) {
                     param=ParamsData[i];
                     sOut.options[sOut.options.length]= new Option(param.ParamName+'='+param.Value);
-                   // console.log(param.ParamName + '='+ param.Value);
+                    console.log(param.ParamName + '='+ param.Value);
                   }
 
                   var xdata=[];
-                  xdata=toJsonDecod(Data);
-                  console.log(Data);
-                  $(retorno2)[0].value=JSON.stringify(xdata);
+                  //xdata=toJsonFmt(Data);
+                  //$(retorno2)[0].value=JSON.stringify(xdata);
 
+                  xdata=toJsonDecod(Data);
+
+                  $(retorno2)[0].value=JSON.stringify(xdata);
+                  
+                  //console.log(xdata["labels"]);
+                  //console.log(Data[0].sql[1]);
+                  //console.log(Data);
+                  console.log(xdata.data);
             }).fail(function( jqXHR, textStatus, errorThrown ) {
                 alert("fail: " + errorThrown);
             });
@@ -71,12 +68,15 @@ getValueOfParam=function (code,sData) {
   );
 }
 
-function parseJSON (InputValue, ResultJSON, sParamsData){
-                   InitPos    = InputValue.indexOf('"RESULT":[') + 10;
-                   vTempValue = InputValue.substr(InitPos, InputValue.indexOf(']}') - InitPos+2);
-                   InputValue = InputValue.replace(vTempValue,"");
+function parseJSON (InputValue,  ResultJSON, sParamsData){
+                   InitPos    = InputValue.indexOf('"RESULT":[') + '"RESULT":['.length ;
+                   vTempValue = InputValue.substr(InitPos-1, InputValue.indexOf(']}') - InitPos+4);
+                   //InputValue = InputValue.replace(vTempValue,"");
+                   InputValue = InputValue.substr( 0, InitPos) + ']}';
                    SetData(InputValue  , sParamsData);
-                   if (vTempValue!=''){ ResultJSON.push(JSON.parse(atob(vTempValue))); }
+                   //if (vTempValue!=''){ ResultJSON.push(JSON.parse(atob(vTempValue))); }
+                   if (vTempValue!=''){ ResultJSON.push(JSON.parse(vTempValue)); }
+
 
  }
 
@@ -84,7 +84,7 @@ function SetData(InputValue  , ParamsData ,CallBack){
   JsonParser = JSON.parse(InputValue);
  
  for(var i = 0; i < JsonParser.PARAMS.length; i++) {
- 	bJsonValue=JsonParser.PARAMS[i];
+  bJsonValue=JsonParser.PARAMS[i];
     if (bJsonValue.Direction!="odINOUT") { continue;}
     if (bJsonValue.ObjectType!="toParam") {continue;}
       
@@ -102,19 +102,21 @@ function SetData(InputValue  , ParamsData ,CallBack){
     //rs[JSONParam.ParamName]=JSON.stringify(JSONParam);
     if (CallBack) {CallBack(JSONParam.ParamName,JSONParam.ObjectValue);}
     ParamsData.push(JSONParam);
-  }	
+  } 
 }
 
 function toJsonDecod(sdata) {
-	data=sdata[0];
+  data=sdata[0][0];
 
 
     FieldCount=data.sql[0].length;
     RowCount=data.sql[1].length;
     fields=[];
+    fieldsLabel=[];
 
     for(var i = 0; i < FieldCount; i++) {
        fields.push({"name" : data.sql[0][i].Field, "label" : data.sql[0][i].Field});
+       fieldsLabel.push(data.sql[0][i].Field);
     }
 
     var vdata=[];
@@ -137,11 +139,10 @@ function toJsonDecod(sdata) {
        }
        vdata.push(rs);
     }
-    return {'fields':fields,"data":vdata};
+    return {'fields':fields,"data":vdata,"labels":fieldsLabel};
 }
-
 function toJsonFmt(sdata) {
-	data=sdata[0];
+  data=sdata[0][0];
     FieldCount=data.sql[0].length;
     RowCount=data.sql[1].length;
     fields=[]
@@ -176,24 +177,35 @@ function myFunction (){
     var sql3=btoa($('#cmdSQL3')[0].value);
     
      myRequest(sql1,username,password,'#cmdRetorno1','#cmdRetorno21','cmdParam21');
-   //  myRequest(sql2,username,password,'#cmdRetorno2','#cmdRetorno22','cmdParam22');
-   //  myRequest(sql3,username,password,'#cmdRetorno3','#cmdRetorno23','cmdParam23');
+     myRequest(sql2,username,password,'#cmdRetorno2','#cmdRetorno22','cmdParam22');
+     myRequest(sql3,username,password,'#cmdRetorno3','#cmdRetorno23','cmdParam23');
 
 };
+
+
 
 </script>
 
    <form method="POST" action="/GetListaAlunos">
-     <p>Teste de POST num servidor REST</p>
      <table border="0" width="100%">
+        <tr>
+           <td width="100%">Teste de POST num servidor REST</td>
+        </tr>
+        <tr>
+           <td width="33%">
+              
+           </td>
+        </tr>
+
+
         <tr>
            <td width="100%">Comando SQL</td>
         </tr>
         <tr>
            <td width="33%">
-              <textarea placeholder=" digite o seu sql aqui" id="cmdSQL1" name="cmdSQL1" cols="50" rows="2">SELECT FIRST 500 * FROM POFUNC</textarea>     
-              <textarea placeholder=" digite o seu sql aqui" id="cmdSQL2" name="cmdSQL2" cols="50" rows="2">SELECT FIRST 100 NM_FUNC FROM POFUNC</textarea>
-              <textarea placeholder=" digite o seu sql aqui" id="cmdSQL3" name="cmdSQL3" cols="50" rows="2">SELECT FIRST 1 CD_FUNC FROM POFUNC</textarea>
+              <textarea placeholder=" digite o seu sql aqui" id="cmdSQL1" name="cmdSQL1" cols="50" rows="2">SELECT FIRST 31 FIRST_NAME, LAST_NAME FROM EMPLOYEE</textarea>     
+              <textarea placeholder=" digite o seu sql aqui" id="cmdSQL2" name="cmdSQL2" cols="50" rows="2">SELECT FIRST 100 LAST_NAME  FROM EMPLOYEE</textarea>
+              <textarea placeholder=" digite o seu sql aqui" id="cmdSQL3" name="cmdSQL3" cols="50" rows="2">SELECT FIRST 1 LAST_NAME  FROM EMPLOYEE</textarea>
            </td>
         </tr>
         <tr>
@@ -201,16 +213,16 @@ function myFunction (){
         </tr>
         <tr>
            <td width="100%">
-              <textarea placeholder=" retorno do sql" id="cmdRetorno1" name="cmdRetorno1" cols="50" rows="20"></textarea>     
-              <textarea placeholder=" retorno do sql" id="cmdRetorno2" name="cmdRetorno2" cols="50" rows="20"></textarea> 
-              <textarea placeholder=" retorno do sql" id="cmdRetorno3" name="cmdRetorno3" cols="50" rows="20"></textarea> 
+              <textarea placeholder=" retorno do sql" id="cmdRetorno1" name="cmdRetorno1" cols="50" rows="15"></textarea>     
+              <textarea placeholder=" retorno do sql" id="cmdRetorno2" name="cmdRetorno2" cols="50" rows="15"></textarea> 
+              <textarea placeholder=" retorno do sql" id="cmdRetorno3" name="cmdRetorno3" cols="50" rows="15"></textarea> 
            </td>
         </tr>
         <tr>
            <td width="100%">
-             <textarea placeholder=" retorno do sql" id="cmdRetorno21" name="cmdRetorno21" cols="50" rows="20"></textarea> 
-             <textarea placeholder=" retorno do sql" id="cmdRetorno22" name="cmdRetorno22" cols="50" rows="20"></textarea> 
-             <textarea placeholder=" retorno do sql" id="cmdRetorno23" name="cmdRetorno23" cols="50" rows="20"></textarea> 
+             <textarea placeholder=" retorno do sql" id="cmdRetorno21" name="cmdRetorno21" cols="50" rows="15"></textarea> 
+             <textarea placeholder=" retorno do sql" id="cmdRetorno22" name="cmdRetorno22" cols="50" rows="15"></textarea> 
+             <textarea placeholder=" retorno do sql" id="cmdRetorno23" name="cmdRetorno23" cols="50" rows="15"></textarea> 
            </td>
         </tr>
 

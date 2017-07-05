@@ -1303,6 +1303,24 @@ object RestDWForm: TRestDWForm
         State = cbChecked
         TabOrder = 12
       end
+      object cheAutenticar: TCheckBox
+        Left = 275
+        Top = 81
+        Width = 91
+        Height = 19
+        Caption = 'Autentica'#231#227'o'
+        Checked = True
+        State = cbChecked
+        TabOrder = 13
+      end
+      object Edit1: TEdit
+        Left = 228
+        Top = 1
+        Width = 205
+        Height = 21
+        TabOrder = 14
+        Text = 'http://localhost:8082/TesteAJAX.html'
+      end
     end
     object tsLogs: TTabSheet
       Caption = 'Logs'

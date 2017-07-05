@@ -197,7 +197,7 @@ Begin
 
     Showmessage(Format('Mostrando os Parametros %s %s',       [#13,sb.ToString]));
     sb.Free;
- end
+ end ;
 
  freeAndnil(DWParams);
 End;

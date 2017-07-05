@@ -1035,7 +1035,7 @@ object Form2: TForm2
   object mComando1: TMemo
     Left = 9
     Height = 40
-    Top = 138
+    Top = 136
     Width = 487
     Font.Color = clWindowText
     Font.Height = -11
@@ -1196,6 +1196,8 @@ object Form2: TForm2
     Top = 67
     Width = 75
     Caption = 'Usa Thread'
+    Checked = True
+    State = cbChecked
     TabOrder = 15
   end
   object DataSource1: TDataSource
@@ -1216,8 +1218,8 @@ object Form2: TForm2
     ProxyOptions.BasicAuthentication = False
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 10000
-    left = 256
-    top = 72
+    left = 360
+    top = 88
   end
   object MemDataset2: TMemDataset
     FieldDefs = <>

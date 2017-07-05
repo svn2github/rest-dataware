@@ -10,7 +10,7 @@ Uses Winapi.Windows,    Winapi.Messages, System.SysUtils,         System.Variant
      uRESTDWBase,
      ServerMethodsUnit1, Vcl.ComCtrls, Data.DB,
      ZAbstractConnection, ZConnection, ZAbstractRODataset, ZAbstractDataset,
-  ZDataset, JvMemoryDataset;
+    ZDataset, JvMemoryDataset;
 
 type
   TRestDWForm = class(TForm)
@@ -69,6 +69,8 @@ type
     ZQuery1: TZQuery;
     cbEncode: TCheckBox;
     Server_FDConnection: TZConnection;
+    cheAutenticar: TCheckBox;
+    Edit1: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);
@@ -392,9 +394,10 @@ begin
    RESTServicePooler1.SSLPrivateKeyFile     := ePrivKeyFile.Text;
    RESTServicePooler1.SSLPrivateKeyPassword := ePrivKeyPass.Text;
    RESTServicePooler1.SSLCertFile           := eCertFile.Text;
-   RESTServicePooler1.RootPath              := ExtractFilePath(Application.ExeName) + '..\..\Client\ZeosDB' ;
+   RESTServicePooler1.RootPath              := ExtractFilePath(Application.ExeName) + '..\Thread' ;
 
    RESTServicePooler1.Active                := True;
+   RESTServicePooler1.ServerParams.HasAuthentication :=  cheAutenticar.Checked;
 
    If Not RESTServicePooler1.Active Then
     Exit;
