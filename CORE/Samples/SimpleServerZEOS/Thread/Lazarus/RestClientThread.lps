@@ -8,9 +8,10 @@
       <Unit0>
         <Filename Value="RestClientThread.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="37" Y="10"/>
-        <UsageCount Value="56"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="34" Y="3"/>
+        <UsageCount Value="59"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="formMain.pas"/>
@@ -21,7 +22,7 @@
         <IsVisibleTab Value="True"/>
         <TopLine Value="77"/>
         <CursorPos X="3" Y="79"/>
-        <UsageCount Value="56"/>
+        <UsageCount Value="59"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -32,7 +33,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="117"/>
         <CursorPos X="17" Y="127"/>
-        <UsageCount Value="52"/>
+        <UsageCount Value="55"/>
         <Bookmarks Count="2">
           <Item0 X="2" Y="124" ID="2"/>
           <Item1 X="119" Y="41" ID="1"/>
@@ -181,26 +182,26 @@
       </Unit22>
       <Unit23>
         <Filename Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="50"/>
         <CursorPos Y="60"/>
-        <UsageCount Value="18"/>
+        <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\..\..\..\Source\libs\uDWJSONTools.pas"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <TopLine Value="38"/>
         <CursorPos X="40" Y="57"/>
-        <UsageCount Value="18"/>
+        <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
         <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <TopLine Value="671"/>
         <CursorPos X="38" Y="681"/>
-        <UsageCount Value="18"/>
+        <UsageCount Value="20"/>
         <Bookmarks Count="2">
           <Item0 X="56" Y="393" ID="2"/>
           <Item1 X="13" Y="232" ID="3"/>
@@ -266,10 +267,10 @@
       </Unit33>
       <Unit34>
         <Filename Value="..\..\..\..\Source\uRESTDWBase.pas"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <TopLine Value="609"/>
         <CursorPos Y="621"/>
-        <UsageCount Value="18"/>
+        <UsageCount Value="20"/>
         <Bookmarks Count="1">
           <Item0 X="106" Y="222" ID="1"/>
         </Bookmarks>
@@ -321,7 +322,7 @@
         <UsageCount Value="10"/>
       </Unit40>
     </Units>
-    <JumpHistory Count="13" HistoryIndex="12">
+    <JumpHistory Count="14" HistoryIndex="13">
       <Position1>
         <Filename Value="formMain.pas"/>
         <Caret Line="86" TopLine="67"/>
@@ -374,6 +375,10 @@
         <Filename Value="formMain.pas"/>
         <Caret Line="84" Column="39" TopLine="77"/>
       </Position13>
+      <Position14>
+        <Filename Value="RestClientThread.lpr"/>
+        <Caret Line="11" Column="22"/>
+      </Position14>
     </JumpHistory>
   </ProjectSession>
   <Debugging>

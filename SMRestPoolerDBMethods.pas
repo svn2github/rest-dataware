@@ -16,7 +16,7 @@ Uses
  FireDAC.Comp.Client,     FireDAC.Phys.IBBase,      FireDAC.Phys.IB,    FireDAC.Comp.UI,
  FireDAC.Comp.DataSet,    Data.FireDACJSONReflect,  Datasnap.DSSession,
  uRestPoolerDB, Data.DBXJSON
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
  , System.JSON, FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef, Datasnap.DSProviderDataModuleAdapter
  {$ifend};
 

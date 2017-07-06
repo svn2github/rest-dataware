@@ -18,10 +18,11 @@
         <ComponentName Value="Form2"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="27"/>
+        <TopLine Value="26"/>
         <CursorPos X="7" Y="99"/>
         <UsageCount Value="55"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="urestrequest.pas"/>
@@ -191,14 +192,16 @@
       </Unit24>
       <Unit25>
         <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="575"/>
-        <CursorPos Y="592"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="576"/>
+        <CursorPos X="34" Y="590"/>
         <UsageCount Value="18"/>
         <Bookmarks Count="2">
           <Item0 X="56" Y="393" ID="2"/>
           <Item1 X="13" Y="232" ID="3"/>
         </Bookmarks>
+        <Loaded Value="True"/>
       </Unit25>
       <Unit26>
         <Filename Value="..\..\..\..\Source\libs\JSON\uDWJSONParser.pas"/>
@@ -305,8 +308,8 @@
       </Unit39>
       <Unit40>
         <Filename Value="Q:\RestDB\rest-dataware-componentes-dataware\CORE\Source\libs\uDWJSONObject.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
         <TopLine Value="574"/>
         <CursorPos Y="592"/>
         <UsageCount Value="10"/>
@@ -322,10 +325,15 @@
         <UsageCount Value="10"/>
       </Unit41>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="1">
+      <Position1>
+        <Filename Value="formMain.pas"/>
+        <Caret Line="99" Column="7" TopLine="26"/>
+      </Position1>
+    </JumpHistory>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="15">
+    <BreakPoints Count="14">
       <Item1>
         <Kind Value="bpkSource"/>
         <WatchScope Value="wpsLocal"/>
@@ -424,13 +432,6 @@
         <Source Value="..\..\..\..\Source\uRESTDWBase.pas"/>
         <Line Value="427"/>
       </Item14>
-      <Item15>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <Line Value="592"/>
-      </Item15>
     </BreakPoints>
     <Watches Count="2">
       <Item1>

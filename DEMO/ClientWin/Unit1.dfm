@@ -1105,71 +1105,13 @@ object Form1: TForm1
     Top = 182
   end
   object RESTClientSQL: TRESTClientSQL
-    FieldDefs = <
-      item
-        Name = 'EMP_NO'
-        Attributes = [faRequired]
-        DataType = ftSmallint
-      end
-      item
-        Name = 'FIRST_NAME'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 15
-      end
-      item
-        Name = 'LAST_NAME'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'PHONE_EXT'
-        DataType = ftString
-        Size = 4
-      end
-      item
-        Name = 'HIRE_DATE'
-        Attributes = [faRequired]
-        DataType = ftTimeStamp
-      end
-      item
-        Name = 'DEPT_NO'
-        Attributes = [faRequired, faFixed]
-        DataType = ftFixedChar
-        Size = 3
-      end
-      item
-        Name = 'JOB_CODE'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 5
-      end
-      item
-        Name = 'JOB_GRADE'
-        Attributes = [faRequired]
-        DataType = ftSmallint
-      end
-      item
-        Name = 'JOB_COUNTRY'
-        Attributes = [faRequired]
-        DataType = ftString
-        Size = 15
-      end
-      item
-        Name = 'SALARY'
-        Attributes = [faRequired]
-        DataType = ftFloat
-      end
-      item
-        Name = 'FULL_NAME'
-        DataType = ftString
-        Size = 37
-      end>
+    FieldDefs = <>
     IndexDefs = <>
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
-    FormatOptions.AssignedValues = [fvMaxBcdPrecision, fvMaxBcdScale]
+    FormatOptions.AssignedValues = [fvSE2Null, fvStrsTrim, fvMaxBcdPrecision, fvMaxBcdScale, fvStrsTrim2Len]
+    FormatOptions.StrsTrim = False
+    FormatOptions.StrsTrim2Len = True
     FormatOptions.MaxBcdPrecision = 2147483647
     FormatOptions.MaxBcdScale = 2147483647
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -1201,7 +1143,7 @@ object Form1: TForm1
     ProxyOptions.Port = 8888
     PoolerService = '127.0.0.1'
     PoolerPort = 8082
-    PoolerName = 'ServerMethods1Unit.RESTPoolerDB'
+    PoolerName = 'ServerMethodsUnit1.RESTPoolerDB'
     RestModule = 'TServerMethods1'
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000

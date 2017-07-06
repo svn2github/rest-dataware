@@ -12,7 +12,7 @@ unit uPoolerServerMethods;
 interface
 
 uses System.SysUtils, System.Classes, Soap.EncdDecd,   uRestCompressTools, System.ZLib
-      {$if CompilerVersion > 26}
+      {$if CompilerVersion > 28}
        ,System.NetEncoding, System.JSON
      {$ifend};
 

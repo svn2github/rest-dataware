@@ -7,7 +7,7 @@ Uses Datasnap.DSProxyRest,  Datasnap.DSClientRest,   Data.DBXCommon,
      System.SysUtils,         Data.DB, Data.SqlExpr, Data.DBXDBReaders,              Data.DBXCDSReaders,
      Data.FireDACJSONReflect, Data.DBXJSONReflect,   FireDAC.Stan.Param,             Soap.EncdDecd,
       uRestCompressTools,    System.ZLib,  REST.JSON,           IdGlobal
-     {$if CompilerVersion > 26}
+     {$if CompilerVersion > 28}
        , System.JSON, System.NetEncoding
      {$ifend};
 
@@ -473,7 +473,7 @@ Begin
    FApplyChangesPureCommand.Text := Method_Prefix + '."ApplyChangesPure"';
    FApplyChangesPureCommand.Prepare(TSMPoolerMethodClient_ApplyChangesPure);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FApplyChangesPureCommand.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FApplyChangesPureCommand.Connection.UserName                 := UserName;
@@ -518,7 +518,7 @@ Begin
    FGetPoolerListCommand_Cache.Text := Method_Prefix + '."GetPoolerList"';
    FGetPoolerListCommand_Cache.Prepare(TSMPoolerMethodClient_GetPoolerList_Cache);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FGetPoolerListCommand_Cache.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FGetPoolerListCommand_Cache.Connection.UserName            := UserName;
@@ -554,7 +554,7 @@ Begin
    FGetPoolerListCommand.Text := Method_Prefix + '."GetPoolerList"';
    FGetPoolerListCommand.Prepare(TSMPoolerMethodClient_GetPoolerList);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FGetPoolerListCommand.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FGetPoolerListCommand.Connection.UserName                 := UserName;
@@ -610,7 +610,7 @@ Begin
    FApplyChangesCommand.Text := Method_Prefix + '."ApplyChanges"';
    FApplyChangesCommand.Prepare(TSMPoolerMethodClient_ApplyChanges);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FApplyChangesCommand.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FApplyChangesCommand.Connection.UserName                 := UserName;
@@ -659,7 +659,7 @@ Begin
    FExecuteCommandPureJSONCommand.Text := Method_Prefix + '.ExecuteCommandPureJSON';
    FExecuteCommandPureJSONCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandPureJSON);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FExecuteCommandPureJSONCommand.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FExecuteCommandPureJSONCommand.Connection.UserName                 := UserName;
@@ -703,7 +703,7 @@ Begin
    FExecuteCommandPureCommand.Text := Method_Prefix + '.ExecuteCommandPure';
    FExecuteCommandPureCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandPure);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FExecuteCommandPureCommand.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FExecuteCommandPureCommand.Connection.UserName                 := UserName;
@@ -725,7 +725,7 @@ Begin
      FUnMarshal := TDSRestCommand(FExecuteCommandPureCommand.Parameters[5].ConnectionHandler).GetJSONUnMarshaler;
      Try
       If vCompression Then
-       {$if CompilerVersion > 26}
+       {$if CompilerVersion > 28}
          Result := TFDJSONDataSets(FUnMarshal.UnMarshal( DecompressJSON(FExecuteCommandPureCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner).ToJSON)))
        {$else}
          Result := TFDJSONDataSets(FUnMarshal.UnMarshal(DecompressJSON(TJson.ObjectToJsonString(FExecuteCommandPureCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner)))))
@@ -760,7 +760,7 @@ Begin
    FExecuteCommandJSONCommand.Text := Method_Prefix + '."ExecuteCommandJSON"';
    FExecuteCommandJSONCommand.Prepare(TSMPoolerMethodClient_ExecuteCommandJSON);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FExecuteCommandJSONCommand.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FExecuteCommandJSONCommand.Connection.UserName                 := UserName;
@@ -812,7 +812,7 @@ begin
    FInsertValueCommandPure.Text        := Method_Prefix + '.InsertValuePure';
    FInsertValueCommandPure.Prepare(TSMPoolerMethodClient_InsertValuePure);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FInsertValueCommandPure.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FInsertValueCommandPure.Connection.UserName                 := UserName;
@@ -856,7 +856,7 @@ begin
    FInsertValueCommand.Text        := Method_Prefix + '."InsertValue"';
    FInsertValueCommand.Prepare(TSMPoolerMethodClient_InsertValue);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FInsertValueCommand.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FInsertValueCommand.Connection.UserName                 := UserName;
@@ -902,7 +902,7 @@ Begin
    FExecuteCommandCommand.Text := Method_Prefix + '."ExecuteCommand"';
    FExecuteCommandCommand.Prepare(TSMPoolerMethodClient_ExecuteCommand);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FExecuteCommandCommand.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FExecuteCommandCommand.Connection.UserName                 := UserName;
@@ -925,7 +925,7 @@ Begin
      FUnMarshal := TDSRestCommand(FExecuteCommandCommand.Parameters[6].ConnectionHandler).GetJSONUnMarshaler;
      Try
       If vCompression Then
-       {$if CompilerVersion > 26}
+       {$if CompilerVersion > 28}
          Result := TFDJSONDataSets(FUnMarshal.UnMarshal(DecompressJSON(FExecuteCommandCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner).ToJSON)))
        {$else}
          Result := TFDJSONDataSets(FUnMarshal.UnMarshal(DecompressJSON(TJson.ObjectToJsonString(FExecuteCommandCommand.Parameters[6].Value.GetJSONValue(FInstanceOwner)))))
@@ -954,7 +954,7 @@ Begin
    FEchoPoolerCommand.Text := Method_Prefix + '.EchoPooler';
    FEchoPoolerCommand.Prepare(TSMPoolerMethodClient_EchoPooler);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FEchoPoolerCommand.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FEchoPoolerCommand.Connection.UserName                 := UserName;
@@ -981,7 +981,7 @@ Begin
    FPoolersDataSetCommand.Text        := Method_Prefix + '.PoolersDataSet';
    FPoolersDataSetCommand.Prepare(TSMPoolerMethodClient_PoolersDataSet);
   End;
- {$if CompilerVersion > 26}
+ {$if CompilerVersion > 28}
   FPoolersDataSetCommand.Connection.HTTP.ConnectTimeout     := TimeOut;
  {$ifend}
  FPoolersDataSetCommand.Connection.UserName                 := UserName;
