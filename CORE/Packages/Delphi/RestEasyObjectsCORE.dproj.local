@@ -28,7 +28,6 @@
     <File Path="..\..\Source\libs\uDWConsts.pas"/>
     <File Path="..\..\Source\libs\uDWJSONObject.pas"/>
     <File Path="..\..\Source\libs\uDWJSONTools.pas"/>
-    <File Path="..\..\Source\libs\uKBDynamic.pas"/>
     <File Path="..\..\Source\uRESTDWBase.pas"/>
     <File Path="..\..\Source\uRESTDWMasterDetailData.pas"/>
     <File Path="..\..\Source\uRESTDWPoolerDB.pas"/>

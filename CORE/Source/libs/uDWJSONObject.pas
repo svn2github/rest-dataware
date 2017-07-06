@@ -3,11 +3,10 @@ unit uDWJSONObject;
 interface
 
 Uses {$IFDEF FPC}
-     SysUtils, Classes, uDWJSONTools, uDWConsts, IdGlobal, uKBDynamic, DB,
-     uDWJSONParser;
+     SysUtils, Classes, uDWJSONTools, uDWConsts, IdGlobal, DB, uDWJSONParser;
      {$ELSE}
      System.SysUtils, System.Classes, uDWJSONTools, uDWConsts, uDWJSONParser,
-     IdGlobal,        uKBDynamic, System.Rtti,    Data.DB,      Soap.EncdDecd;
+     IdGlobal,        System.Rtti,    Data.DB,      Soap.EncdDecd;
      {$ENDIF}
 
 Type
