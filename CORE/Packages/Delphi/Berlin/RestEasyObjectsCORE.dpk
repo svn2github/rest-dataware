@@ -33,20 +33,20 @@ requires
   IndySystem,
   IndyProtocols,
   IndyCore,
+  dbrtl,
   soaprtl;
 
 contains
-  uRESTDWBase in '..\..\Source\uRESTDWBase.pas',
-  uRESTDWReg in '..\..\Source\uRESTDWReg.pas',
-  ServerUtils in '..\..\Source\libs\ServerUtils.pas',
-  StringBuilderUnit in '..\..\Source\libs\StringBuilderUnit.pas',
-  SysTypes in '..\..\Source\libs\SysTypes.pas',
-  uDWConsts in '..\..\Source\libs\uDWConsts.pas',
-  uDWJSONTools in '..\..\Source\libs\uDWJSONTools.pas',
-  uDWJSONObject in '..\..\Source\libs\uDWJSONObject.pas',
-  uDWJSONParser in '..\..\Source\libs\JSON\uDWJSONParser.pas',
-  uRESTDWPoolerDB in '..\..\Source\uRESTDWPoolerDB.pas',
-  uRESTDWMasterDetailData in '..\..\Source\uRESTDWMasterDetailData.pas';
+  uRESTDWBase in '..\..\..\Source\uRESTDWBase.pas',
+  uRESTDWMasterDetailData in '..\..\..\Source\uRESTDWMasterDetailData.pas',
+  uRESTDWPoolerDB in '..\..\..\Source\uRESTDWPoolerDB.pas',
+  uRESTDWReg in '..\..\..\Source\uRESTDWReg.pas',
+  ServerUtils in '..\..\..\Source\libs\ServerUtils.pas',
+  SysTypes in '..\..\..\Source\libs\SysTypes.pas',
+  uDWConsts in '..\..\..\Source\libs\uDWConsts.pas',
+  uDWJSONObject in '..\..\..\Source\libs\uDWJSONObject.pas',
+  uDWJSONTools in '..\..\..\Source\libs\uDWJSONTools.pas',
+  uDWJSONParser in '..\..\..\Source\libs\JSON\uDWJSONParser.pas';
 
 end.
 
