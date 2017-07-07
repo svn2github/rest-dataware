@@ -8,80 +8,61 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="..\..\Source\libs;..\..\Source;..\..\Source\libs\JSON"/>
+        <IncludeFiles Value="..\..\Source\libs\zLibEX_Laz\obj"/>
+        <OtherUnitFiles Value="..\..\Source\libs;..\..\Source;..\..\Source\libs\JSON;..\..\Source\libs\zLibEX_Laz"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="17">
+    <Files Count="12">
       <Item1>
-        <Filename Value="..\..\Source\libs\backup\ServerUtils.pas"/>
+        <Filename Value="..\..\Source\libs\ServerUtils.pas"/>
         <UnitName Value="ServerUtils"/>
       </Item1>
       <Item2>
-        <Filename Value="..\..\Source\libs\backup\uDWConsts.pas"/>
-        <UnitName Value="uDWConsts"/>
-      </Item2>
-      <Item3>
-        <Filename Value="..\..\Source\libs\backup\uDWJSONObject.pas"/>
-        <UnitName Value="uDWJSONObject"/>
-      </Item3>
-      <Item4>
-        <Filename Value="..\..\Source\libs\backup\uDWJSONTools.pas"/>
-        <UnitName Value="uDWJSONTools"/>
-      </Item4>
-      <Item5>
-        <Filename Value="..\..\Source\libs\backup\uKBDynamic.pas"/>
-        <UnitName Value="uKBDynamic"/>
-      </Item5>
-      <Item6>
-        <Filename Value="..\..\Source\libs\ServerUtils.pas"/>
-        <UnitName Value="ServerUtils"/>
-      </Item6>
-      <Item7>
         <Filename Value="..\..\Source\libs\SysTypes.pas"/>
         <UnitName Value="SysTypes"/>
-      </Item7>
-      <Item8>
+      </Item2>
+      <Item3>
         <Filename Value="..\..\Source\libs\uDWConsts.pas"/>
         <UnitName Value="uDWConsts"/>
-      </Item8>
-      <Item9>
+      </Item3>
+      <Item4>
         <Filename Value="..\..\Source\libs\uDWJSONObject.pas"/>
         <UnitName Value="uDWJSONObject"/>
-      </Item9>
-      <Item10>
+      </Item4>
+      <Item5>
         <Filename Value="..\..\Source\libs\uDWJSONTools.pas"/>
         <UnitName Value="uDWJSONTools"/>
-      </Item10>
-      <Item11>
-        <Filename Value="..\..\Source\libs\uKBDynamic.pas"/>
-        <UnitName Value="uKBDynamic"/>
-      </Item11>
-      <Item12>
+      </Item5>
+      <Item6>
         <Filename Value="..\..\Source\uRESTDWBase.pas"/>
         <UnitName Value="uRESTDWBase"/>
-      </Item12>
-      <Item13>
+      </Item6>
+      <Item7>
         <Filename Value="..\..\Source\uRESTDWReg.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="uRESTDWReg"/>
-      </Item13>
-      <Item14>
+      </Item7>
+      <Item8>
         <Filename Value="resteasyobjectscore.lrs"/>
         <Type Value="LRS"/>
-      </Item14>
-      <Item15>
+      </Item8>
+      <Item9>
         <Filename Value="..\..\Source\libs\JSON\uDWJSONParser.pas"/>
         <UnitName Value="uDWJSONParser"/>
-      </Item15>
-      <Item16>
+      </Item9>
+      <Item10>
         <Filename Value="..\..\Source\uRESTDWMasterDetailData.pas"/>
         <UnitName Value="uRESTDWMasterDetailData"/>
-      </Item16>
-      <Item17>
+      </Item10>
+      <Item11>
         <Filename Value="..\..\Source\uRESTDWPoolerDB.pas"/>
         <UnitName Value="uRESTDWPoolerDB"/>
-      </Item17>
+      </Item11>
+      <Item12>
+        <Filename Value="..\..\Source\libs\uzliblaz.pas"/>
+        <UnitName Value="uzliblaz"/>
+      </Item12>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>

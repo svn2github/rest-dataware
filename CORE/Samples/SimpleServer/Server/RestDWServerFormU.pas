@@ -73,6 +73,7 @@ type
     Server_FDConnection: TFDConnection;
     cbEncode: TCheckBox;
     RESTServicePooler1: TRESTServicePooler;
+    CheckBox1: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);
@@ -389,6 +390,7 @@ begin
    RESTServicePooler1.SSLPrivateKeyPassword := ePrivKeyPass.Text;
    RESTServicePooler1.SSLCertFile           := eCertFile.Text;
    RESTServicePooler1.Active                := True;
+   RESTServicePooler1.DataCompression       := CheckBox1.Checked;
    If Not RESTServicePooler1.Active Then
     Exit;
    Server_FDConnection.Connected := True;

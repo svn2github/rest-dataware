@@ -3,9 +3,9 @@ unit uDWConsts;
 Interface
 
 Uses {$IFDEF FPC}
-     SysUtils, DB, Classes, IdGlobal, IdCoderMIME;
+     SysUtils, DB, Classes, IdGlobal, IdCoderMIME, uZlibLaz, base64;
      {$ELSE}
-     System.SysUtils, IdGlobal,
+     System.SysUtils, IdGlobal, ZLib, EncdDecd,
      Data.DB, System.Classes, IdCoderMIME;
      {$ENDIF}
 
@@ -23,6 +23,7 @@ Const
  TQuotedValueMemString = '\"';
  AuthRealm             = 'Provide Authentication';
  UrlBase               = '%s://%s:%d/%s';
+ ByteBuffer            = 1024 * 8; //8kb
 
 Type
  TEncodeSelect    = (esASCII,     esUtf8);
@@ -55,18 +56,142 @@ Type
  Function GetFieldType            (FieldType       : TFieldType)       : String;          Overload;
  Function GetFieldType            (FieldType       : String)           : TFieldType;      Overload;
  Function StringFloat             (aValue          : String)           : String;
- Function GenerateStringFromStream(Stream          : TMemoryStream;
-                                   AEncoding       : TEncoding) : String;
- Function  FileToStr   (Const FileName     : String) : String;
- Procedure StrToFile   (Const FileName,
-                              SourceString : String);
- Function  StreamToHex (Stream : TMemoryStream) : String;
- Procedure HexToStream (Str    : String;
-                        Stream : TMemoryStream);
- Function StreamToBytes(Stream : TMemoryStream) : tidBytes;
+ Function GenerateStringFromStream(Stream          : TStream;
+                                   AEncoding       : TEncoding) : String;Overload;
+ Function  GenerateStringFromStream(Stream          : TStream)   : String;Overload;
+ Function  FileToStr    (Const FileName     : String) : String;
+ Procedure StrToFile    (Const FileName,
+                               SourceString : String);
+ Function  StreamToHex  (Stream : TStream)  : String;
+ Procedure HexToStream  (Str    : String;
+                         Stream : TStream);
+ Function  StreamToBytes(Stream       : TMemoryStream) : tidBytes;
+ Procedure CopyStream   (Const Source : TStream;
+                               Dest   : TStream);
+ Function  ZDecompressStr(Const S     : String;
+                          Var Value   : String) : Boolean;
+ Function  ZCompressStr  (Const s     : String;
+                          Var Value   : String) : Boolean;
+ Function  BytesArrToString(aValue : tIdBytes) : String;
 
 
 implementation
+
+Uses uDWJSONTools;
+
+
+Function BytesArrToString(aValue : tIdBytes) : String;
+Var
+ StringStream : TStringStream;
+Begin
+ {$IFDEF FPC}
+  StringStream := TStringStream.Create('');
+  Try
+   StringStream.Write(aValue[0], Length(aValue));
+   StringStream.Position := 0;
+   Result  := StringStream.DataString;
+  Finally
+   StringStream.Free;
+  End;
+ {$ELSE}
+  Result   := BytesToString(aValue);
+ {$ENDIF}
+End;
+
+Function ZCompressStr(Const s   : String;
+                      Var Value : String) : Boolean;
+Var
+ Utf8Stream   : TStringStream;
+ Compressed   : TMemoryStream;
+ Base64Stream : TStringStream;
+ {$IFDEF FPC}
+  Encoder     : TBase64EncodingStream;
+ {$ENDIF}
+Begin
+ Result := False;
+ {$IFDEF FPC}
+  Utf8Stream := TStringStream.Create(S);
+ {$ELSE}
+  Utf8Stream := TStringStream.Create(S, TEncoding.UTF8);
+ {$ENDIF}
+ Try
+  Compressed := TMemoryStream.Create;
+  Try
+   {$IFDEF FPC}
+    ZCompressStream(Utf8Stream, Compressed, zcDefault);
+    Compressed.Position := 0;
+    Base64Stream := TStringStream.Create('');
+   {$ELSE}
+    ZCompressStream(Utf8Stream, Compressed);
+    Compressed.Position := 0;
+    Base64Stream := TStringStream.Create('', TEncoding.ASCII);
+   {$ENDIF}
+   Try
+    {$IFDEF FPC}
+     Encoder       := TBase64EncodingStream.Create(Base64Stream);
+     Encoder.CopyFrom(Compressed, Compressed.Size);
+    {$ELSE}
+     EncodeStream(Compressed, Base64Stream);
+    {$ENDIF}
+    Value  := Base64Stream.DataString;
+    Result := True;
+   Finally
+    Base64Stream.Free;
+   End;
+  Finally
+   Compressed.Free;
+  End;
+ Finally
+  Utf8Stream.Free;
+ End;
+End;
+
+Function ZDecompressStr(Const S   : String;
+                        Var Value : String) : Boolean;
+Var
+ Utf8Stream   : TStringStream;
+ Compressed   : TMemoryStream;
+ Base64Stream : TStringStream;
+ {$IFDEF FPC}
+  Encoder      : TBase64DecodingStream;
+ {$ENDIF}
+Begin
+ Result := False;
+ {$IFDEF FPC}
+  Base64Stream := TStringStream.Create(S);
+ {$ELSE}
+  Base64Stream := TStringStream.Create(S, TEncoding.ASCII);
+ {$ENDIF}
+ Try
+  Compressed := TMemoryStream.Create;
+  Try
+   {$IFDEF FPC}
+    Utf8Stream    := TStringStream.Create('');
+    Encoder       := TBase64DecodingStream.Create(Base64Stream);
+    Utf8Stream.CopyFrom(Encoder, Encoder.Size);
+    Utf8Stream.Position := 0;
+    Compressed.position := 0;
+    ZDecompressStream(Compressed, Utf8Stream);
+   {$ELSE}
+    Utf8Stream := TStringStream.Create('', TEncoding.UTF8);
+    DecodeStream(Base64Stream, Compressed);
+    Compressed.position := 0;
+    ZDecompressStream(Compressed, Utf8Stream);
+    Utf8Stream.Position := 0;
+   {$ENDIF}
+   Try
+    Value := Utf8Stream.DataString;
+    Result := True;
+   Finally
+    Utf8Stream.Free;
+   End;
+  Finally
+   Compressed.Free;
+  End;
+ Finally
+  Base64Stream.Free;
+ End;
+End;
 
 Function StreamToBytes(Stream : TMemoryStream) : tidBytes;
 Begin
@@ -79,17 +204,18 @@ Begin
 end;
 
 Procedure HexToStream(Str    : String;
-                      Stream : TMemoryStream);
+                      Stream : TStream);
 Begin
- Stream.SetSize(Length(Str)    Div 2);
- HexToBin      (PChar (Str),   Stream.Memory, Stream.Size);
+ TMemoryStream(Stream).Size := Length(Str) Div 2;
+ HexToBin(PChar (Str),   TMemoryStream(Stream).Memory, TMemoryStream(Stream).Size);
+ Stream.Position := 0;
 End;
 
-Function StreamToHex(Stream  : TMemoryStream): string;
+Function StreamToHex(Stream  : TStream): string;
 Begin
  Stream.Position := 0;
- SetLength     (Result,        Stream.Size * 2);
- BinToHex      (Stream.Memory, PChar(Result), Stream.Size);
+ SetLength     (Result, Stream.Size * 2);
+ BinToHex      (TMemoryStream(Stream).Memory, PChar(Result), Stream.Size);
 End;
 
 Function FileToStr(Const FileName : String):string;
@@ -120,20 +246,57 @@ Begin
  End;
 End;
 
-Function GenerateStringFromStream(Stream : TMemoryStream; AEncoding: TEncoding) : String;
+Procedure CopyStream(Const Source : TStream;
+                           Dest   : TStream);
+Var
+ BytesRead : Integer;
+ Buffer    : PByte;
+ Const
+  MaxBufSize = $F000;
+Begin
+ { ** Criando a instância do objeto TMemoryStream para retorno do método ** }
+ Dest := TMemoryStream.Create;
+ { ** Reposicionando o stream para o seu início ** }
+ source.Seek(0, TSeekOrigin.soBeginning);
+ source.Position := 0;
+ GetMem(Buffer, MaxBufSize);
+ { ** Realizando a leitura do stream original, buffer a buffer ** }
+ Repeat
+  BytesRead := Source.Read(Buffer^, MaxBufSize);
+  If BytesRead > 0 then
+   Dest.WriteBuffer(Buffer^, BytesRead);
+ Until MaxBufSize > BytesRead;
+ { ** Reposicionando o stream de retorno para o seu início ** }
+ Dest.Seek(0, TSeekOrigin.soBeginning);
+End;
+
+Function GenerateStringFromStream(Stream : TStream; AEncoding: TEncoding) : String;
 Var
  StringStream : TStringStream;
 Begin
  StringStream := TStringStream.Create(''{$IFNDEF FPC}, AEncoding{$ENDIF});
  Try
-  Stream.Position       := 0;
+  Stream.Position := 0;
   StringStream.CopyFrom(Stream, Stream.Size);
-  StringStream.Position := 0;
   Result                := StringStream.DataString;
  Finally
   {$IFNDEF FPC}StringStream.Clear;{$ENDIF}
   StringStream.Free;
  End;
+End;
+
+Function GenerateStringFromStream(Stream : TStream) : String;
+Var
+ idBytes : TIdBytes;
+Begin
+ Try
+  SetLength(idBytes, Stream.Size);
+  Stream.ReadBuffer(idBytes[0], Stream.Size);
+ Finally
+ End;
+// vResult := PChar(AllocMem((Length(idBytes) * 2) + 1));
+ SetLength(Result, Stream.Size * 2);
+ BinToHex(@idBytes, PChar(Result), Length(idBytes));
 End;
 
 Function StringFloat     (aValue          : String)           : String;
@@ -556,8 +719,8 @@ Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;
 Begin
  Result := TEncoding.utf8;
  Case Avalue of
-  esUtf8 : Result := TEncoding.utf8;
-  esASCII : Result := TEncoding.ANSI;
+  esUtf8  : Result := TEncoding.Unicode;
+  esASCII : Result := TEncoding.ASCII;
  End;
 End;
 

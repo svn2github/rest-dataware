@@ -1061,6 +1061,22 @@ object Form2: TForm2
     TabOrder = 6
     OnClick = Button1Click
   end
+  object CheckBox1: TCheckBox
+    Left = 262
+    Top = 98
+    Width = 91
+    Height = 19
+    Caption = 'Compression'
+    Checked = True
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    State = cbChecked
+    TabOrder = 7
+  end
   object DataSource1: TDataSource
     AutoEdit = False
     DataSet = MemDataset1
@@ -1068,6 +1084,7 @@ object Form2: TForm2
     Top = 88
   end
   object RESTClientPooler1: TRESTClientPooler
+    DataCompression = True
     Encoding = esASCII
     Host = 'localhost'
     UserName = 'testserver'

@@ -132,6 +132,8 @@ Begin
   Delete(vTempString, InitStrPos, 1);
  If vTempString[InitStrPos] = '"' Then
   Delete(vTempString, InitStrPos, 1);
+ If vTempString = '}' Then
+  vTempString := '';
  If vTempString <> '' Then
   Begin
    For A := Length(vTempString) Downto InitStrPos Do
@@ -328,7 +330,7 @@ function TJSONValue.GetValue: String;
 Var
  vTempString : String;
 Begin
- vTempString := BytesToString(aValue);
+ vTempString := BytesArrToString(aValue);
  If Length(vTempString) > 0 Then
   Begin
    If vTempString[InitStrPos] = '"' Then
@@ -343,10 +345,13 @@ Begin
                         ovOraClob]) And (vBinary) Then
     vTempString := vTempString
    Else
-    vTempString := DecodeStrings(vTempString{$IFNDEF FPC}, vEncoding{$ENDIF});
+    Begin
+     If Length(vTempString) > 0 Then
+      vTempString := DecodeStrings(vTempString{$IFNDEF FPC}, vEncoding{$ENDIF});
+    End;
   End
  Else
-  vTempString := BytesToString(aValue);
+  vTempString := BytesArrToString(aValue);
  If vObjectValue = ovString Then
   Begin
    If vTempString <> '' Then
@@ -493,7 +498,7 @@ Begin
  If vEncoded Then
   vTempValue := FormatValue(vEncoding.GetString(TBytes(aValue)))
  Else
-  vTempValue := FormatValue(BytesToString(aValue));
+  vTempValue := FormatValue(BytesArrToString(aValue));
  Result := vTempValue;
 End;
 
@@ -762,7 +767,13 @@ Begin
  If vObjectValue = ovString Then
   Begin
    If vEncoded Then
-    aValue := tIdBytes(vEncoding.GetBytes(Format(TJsonStringValue, [bValue])))
+    Begin
+     {$IFDEF FPC}
+      aValue := ToBytes(Format(TJsonStringValue, [bValue]))
+     {$ELSE}
+      aValue := tIdBytes(vEncoding.GetBytes(Format(TJsonStringValue, [bValue])))
+     {$ENDIF}
+    End
    Else
     aValue := ToBytes(Format(TJsonStringValue, [bValue]));
   End

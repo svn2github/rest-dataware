@@ -4,13 +4,14 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="42">
+    <Units Count="48">
       <Unit0>
         <Filename Value="RestClient.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="37" Y="10"/>
-        <UsageCount Value="55"/>
+        <EditorIndex Value="2"/>
+        <CursorPos Y="19"/>
+        <UsageCount Value="59"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="formMain.pas"/>
@@ -18,9 +19,9 @@
         <ComponentName Value="Form2"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="26"/>
-        <CursorPos X="7" Y="99"/>
-        <UsageCount Value="55"/>
+        <TopLine Value="70"/>
+        <CursorPos X="36" Y="84"/>
+        <UsageCount Value="59"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -31,7 +32,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="117"/>
         <CursorPos X="17" Y="127"/>
-        <UsageCount Value="51"/>
+        <UsageCount Value="55"/>
         <Bookmarks Count="2">
           <Item0 X="2" Y="124" ID="2"/>
           <Item1 X="119" Y="41" ID="1"/>
@@ -180,10 +181,15 @@
       </Unit22>
       <Unit23>
         <Filename Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="50"/>
-        <CursorPos Y="60"/>
-        <UsageCount Value="18"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="306"/>
+        <CursorPos X="37" Y="314"/>
+        <UsageCount Value="19"/>
+        <Bookmarks Count="1">
+          <Item0 X="44" Y="104" ID="1"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\..\..\..\Source\libs\uDWJSONTools.pas"/>
@@ -192,11 +198,9 @@
       </Unit24>
       <Unit25>
         <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="576"/>
-        <CursorPos X="34" Y="590"/>
-        <UsageCount Value="18"/>
+        <CursorPos Y="8"/>
+        <UsageCount Value="19"/>
         <Bookmarks Count="2">
           <Item0 X="56" Y="393" ID="2"/>
           <Item1 X="13" Y="232" ID="3"/>
@@ -324,16 +328,173 @@
         <CursorPos X="16" Y="145"/>
         <UsageCount Value="10"/>
       </Unit41>
+      <Unit42>
+        <Filename Value="..\..\..\..\Source\libs\zLibEX_Laz\ZLibEx.pas"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="10"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="..\..\..\..\Source\libs\zLibEX_Laz\ZLibExApi.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="91"/>
+        <CursorPos X="34" Y="104"/>
+        <UsageCount Value="10"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="..\..\..\..\Source\libs\backup\uDWConsts.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="56" Y="6"/>
+        <UsageCount Value="10"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="..\..\..\..\Packages\Lazarus\resteasyobjectscore.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="79" Y="12"/>
+        <UsageCount Value="10"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="..\..\..\..\Source\libs\ServerUtils.pas"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="22"/>
+        <CursorPos Y="31"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <UnitName Value="uZlibLaz"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="103"/>
+        <CursorPos X="30" Y="122"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit47>
     </Units>
-    <JumpHistory Count="1">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="formMain.pas"/>
-        <Caret Line="99" Column="7" TopLine="26"/>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="123" TopLine="110"/>
       </Position1>
+      <Position2>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="124" TopLine="110"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="125" TopLine="110"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="126" TopLine="110"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="127" TopLine="110"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="128" TopLine="110"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="142" TopLine="115"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="143" TopLine="115"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="144" TopLine="116"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="145" TopLine="117"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="146" TopLine="118"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="147" TopLine="119"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="142" TopLine="119"/>
+      </Position13>
+      <Position14>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="143" TopLine="119"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="144" TopLine="119"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="145" TopLine="119"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="146" TopLine="119"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="147" TopLine="119"/>
+      </Position18>
+      <Position19>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="142" TopLine="119"/>
+      </Position19>
+      <Position20>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="143" TopLine="119"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="144" TopLine="119"/>
+      </Position21>
+      <Position22>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="145" TopLine="119"/>
+      </Position22>
+      <Position23>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="146" TopLine="119"/>
+      </Position23>
+      <Position24>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="147" TopLine="119"/>
+      </Position24>
+      <Position25>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="142" TopLine="119"/>
+      </Position25>
+      <Position26>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="143" TopLine="119"/>
+      </Position26>
+      <Position27>
+        <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Caret Line="144" TopLine="119"/>
+      </Position27>
+      <Position28>
+        <Filename Value="formMain.pas"/>
+        <Caret Line="99" Column="7" TopLine="25"/>
+      </Position28>
+      <Position29>
+        <Filename Value="formMain.pas"/>
+        <Caret Line="100" Column="7" TopLine="83"/>
+      </Position29>
+      <Position30>
+        <Filename Value="formMain.pas"/>
+        <Caret Line="84" Column="36" TopLine="70"/>
+      </Position30>
     </JumpHistory>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="14">
+    <BreakPoints Count="18">
       <Item1>
         <Kind Value="bpkSource"/>
         <WatchScope Value="wpsLocal"/>
@@ -432,6 +593,34 @@
         <Source Value="..\..\..\..\Source\uRESTDWBase.pas"/>
         <Line Value="427"/>
       </Item14>
+      <Item15>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
+        <Line Value="243"/>
+      </Item15>
+      <Item16>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
+        <Line Value="151"/>
+      </Item16>
+      <Item17>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Line Value="123"/>
+      </Item17>
+      <Item18>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
+        <Line Value="149"/>
+      </Item18>
     </BreakPoints>
     <Watches Count="2">
       <Item1>

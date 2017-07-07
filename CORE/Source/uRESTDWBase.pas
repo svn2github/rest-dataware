@@ -109,6 +109,7 @@ Type
                           ARequestInfo  : TIdHTTPRequestInfo;
                           AResponseInfo : TIdHTTPResponseInfo);
  Private
+  vDataCompress,
   vActive          : Boolean;
   vProxyOptions    : TProxyOptions;
   HTTPServer       : TIdHTTPServer;
@@ -136,6 +137,7 @@ Type
   Destructor  Destroy;Override;                      //Destroy a Classe
  Published
   Property Active                : Boolean         Read vActive                Write SetActive;
+  Property DataCompression       : Boolean         Read vDatacompress          Write vDatacompress;
   Property Secure                : Boolean         Read GetSecure;
   Property ServicePort           : Integer         Read vServicePort           Write vServicePort;  //A Porta do Serviço do DataSet
   Property ProxyOptions          : TProxyOptions   Read vProxyOptions          Write vProxyOptions; //Se tem Proxy diz quais as opções
@@ -168,6 +170,7 @@ Type
   vPassword,
   vHost             : String;
   vPort             : Integer;
+  vDatacompress,
   vThreadRequest,
   vAutenticacao     : Boolean;
   vTransparentProxy : TIdProxyConnectionInfo;
@@ -187,6 +190,7 @@ Type
   Destructor  Destroy;Override;
  Published
   //Métodos e Propriedades
+  Property DataCompression  : Boolean                Read vDatacompress     Write vDatacompress;
   Property UrlPath          : String                 Read vUrlPath          Write SetUrlPath;
   Property Encoding         : TEncodeSelect          Read vRSCharset        Write vRSCharset;
   Property TypeRequest      : TTypeRequest           Read vTypeRequest      Write vTypeRequest       Default trHttp;
@@ -218,6 +222,7 @@ Begin
  vAutenticacao                   := True;
  vRequestTimeOut                 := 10000;
  vThreadRequest                  := False;
+ vDatacompress                   := True;
 End;
 
 Destructor  TRESTClientPooler.Destroy;
@@ -233,6 +238,7 @@ Function TRESTClientPooler.SendEvent(EventData  : String;
 									 CallBack : TCallBack= nil) : String;
 Var
  vResult,
+ vResultSTR,
  vURL,
  vTpRequest    : String;
  vResultParams : TMemoryStream;
@@ -388,7 +394,14 @@ Begin
          HttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
          HttpRequest.Request.ContentEncoding := 'multipart/form-data';
          StringStream          := TStringStream.Create('');
-         HttpRequest.Post(vURL, SendParams, StringStream);
+         If vDatacompress Then
+          Begin
+           vResult      := HttpRequest.Post(vURL, SendParams);
+           ZDecompressStr(vResult, vResultSTR);
+           StringStream := TStringStream.Create(vResultSTR);
+          End
+         Else
+          HttpRequest.Post(vURL, SendParams, StringStream);
          StringStream.Position := 0;
         End
        Else
@@ -532,6 +545,7 @@ Var
  boundary,
  startboundary,
  vReplyString,
+ vReplyStringResult,
  Cmd , UrlMethod,
  tmp, JSONStr,
  sFile, sContentType, sCharSet       : String;
@@ -728,7 +742,13 @@ Begin
         End;
        Try
         vReplyString                         := Format(TValueDisp, [GetParamsReturn(DWParams), JSONStr]);
-        mb                                   := TStringStream.Create(vReplyString{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
+        If vDataCompress Then
+         Begin
+          ZCompressStr(vReplyString, vReplyStringResult);
+          mb                                 := TStringStream.Create(vReplyStringResult);
+         End
+        Else
+         mb                                  := TStringStream.Create(vReplyString{$IFNDEF FPC}, GetEncoding(VEncondig){$ENDIF});
         mb.Position                          := 0;
         AResponseInfo.ContentStream          := mb;
         AResponseInfo.ContentStream.Position := 0;
@@ -862,6 +882,7 @@ Begin
  vServerContext                  := 'restdataware';
  VEncondig                       := esASCII;
  vServicePort                    := 8082;
+ vDataCompress                   := True;
  {$IFDEF FPC} {$IFDEF WINDOWS}
  InitializeCriticalSection(vCriticalSection);
  {$ENDIF}{$ENDIF}

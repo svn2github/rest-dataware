@@ -7,9 +7,9 @@ unit resteasyobjectscore;
 interface
 
 uses
-  ServerUtils, uDWConsts, uDWJSONObject, uDWJSONTools, uKBDynamic, SysTypes, 
-  uRESTDWBase, uRESTDWReg, uDWJSONParser, uRESTDWMasterDetailData, 
-  uRESTDWPoolerDB, LazarusPackageIntf;
+  ServerUtils, SysTypes, uDWConsts, uDWJSONObject, uDWJSONTools, uRESTDWBase, 
+  uRESTDWReg, uDWJSONParser, uRESTDWMasterDetailData, uRESTDWPoolerDB, 
+  uZlibLaz, LazarusPackageIntf;
 
 implementation
 

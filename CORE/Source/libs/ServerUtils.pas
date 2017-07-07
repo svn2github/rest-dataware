@@ -29,8 +29,6 @@ End;
 
 implementation
 
-Uses SysTypes;
-
 Procedure TServerParams.Assign(Source: TPersistent);
 Var
  Src : TServerParams;

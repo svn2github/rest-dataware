@@ -36,6 +36,7 @@ type
     DBGrid1: TDBGrid;
     mComando: TMemo;
     Button1: TButton;
+    CheckBox1: TCheckBox;
     procedure btnGetClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
@@ -68,6 +69,7 @@ Begin
  RESTClientPooler1.Port     := StrToInt(ePort.Text);
  RESTClientPooler1.UserName := edUserNameDW.Text;
  RESTClientPooler1.Password := edPasswordDW.Text;
+ RESTClientPooler1.DataCompression := CheckBox1.Checked;
  SQL := mComando.Text;
  DWParams            := TDWParams.Create;
  DWParams.Encoding   := GetEncoding(RESTClientPooler1.Encoding);

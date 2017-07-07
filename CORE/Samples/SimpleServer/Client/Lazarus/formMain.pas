@@ -17,6 +17,7 @@ type
     Bevel2: TBevel;
     Bevel3: TBevel;
     Button1: TButton;
+    CheckBox1: TCheckBox;
     DBGrid1: TDBGrid;
     edPasswordDW: TEdit;
     edUserNameDW: TEdit;
@@ -71,15 +72,16 @@ Begin
  DecimalSeparator := ',';
  CurrencyDecimals := 2;
  {$ENDIF}
- RESTClientPooler1.Host     := eHost.Text;
- RESTClientPooler1.Port     := StrToInt(ePort.Text);
- RESTClientPooler1.UserName := edUserNameDW.Text;
- RESTClientPooler1.Password := edPasswordDW.Text;
- SQL                        := mComando.Text;
- DWParams                   := TDWParams.Create;
- DWParams.Encoding          := GetEncoding(RESTClientPooler1.Encoding);
- JSONParam                  := TJSONParam.Create(DWParams.Encoding);
- JSONParam.ParamName        := 'SQL';
+ RESTClientPooler1.DataCompression := CheckBox1.Checked;
+ RESTClientPooler1.Host            := eHost.Text;
+ RESTClientPooler1.Port            := StrToInt(ePort.Text);
+ RESTClientPooler1.UserName        := edUserNameDW.Text;
+ RESTClientPooler1.Password        := edPasswordDW.Text;
+ SQL                               := mComando.Text;
+ DWParams                          := TDWParams.Create;
+ DWParams.Encoding                 := GetEncoding(RESTClientPooler1.Encoding);
+ JSONParam                         := TJSONParam.Create(DWParams.Encoding);
+ JSONParam.ParamName               := 'SQL';
  JSONParam.SetValue(SQL);
  DWParams.Add(JSONParam);
  JSONParam                  := TJSONParam.Create(DWParams.Encoding);

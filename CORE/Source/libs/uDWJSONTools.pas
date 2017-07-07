@@ -18,11 +18,11 @@ Function GetPairJSON  (Tag,
                        Encoding    : TEncodeSelect = esUtf8) : String;Overload;
 Function EncodeStrings(Value       : String
                       {$IFNDEF FPC};
-                          Encoding : TEncoding
+                          Encoding : TEncoding = Nil
                                       {$ENDIF})              : String;
 Function DecodeStrings(Value       : String
                       {$IFNDEF FPC};
-                          Encoding : TEncoding
+                          Encoding : TEncoding = Nil
                                       {$ENDIF})              : String;
 Function EncodeBytes  (Value : String{$IFNDEF FPC}; Encoding : TEncoding{$ENDIF}) : TIdBytes;
 
@@ -43,7 +43,7 @@ Begin
  Encoder.Free;
 End;
 
-Function EncodeStrings(Value : String{$IFNDEF FPC}; Encoding : TEncoding{$ENDIF}) : String;
+Function EncodeStrings(Value : String{$IFNDEF FPC}; Encoding : TEncoding = Nil{$ENDIF}) : String;
 Var
  Encoder: TIdEncoderMIME;
 Begin
@@ -51,20 +51,26 @@ Begin
  {$IFDEF FPC}
  Result := Encoder.EncodeString(Value, IndyTextEncoding_ASCII);
  {$ELSE}
- Result := Encoder.EncodeString(Value, IndyTextEncoding(Encoding));
+  If Encoding <> Nil Then
+   Result := Encoder.EncodeString(Value, IndyTextEncoding(Encoding))
+  Else
+   Result := Encoder.EncodeString(Value, IndyTextEncoding_ASCII);
  {$ENDIF}
  Encoder.Free;
 End;
 
-Function DecodeStrings(Value : String{$IFNDEF FPC};Encoding : TEncoding{$ENDIF}) : String;
+Function DecodeStrings(Value : String{$IFNDEF FPC};Encoding : TEncoding = Nil{$ENDIF}) : String;
 Var
  Encoder: TIdDecoderMIME;
 Begin
  Encoder := TIdDecoderMIME.Create(nil);
  {$IFDEF FPC}
- Result := Encoder.DecodeString(Value, IndyTextEncoding_ASCII);
+  Result := Encoder.DecodeString(Value, IndyTextEncoding_ASCII);
  {$ELSE}
- Result := Encoder.DecodeString(Value, IndyTextEncoding(Encoding));
+  If Encoding <> Nil Then
+   Result := Encoder.DecodeString(Value, IndyTextEncoding(Encoding))
+  Else
+   Result := Encoder.DecodeString(Value, IndyTextEncoding_ASCII);
  {$ENDIF}
  Encoder.Free;
 End;

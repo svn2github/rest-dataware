@@ -4,23 +4,6 @@
     <Transaction>2017/06/20 20:49:31.000.324,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Package1.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\RestEasyObjectsCORE.dproj</Transaction>
     <Transaction>2017/06/20 20:51:46.000.630,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWBase.pas</Transaction>
     <Transaction>2017/06/20 21:13:38.000.307,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWReg.pas</Transaction>
-    <Transaction>2017/07/06 23:07:58.000.557,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\uRESTDWBase.pas</Transaction>
-    <Transaction>2017/07/06 23:07:58.000.659,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\uRESTDWReg.pas</Transaction>
-    <Transaction>2017/07/06 23:07:58.000.626,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\uRESTDWPoolerDB.pas</Transaction>
-    <Transaction>2017/07/06 23:07:58.000.589,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\uRESTDWMasterDetailData.pas</Transaction>
-    <Transaction>2017/07/06 23:08:36.000.626,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\libs\uDWJSONTools.pas</Transaction>
-    <Transaction>2017/07/06 23:08:36.000.573,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\libs\uDWConsts.pas</Transaction>
-    <Transaction>2017/07/06 23:08:36.000.547,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\libs\SysTypes.pas</Transaction>
-    <Transaction>2017/07/06 23:08:36.000.601,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\libs\uDWJSONObject.pas</Transaction>
-    <Transaction>2017/07/06 23:08:36.000.522,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\libs\ServerUtils.pas</Transaction>
-    <Transaction>2017/07/06 23:08:51.000.728,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Source\libs\JSON\uDWJSONParser.pas</Transaction>
-    <Transaction>2017/07/06 23:09:21.000.846,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Images\TRESTDWClientSQL.bmp</Transaction>
-    <Transaction>2017/07/06 23:09:21.000.890,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Images\TRESTDWPoolerDB.bmp</Transaction>
-    <Transaction>2017/07/06 23:09:21.000.954,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Images\TRESTServicePooler.bmp</Transaction>
-    <Transaction>2017/07/06 23:09:21.000.911,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Images\TRESTDWPoolerList.bmp</Transaction>
-    <Transaction>2017/07/06 23:09:21.000.933,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Images\TRESTDWStoredProc.bmp</Transaction>
-    <Transaction>2017/07/06 23:09:21.000.868,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Images\TRESTDWDataBase.bmp</Transaction>
-    <Transaction>2017/07/06 23:09:21.000.824,=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Images\TRESTClientPooler.bmp</Transaction>
   </Transactions>
 	<ActiveMobileDevice>
 		<NoProfile iOSSimulator="iPhone5"/>

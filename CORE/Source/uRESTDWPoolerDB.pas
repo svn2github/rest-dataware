@@ -11,9 +11,9 @@ unit uRESTDWPoolerDB;
 
 interface
 
-uses SysUtils,  Classes,          uDWJSONObject,
-     DB,               ZLib,             uRESTDWBase,
-     SyncObjs,  uRESTDWMasterDetailData, uDWConsts;
+uses SysUtils,  Classes,     uDWJSONObject,
+     DB,        uRESTDWBase, SyncObjs,
+     uRESTDWMasterDetailData, uDWConsts;
 
 Type
  TEncodeSelect            = (esASCII, esUtf8);
