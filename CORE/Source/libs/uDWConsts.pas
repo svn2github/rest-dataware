@@ -48,7 +48,13 @@ Type
                      ovTimeStampOffset, ovObject,       ovSingle);                                                           //49..51
  TDatasetType     = (dtReflection,      dtFull,         dtDiff);
 
+ {$IFDEF FPC}
  Function GetEncoding             (Avalue          : TEncodeSelect)    : TEncoding;
+ {$ELSE}
+ {$IF CompilerVersion > 21}
+ Function GetEncoding             (Avalue          : TEncodeSelect)    : TEncoding;
+ {$IFEND}
+ {$ENDIF}
  Function GetObjectName           (TypeObject      : TTypeObject)      : String;          Overload;
  Function GetObjectName           (TypeObject      : String)           : TTypeObject;     Overload;
  Function GetDirectionName        (ObjectDirection : TObjectDirection) : String;          Overload;
@@ -60,10 +66,15 @@ Type
  Function GetFieldType            (FieldType       : TFieldType)       : String;          Overload;
  Function GetFieldType            (FieldType       : String)           : TFieldType;      Overload;
  Function StringFloat             (aValue          : String)           : String;
- Function GenerateStringFromStream(Stream          : TStream;
-                                   AEncoding       : TEncoding) : String;Overload;
- Function  GenerateStringFromStream(Stream          : TStream)   : String;Overload;
- Function  FileToStr    (Const FileName     : String) : String;
+ {$IFDEF FPC}
+ Function GenerateStringFromStream(Stream          : TStream;AEncoding : TEncoding) : String;Overload;
+ {$ELSE}
+ {$IF CompilerVersion > 21}
+ Function GenerateStringFromStream(Stream          : TStream;AEncoding : TEncoding) : String;Overload;
+ {$IFEND}
+ {$ENDIF}
+ Function GenerateStringFromStream(Stream          : TStream)   : String;Overload;
+ Function FileToStr    (Const FileName     : String) : String;
  Procedure StrToFile    (Const FileName,
                                SourceString : String);
  Function  StreamToHex  (Stream : TStream)  : String;

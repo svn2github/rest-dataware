@@ -5,7 +5,11 @@ interface
 Uses {$IFDEF FPC}
      SysUtils, Classes;
      {$ELSE}
+     {$IF CompilerVersion < 21}
+     SysUtils, Classes;
+     {$ELSE}
      System.SysUtils, System.Classes;
+     {$IFEND}
      {$ENDIF}
 
 type
