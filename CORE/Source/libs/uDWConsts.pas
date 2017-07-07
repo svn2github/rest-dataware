@@ -5,8 +5,12 @@ Interface
 Uses {$IFDEF FPC}
      SysUtils, DB, Classes, IdGlobal, IdCoderMIME, uZlibLaz, base64;
      {$ELSE}
-     System.SysUtils, IdGlobal, ZLib, EncdDecd,
-     Data.DB, System.Classes, IdCoderMIME;
+     {$IF CompilerVersion < 21}
+     SysUtils, Classes, DB,
+     {$ELSE}
+     System.SysUtils, System.Classes, Data.DB,
+     {$IFEND}
+     IdGlobal, ZLib, EncdDecd, IdCoderMIME;
      {$ENDIF}
 
 Const

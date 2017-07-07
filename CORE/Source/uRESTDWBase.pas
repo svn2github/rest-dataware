@@ -31,7 +31,12 @@ Uses
      uDWJSONObject,      IdMultipartFormData, IdMessageCoder,        IdMessageCoderMIME,
      IdMessage,          IdGlobal,            IdGlobalProtocols;
      {$ELSE}
-     System.SysUtils,    System.Classes,      SysTypes, ServerUtils, Windows,
+     {$IF CompilerVersion < 21}
+     SysUtils, Classes,
+     {$ELSE}
+     System.SysUtils, System.Classes,
+     {$IFEND}
+     SysTypes, ServerUtils, Windows,
      IdContext,          IdHTTPServer,        IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
      IdAuthentication,   IdHTTPHeaderInfo,    uDWJSONTools,          uDWConsts,    IdHTTP,
      uDWJSONObject,      IdMultipartFormData, IdMessageCoder,        IdMessageCoderMIME,
