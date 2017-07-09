@@ -338,6 +338,7 @@ Var
    End;
  End;
 Begin
+ SendParams := Nil;
  If vThreadRequest Then
   Begin
    thd := TThread_Request.Create;
@@ -416,7 +417,8 @@ Begin
          vResult      := HttpRequest.Get(EventData);
          StringStream := TStringStream.Create(vResult);
         End;
-//       StringStream.WriteBuffer(#0' ', 1);
+       If SendParams <> Nil Then
+        SendParams.Free;
        StringStream.Position := 0;
        Try
         SetData(StringStream.DataString, Params, Result);
