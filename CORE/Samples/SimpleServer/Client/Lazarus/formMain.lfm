@@ -1067,11 +1067,13 @@ object Form2: TForm2
     Top = 93
     Width = 93
     Caption = 'Compression'
+    Checked = True
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
+    State = cbChecked
     TabOrder = 7
   end
   object DataSource1: TDataSource
