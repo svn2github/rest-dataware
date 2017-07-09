@@ -19,6 +19,7 @@ Type
     ButtonStart: TButton;
     ButtonStop: TButton;
     cbAdaptadores: TComboBox;
+    cbEncode1: TCheckBox;
     cbPoolerState: TCheckBox;
     cbEncode: TCheckBox;
     ctiPrincipal: TTrayIcon;
@@ -126,6 +127,7 @@ procedure TfrmMain.StartServer;
 begin
  If Not RESTServicePooler1.Active Then
   Begin
+   RESTServicePooler1.DataCompression       := cbEncode1.Checked;
    RESTServicePooler1.ServicePort           := StrToInt(edPortaDW.Text);
    RESTServicePooler1.SSLPrivateKeyFile     := ePrivKeyFile.Text;
    RESTServicePooler1.SSLPrivateKeyPassword := ePrivKeyPass.Text;

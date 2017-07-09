@@ -1083,19 +1083,6 @@ object Form2: TForm2
     Left = 128
     Top = 88
   end
-  object RESTClientPooler1: TRESTClientPooler
-    DataCompression = True
-    Encoding = esASCII
-    Host = 'localhost'
-    UserName = 'testserver'
-    Password = 'testserver'
-    ProxyOptions.BasicAuthentication = False
-    ProxyOptions.ProxyPort = 0
-    RequestTimeOut = 60000
-    ThreadRequest = False
-    Left = 77
-    Top = 41
-  end
   object MemDataset1: TFDMemTable
     FieldDefs = <
       item
@@ -1113,6 +1100,19 @@ object Form2: TForm2
     UpdateOptions.AutoCommitUpdates = True
     StoreDefs = True
     Left = 80
+    Top = 88
+  end
+  object RESTClientPooler1: TRESTClientPooler
+    DataCompression = True
+    Encoding = esASCII
+    Host = 'localhost'
+    UserName = 'testserver'
+    Password = 'testserver'
+    ProxyOptions.BasicAuthentication = False
+    ProxyOptions.ProxyPort = 0
+    RequestTimeOut = 10000
+    ThreadRequest = False
+    Left = 216
     Top = 88
   end
 end

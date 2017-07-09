@@ -1226,6 +1226,16 @@ object frmMain: TfrmMain
         State = cbChecked
         TabOrder = 12
       end
+      object cbEncode1: TCheckBox
+        Left = 277
+        Height = 19
+        Top = 77
+        Width = 81
+        Caption = 'Compression'
+        Checked = True
+        State = cbChecked
+        TabOrder = 13
+      end
     end
     object tsLogs: TTabSheet
       Caption = 'Logs'
@@ -1327,12 +1337,13 @@ object frmMain: TfrmMain
   end
   object RESTServicePooler1: TRESTServicePooler
     Active = False
+    DataCompression = True
     ServicePort = 8082
     ProxyOptions.Port = 8888
     SSLVersion = sslvSSLv2
     OnLastRequest = RESTServicePooler1LastRequest
     OnLastResponse = RESTServicePooler1LastResponse
-    Encoding = esUtf8
+    Encoding = esASCII
     ServerContext = 'restdataware'
     left = 196
     top = 188

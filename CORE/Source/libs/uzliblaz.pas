@@ -49,7 +49,6 @@ Begin
  inStream.Position := 0;
  d := TDecompressionstream.Create(inStream);
  Try
-  inStream.Position := 0;
   Repeat
    R := d.Read(B, SizeOf(B));
    If R > 0 then

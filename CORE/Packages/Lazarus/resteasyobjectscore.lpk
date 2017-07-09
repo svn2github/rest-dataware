@@ -8,8 +8,8 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="..\..\Source\libs\zLibEX_Laz\obj"/>
-        <OtherUnitFiles Value="..\..\Source\libs;..\..\Source;..\..\Source\libs\JSON;..\..\Source\libs\zLibEX_Laz"/>
+        <IncludeFiles Value="..\..\Source\libs\zLibEX_Laz\obj;..\..\Source\zlib"/>
+        <OtherUnitFiles Value="..\..\Source\libs;..\..\Source;..\..\Source\libs\JSON;..\..\Source\libs\zLibEX_Laz;..\..\Source\zlib"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
@@ -61,7 +61,7 @@
       </Item11>
       <Item12>
         <Filename Value="..\..\Source\libs\uzliblaz.pas"/>
-        <UnitName Value="uzliblaz"/>
+        <UnitName Value="uZlibLaz"/>
       </Item12>
     </Files>
     <RequiredPkgs Count="2">

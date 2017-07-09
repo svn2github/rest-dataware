@@ -46,7 +46,8 @@ contains
   uDWConsts in '..\..\..\Source\libs\uDWConsts.pas',
   uDWJSONObject in '..\..\..\Source\libs\uDWJSONObject.pas',
   uDWJSONTools in '..\..\..\Source\libs\uDWJSONTools.pas',
-  uDWJSONParser in '..\..\..\Source\libs\JSON\uDWJSONParser.pas';
+  uDWJSONParser in '..\..\..\Source\libs\JSON\uDWJSONParser.pas',
+  uzliblaz in '..\..\..\Source\libs\uzliblaz.pas';
 
 end.
 

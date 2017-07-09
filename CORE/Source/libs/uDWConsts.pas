@@ -174,10 +174,10 @@ Begin
     ZDecompressStream(Utf8Stream, Compressed);
    {$ELSE}
     Utf8Stream := TStringStream.Create('', TEncoding.UTF8);
-    DecodeStream(Base64Stream, Compressed);
-    Compressed.position := 0;
-    ZDecompressStream(Compressed, Utf8Stream);
-    Utf8Stream.Position := 0;
+    DecodeStream(Base64Stream, Utf8Stream);
+    Utf8Stream.position := 0;
+    Compressed.Position := 0;
+    ZDecompressStream(Utf8Stream, Compressed);
    {$ENDIF}
    Try
     Value := Compressed.DataString;

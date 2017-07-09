@@ -20,7 +20,6 @@ type
     Label4: TLabel;
     Label5: TLabel;
     DataSource1: TDataSource;
-    RESTClientPooler1: TRESTClientPooler;
     MemDataset1: TFDMemTable;
     Image1: TImage;
     Bevel1: TBevel;
@@ -37,6 +36,7 @@ type
     mComando: TMemo;
     Button1: TButton;
     CheckBox1: TCheckBox;
+    RESTClientPooler1: TRESTClientPooler;
     procedure btnGetClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
