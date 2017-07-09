@@ -319,8 +319,8 @@ begin
   inherited Create;
   FStrm := Strm;
   FStrmPos := Strm.Position;
-  FZRec.zalloc := @zlibAllocMem;
-  FZRec.zfree := @zlibFreeMem;
+  FZRec.zalloc := zlibAllocMem;
+  FZRec.zfree := zlibFreeMem;
 end;
 
 procedure TCustomZLibStream.Progress(Sender: TObject);
