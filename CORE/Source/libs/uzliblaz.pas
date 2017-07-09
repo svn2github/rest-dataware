@@ -5,9 +5,7 @@ interface
 Uses
  SysUtils, Classes, zlib{$IFDEF FPC}, zstream{$ENDIF};
 
-Type
- TypeOfSize = Int64;
-
+  //Funções de Compressão e descompressão de Stream com ZLib
   Procedure ZCompressStream  (inStream, outStream : TStream);
   Procedure ZDecompressStream(inStream, outStream : TStream);
 
@@ -17,14 +15,11 @@ implementation
 Procedure ZCompressStream  (inStream, outStream : TStream);
 Var
  DS        : TCompressionStream;
- readCount : integer;
- n         : TypeOfSize;
 Begin
  inStream.Position := 0; // goto start of input stream
  DS := TCompressionstream.Create(clDefault, outStream);
  Try
   inStream.Position := 0;
-  n := inStream.Size;
   DS.CopyFrom(inStream, inStream.Size);
  Finally
   DS.Free;
