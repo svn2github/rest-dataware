@@ -5,12 +5,8 @@ Interface
 Uses {$IFDEF FPC}
      SysUtils, DB, Classes, IdGlobal, IdCoderMIME, uZlibLaz, base64;
      {$ELSE}
-     {$IF CompilerVersion < 21}
-     SysUtils, Classes, DB,
-     {$ELSE}
-     System.SysUtils, System.Classes, Data.DB,
-     {$IFEND}
-     IdGlobal, ZLib, EncdDecd, IdCoderMIME;
+     System.SysUtils, IdGlobal, uZlibLaz, EncdDecd,
+     Data.DB, System.Classes, IdCoderMIME;
      {$ENDIF}
 
 Const
@@ -48,13 +44,7 @@ Type
                      ovTimeStampOffset, ovObject,       ovSingle);                                                           //49..51
  TDatasetType     = (dtReflection,      dtFull,         dtDiff);
 
- {$IFDEF FPC}
  Function GetEncoding             (Avalue          : TEncodeSelect)    : TEncoding;
- {$ELSE}
- {$IF CompilerVersion > 21}
- Function GetEncoding             (Avalue          : TEncodeSelect)    : TEncoding;
- {$IFEND}
- {$ENDIF}
  Function GetObjectName           (TypeObject      : TTypeObject)      : String;          Overload;
  Function GetObjectName           (TypeObject      : String)           : TTypeObject;     Overload;
  Function GetDirectionName        (ObjectDirection : TObjectDirection) : String;          Overload;
@@ -66,15 +56,10 @@ Type
  Function GetFieldType            (FieldType       : TFieldType)       : String;          Overload;
  Function GetFieldType            (FieldType       : String)           : TFieldType;      Overload;
  Function StringFloat             (aValue          : String)           : String;
- {$IFDEF FPC}
- Function GenerateStringFromStream(Stream          : TStream;AEncoding : TEncoding) : String;Overload;
- {$ELSE}
- {$IF CompilerVersion > 21}
- Function GenerateStringFromStream(Stream          : TStream;AEncoding : TEncoding) : String;Overload;
- {$IFEND}
- {$ENDIF}
- Function GenerateStringFromStream(Stream          : TStream)   : String;Overload;
- Function FileToStr    (Const FileName     : String) : String;
+ Function GenerateStringFromStream(Stream          : TStream;
+                                   AEncoding       : TEncoding) : String;Overload;
+ Function  GenerateStringFromStream(Stream          : TStream)   : String;Overload;
+ Function  FileToStr    (Const FileName     : String) : String;
  Procedure StrToFile    (Const FileName,
                                SourceString : String);
  Function  StreamToHex  (Stream : TStream)  : String;
@@ -133,7 +118,7 @@ Begin
   Compressed := TMemoryStream.Create;
   Try
    {$IFDEF FPC}
-    ZCompressStream(Utf8Stream, Compressed, zcDefault);
+    ZCompressStream(Utf8Stream, Compressed);
     Compressed.Position := 0;
     Base64Stream := TStringStream.Create('');
    {$ELSE}
@@ -164,8 +149,8 @@ End;
 Function ZDecompressStr(Const S   : String;
                         Var Value : String) : Boolean;
 Var
- Utf8Stream   : TStringStream;
- Compressed   : TMemoryStream;
+ Utf8Stream,
+ Compressed,
  Base64Stream : TStringStream;
  {$IFDEF FPC}
   Encoder      : TBase64DecodingStream;
@@ -178,7 +163,7 @@ Begin
   Base64Stream := TStringStream.Create(S, TEncoding.ASCII);
  {$ENDIF}
  Try
-  Compressed := TMemoryStream.Create;
+  Compressed := TStringStream.Create('');
   Try
    {$IFDEF FPC}
     Utf8Stream    := TStringStream.Create('');
@@ -186,7 +171,7 @@ Begin
     Utf8Stream.CopyFrom(Encoder, Encoder.Size);
     Utf8Stream.Position := 0;
     Compressed.position := 0;
-    ZDecompressStream(Compressed, Utf8Stream);
+    ZDecompressStream(Utf8Stream, Compressed);
    {$ELSE}
     Utf8Stream := TStringStream.Create('', TEncoding.UTF8);
     DecodeStream(Base64Stream, Compressed);
@@ -195,7 +180,7 @@ Begin
     Utf8Stream.Position := 0;
    {$ENDIF}
    Try
-    Value := Utf8Stream.DataString;
+    Value := Compressed.DataString;
     Result := True;
    Finally
     Utf8Stream.Free;
