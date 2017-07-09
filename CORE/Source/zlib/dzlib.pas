@@ -15,7 +15,7 @@ unit dzlib;
 
 interface
 
-uses gzlib, Sysutils, Classes;
+uses gzlib, gzinflate, gzdeflate, gtrees, Sysutils, Classes;
 
 {$IFDEF VER80}
   {$DEFINE Delphi16}
@@ -155,7 +155,7 @@ uses
   {$IFDEF Delphi16}
   WinTypes, WinProcs,
   {$ENDIF}
-  zutil, zDeflate, zInflate;
+  gzutil;
 
 {$IFDEF Delphi16}
 Procedure zlibFreeMem(AppData, Block: Pointer); far;

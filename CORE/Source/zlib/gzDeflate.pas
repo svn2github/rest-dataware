@@ -1,4 +1,4 @@
-Unit zDeflate;
+Unit gzDeflate;
 
 { Orginal: deflate.h -- internal compression state
            deflate.c -- compress data using the deflation algorithm
@@ -58,10 +58,8 @@ Unit zDeflate;
 
 interface
 
-{$I zconf.inc}
-
 uses
-  zutil, gzlib;
+  gzutil, gzlib, gtrees;
 
 
 function deflateInit_(strm : z_streamp;
@@ -333,7 +331,7 @@ const
 implementation
 
 uses
-  trees, Adler;
+  Adler;
 
 {  ===========================================================================
    Function prototypes. }
@@ -435,8 +433,8 @@ const
 {5} (good_length:8;  max_lazy:16;  nice_length:32;  max_chain:32;   func:@deflate_slow),
 {6} (good_length:8;  max_lazy:16;  nice_length:128; max_chain:128;  func:@deflate_slow),
 {7} (good_length:8;  max_lazy:32;  nice_length:128; max_chain:256;  func:@deflate_slow),
-{8} (good_length:32; max_lazy:128; nice_length:258; max_chain:1024; func:deflate_slow),
-{9} (good_length:32; max_lazy:258; nice_length:258; max_chain:4096; func:deflate_slow)); { maximum compression }
+{8} (good_length:32; max_lazy:128; nice_length:258; max_chain:1024; func:@deflate_slow),
+{9} (good_length:32; max_lazy:258; nice_length:258; max_chain:4096; func:@deflate_slow)); { maximum compression }
 
 { Note: the deflate() code requires max_lazy >= MIN_MATCH and max_chain >= 4
   For deflate_fast() (levels <= 3) good is ignored and lazy has a different
