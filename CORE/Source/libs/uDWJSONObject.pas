@@ -741,7 +741,7 @@ Procedure TJSONValue.LoadFromStream(Stream    : TMemoryStream;
                                     Encode    : Boolean = True);
 Begin
  ObjectValue := ovBlob;
- SetValue(StreamToHex(Stream), Encode); //GenerateStringFromStream(Stream, vEncoding), Encode);
+ SetValue(StreamToHex(Stream), Encode);
 End;
 
 procedure TJSONValue.SetValue(Value: String; Encode: Boolean);
@@ -840,8 +840,7 @@ procedure TJSONParam.LoadFromStream(Stream: TMemoryStream; Encode: Boolean);
 begin
  ObjectValue        := ovBlob;
  vBinary            := False;
- vJSONValue.vBinary := vBinary;
- SetValue(GenerateStringFromStream(Stream, vEncoding), Encode);
+ SetValue(StreamToHex(Stream), Encode);
 end;
 
 procedure TJSONParam.FromJSON(JSON: String);
@@ -891,18 +890,9 @@ Begin
 end;
 
 procedure TJSONParam.SaveToStream(Stream: TMemoryStream);
-Var
- StringStream : TStringStream;
-begin
- StringStream := TStringStream.Create(vJSONValue.Value{$IFNDEF FPC}, vEncoding{$ENDIF});
- Try
-  StringStream.Position := 0;
-  Stream.CopyFrom(StringStream, StringStream.Size);
- Finally
-  StringStream.Free;
-  Stream.Position := 0;
- End;
-end;
+Begin
+ HexToStream(Value, Stream);
+End;
 
 procedure TJSONParam.SetParamName(bValue: String);
 begin

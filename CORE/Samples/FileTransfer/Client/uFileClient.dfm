@@ -1076,6 +1076,7 @@ object Form4: TForm4
       '5 minutos')
   end
   object RESTClientPooler1: TRESTClientPooler
+    DataCompression = False
     Encoding = esASCII
     Host = 'localhost'
     UserName = 'testserver'

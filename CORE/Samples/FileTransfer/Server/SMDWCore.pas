@@ -89,7 +89,7 @@ Function TSMDWCore.SendReplicationFile(Var Params : TDWParams) : String;
 Var
  vArquivo     : String;
  JSONValue    : TJSONValue;
- vFileIn      : TStringStream;
+ vFileIn,
  vFile        : TMemoryStream;
  Procedure DelFilesFromDir(Directory, FileMask : String; Const DelSubDirs: Boolean = False);
  Var
@@ -117,7 +117,8 @@ Begin
    vArquivo           := fServer.DirName + Trim(ExtractFileName(Params.ItemsString['Arquivo'].Value));
    If FileExists(vArquivo) Then
     DeleteFile(vArquivo);
-   vFileIn            := TStringStream.Create(Params.ItemsString['FileSend'].Value, JSONValue.Encoding);
+   vFileIn            := TMemoryStream.Create;
+   Params.ItemsString['FileSend'].SaveToStream(vFileIn);
    Try
     vFileIn.Position   := 0;
     vFileIn.SaveToFile(vArquivo);
