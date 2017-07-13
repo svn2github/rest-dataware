@@ -1010,7 +1010,7 @@ object Form4: TForm4
     Text = 'testserver'
   end
   object Button1: TButton
-    Left = 374
+    Left = 376
     Top = 173
     Width = 119
     Height = 37
@@ -1033,7 +1033,7 @@ object Form4: TForm4
     TabOrder = 5
   end
   object Button2: TButton
-    Left = 374
+    Left = 376
     Top = 216
     Width = 119
     Height = 37
@@ -1048,7 +1048,7 @@ object Form4: TForm4
     OnClick = Button2Click
   end
   object Button3: TButton
-    Left = 374
+    Left = 376
     Top = 260
     Width = 119
     Height = 37
