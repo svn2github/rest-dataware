@@ -6,7 +6,11 @@ uses
   {$IFDEF FPC}
    LResources, Classes, uRESTDWBase, uRESTDWPoolerDB;
   {$ELSE}
-   System.Classes, uRESTDWBase, uRESTDWPoolerDB;
+   {$if CompilerVersion > 21}
+    Classes, uRESTDWBase, uRESTDWPoolerDB;
+   {$ELSE}
+    Classes, uRESTDWBase, uRESTDWPoolerDB;
+   {$IFEND}
   {$ENDIF}
 
 Procedure Register;
@@ -22,6 +26,10 @@ End;
 {$IFDEF FPC}
 initialization
 {$I resteasyobjectscore.lrs}
+{$ELSE}
+{$if CompilerVersion < 21}
+ {$R ..\Packages\Delphi\D7\RestEasyObjectsCORE.dcr}
+{$IFEND}
 {$ENDIF}
 
 end.

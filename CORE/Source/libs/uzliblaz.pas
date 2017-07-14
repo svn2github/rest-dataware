@@ -1,4 +1,4 @@
-﻿unit uZlibLaz;
+unit uZlibLaz;
 
 interface
 
@@ -12,14 +12,20 @@ Uses
 
 implementation
 
+Uses
+ uDWConsts;
+
 Procedure ZCompressStream  (inStream, outStream : TStream);
 Var
  DS        : TCompressionStream;
+ Size      : Longint;
 Begin
  inStream.Position := 0; // goto start of input stream
  DS := TCompressionstream.Create(clDefault, outStream);
  Try
+  Size              := inStream.Size;
   inStream.Position := 0;
+  DS.Write(Size, SizeOf(Size));
   DS.CopyFrom(inStream, inStream.Size);
  Finally
   DS.Free;
@@ -28,7 +34,7 @@ End;
 
 Function ReadDWord(Value : TStream) : Cardinal;
 Var
- d : Cardinal;
+ d    : Cardinal;
 Begin
  Value.Position := 0;
  Value.ReadBuffer(d, 4);
@@ -37,15 +43,20 @@ End;
 
 Procedure ZDecompressStream(inStream, outStream : TStream);
 Var
- D : TDecompressionstream;
- B : Array[1..2048] of Byte;
- R : Integer;
+ D    : TDecompressionstream;
+ B    : Array[1..CompressBuffer] of Byte;
+ R, X : Integer;
+ Size : Longint;
 Begin
- inStream.Position := 0;
  d := TDecompressionstream.Create(inStream);
+ d.Read(Size, SizeOf(Size));
+ inStream.Position := SizeOf(Size);
  Try
   Repeat
-   R := d.Read(B, SizeOf(B));
+   If ((Size - outStream.Size) > CompressBuffer) Then
+    R := d.Read(B, SizeOf(B))
+   Else
+    R := d.Read(B, (Size - outStream.Size));
    If R > 0 then
     outStream.Write(B, R);
   Until R < SizeOf(B);

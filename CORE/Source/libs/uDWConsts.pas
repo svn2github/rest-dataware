@@ -2,12 +2,18 @@ unit uDWConsts;
 
 Interface
 
-Uses {$IFDEF FPC}
+Uses
+    {$IFDEF FPC}
      SysUtils, DB, Classes, IdGlobal, IdCoderMIME, uZlibLaz, base64;
+    {$ELSE}
+     {$if CompilerVersion > 21} // Delphi 2010 pra cima
+      System.SysUtils, IdGlobal, uZlibLaz, EncdDecd,
+      Data.DB, System.Classes, IdCoderMIME;
      {$ELSE}
-     System.SysUtils, IdGlobal, uZlibLaz, EncdDecd,
-     Data.DB, System.Classes, IdCoderMIME;
-     {$ENDIF}
+      SysUtils, IdGlobal, uZlibLaz, EncdDecd,
+      DB, Classes, IdCoderMIME;
+     {$IFEND}
+    {$ENDIF}
 
 Const
  InitStrPos            = 1;
@@ -24,6 +30,7 @@ Const
  AuthRealm             = 'Provide Authentication';
  UrlBase               = '%s://%s:%d/%s';
  ByteBuffer            = 1024 * 8; //8kb
+ CompressBuffer        = 4096; 
 
 Type
  TEncodeSelect    = (esASCII,     esUtf8);
@@ -43,8 +50,11 @@ Type
                      ovLongWord,        ovShortint,     ovByte, ovExtended, ovConnection, ovParams,    ovStream,             //42..48
                      ovTimeStampOffset, ovObject,       ovSingle);                                                           //49..51
  TDatasetType     = (dtReflection,      dtFull,         dtDiff);
-
- Function GetEncoding             (Avalue          : TEncodeSelect)    : TEncoding;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+   Function GetEncoding             (Avalue          : TEncodeSelect)    : TEncoding;
+  {$IFEND}
+ {$ENDIF}
  Function GetObjectName           (TypeObject      : TTypeObject)      : String;          Overload;
  Function GetObjectName           (TypeObject      : String)           : TTypeObject;     Overload;
  Function GetDirectionName        (ObjectDirection : TObjectDirection) : String;          Overload;
@@ -56,9 +66,8 @@ Type
  Function GetFieldType            (FieldType       : TFieldType)       : String;          Overload;
  Function GetFieldType            (FieldType       : String)           : TFieldType;      Overload;
  Function StringFloat             (aValue          : String)           : String;
- Function GenerateStringFromStream(Stream          : TStream;
-                                   AEncoding       : TEncoding) : String;Overload;
- Function  GenerateStringFromStream(Stream          : TStream)   : String;Overload;
+ Function GenerateStringFromStream(Stream          : TStream{$IFNDEF FPC}{$if CompilerVersion > 21};AEncoding : TEncoding{$IFEND}{$ENDIF}) : String;Overload;
+ //Function GenerateStringFromStream(Stream          : TStream)   : String;Overload;
  Function  FileToStr    (Const FileName     : String) : String;
  Procedure StrToFile    (Const FileName,
                                SourceString : String);
@@ -112,20 +121,14 @@ Begin
  {$IFDEF FPC}
   Utf8Stream := TStringStream.Create(S);
  {$ELSE}
-  Utf8Stream := TStringStream.Create(S, TEncoding.UTF8);
+  Utf8Stream := TStringStream.Create(S   {$if CompilerVersion > 21}, TEncoding.UTF8 {$IFEND});
  {$ENDIF}
  Try
   Compressed := TMemoryStream.Create;
   Try
-   {$IFDEF FPC}
     ZCompressStream(Utf8Stream, Compressed);
     Compressed.Position := 0;
-    Base64Stream := TStringStream.Create('');
-   {$ELSE}
-    ZCompressStream(Utf8Stream, Compressed);
-    Compressed.Position := 0;
-    Base64Stream := TStringStream.Create('', TEncoding.ASCII);
-   {$ENDIF}
+    Base64Stream := TStringStream.Create(''{$IFNDEF FPC}{$if CompilerVersion > 21}, TEncoding.ASCII{$IFEND}{$ENDIF});
    Try
     {$IFDEF FPC}
      Encoder       := TBase64EncodingStream.Create(Base64Stream);
@@ -160,7 +163,7 @@ Begin
  {$IFDEF FPC}
   Base64Stream := TStringStream.Create(S);
  {$ELSE}
-  Base64Stream := TStringStream.Create(S, TEncoding.ASCII);
+  Base64Stream := TStringStream.Create(S  {$if CompilerVersion > 21}, TEncoding.ASCII{$IFEND});
  {$ENDIF}
  Try
   Compressed := TStringStream.Create('');
@@ -173,11 +176,11 @@ Begin
     Compressed.position := 0;
     ZDecompressStream(Utf8Stream, Compressed);
    {$ELSE}
-    Utf8Stream := TStringStream.Create('', TEncoding.UTF8);
+    Utf8Stream := TStringStream.Create(''{$if CompilerVersion > 21}, TEncoding.UTF8{$IFEND});
     DecodeStream(Base64Stream, Utf8Stream);
     Utf8Stream.position := 0;
-    Compressed.Position := 0;
     ZDecompressStream(Utf8Stream, Compressed);
+    Compressed.Position := 0;
    {$ENDIF}
    Try
     Value := Compressed.DataString;
@@ -257,7 +260,7 @@ Begin
  { ** Criando a instância do objeto TMemoryStream para retorno do método ** }
  Dest := TMemoryStream.Create;
  { ** Reposicionando o stream para o seu início ** }
- source.Seek(0, TSeekOrigin.soBeginning);
+ source.Seek(0, soBeginning);
  source.Position := 0;
  GetMem(Buffer, MaxBufSize);
  { ** Realizando a leitura do stream original, buffer a buffer ** }
@@ -267,24 +270,24 @@ Begin
    Dest.WriteBuffer(Buffer^, BytesRead);
  Until MaxBufSize > BytesRead;
  { ** Reposicionando o stream de retorno para o seu início ** }
- Dest.Seek(0, TSeekOrigin.soBeginning);
+ Dest.Seek(0, soBeginning);
 End;
 
-Function GenerateStringFromStream(Stream : TStream; AEncoding: TEncoding) : String;
+Function GenerateStringFromStream(Stream : TStream{$IFNDEF FPC}{$if CompilerVersion > 21}; AEncoding: TEncoding{$IFEND}{$ENDIF}) : String;
 Var
  StringStream : TStringStream;
 Begin
- StringStream := TStringStream.Create(''{$IFNDEF FPC}, AEncoding{$ENDIF});
+ StringStream := TStringStream.Create(''{$IFNDEF FPC}{$if CompilerVersion > 21}, AEncoding{$IFEND}{$ENDIF});
  Try
   Stream.Position := 0;
   StringStream.CopyFrom(Stream, Stream.Size);
   Result                := StringStream.DataString;
  Finally
-  {$IFNDEF FPC}StringStream.Clear;{$ENDIF}
+  {$IFNDEF FPC}{$if CompilerVersion > 21}StringStream.Clear;{$IFEND}{$ENDIF}
   StringStream.Free;
  End;
 End;
-
+{
 Function GenerateStringFromStream(Stream : TStream) : String;
 Var
  idBytes : TIdBytes;
@@ -298,7 +301,7 @@ Begin
  SetLength(Result, Stream.Size * 2);
  BinToHex(@idBytes, PChar(Result), Length(idBytes));
 End;
-
+}
 Function StringFloat     (aValue          : String)           : String;
 Begin
  Result := StringReplace(aValue, '.', '', [rfReplaceall]);
@@ -579,21 +582,23 @@ Begin
   ftGuid            : Result := 'ftGuid';
   ftTimeStamp       : Result := 'ftTimeStamp';
   ftFMTBcd          : Result := 'ftFMTBcd';
-  ftFixedWideChar   : Result := 'ftFixedWideChar';
-  ftWideMemo        : Result := 'ftWideMemo';
   {$IFNDEF FPC}
-  ftOraTimeStamp    : Result := 'ftOraTimeStamp';
-  ftOraInterval     : Result := 'ftOraInterval';
-  ftLongWord        : Result := 'ftLongWord';
-  ftShortint        : Result := 'ftShortint';
-  ftByte            : Result := 'ftByte';
-  ftExtended        : Result := 'ftExtended';
-  ftConnection      : Result := 'ftConnection';
-  ftParams          : Result := 'ftParams';
-  ftStream          : Result := 'ftStream';
-  ftTimeStampOffset : Result := 'ftTimeStampOffset';
-  ftObject          : Result := 'ftObject';
-  ftSingle          : Result := 'ftSingle';
+   {$if CompilerVersion > 21}
+    ftFixedWideChar   : Result := 'ftFixedWideChar';
+    ftWideMemo        : Result := 'ftWideMemo';
+    ftOraTimeStamp    : Result := 'ftOraTimeStamp';
+    ftOraInterval     : Result := 'ftOraInterval';
+    ftLongWord        : Result := 'ftLongWord';
+    ftShortint        : Result := 'ftShortint';
+    ftByte            : Result := 'ftByte';
+    ftExtended        : Result := 'ftExtended';
+    ftConnection      : Result := 'ftConnection';
+    ftParams          : Result := 'ftParams';
+    ftStream          : Result := 'ftStream';
+    ftTimeStampOffset : Result := 'ftTimeStampOffset';
+    ftObject          : Result := 'ftObject';
+    ftSingle          : Result := 'ftSingle';
+   {$IFEND}
   {$ENDIF}
  End;
 End;
@@ -683,39 +688,42 @@ Begin
   {$ENDIF}
  Else If vFieldType = Uppercase('ftFMTBcd')          Then
   Result := ftFMTBcd
- Else If vFieldType = Uppercase('ftFixedWideChar')   Then
-  Result := ftFixedWideChar
- Else If vFieldType = Uppercase('ftWideMemo')        Then
-  Result := ftWideMemo
- {$IFNDEF FPC}
- Else If vFieldType = Uppercase('ftOraTimeStamp')    Then
-  Result := ftOraTimeStamp
- Else If vFieldType = Uppercase('ftOraInterval')     Then
-  Result := ftOraInterval
- Else If vFieldType = Uppercase('ftLongWord')        Then
-  Result := ftLongWord
- Else If vFieldType = Uppercase('ftShortint')        Then
-  Result := ftShortint
- Else If vFieldType = Uppercase('ftByte')            Then
-  Result := ftByte
- Else If vFieldType = Uppercase('ftExtended')        Then
-  Result := ftExtended
- Else If vFieldType = Uppercase('ftConnection')      Then
-  Result := ftConnection
- Else If vFieldType = Uppercase('ftParams')          Then
-  Result := ftParams
- Else If vFieldType = Uppercase('ftStream')          Then
-  Result := ftStream
- Else If vFieldType = Uppercase('ftTimeStampOffset') Then
-  Result := ftTimeStampOffset
- Else If vFieldType = Uppercase('ftObject')          Then
-  Result := ftObject
- Else If vFieldType = Uppercase('ftSingle')          Then
-  Result := ftSingle
- {$ENDIF};
+  {$IFNDEF FPC}
+   {$if CompilerVersion > 21}
+    Else If vFieldType = Uppercase('ftFixedWideChar')   Then
+     Result := ftFixedWideChar
+    Else If vFieldType = Uppercase('ftWideMemo')        Then
+     Result := ftWideMemo
+    Else If vFieldType = Uppercase('ftOraTimeStamp')    Then
+     Result := ftOraTimeStamp
+    Else If vFieldType = Uppercase('ftOraInterval')     Then
+     Result := ftOraInterval
+    Else If vFieldType = Uppercase('ftLongWord')        Then
+     Result := ftLongWord
+    Else If vFieldType = Uppercase('ftShortint')        Then
+     Result := ftShortint
+    Else If vFieldType = Uppercase('ftByte')            Then
+     Result := ftByte
+    Else If vFieldType = Uppercase('ftExtended')        Then
+     Result := ftExtended
+    Else If vFieldType = Uppercase('ftConnection')      Then
+     Result := ftConnection
+    Else If vFieldType = Uppercase('ftParams')          Then
+     Result := ftParams
+    Else If vFieldType = Uppercase('ftStream')          Then
+     Result := ftStream
+    Else If vFieldType = Uppercase('ftTimeStampOffset') Then
+     Result := ftTimeStampOffset
+    Else If vFieldType = Uppercase('ftObject')          Then
+     Result := ftObject
+    Else If vFieldType = Uppercase('ftSingle')          Then
+     Result := ftSingle
+   {$IFEND}{$ENDIF};
 End;
 
-Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;
+{$IFNDEF FPC}
+{$if CompilerVersion > 21}
+Function GetEncoding(Avalue  : TEncodeSelect) : TEncoding;
 Begin
  Result := TEncoding.utf8;
  Case Avalue of
@@ -723,5 +731,6 @@ Begin
   esASCII : Result := TEncoding.ASCII;
  End;
 End;
+{$IFEND}{$ENDIF}
 
 end.

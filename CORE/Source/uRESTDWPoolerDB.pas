@@ -434,7 +434,7 @@ Type
   Property    PoolerOffMessage : String        Read vMessagePoolerOff Write vMessagePoolerOff;
 End;
 
-Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;
+Function GetEncoding(Avalue : TEncodeSelect) : Boolean; //TEncoding;
 Procedure doUnGZIP(Input, gZipped : TMemoryStream);//helper function
 Procedure doGZIP  (Input, gZipped : TMemoryStream);//helper function
 
@@ -474,13 +474,15 @@ Begin
  }
 End;
 
-Function GetEncoding(Avalue : TEncodeSelect) : TEncoding;
+Function GetEncoding(Avalue : TEncodeSelect) : Boolean;// TEncoding;
 Begin
+  {
  Result := TEncoding.utf8; // definido como padrão para suprimir Warn no delphi
  Case Avalue of
   esUtf8 : Result := TEncoding.utf8;
   esASCII : Result := TEncoding.ASCII;
  End;
+ }
 End;
 
 Procedure TAutoCheckData.Assign(Source: TPersistent);
@@ -1494,11 +1496,11 @@ Var
   If FCurrentPos^ = ':' Then
    Begin
     Inc(FCurrentPos);
-    if CharInSet(vOldChar,[' ', '=', '-', '+', '<', '>', '(', ')', ':', '|']) then
+    if vOldChar in [' ', '=', '-', '+', '<', '>', '(', ')', ':', '|'] then
      Begin
       While Not (FCurrentPos^ = #0) Do
        Begin
-        if CharInSet(FCurrentPos^,['0'..'9', 'A'..'Z','a'..'z', '_']) then
+        if FCurrentPos^ in ['0'..'9', 'A'..'Z','a'..'z', '_'] then
 
          Result := Result + FCurrentPos^
         Else
@@ -1517,7 +1519,7 @@ Begin
  FCurrentPos := PChar(vTemp);
  While Not (FCurrentPos^ = #0) do
   Begin
-   If Not CharInSet(FCurrentPos^, [#0..' ', ',',
+   If Not (FCurrentPos^ in [#0..' ', ',',
                            '''', '"',
                            '0'..'9', 'A'..'Z',
                            'a'..'z', '_',

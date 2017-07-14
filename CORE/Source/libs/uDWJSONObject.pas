@@ -3,11 +3,18 @@ unit uDWJSONObject;
 interface
 
 Uses {$IFDEF FPC}
-     SysUtils, Classes, uDWJSONTools, uDWConsts, IdGlobal, DB, uDWJSONParser;
+      SysUtils, Classes, uDWJSONTools, uDWConsts, IdGlobal, DB, uDWJSONParser;
      {$ELSE}
-     System.SysUtils, System.Classes, uDWJSONTools, uDWConsts, uDWJSONParser,
-     IdGlobal,        System.Rtti,    Data.DB,      Soap.EncdDecd;
+      {$if CompilerVersion > 21} // Delphi 2010 pra cima
+       System.SysUtils, System.Classes, uDWJSONTools, uDWConsts, uDWJSONParser,
+       IdGlobal,        System.Rtti,    Data.DB,      Soap.EncdDecd, Datasnap.DbClient;
+      {$ELSE}
+       SysUtils, Classes, uDWJSONTools, uDWConsts, uDWJSONParser,
+       IdGlobal,        DB,     EncdDecd, DbClient;
+      {$IFEND}
      {$ENDIF}
+
+
 
 Type
  TJSONBufferObject = Class
@@ -24,7 +31,11 @@ Type
   vObjectValue        : TObjectValue;
   aValue              : TIdBytes;
   vEncoded            : Boolean;
-  vEncoding           : TEncoding;
+  {$IFNDEF FPC}
+   {$if CompilerVersion > 21}
+    vEncoding          : TEncoding;
+   {$IFEND}
+  {$ENDIF}
   Function    GetValue                    : String;
   Procedure   WriteValue     (bValue      : String);
   Function    FormatValue    (bValue      : String)   : String;
@@ -51,7 +62,11 @@ Type
   Property    TypeObject                  : TTypeObject      Read vTypeObject      Write vTypeObject;
   Property    ObjectDirection             : TObjectDirection Read vObjectDirection Write vObjectDirection;
   Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
-  Property    Encoding                    : TEncoding        Read vEncoding        Write vEncoding;
+  {$IFNDEF FPC}
+   {$if CompilerVersion > 21}
+   Property    Encoding                    : TEncoding        Read vEncoding        Write vEncoding;
+   {$IFEND}
+  {$ENDIF}
   Property    Tagname                     : String           Read vtagName         Write vtagName;
   Property    Encoded                     : Boolean          Read vEncoded         Write vEncoded;
 End;
@@ -63,7 +78,11 @@ Type
  TJSONParam = Class(TObject)
  Private
   vJSONValue                         : TJSONValue;
-  vEncoding                          : TEncoding;
+  {$IFNDEF FPC}
+   {$if CompilerVersion > 21}
+    vEncoding                          : TEncoding;
+   {$IFEND}
+  {$ENDIF}
   vTypeObject                        : TTypeObject;
   vObjectDirection                   : TObjectDirection;
   vObjectValue                       : TObjectValue;
@@ -76,7 +95,7 @@ Type
   Procedure   SetParamName   (bValue : String);
   Function    GetValueJSON   (bValue : String) : String;
  Public
-  Constructor Create(Encoding : TEncoding);
+  Constructor Create{$IFNDEF FPC}{$if CompilerVersion > 21}(Encoding : TEncoding){$IFEND}{$ENDIF};
   Destructor  Destroy;Override;
   Procedure   FromJSON(JSON : String);
   Function    ToJSON        : String;
@@ -95,7 +114,11 @@ End;
 Type
  TDWParams = Class(TList)
  Private
-  vEncoding  : TEncoding;
+  {$IFNDEF FPC}
+   {$if CompilerVersion > 21}
+    vEncoding  : TEncoding;
+   {$IFEND}
+  {$ENDIF}
   Function  GetRec(Index    : Integer)         : TJSONParam; Overload;
   Procedure PutRec(Index    : Integer;    Item : TJSONParam);Overload;
   Function  GetRecName(Index    : String)      : TJSONParam; Overload;
@@ -110,7 +133,11 @@ Type
   Function  Add         (Item  : TJSONParam) : Integer;    Overload;
   Property  Items      [Index  : Integer]    : TJSONParam  Read GetRec     Write PutRec;Default;
   Property  ItemsString[Index  : String]     : TJSONParam  Read GetRecName Write PutRecName;
-  Property  Encoding           : TEncoding                 Read vEncoding  Write vEncoding;
+  {$IFNDEF FPC}
+   {$if CompilerVersion > 21}
+    Property  Encoding         : TEncoding                 Read vEncoding  Write vEncoding;
+   {$IFEND}
+  {$ENDIF}
 End;
 
 implementation
@@ -159,14 +186,22 @@ Var
 Begin
  New(vItem);
  vItem^ := Item;
- vItem^.vEncoding := vEncoding;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+   vItem^.vEncoding := vEncoding;
+  {$IFEND}
+ {$ENDIF}
  Result := TList(Self).Add(vItem);
 End;
 
 Constructor TDWParams.Create;
 Begin
  Inherited;
- vEncoding := TEncoding.ASCII;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+   vEncoding := TEncoding.ASCII;
+  {$IFEND}
+ {$ENDIF}
 End;
 
 Function  TDWParams.ToJSON : String;
@@ -197,7 +232,7 @@ Procedure TDWParams.CopyFrom(DWParams:TDWParams );
   for i:=0 to DWParams.Count-1 do
   begin
      p:=DWParams.Items[i];
-     JSONParam := TJSONParam.Create(DWParams.Encoding);
+     JSONParam := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21} (DWParams.Encoding){$IFEND}{$ENDIF};
      JSONParam.CopyFrom(p);
      Add(JSONParam);
   end;
@@ -282,9 +317,13 @@ End;
 
 { TJSONValue }
 
-constructor TJSONValue.Create;
+Constructor TJSONValue.Create;
 Begin
- vEncoding       := TEncoding.ASCII;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+   vEncoding       := TEncoding.ASCII;
+  {$IFEND}
+ {$ENDIF}
  vTypeObject     := toObject;
  ObjectDirection := odINOUT;
  vObjectValue    := ovString;
@@ -347,7 +386,7 @@ Begin
    Else
     Begin
      If Length(vTempString) > 0 Then
-      vTempString := DecodeStrings(vTempString{$IFNDEF FPC}, vEncoding{$ENDIF});
+      vTempString := DecodeStrings(vTempString{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF});
     End;
   End
  Else
@@ -385,7 +424,7 @@ Var
     vRequired := 'N';
     If bValue.Fields[I].Required Then
      vRequired := 'S';
-    If bValue.Fields[I].DataType in [{$IFNDEF FPC}ftExtended, {$ENDIF}ftFloat, ftCurrency, ftFMTBcd, ftBCD] Then
+    If bValue.Fields[I].DataType in [{$IFNDEF FPC}{$if CompilerVersion > 21}ftExtended,{$IFEND}{$ENDIF}ftFloat, ftCurrency, ftFMTBcd, ftBCD] Then
      vGenerateLine := Format(TJsonDatasetHeader, [bValue.Fields[I].FieldName,
                                                    GetFieldType(bValue.Fields[I].DataType),
                                                    vPrimary, vRequired,
@@ -412,9 +451,9 @@ Var
  Begin
   For I := 0 To bValue.Fields.Count -1 Do
    Begin
-    If bValue.Fields[I].DataType      in [{$IFNDEF FPC}ftExtended, {$ENDIF}ftFloat, ftCurrency, ftFMTBcd,  ftBCD]     Then
+    If bValue.Fields[I].DataType      in [{$IFNDEF FPC}{$if CompilerVersion > 21}ftExtended,{$IFEND}{$ENDIF}ftFloat, ftCurrency, ftFMTBcd,  ftBCD] Then
      vTempValue := Format('"%s"', [StringFloat(bValue.Fields[I].AsString)])
-    Else If bValue.Fields[I].DataType in [ftWideMemo, ftBytes, ftVarBytes, ftBlob,
+    Else If bValue.Fields[I].DataType in [ftWideString, ftBytes, ftVarBytes, ftBlob,
                                           ftMemo,   ftGraphic, ftFmtMemo,  ftOraBlob, ftOraClob] Then
      Begin
       vStringStream     := TStringStream.Create('');
@@ -424,7 +463,7 @@ Var
        vStringStream.CopyFrom(bStream, bStream.Size);
        vStringStream.Position := 0;
        If vEncoded Then
-        vTempValue := Format('"%s"', [EncodeStrings(vStringStream.DataString{$IFNDEF FPC}, vEncoding{$ENDIF})])
+        vTempValue := Format('"%s"', [EncodeStrings(vStringStream.DataString{$IFNDEF FPC}{$if CompilerVersion > 21}  , vEncoding{$IFEND}{$ENDIF})])
        Else
         vTempValue := Format('"%s"', [vStringStream.DataString])
       Finally
@@ -433,10 +472,10 @@ Var
      End
     Else
      Begin
-      If bValue.Fields[I].DataType in [ftString, ftWideString, ftFixedWideChar, ftFixedChar] Then
+      If bValue.Fields[I].DataType in [ftString, ftWideString, ftFixedChar] Then
        Begin
         If vEncoded Then
-         vTempValue := Format('"%s"', [EncodeStrings(bValue.Fields[I].AsString{$IFNDEF FPC}, vEncoding{$ENDIF})])
+         vTempValue := Format('"%s"', [EncodeStrings(bValue.Fields[I].AsString{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF})])
         Else
          vTempValue := Format('"%s"', [bValue.Fields[I].AsString])
        End
@@ -496,7 +535,11 @@ Var
  vTempValue : String;
 Begin
  If vEncoded Then
-  vTempValue := FormatValue(vEncoding.GetString(TBytes(aValue)))
+  {$IFNDEF FPC}
+   vTempValue := FormatValue({$if CompilerVersion > 21}vEncoding.GetString(TBytes(aValue)){$ELSE}BytesToString(aValue){$IFEND})
+  {$ELSE}
+   vTempValue := FormatValue(BytesToString(TBytes(aValue)))
+  {$ENDIF}
  Else
   vTempValue := FormatValue(BytesArrToString(aValue));
  Result := vTempValue;
@@ -535,7 +578,7 @@ var
    ftUnknown,
    ftString,
    ftFixedChar,
-   ftFixedWideChar,
+   //ftFixedWideChar,
    ftWideString     :
     Begin
      Field.AsString := Value;
@@ -608,7 +651,15 @@ begin
         FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
        End;
      End;
-    DestDS.Open;
+    Try
+     {$IFNDEF FPC}
+      If DestDS Is TClientDataset Then
+       TClientDataset(DestDS).CreateDataSet;
+     {$ELSE}
+      DestDS.Open;
+     {$ENDIF}
+    Except
+    End;
     //Add Set PK Fields
     For J := 1 To Length(JsonParser.Output.Objects) -1 Do
      Begin
@@ -630,12 +681,13 @@ begin
                                          ftParadoxOle,      ftDBaseOle,
                                          ftTypedBinary,     ftCursor,
                                          ftDataSet,         ftOraBlob,
-                                         ftOraClob,         ftWideMemo
+                                         ftOraClob,         ftWideString
                                          {$IFNDEF FPC}
-                                         ,ftParams,         ftStream{$ENDIF}]  Then
+                                         {$if CompilerVersion > 21}
+                                         ,ftParams,         ftStream{$IFEND}{$ENDIF}]  Then
          Begin
           If vEncoded Then
-           vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF}))
+           vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF}))
           Else
            vBlobStream := TStringStream.Create(JsonArray[I].Value);
           Try
@@ -643,7 +695,9 @@ begin
            DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
           Finally
            {$IFNDEF FPC}
-           vBlobStream.Clear;
+            {$if CompilerVersion > 21}
+             vBlobStream.Clear;
+            {$IFEND}
            {$ENDIF}
            vBlobStream.Free;
           End;
@@ -652,19 +706,19 @@ begin
          Begin
           If JsonArray[I].Value <> '' Then
            Begin
-            If DestDS.Fields[I].DataType in [ftString, ftWideString, ftFixedWideChar, ftFixedChar] Then
+            If DestDS.Fields[I].DataType in [ftString, ftWideString, ftFixedChar] Then
              Begin
               If vEncoded Then
-               DestDS.Fields[I].AsString := DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}, vEncoding{$ENDIF})
+               DestDS.Fields[I].AsString := DecodeStrings(JsonArray[I].Value{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF})
               Else
                DestDS.Fields[I].AsString := JsonArray[I].Value;
              End
             Else
              Begin
               {$IFNDEF FPC}
-              DestDS.Fields[I].Value := JsonArray[I].Value;
+               DestDS.Fields[I].Value := JsonArray[I].Value;
               {$ELSE}
-              SetValueA(DestDS.Fields[I], JsonArray[I].Value);
+               SetValueA(DestDS.Fields[I], JsonArray[I].Value);
               {$ENDIF}
              End;
            End;
@@ -726,7 +780,7 @@ Begin
       End;
      End
     Else
-     vTempValue := DecodeStrings(vTempValue{$IFNDEF FPC}, vEncoding{$ENDIF});
+     vTempValue := DecodeStrings(vTempValue{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF});
    End;
   If Not(vObjectValue In [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
                           ovMemo,     ovGraphic, ovFmtMemo,  ovOraBlob,
@@ -755,7 +809,7 @@ begin
                        ovOraClob] Then
     WriteValue(Value)
    Else
-    WriteValue(EncodeStrings(Value{$IFNDEF FPC}, vEncoding{$ENDIF}))
+    WriteValue(EncodeStrings(Value{$IFNDEF FPC}{$if CompilerVersion > 21} , vEncoding{$IFEND}{$ENDIF}))
   End
  Else
   WriteValue(Value);
@@ -769,24 +823,40 @@ Begin
    If vEncoded Then
     Begin
      {$IFDEF FPC}
-      aValue := ToBytes(Format(TJsonStringValue, [bValue]))
+      aValue := ToBytes(Format(TJsonStringValue, [bValue]));
      {$ELSE}
-      aValue := tIdBytes(vEncoding.GetBytes(Format(TJsonStringValue, [bValue])))
+      {$if CompilerVersion > 21}
+       aValue := tIdBytes(vEncoding.GetBytes(Format(TJsonStringValue, [bValue])));
+      {$ELSE}
+       aValue := ToBytes(Format(TJsonStringValue, [bValue]));
+      {$IFEND}
      {$ENDIF}
     End
    Else
     aValue := ToBytes(Format(TJsonStringValue, [bValue]));
   End
  Else
-  aValue := tIdBytes(vEncoding.GetBytes(bValue));
+  {$IFNDEF FPC}
+   {$if CompilerVersion > 21}
+    aValue := tIdBytes(vEncoding.GetBytes(bValue));
+   {$ELSE}
+    aValue := ToBytes(bValue);
+   {$IFEND}
+  {$ELSE}
+   aValue := ToBytes(bValue);
+  {$ENDIF}
 End;
 
 { TJSONParam }
 
-constructor TJSONParam.Create(Encoding : TEncoding);
+constructor TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(Encoding : TEncoding){$IFEND}{$ENDIF};
 begin
  vJSONValue         := TJSONValue.Create;
- vEncoding          := Encoding;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+   vEncoding          := Encoding;
+  {$IFEND}
+ {$ENDIF}
  vTypeObject        := toParam;
  ObjectDirection    := odINOUT;
  vObjectValue       := ovString;
@@ -904,7 +974,7 @@ Begin
  vEncoded            := Encode;
  vJSONValue.vEncoded := vEncoded;
  If Encode Then
-  WriteValue(EncodeStrings(aValue{$IFNDEF FPC}, vEncoding{$ENDIF}))
+  WriteValue(EncodeStrings(aValue{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF}))
  Else
   WriteValue(aValue);
  vBinary             := False;
@@ -923,7 +993,11 @@ end;
 
 procedure TJSONParam.WriteValue(bValue: String);
 begin
- vJSONValue.Encoding         := vEncoding;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+   vJSONValue.Encoding         := vEncoding;
+  {$IFEND}
+ {$ENDIF}
  vJSONValue.vtagName         := vParamName;
  vJSONValue.vTypeObject      := vTypeObject;
  vJSONValue.vObjectDirection := vObjectDirection;

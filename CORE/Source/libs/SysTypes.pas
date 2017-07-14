@@ -15,13 +15,21 @@ TArguments = Array Of String;
 
 Type
  TServerUtils = Class
-  Class Function ParseRESTURL        (Const Cmd       : String;
-                                      vEncoding       : TEncoding) : TDWParams;
+ Class Function ParseRESTURL        (Const Cmd       : String
+                                     {$IFNDEF FPC}
+                                      {$if CompilerVersion > 21};
+                                       vEncoding       : TEncoding
+                                      {$IFEND}
+                                     {$ENDIF})  : TDWParams;
   Class Function Result2JSON         (wsResult  : TResultErro) : String;
   Class Function ParseWebFormsParams (Params          : TStrings;
                                       Const URL       : String;
-                                      Var   UrlMethod : String;
-                                      vEncoding       : TEncoding) : TDWParams;
+                                      Var   UrlMethod : String
+                                      {$IFNDEF FPC}
+                                       {$if CompilerVersion > 21}
+                                        ;vEncoding       : TEncoding
+                                       {$IFEND}
+                                      {$ENDIF}) : TDWParams;
 End;
 
 Type
@@ -45,8 +53,12 @@ implementation
 
 // Retorna um array de strings com os parametros vindos da URL
 // Ex de Cmd : 'GET /NomedoMetodo/Argumento1/Argumento2/ArgumentoN HTTP/1.1'
-Class Function TServerUtils.ParseRESTURL (Const Cmd       : String;
-                                          vEncoding       : TEncoding) : TDWParams;
+Class Function TServerUtils.ParseRESTURL (Const Cmd       : String
+                                          {$IFNDEF FPC}
+                                           {$if CompilerVersion > 21};
+                                            vEncoding       : TEncoding
+                                           {$IFEND}
+                                          {$ENDIF}) : TDWParams;
 Var
  NewCmd       : String;
  ArraySize,
@@ -71,16 +83,28 @@ Begin
    ArraySize := CountExpression(NewCmd, '/');
 //   SetLength(Result, ArraySize);
    Result          := TDWParams.Create;
-   Result.Encoding := vEncoding;
+   {$IFNDEF FPC}
+    {$if CompilerVersion > 21}
+     Result.Encoding := vEncoding;
+    {$IFEND}
+   {$ENDIF}
    NewCmd    := NewCmd + '/';
    iBar1 := Pos ('/', NewCmd);
    Delete (NewCmd, 1, iBar1);
    For Cont := 0 to ArraySize - 1 Do
     Begin
      iBar2 := Pos ('/', NewCmd);
-     JSONParam := TJSONParam.Create(Result.Encoding);
+     JSONParam := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21} (Result.Encoding){$IFEND}{$ENDIF};
      JSONParam.ParamName := Format('PARAM%d', [Cont +1]);
-     JSONParam.SetValue(TIdURI.URLDecode (Copy (NewCmd, 1, iBar2 - 1), IndyTextEncoding (encUTF8)));
+     {$IFNDEF FPC}
+      {$if CompilerVersion > 21}
+       JSONParam.SetValue(TIdURI.URLDecode (Copy (NewCmd, 1, iBar2 - 1), IndyTextEncoding(encUTF8)));
+      {$ELSE}
+       JSONParam.SetValue(TIdURI.URLDecode (Copy (NewCmd, 1, iBar2 - 1)));
+      {$IFEND}
+     {$ELSE}
+      JSONParam.SetValue(TIdURI.URLDecode (Copy (NewCmd, 1, iBar2 - 1)));
+     {$ENDIF}
      Delete (NewCmd, 1, iBar2);
     End;
   End;
@@ -88,8 +112,12 @@ End;
 
 Class Function TServerUtils.ParseWebFormsParams (Params          : TStrings;
                                                  const URL       : String;
-                                                 Var   UrlMethod : String;
-                                                 vEncoding       : TEncoding) : TDWParams;
+                                                 Var   UrlMethod : String
+                                                 {$IFNDEF FPC}
+                                                  {$if CompilerVersion > 21};
+                                                   vEncoding       : TEncoding
+                                                  {$IFEND}
+                                                 {$ENDIF}) : TDWParams;
 Var
  I         : Integer;
  Cmd       : String;
@@ -97,7 +125,11 @@ Var
 Begin
  // Extrai nome do ServerMethod
  Result          := TDWParams.Create;
- Result.Encoding := vEncoding;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+   Result.Encoding := vEncoding;
+  {$IFEND}
+ {$ENDIF}
  Cmd       := URL + '/';
  I         := Pos ('/', Cmd);
  Delete(Cmd, 1, I);
@@ -106,7 +138,7 @@ Begin
  // Extrai Parametros
  For I := 0 To Params.Count -1 Do
   Begin
-   JSONParam := TJSONParam.Create(Result.Encoding);
+   JSONParam := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(Result.Encoding){$IFEND}{$ENDIF};
    JSONParam.FromJSON(Trim(Copy(Params[I], Pos('=', Params[I]) + 1, Length(Params[I]))));
    Result.Add(JSONParam);
   End;
