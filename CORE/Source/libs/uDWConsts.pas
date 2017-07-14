@@ -30,7 +30,7 @@ Const
  AuthRealm             = 'Provide Authentication';
  UrlBase               = '%s://%s:%d/%s';
  ByteBuffer            = 1024 * 8; //8kb
- CompressBuffer        = 4096; 
+ CompressBuffer        = 1024 * 16;
 
 Type
  TEncodeSelect    = (esASCII,     esUtf8);
