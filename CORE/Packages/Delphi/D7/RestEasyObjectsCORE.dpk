@@ -23,16 +23,16 @@ package RestEasyObjectsCORE;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'Rest DataWare'}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 {$DEFINE DEBUG}
 
 requires
   rtl,
   soaprtl,
-  IndyCore60,
-  IndySystem60,
-  IndyProtocols60,
-  xtradev;
+  IndyCore70,
+  IndySystem70,
+  IndyProtocols70,
+  inet;
 
 contains
   uRESTDWBase in '..\..\..\Source\uRESTDWBase.pas',
@@ -45,6 +45,7 @@ contains
   uDWJSONObject in '..\..\..\Source\libs\uDWJSONObject.pas',
   uDWJSONParser in '..\..\..\Source\libs\JSON\uDWJSONParser.pas',
   uRESTDWPoolerDB in '..\..\..\Source\uRESTDWPoolerDB.pas',
-  uRESTDWMasterDetailData in '..\..\..\Source\uRESTDWMasterDetailData.pas';
+  uRESTDWMasterDetailData in '..\..\..\Source\uRESTDWMasterDetailData.pas',
+  uzliblaz in '..\..\..\Source\libs\uzliblaz.pas';
 
 end.
