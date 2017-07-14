@@ -79,12 +79,11 @@ Begin
  RESTClientPooler1.Password        := edPasswordDW.Text;
  SQL                               := mComando.Text;
  DWParams                          := TDWParams.Create;
- DWParams.Encoding                 := GetEncoding(RESTClientPooler1.Encoding);
- JSONParam                         := TJSONParam.Create(DWParams.Encoding);
+ JSONParam                         := TJSONParam.Create;
  JSONParam.ParamName               := 'SQL';
  JSONParam.SetValue(SQL);
  DWParams.Add(JSONParam);
- JSONParam                  := TJSONParam.Create(DWParams.Encoding);
+ JSONParam                  := TJSONParam.Create;
  JSONParam.ParamName        := 'TESTPARAM';
  JSONParam.SetValue('');
  DWParams.Add(JSONParam);
