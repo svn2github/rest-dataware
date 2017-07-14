@@ -22,7 +22,7 @@ package RestEasyObjectsCORE;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'Rest DataWare'}
+{$DESCRIPTION 'Rest Dataware - CORE Objects'}
 {$IMPLICITBUILD ON}
 {$DEFINE DEBUG}
 
@@ -31,8 +31,7 @@ requires
   soaprtl,
   IndyCore60,
   IndySystem60,
-  IndyProtocols60,
-  xtradev;
+  IndyProtocols60;
 
 contains
   uRESTDWBase in '..\..\..\Source\uRESTDWBase.pas',
