@@ -2,17 +2,12 @@ unit RestDWServerFormU;
 
 Interface
 
-Uses Winapi.Windows,    Winapi.Messages, System.SysUtils,         System.Variants,
-     System.Classes,    Vcl.Graphics,    Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-     winsock,           Winapi.iphlpapi, Winapi.IpTypes, uSock,   System.IniFiles,
-     Vcl.AppEvnts,      Vcl.StdCtrls,    Web.HTTPApp,             Vcl.ExtCtrls,
-     Vcl.Imaging.jpeg,  Vcl.Imaging.pngimage, Vcl.Mask,           Vcl.Menus,
-     uRESTDWBase,       ServerMethodsUnit1, Vcl.ComCtrls, FireDAC.Phys.FBDef,
-  FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf, FireDAC.Stan.Option,
-  FireDAC.Stan.Error, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
-  FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.FB, Data.DB,
-  FireDAC.Comp.Client, FireDAC.Comp.UI, FireDAC.Phys.IBBase,
-  FireDAC.Stan.StorageJSON;
+Uses Windows,    Messages, SysUtils,         Variants,
+     Classes,    Graphics,    Controls, Forms, Dialogs,
+     winsock,    uSock,   IniFiles,     AppEvnts,
+     StdCtrls,    HTTPApp,             ExtCtrls,
+     jpeg,  pngimage, Mask, Menus, uRESTDWBase, ComCtrls, acPNG, DB,
+     IBDatabase, ServerMethodsUnit1;
 
 type
   TRestDWForm = class(TForm)
@@ -58,7 +53,6 @@ type
     eCertFile: TEdit;
     ePrivKeyPass: TMaskEdit;
     ApplicationEvents1: TApplicationEvents;
-    ctiPrincipal: TTrayIcon;
     pmMenu: TPopupMenu;
     RestaurarAplicao1: TMenuItem;
     N5: TMenuItem;
@@ -67,13 +61,11 @@ type
     memoResp: TMemo;
     Label19: TLabel;
     Label18: TLabel;
-    FDStanStorageJSONLink1: TFDStanStorageJSONLink;
-    FDPhysFBDriverLink1: TFDPhysFBDriverLink;
-    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
-    Server_FDConnection: TFDConnection;
     cbEncode: TCheckBox;
-    RESTServicePooler1: TRESTServicePooler;
     CheckBox1: TCheckBox;
+    Server_FDConnection: TIBDatabase;
+    RESTServicePooler1: TRESTServicePooler;
+    IBTransaction1: TIBTransaction;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);
@@ -100,7 +92,6 @@ type
    Procedure HideApplication;
   Public
    {Public declarations}
-   Procedure ShowBalloonTips(IconMessage : Integer = 0; MessageValue : String = '');
    Procedure ShowApplication;
    Property  Username   : String Read vUsername   Write vUsername;
    Property  Password   : String Read vPassword   Write vPassword;
@@ -112,14 +103,10 @@ var
 
 implementation
 
-{$IFDEF FPC}
-{$R *.lfm}
-{$ELSE}
 {$R *.dfm}
-{$ENDIF}
 
 uses
-  Winapi.ShellApi;
+  ShellApi;
 
 Function TRestDWForm.GetHandleOnTaskBar : THandle;
 Begin
@@ -147,12 +134,7 @@ end;
 
 Procedure TRestDWForm.HideApplication;
 Begin
- ctiPrincipal.Visible := True;
- Application.ShowMainForm := False;
- If Self <> Nil Then
-  Self.Visible := False;
  Application.Minimize;
- ShowWindow(GetHandleOnTaskBar, SW_HIDE);
  ChangeStatusWindow;
 End;
 
@@ -193,48 +175,18 @@ Begin
  usuario_BD    := edUserNameBD.Text;
  senha_BD      := edPasswordBD.Text;
  vDatabaseName := pasta + database;
- TFDConnection(Sender).Params.Clear;
- TFDConnection(Sender).Params.Add('DriverID=FB');
- TFDConnection(Sender).Params.Add('Server='    + Servidor);
- TFDConnection(Sender).Params.Add('Port='      + porta_BD);
- TFDConnection(Sender).Params.Add('Database='  + vDatabaseName);
- TFDConnection(Sender).Params.Add('User_Name=' + usuario_BD);
- TFDConnection(Sender).Params.Add('Password='  + senha_BD);
- TFDConnection(Sender).Params.Add('Protocol=TCPIP');
+ TIBDatabase(Sender).DatabaseName := Format('%s/%s:%s', [Servidor, porta_BD, vDatabaseName]);
+ TIBDatabase(Sender).Params.Clear;
+ TIBDatabase(Sender).Params.Add('User_Name=' + usuario_BD);
+ TIBDatabase(Sender).Params.Add('Password='  + senha_BD);
  //Server_FDConnection.Params.Add('CharacterSet=ISO8859_1');
- TFDConnection(Sender).UpdateOptions.CountUpdatedRecords := False;
 end;
 
 Procedure TRestDWForm.ShowApplication;
 Begin
- ctiPrincipal.Visible := False;
- Application.ShowMainForm    := True;
  If Self <> Nil Then
-  Begin
-   Self.Visible     := True;
-   Self.WindowState := wsNormal;
-  End;
- ShowWindow(GetHandleOnTaskBar, SW_SHOW);
+  Self.WindowState := wsNormal;
  ChangeStatusWindow;
-End;
-
-Procedure TRestDWForm.ShowBalloonTips(IconMessage : Integer = 0; MessageValue : String = '');
-Var
- TipInfo,
- TipTitle : String;
- HintIcon : TBalloonHintIcon;
-Begin
- Case IconMessage Of
-  0 : ctiPrincipal.BalloonFlags := bfInfo;
-  1 : ctiPrincipal.BalloonFlags := bfWarning;
-  2 : ctiPrincipal.BalloonFlags := bfError;
-  Else
-   ctiPrincipal.BalloonFlags := bfInfo;
- End;
- ctiPrincipal.BalloonTitle := RestDWForm.Caption;
- ctiPrincipal.BalloonHint  := MessageValue;
- ctiPrincipal.ShowBalloonHint;
- Application.ProcessMessages;
 End;
 
 Procedure TRestDWForm.ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);

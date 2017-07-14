@@ -2,7 +2,7 @@ program RestDWServerProject;
 {$APPTYPE GUI}
 
 uses
-  Vcl.Forms,
+  Forms,
   RestDWServerFormU in 'RestDWServerFormU.pas' {RestDWForm},
   ServerMethodsUnit1 in 'ServerMethodsUnit1.pas' {ServerMethods1: TDataModule};
 
