@@ -654,7 +654,9 @@ begin
     Try
      {$IFNDEF FPC}
       If DestDS Is TClientDataset Then
-       TClientDataset(DestDS).CreateDataSet;
+       TClientDataset(DestDS).CreateDataSet
+      Else
+       DestDS.Open;
      {$ELSE}
       DestDS.Open;
      {$ENDIF}
