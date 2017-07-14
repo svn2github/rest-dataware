@@ -1,7 +1,7 @@
 object Form2: TForm2
-  Left = 237
+  Left = 398
   Height = 430
-  Top = 129
+  Top = 123
   Width = 512
   Caption = 'RESTClientPooler Test'
   ClientHeight = 430
