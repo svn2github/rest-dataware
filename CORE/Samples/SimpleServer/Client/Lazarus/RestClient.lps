@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="53">
+    <Units Count="54">
       <Unit0>
         <Filename Value="RestClient.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -403,6 +403,11 @@
         <UsageCount Value="13"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit52>
+      <Unit53>
+        <Filename Value="..\..\..\..\Packages\Lazarus\resteasyobjectscore.lrs"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="10"/>
+      </Unit53>
     </Units>
     <JumpHistory Count="25" HistoryIndex="24">
       <Position1>
