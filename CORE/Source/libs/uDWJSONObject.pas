@@ -14,8 +14,6 @@ Uses {$IFDEF FPC}
       {$IFEND}
      {$ENDIF}
 
-
-
 Type
  TJSONBufferObject = Class
 
@@ -72,9 +70,6 @@ Type
 End;
 
 Type
-
- { TJSONParam }
-
  TJSONParam = Class(TObject)
  Private
   vJSONValue                         : TJSONValue;
@@ -138,6 +133,10 @@ Type
     Property  Encoding         : TEncoding                 Read vEncoding  Write vEncoding;
    {$IFEND}
   {$ENDIF}
+End;
+
+Type
+ TDWDatalist = Class
 End;
 
 implementation

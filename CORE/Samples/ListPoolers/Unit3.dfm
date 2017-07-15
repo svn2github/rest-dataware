@@ -984,16 +984,12 @@ object Form3: TForm3
     TabOrder = 3
     OnClick = Button3Click
   end
-  object RESTPoolerList1: TRESTPoolerList
+  object RESTDWPoolerList1: TRESTDWPoolerList
     Active = False
-    Login = 'testserver'
-    Password = 'testserver'
     Proxy = False
     ProxyOptions.Port = 8888
-    PoolerService = '127.0.0.1'
     PoolerPort = 8082
-    PoolerPrefix = 'TServerMethods1'
-    Left = 128
-    Top = 128
+    Left = 248
+    Top = 120
   end
 end

@@ -30,11 +30,12 @@ package RestEasyObjectsCORE;
 
 requires
   rtl,
+  dbrtl,
+  soaprtl,
+  dsnap,
   IndySystem,
   IndyProtocols,
-  IndyCore,
-  dbrtl,
-  soaprtl;
+  IndyCore;
 
 contains
   uRESTDWBase in '..\..\..\Source\uRESTDWBase.pas',
@@ -47,7 +48,8 @@ contains
   uDWJSONObject in '..\..\..\Source\libs\uDWJSONObject.pas',
   uDWJSONTools in '..\..\..\Source\libs\uDWJSONTools.pas',
   uDWJSONParser in '..\..\..\Source\libs\JSON\uDWJSONParser.pas',
-  uzliblaz in '..\..\..\Source\libs\uzliblaz.pas';
+  uzliblaz in '..\..\..\Source\libs\uzliblaz.pas',
+  uDWPoolerMethod in '..\..\..\Source\uDWPoolerMethod.pas';
 
 end.
 

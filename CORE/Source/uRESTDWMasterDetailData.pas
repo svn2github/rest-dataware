@@ -106,8 +106,6 @@ Begin
   TMasterDetailItem(TList(Self).Items[Index]^) := Item;
 End;
 
-{ TMasterDetailItem }
-
 Constructor TMasterDetailItem.Create;
 Begin
  vFields := TStringList.Create;

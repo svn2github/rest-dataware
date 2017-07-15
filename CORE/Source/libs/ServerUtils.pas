@@ -18,7 +18,6 @@ Type
   fHasAuthenticacion            : Boolean;
   Function GetUserName          : String;
   Function GetPassword          : String;
-  Function GetHasAuthentication : Boolean;
  Public
   Property HasAuthentication : Boolean Read fHasAuthenticacion Write fHasAuthenticacion;
   Property UserName          : String  Read GetUserName        Write fUsername;
@@ -57,11 +56,6 @@ End;
 Function TServerParams.GetPassword : String;
 Begin
  Result := fPassword;
-End;
-
-Function TServerParams.GetHasAuthentication : Boolean;
-Begin
- Result := fHasAuthenticacion;
 End;
 
 end.

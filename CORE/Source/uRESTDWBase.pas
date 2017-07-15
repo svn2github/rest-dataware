@@ -25,22 +25,22 @@ interface
 
 Uses
      {$IFDEF FPC}
-     SysUtils,           Classes, SysTypes,   ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
-     IdContext,          IdHTTPServer,        IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
-     IdAuthentication,   IdHTTPHeaderInfo,    uDWJSONTools,          uDWConsts,    IdHTTP,
-     uDWJSONObject,      IdMultipartFormData, IdMessageCoder,        IdMessageCoderMIME,
-     IdMessage,          IdGlobal,            IdGlobalProtocols;
+     SysUtils,           Classes,            ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
+     IdContext,          IdHTTPServer,       IdCustomHTTPServer,  IdSSLOpenSSL,   IdSSL,
+     IdAuthentication,   IdHTTPHeaderInfo,   uDWJSONTools,        uDWConsts,      IdHTTP,
+     uDWJSONParser,      uDWJSONObject,      IdMultipartFormData, IdMessageCoder,
+     SysTypes,           IdMessageCoderMIME, IdMessage,           IdGlobal,       IdGlobalProtocols;
      {$ELSE}
      {$IF CompilerVersion < 21}
      SysUtils, Classes, EncdDecd,
      {$ELSE}
      System.SysUtils, System.Classes,
      {$IFEND}
-     SysTypes, ServerUtils, Windows,
+     ServerUtils, Windows,
      IdContext,          IdHTTPServer,        IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
      IdAuthentication,   IdHTTPHeaderInfo,    uDWJSONTools,          uDWConsts,    IdHTTP,
-     uDWJSONObject,      IdMultipartFormData, IdMessageCoder,        IdMessageCoderMIME,
-     IdMessage,          IdGlobalProtocols,   IdGlobal;
+     uDWJSONParser,      uDWJSONObject,       IdMultipartFormData,   IdMessageCoder,
+     IdMessageCoderMIME, IdMessage,           IdGlobalProtocols,     IdGlobal,     SysTypes;
      {$ENDIF}
 
 Type
@@ -211,9 +211,303 @@ Type
   Property ThreadRequest    : Boolean                Read vThreadRequest    Write vThreadRequest;
 End;
 
+Type
+ TDWClientMethodExecute = Class(TComponent)
+  Private
+   vCompression          : Boolean;
+  {$IFNDEF FPC}
+   {$if CompilerVersion > 21}
+    vEncoding            : TEncoding;
+   {$IFEND}
+  {$ENDIF}
+  Public
+   Constructor Create(AOwner: TComponent);Override;
+   Destructor  Destroy; Override;
+   //Faz uma chamada de Execução para verificar o funcionamento do WebService
+   Function EchoPooler            (Value, Method_Prefix    : String;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '')   : String;Virtual;
+   //Retorna todos os Poolers no DataModule do WebService
+   Function PoolersDataSet        (Method_Prefix           : String;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '')   : TStringList;Virtual;
+   //Roda Comando SQL
+   Function InsertValue           (Pooler, Method_Prefix,
+                                   SQL                     : String;
+                                   Params                  : TDWParams;
+                                   Var Error               : Boolean;
+                                   Var MessageError        : String;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '')   : Integer;Virtual;
+   Function ExecuteCommand        (Pooler, Method_Prefix,
+                                   SQL                     : String;
+                                   Params                  : TDWParams;
+                                   Var Error               : Boolean;
+                                   Var MessageError        : String;
+                                   Execute                 : Boolean;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '')   : TJSONValue;Virtual;
+   Function ExecuteCommandJSON    (Pooler, Method_Prefix,
+                                   SQL                     : String;
+                                   Params                  : TDWParams;
+                                   Var Error               : Boolean;
+                                   Var MessageError        : String;
+                                   Execute                 : Boolean;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '')   : TJSONValue;Virtual;
+   Function InsertValuePure       (Pooler, Method_Prefix,
+                                   SQL                     : String;
+                                   Var Error               : Boolean;
+                                   Var MessageError        : String;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '')   : Integer;Virtual;
+   Function ExecuteCommandPure    (Pooler, Method_Prefix,
+                                   SQL                     : String;
+                                   Var Error               : Boolean;
+                                   Var MessageError        : String;
+                                   Execute                 : Boolean;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '')   : TJSONValue;Virtual;
+   Function ExecuteCommandPureJSON(Pooler,
+                                   Method_Prefix,
+                                   SQL                     : String;
+                                   Var Error               : Boolean;
+                                   Var MessageError        : String;
+                                   Execute                 : Boolean;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '')   : TJSONValue;Virtual;
+   //Executa um ApplyUpdate no Servidor
+   Procedure   ApplyChangesPure   (Pooler, Method_Prefix,
+                                   TableName,
+                                   SQL                     : String;
+                                   ADeltaList              : TDWDatalist;
+                                   Var Error               : Boolean;
+                                   Var MessageError        : String;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '');Virtual;
+   Procedure   ApplyChanges       (Pooler, Method_Prefix,
+                                   TableName,
+                                   SQL                     : String;
+                                   Params                  : TDWParams;
+                                   ADeltaList              : TDWDatalist;
+                                   Var Error               : Boolean;
+                                   Var MessageError        : String;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '');Virtual;
+   //Lista todos os Pooler's do Servidor
+   Procedure GetPoolerList        (Method_Prefix           : String;
+                                   Var PoolerList          : TStringList;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '');Virtual;
+   //StoredProc
+   Procedure  ExecuteProcedure    (Pooler,
+                                   Method_Prefix,
+                                   ProcName                : String;
+                                   Params                  : TDWParams;
+                                   Var Error               : Boolean;
+                                   Var MessageError        : String);Virtual;
+   Procedure  ExecuteProcedurePure(Pooler,
+                                   Method_Prefix,
+                                   ProcName                : String;
+                                   Var Error               : Boolean;
+                                   Var MessageError        : String);Virtual;
+   Property Compression  : Boolean   Read vCompression Write vCompression;
+  {$IFNDEF FPC}
+   {$if CompilerVersion > 21}
+   Property Encoding     : TEncoding        Read vEncoding        Write vEncoding;
+   {$IFEND}
+  {$ENDIF}
+End;
+
 implementation
 
-Uses uDWJSONParser;
+Constructor TDWClientMethodExecute.Create(AOwner: TComponent);
+Begin
+ //Herança de Metodos
+ Inherited;
+
+End;
+
+Destructor  TDWClientMethodExecute.Destroy;
+Begin
+ //Herança de Metodos
+
+ Inherited;
+End;
+
+Function TDWClientMethodExecute.EchoPooler(Value, Method_Prefix    : String;
+                                           TimeOut                 : Integer = 3000;
+                                           UserName                : String  = '';
+                                           Password                : String  = '')   : String;
+Begin
+ //Herança de Metodos
+ Result := '';
+ 
+End;
+
+Function TDWClientMethodExecute.PoolersDataSet(Method_Prefix           : String;
+                                               TimeOut                 : Integer = 3000;
+                                               UserName                : String  = '';
+                                               Password                : String  = '')   : TStringList;
+Begin
+ //Herança de Metodos
+ Result := Nil;
+ 
+End;
+
+Function TDWClientMethodExecute.InsertValue(Pooler, Method_Prefix,
+                                            SQL                     : String;
+                                            Params                  : TDWParams;
+                                            Var Error               : Boolean;
+                                            Var MessageError        : String;
+                                            TimeOut                 : Integer = 3000;
+                                            UserName                : String  = '';
+                                            Password                : String  = '')   : Integer;
+Begin
+ //Herança de Metodos
+ Result := -1;
+ 
+End;
+
+Function TDWClientMethodExecute.ExecuteCommand(Pooler, Method_Prefix,
+                                               SQL                     : String;
+                                               Params                  : TDWParams;
+                                               Var Error               : Boolean;
+                                               Var MessageError        : String;
+                                               Execute                 : Boolean;
+                                               TimeOut                 : Integer = 3000;
+                                               UserName                : String  = '';
+                                               Password                : String  = '')   : TJSONValue;
+Begin
+ //Herança de Metodos
+ Result := Nil;
+ 
+End;
+
+Function TDWClientMethodExecute.ExecuteCommandJSON(Pooler, Method_Prefix,
+                                                   SQL                     : String;
+                                                   Params                  : TDWParams;
+                                                   Var Error               : Boolean;
+                                                   Var MessageError        : String;
+                                                   Execute                 : Boolean;
+                                                   TimeOut                 : Integer = 3000;
+                                                   UserName                : String  = '';
+                                                   Password                : String  = '')   : TJSONValue;
+Begin
+ //Herança de Metodos
+ Result := Nil;
+ 
+End;
+
+Function TDWClientMethodExecute.InsertValuePure(Pooler, Method_Prefix,
+                                                SQL                     : String;
+                                                Var Error               : Boolean;
+                                                Var MessageError        : String;
+                                                TimeOut                 : Integer = 3000;
+                                                UserName                : String  = '';
+                                                Password                : String  = '')   : Integer;
+Begin
+ //Herança de Metodos
+ Result := -1;
+ 
+End;
+
+Function TDWClientMethodExecute.ExecuteCommandPure(Pooler, Method_Prefix,
+                                                   SQL                     : String;
+                                                   Var Error               : Boolean;
+                                                   Var MessageError        : String;
+                                                   Execute                 : Boolean;
+                                                   TimeOut                 : Integer = 3000;
+                                                   UserName                : String  = '';
+                                                   Password                : String  = '')   : TJSONValue;
+Begin
+ //Herança de Metodos
+ Result := Nil;
+ 
+End;
+
+Function TDWClientMethodExecute.ExecuteCommandPureJSON(Pooler, Method_Prefix,
+                                                       SQL                     : String;
+                                                       Var Error               : Boolean;
+                                                       Var MessageError        : String;
+                                                       Execute                 : Boolean;
+                                                       TimeOut                 : Integer = 3000;
+                                                       UserName                : String  = '';
+                                                       Password                : String  = '')   : TJSONValue;
+Begin
+ //Herança de Metodos
+ Result := Nil;
+ 
+End;
+
+Procedure TDWClientMethodExecute.ApplyChangesPure(Pooler, Method_Prefix,
+                                                  TableName,
+                                                  SQL                     : String;
+                                                  ADeltaList              : TDWDatalist;
+                                                  Var Error               : Boolean;
+                                                  Var MessageError        : String;
+                                                  TimeOut                 : Integer = 3000;
+                                                  UserName                : String  = '';
+                                                  Password                : String  = '');
+Begin
+ //Herança de Metodos
+
+End;
+
+Procedure   TDWClientMethodExecute.ApplyChanges(Pooler, Method_Prefix,
+                                                TableName,
+                                                SQL                     : String;
+                                                Params                  : TDWParams;
+                                                ADeltaList              : TDWDatalist;
+                                                Var Error               : Boolean;
+                                                Var MessageError        : String;
+                                                TimeOut                 : Integer = 3000;
+                                                UserName                : String  = '';
+                                                Password                : String  = '');
+Begin
+ //Herança de Metodos
+
+End;
+
+Procedure TDWClientMethodExecute.GetPoolerList(Method_Prefix           : String;
+                                               Var PoolerList          : TStringList;
+                                               TimeOut                 : Integer = 3000;
+                                               UserName                : String  = '';
+                                               Password                : String  = '');
+Begin
+ //Herança de Metodos
+
+End;
+
+Procedure  TDWClientMethodExecute.ExecuteProcedure(Pooler, Method_Prefix,
+                                                   ProcName                : String;
+                                                   Params                  : TDWParams;
+                                                   Var Error               : Boolean;
+                                                   Var MessageError        : String);
+Begin
+ //Herança de Metodos
+
+End;
+
+Procedure  TDWClientMethodExecute.ExecuteProcedurePure(Pooler, Method_Prefix,
+                                                       ProcName                : String;
+                                                       Var Error               : Boolean;
+                                                       Var MessageError        : String);
+Begin
+ //Herança de Metodos
+
+End;
 
 Constructor TRESTClientPooler.Create(AOwner: TComponent);
 Begin
@@ -241,8 +535,8 @@ End;
 
 Function TRESTClientPooler.SendEvent(EventData  : String;
                                      Var Params : TDWParams;
-                                     EventType : TSendEvent = sePOST;
-									 CallBack : TCallBack= nil) : String;
+                                     EventType  : TSendEvent = sePOST;
+                  									 CallBack   : TCallBack= nil) : String;
 Var
  vResult,
  vResultSTR,
@@ -1286,7 +1580,7 @@ ss            := Nil;
             {$if CompilerVersion > 21}
              Synchronize(CurrentThread, Procedure
                                         Begin
-                                         FCallBack(SResult,Params)
+                                         FCallBack(SResult,Params);
                                         End);
             {$IFEND}
            {$ENDIF}
