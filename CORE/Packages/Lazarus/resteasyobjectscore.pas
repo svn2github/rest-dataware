@@ -9,7 +9,7 @@ interface
 uses
   ServerUtils, SysTypes, uDWConsts, uDWJSONObject, uDWJSONTools, uRESTDWBase, 
   uRESTDWReg, uDWJSONParser, uRESTDWMasterDetailData, uRESTDWPoolerDB, 
-  uZlibLaz, uDWPoolerMethod, LazarusPackageIntf;
+  uZlibLaz, uDWPoolerMethod, uDWDatamodule, LazarusPackageIntf;
 
 implementation
 

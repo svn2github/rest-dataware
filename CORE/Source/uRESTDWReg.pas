@@ -20,7 +20,9 @@ implementation
 
 Procedure Register;
 Begin
- RegisterCustomModule(TServerMethodDataModule,      TDataModuleCustomModule);
+ {$IFNDEF FPC}
+  RegisterCustomModule(TServerMethodDataModule,      TDataModuleCustomModule);
+ {$ENDIF}
  RegisterComponents('REST Dataware - Service',     [TRESTServicePooler, TRESTClientPooler]);
  RegisterComponents('REST Dataware - CORE - DB',   [TRESTDWPoolerDB, TRESTDWDataBase, TRESTDWClientSQL, TRESTDWStoredProc, TRESTDWPoolerList]);
 End;

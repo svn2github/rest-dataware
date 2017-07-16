@@ -3,7 +3,7 @@ unit uDWJSONObject;
 interface
 
 Uses {$IFDEF FPC}
-      SysUtils, Classes, uDWJSONTools, uRESTDWBase, IdGlobal, DB, uDWJSONParser, uDWConstsData;
+      SysUtils, Classes, uDWJSONTools, IdGlobal, DB, uDWJSONParser, uDWConsts, uDWConstsData;
      {$ELSE}
       {$if CompilerVersion > 21} // Delphi 2010 pra cima
        System.SysUtils, System.Classes, uDWJSONTools, uDWConsts, uDWJSONParser, uDWConstsData,

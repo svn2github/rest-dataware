@@ -9,11 +9,11 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="..\..\Source\libs\zLibEX_Laz\obj;..\..\Source\zlib"/>
-        <OtherUnitFiles Value="..\..\Source\libs;..\..\Source;..\..\Source\libs\JSON;..\..\Source\libs\zLibEX_Laz;..\..\Source\zlib"/>
+        <OtherUnitFiles Value="..\..\Source\libs;..\..\Source;..\..\Source\libs\JSON;..\..\Source\libs\zLibEX_Laz;..\..\Source\zlib;..\..\Source\DmDados"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="13">
+    <Files Count="14">
       <Item1>
         <Filename Value="..\..\Source\libs\ServerUtils.pas"/>
         <UnitName Value="ServerUtils"/>
@@ -67,6 +67,10 @@
         <Filename Value="..\..\Source\uDWPoolerMethod.pas"/>
         <UnitName Value="uDWPoolerMethod"/>
       </Item13>
+      <Item14>
+        <Filename Value="..\..\Source\DmDados\uDWDatamodule.pas"/>
+        <UnitName Value="uDWDatamodule"/>
+      </Item14>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>

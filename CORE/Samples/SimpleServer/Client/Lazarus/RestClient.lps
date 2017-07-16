@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="54">
+    <Units Count="55">
       <Unit0>
         <Filename Value="RestClient.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -196,14 +196,14 @@
       </Unit24>
       <Unit25>
         <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="572"/>
-        <CursorPos Y="581"/>
+        <EditorIndex Value="3"/>
+        <CursorPos X="80" Y="6"/>
         <UsageCount Value="22"/>
         <Bookmarks Count="2">
           <Item0 X="56" Y="393" ID="2"/>
           <Item1 X="13" Y="232" ID="3"/>
         </Bookmarks>
+        <Loaded Value="True"/>
       </Unit25>
       <Unit26>
         <Filename Value="..\..\..\..\Source\libs\JSON\uDWJSONParser.pas"/>
@@ -264,10 +264,11 @@
       </Unit33>
       <Unit34>
         <Filename Value="..\..\..\..\Source\uRESTDWBase.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="463"/>
-        <CursorPos Y="472"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="209"/>
+        <CursorPos X="6" Y="226"/>
         <UsageCount Value="21"/>
+        <Loaded Value="True"/>
       </Unit34>
       <Unit35>
         <Filename Value="C:\lazarus\components\indy\trunk\Lib\Core\IdIOHandler.pas"/>
@@ -359,7 +360,6 @@
       <Unit47>
         <Filename Value="..\..\..\..\Source\libs\uzliblaz.pas"/>
         <UnitName Value="uZlibLaz"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <TopLine Value="52"/>
         <CursorPos Y="55"/>
@@ -408,8 +408,17 @@
         <EditorIndex Value="-1"/>
         <UsageCount Value="10"/>
       </Unit53>
+      <Unit54>
+        <Filename Value="..\..\..\..\Source\uRESTDWReg.pas"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="3"/>
+        <CursorPos X="23" Y="24"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit54>
     </Units>
-    <JumpHistory Count="25" HistoryIndex="24">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
         <Caret Line="159" TopLine="151"/>
@@ -510,6 +519,21 @@
         <Filename Value="..\..\..\..\Source\libs\uDWConsts.pas"/>
         <Caret Line="141" TopLine="124"/>
       </Position25>
+      <Position26>
+        <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
+        <Caret Line="6" Column="40"/>
+      </Position26>
+      <Position27>
+        <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
+        <Caret Line="27" Column="25" TopLine="18"/>
+      </Position27>
+      <Position28>
+        <Filename Value="..\..\..\..\Source\uRESTDWBase.pas"/>
+        <Caret Line="472" TopLine="463"/>
+      </Position28>
+      <Position29>
+        <Filename Value="..\..\..\..\Source\uRESTDWReg.pas"/>
+      </Position29>
     </JumpHistory>
   </ProjectSession>
   <Debugging>
