@@ -32,7 +32,8 @@ requires
   IndyCore70,
   IndySystem70,
   IndyProtocols70,
-  inet;
+  inet,
+  DesignIDE;
 
 contains
   uRESTDWBase in '..\..\..\Source\uRESTDWBase.pas',
@@ -46,6 +47,7 @@ contains
   uDWJSONParser in '..\..\..\Source\libs\JSON\uDWJSONParser.pas',
   uRESTDWPoolerDB in '..\..\..\Source\uRESTDWPoolerDB.pas',
   uRESTDWMasterDetailData in '..\..\..\Source\uRESTDWMasterDetailData.pas',
-  uzliblaz in '..\..\..\Source\libs\uzliblaz.pas';
+  uzliblaz in '..\..\..\Source\libs\uzliblaz.pas',
+  uDWDatamodule in '..\..\..\Source\DmDados\uDWDatamodule.pas' {ServerMethodDataModule: TDataModule};
 
 end.

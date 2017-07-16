@@ -13,10 +13,9 @@ interface
 
 uses SysUtils,  Classes,      uDWJSONObject,
      DB,        uRESTDWBase,  uDWPoolerMethod,
-     uRESTDWMasterDetailData, uDWConsts, SyncObjs;
+     uRESTDWMasterDetailData, uDWConsts, uDWConstsData, SyncObjs;
 
 Type
- TEncodeSelect            = (esASCII, esUtf8);
  TOnEventDB               = Procedure (DataSet : TDataSet)         of Object;
  TOnAfterScroll           = Procedure (DataSet : TDataSet)         of Object;
  TOnAfterOpen             = Procedure (DataSet : TDataSet)         of Object;
@@ -434,7 +433,6 @@ Type
   Property    PoolerOffMessage : String        Read vMessagePoolerOff Write vMessagePoolerOff;
 End;
 
-Function GetEncoding(Avalue : TEncodeSelect) : Boolean; //TEncoding;
 Procedure doUnGZIP(Input, gZipped : TMemoryStream);//helper function
 Procedure doGZIP  (Input, gZipped : TMemoryStream);//helper function
 
@@ -471,17 +469,6 @@ Begin
  gZipped.CopyFrom(CompactadorGZip, CompactadorGZip.Size);
  CompactadorGZip.Free;
  gZipped.Position := 0;
- }
-End;
-
-Function GetEncoding(Avalue : TEncodeSelect) : Boolean;// TEncoding;
-Begin
-  {
- Result := TEncoding.utf8; // definido como padrão para suprimir Warn no delphi
- Case Avalue of
-  esUtf8 : Result := TEncoding.utf8;
-  esASCII : Result := TEncoding.ASCII;
- End;
  }
 End;
 
@@ -1261,27 +1248,18 @@ End;
 
 Function  TRESTDWPoolerList.TryConnect : Boolean;
 Var
- vTempResult       : String;
- vDSRConnection    : TRESTClientPooler;
+ vTempResult : String;
+ vConnection : TDWPoolerMethodClient;
 Begin
- Result := False;
- SetConnectionOptions(vDSRConnection);
-{
- vRESTConnectionDB           := TSMPoolerMethodClient.Create(vDSRConnection, True);
- vRESTConnectionDB.Encoding  := TEncoding.ASCII;
+ Result       := False;
+ vConnection  := TDWPoolerMethodClient.Create(Nil);
  Try
   vPoolerList.Clear;
-  vPoolerList.Assign(vRESTConnectionDB.PoolersDataSet(vPoolerPrefix, vTempResult, 3000, vLogin, vPassword));
+  vPoolerList.Assign(vConnection.EchoPooler(vPoolerPrefix, 3000, vLogin, vPassword));
   Result      := True;
  Except
-  On E : Exception do
-   Begin
-    vDSRConnection.SessionID := '';
-   End;
  End;
- vDSRConnection.Free;
- vRESTConnectionDB.Free;
-}
+ vConnection.Free;
 End;
 
 Function  TRESTDWDataBase.TryConnect : Boolean;

@@ -35,7 +35,8 @@ requires
   dsnap,
   IndySystem,
   IndyProtocols,
-  IndyCore;
+  IndyCore,
+  designide;
 
 contains
   uRESTDWBase in '..\..\..\Source\uRESTDWBase.pas',
@@ -49,7 +50,10 @@ contains
   uDWJSONTools in '..\..\..\Source\libs\uDWJSONTools.pas',
   uDWJSONParser in '..\..\..\Source\libs\JSON\uDWJSONParser.pas',
   uzliblaz in '..\..\..\Source\libs\uzliblaz.pas',
-  uDWPoolerMethod in '..\..\..\Source\uDWPoolerMethod.pas';
+  uDWPoolerMethod in '..\..\..\Source\uDWPoolerMethod.pas',
+  uDWConstsData in '..\..\..\Source\libs\uDWConstsData.pas',
+  uDWDatamodule in '..\..\..\Source\DmDados\uDWDatamodule.pas';
 
 end.
+
 

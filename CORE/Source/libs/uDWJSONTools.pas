@@ -4,12 +4,12 @@ interface
 
 Uses
   {$IFDEF FPC}
-   SysUtils, ServerUtils, Classes, uDWConsts, IdGlobal, IdCoderMIME;
+   SysUtils, ServerUtils, Classes, uDWConsts, IdGlobal, IdCoderMIME, uDWConstsData;
   {$ELSE}
    {$if CompilerVersion > 21} // Delphi 2010 pra cima
-    System.SysUtils, ServerUtils, System.Classes, IdGlobal, IdCoderMIME, uDWConsts;
+    System.SysUtils, ServerUtils, System.Classes, IdGlobal, IdCoderMIME, uDWConsts, uDWConstsData;
    {$ELSE}
-    SysUtils, ServerUtils, Classes, IdGlobal, IdCoderMIME, uDWConsts;
+    SysUtils, ServerUtils, Classes, IdGlobal, IdCoderMIME, uDWConsts, uDWConstsData;
    {$IFEND}
   {$ENDIF}
 

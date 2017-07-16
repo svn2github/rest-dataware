@@ -3,14 +3,14 @@ unit uDWJSONObject;
 interface
 
 Uses {$IFDEF FPC}
-      SysUtils, Classes, uDWJSONTools, uDWConsts, IdGlobal, DB, uDWJSONParser;
+      SysUtils, Classes, uDWJSONTools, uRESTDWBase, IdGlobal, DB, uDWJSONParser, uDWConstsData;
      {$ELSE}
       {$if CompilerVersion > 21} // Delphi 2010 pra cima
-       System.SysUtils, System.Classes, uDWJSONTools, uDWConsts, uDWJSONParser,
+       System.SysUtils, System.Classes, uDWJSONTools, uDWConsts, uDWJSONParser, uDWConstsData,
        IdGlobal,        System.Rtti,    Data.DB,      Soap.EncdDecd, Datasnap.DbClient;
       {$ELSE}
-       SysUtils, Classes, uDWJSONTools, uDWConsts, uDWJSONParser,
-       IdGlobal,        DB,     EncdDecd, DbClient;
+       SysUtils, Classes, uDWJSONTools, uDWJSONParser,
+       IdGlobal,        DB,     EncdDecd, DbClient, uDWConsts, uDWConstsData;
       {$IFEND}
      {$ENDIF}
 

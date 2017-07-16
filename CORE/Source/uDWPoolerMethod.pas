@@ -3,39 +3,41 @@ unit uDWPoolerMethod;
 Interface
 
 Uses {$IFDEF FPC}
-     SysUtils,           Classes, SysTypes,   ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
-     uRESTDWBase,        uDWJSONTools,        uDWConsts,  uDWJSONObject;
+     SysUtils,   uDWConstsData, Classes, SysTypes,   ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
+     uDWConsts,          uRESTDWBase,        uDWJSONTools,        uDWJSONObject;
      {$ELSE}
      {$IF CompilerVersion < 21}
      SysUtils, Classes,
      {$ELSE}
      System.SysUtils, System.Classes,
      {$IFEND}
-     SysTypes,           ServerUtils,         Windows,
-     uRESTDWBase,        uDWJSONTools,        uDWConsts,  uDWJSONObject;
+     SysTypes,   uDWConstsData, ServerUtils,         Windows,
+     uDWConsts,  uRESTDWBase,        uDWJSONTools,        uDWJSONObject;
      {$ENDIF}
 
  Type
-  TDWPoolerMethodClient        = Class(TDWClientMethodExecute)
+  TDWPoolerMethodClient  = Class(TComponent)
   Private
    vCompression          : Boolean;
    {$IFNDEF FPC}
     {$if CompilerVersion > 21}
-     vEncoding            : TEncoding;
+     vEncoding           : TEncodeSelect;
     {$IFEND}
    {$ENDIF}
+   Host : String;
+   Port : Integer;
   Public
    Constructor Create(AOwner: TComponent);Override;
    Destructor  Destroy;Override;
-   Function EchoPooler            (Value, Method_Prefix    : String;
+   Function EchoPooler            (Method_Prefix           : String;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '')   : String;Override;
+                                   Password                : String  = '')   : TStringList;
    //Retorna todos os Poolers no DataModule do WebService
    Function PoolersDataSet        (Method_Prefix           : String;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '')   : TStringList;Override;
+                                   Password                : String  = '')   : TStringList;
    //Roda Comando SQL
    Function InsertValue           (Pooler, Method_Prefix,
                                    SQL                     : String;
@@ -44,7 +46,7 @@ Uses {$IFDEF FPC}
                                    Var MessageError        : String;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '')   : Integer;Override;
+                                   Password                : String  = '')   : Integer;
    Function ExecuteCommand        (Pooler, Method_Prefix,
                                    SQL                     : String;
                                    Params                  : TDWParams;
@@ -53,7 +55,7 @@ Uses {$IFDEF FPC}
                                    Execute                 : Boolean;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '')   : TJSONValue;Override;
+                                   Password                : String  = '')   : TJSONValue;
    Function ExecuteCommandJSON    (Pooler, Method_Prefix,
                                    SQL                     : String;
                                    Params                  : TDWParams;
@@ -62,14 +64,14 @@ Uses {$IFDEF FPC}
                                    Execute                 : Boolean;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '')   : TJSONValue;Override;
+                                   Password                : String  = '')   : TJSONValue;
    Function InsertValuePure       (Pooler, Method_Prefix,
                                    SQL                     : String;
                                    Var Error               : Boolean;
                                    Var MessageError        : String;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '')   : Integer;Override;
+                                   Password                : String  = '')   : Integer;
    Function ExecuteCommandPure    (Pooler, Method_Prefix,
                                    SQL                     : String;
                                    Var Error               : Boolean;
@@ -77,7 +79,7 @@ Uses {$IFDEF FPC}
                                    Execute                 : Boolean;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '')   : TJSONValue;Override;
+                                   Password                : String  = '')   : TJSONValue;
    Function ExecuteCommandPureJSON(Pooler,
                                    Method_Prefix,
                                    SQL                     : String;
@@ -86,7 +88,7 @@ Uses {$IFDEF FPC}
                                    Execute                 : Boolean;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '')   : TJSONValue;Override;
+                                   Password                : String  = '')   : TJSONValue;
    //Executa um ApplyUpdate no Servidor
    Procedure   ApplyChangesPure   (Pooler, Method_Prefix,
                                    TableName,
@@ -96,7 +98,7 @@ Uses {$IFDEF FPC}
                                    Var MessageError        : String;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '');Override;
+                                   Password                : String  = '');
    Procedure   ApplyChanges       (Pooler, Method_Prefix,
                                    TableName,
                                    SQL                     : String;
@@ -106,20 +108,20 @@ Uses {$IFDEF FPC}
                                    Var MessageError        : String;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '');Override;
+                                   Password                : String  = '');
    //Lista todos os Pooler's do Servidor
    Procedure GetPoolerList        (Method_Prefix           : String;
                                    Var PoolerList          : TStringList;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '');Override;
+                                   Password                : String  = '');
    //StoredProc
    Procedure  ExecuteProcedure    (Pooler,
                                    Method_Prefix,
                                    ProcName                : String;
                                    Params                  : TDWParams;
                                    Var Error               : Boolean;
-                                   Var MessageError        : String);Override;
+                                   Var MessageError        : String);
    Procedure  ExecuteProcedurePure(Pooler,
                                    Method_Prefix,
                                    ProcName                : String;
@@ -128,7 +130,7 @@ Uses {$IFDEF FPC}
    Property Compression  : Boolean   Read vCompression Write vCompression;
   {$IFNDEF FPC}
    {$if CompilerVersion > 21}
-   Property Encoding     : TEncoding        Read vEncoding        Write vEncoding;
+   Property Encoding     : TEncodeSelect     Read vEncoding        Write vEncoding;
    {$IFEND}
   {$ENDIF}
   End;
@@ -166,22 +168,80 @@ End;
 
 Constructor TDWPoolerMethodClient.Create(AOwner: TComponent);
 Begin
-  Inherited;
-
+ Inherited;
+ vCompression := True;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+   vEncoding  := esASCII;
+  {$IFEND}
+ {$ENDIF}
+ Host := '127.0.0.1';
+ Port := 8082;
 End;
 
 Destructor TDWPoolerMethodClient.Destroy;
 Begin
-
-  Inherited;
+ Inherited;
 End;
 
-Function TDWPoolerMethodClient.EchoPooler(Value, Method_Prefix    : String;
-                                          TimeOut                 : Integer = 3000;
-                                          UserName                : String  = '';
-                                          Password                : String  = '')   : String;
+Function TDWPoolerMethodClient.EchoPooler(Method_Prefix  : String;
+                                          TimeOut        : Integer = 3000;
+                                          UserName       : String  = '';
+                                          Password       : String  = '')   : TStringList;
+Var
+ RESTClientPooler : TRESTClientPooler;
+ vTempString,
+ lResponse        : String;
+ JSONParam        : TJSONParam;
+ DWParams         : TDWParams;
 Begin
-
+ RESTClientPooler                := TRESTClientPooler.Create(Nil);
+ RESTClientPooler.Host           := Host;
+ RESTClientPooler.Port           := Port;
+ RESTClientPooler.UserName       := UserName;
+ RESTClientPooler.Password       := Password;
+ RESTClientPooler.RequestTimeOut := TimeOut;
+ RESTClientPooler.UrlPath        := Method_Prefix;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+   RESTClientPooler.Encoding     := vEncoding;
+   JSONParam                     := TJSONParam.Create(GetEncoding(TEncodeSelect(RESTClientPooler.Encoding)));
+  {$ELSE}
+   JSONParam                     := TJSONParam.Create;
+  {$IFEND}
+ {$ENDIF}
+ JSONParam.ParamName             := 'Result';
+ JSONParam.ObjectDirection       := odOUT;
+ JSONParam.SetValue('');
+ DWParams  := TDWParams.Create;
+ DWParams.Add(JSONParam);
+ Try
+  Try
+   lResponse := RESTClientPooler.SendEvent('EchoPooler', DWParams);
+   If lResponse <> '' Then
+    Begin
+     Result      := TStringList.Create;
+     vTempString := DWParams.ItemsString['Result'].Value;
+     While Not (vTempString = '') Do
+      Begin
+       if Pos('|', vTempString) > 0 then
+        Begin
+         Result.Add(Copy(vTempString, 1, Pos('|', vTempString) -1));
+         Delete(vTempString, 1, Pos('|', vTempString));
+        End
+       Else
+        Begin
+         Result.Add(Copy(vTempString, 1, Length(vTempString)));
+         Delete(vTempString, 1, Length(vTempString));
+        End;
+      End;
+    End;
+  Except
+  End;
+ Finally
+  RESTClientPooler.Free;
+  DWParams.Free;
+ End;
 End;
 
 Function TDWPoolerMethodClient.ExecuteCommand(Pooler, Method_Prefix,

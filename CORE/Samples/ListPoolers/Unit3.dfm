@@ -986,6 +986,8 @@ object Form3: TForm3
   end
   object RESTDWPoolerList1: TRESTDWPoolerList
     Active = False
+    Login = 'testserver'
+    Password = 'testserver'
     Proxy = False
     ProxyOptions.Port = 8888
     PoolerPort = 8082

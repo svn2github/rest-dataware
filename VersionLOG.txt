@@ -1,5 +1,14 @@
 Alterações :
 
+1.0.1.105 (CORE Version) :
+===========
+
+ Adicionado a Compressão de Dados entre Lazarus/Delphi 6 a Tokyo.
+ Adicionados novos Samples.
+ Melhorias no Servidor CORE, agora contempla o DWDatamodule e a DWClass.
+ Componente ListPooler já consultando o Servidor CORE.
+ Sistema de Métodos da Versão CORE Funcional.
+
 1.0.1.40 (CORE Version) :
 ===========
 

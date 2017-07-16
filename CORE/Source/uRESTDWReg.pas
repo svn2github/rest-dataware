@@ -3,13 +3,14 @@ unit uRESTDWReg;
 interface
 
 uses
+  Windows,
   {$IFDEF FPC}
-   LResources, Classes, uRESTDWBase, uRESTDWPoolerDB;
+   LResources, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
   {$ELSE}
    {$if CompilerVersion > 21}
-    Classes, uRESTDWBase, uRESTDWPoolerDB;
+    DMForm, DesignIntf, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
    {$ELSE}
-    Classes, uRESTDWBase, uRESTDWPoolerDB;
+    ToolsApi, DMForm, DesignEditors, DesignIntf, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
    {$IFEND}
   {$ENDIF}
 
@@ -19,6 +20,7 @@ implementation
 
 Procedure Register;
 Begin
+ RegisterCustomModule(TServerMethodDataModule,      TDataModuleCustomModule);
  RegisterComponents('REST Dataware - Service',     [TRESTServicePooler, TRESTClientPooler]);
  RegisterComponents('REST Dataware - CORE - DB',   [TRESTDWPoolerDB, TRESTDWDataBase, TRESTDWClientSQL, TRESTDWStoredProc, TRESTDWPoolerList]);
 End;

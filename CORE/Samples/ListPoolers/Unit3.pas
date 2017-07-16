@@ -41,7 +41,7 @@ begin
  RESTDWPoolerList1.Active := False;
  RESTDWPoolerList1.PoolerService := Edit4.Text;
  RESTDWPoolerList1.PoolerPort    := StrToInt(Edit5.Text);
- RESTDWPoolerList1.Active := True;
+ RESTDWPoolerList1.Active        := True;
  If RESTDWPoolerList1.Active Then
   Begin
    ListBox1.Clear;

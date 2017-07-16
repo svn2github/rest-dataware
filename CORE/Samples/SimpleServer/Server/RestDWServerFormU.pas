@@ -119,7 +119,7 @@ implementation
 {$ENDIF}
 
 uses
-  Winapi.ShellApi;
+  Winapi.ShellApi, uDmService;
 
 Function TRestDWForm.GetHandleOnTaskBar : THandle;
 Begin
@@ -314,7 +314,7 @@ Begin
  // portas diferentes os arquivos não irão conflitar
  FCfgName := StringReplace(ExtractFileName(ParamStr(0) ), '.exe' , '' , [rfReplaceAll]);
  FCfgName := ExtractFilePath(ParamSTR(0)) + 'Config_' + FCfgName + '.ini' ;
- RESTServicePooler1.ServerMethodClass := TServerMethods1;
+ RESTServicePooler1.ServerMethodClass := TServerMethodDM;
  PageControl1.ActivePage              := tsConfigs;
 End;
 

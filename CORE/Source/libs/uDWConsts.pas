@@ -4,14 +4,14 @@ Interface
 
 Uses
     {$IFDEF FPC}
-     SysUtils, DB, Classes, IdGlobal, IdCoderMIME, uZlibLaz, base64;
+     SysUtils, DB, Classes, IdGlobal, IdCoderMIME, uZlibLaz, base64, uDWConstsData;
     {$ELSE}
      {$if CompilerVersion > 21} // Delphi 2010 pra cima
       System.SysUtils, IdGlobal, uZlibLaz, EncdDecd,
-      Data.DB, System.Classes, IdCoderMIME;
+      Data.DB, System.Classes, IdCoderMIME, uDWConstsData;
      {$ELSE}
       SysUtils, IdGlobal, uZlibLaz, EncdDecd,
-      DB, Classes, IdCoderMIME;
+      DB, Classes, IdCoderMIME, uDWConstsData;
      {$IFEND}
     {$ENDIF}
 
@@ -33,13 +33,8 @@ Const
  CompressBuffer        = 1024 * 16;
 
 Type
- TEncodeSelect    = (esASCII,     esUtf8);
- TSendEvent       = (seGET,       sePOST,
-                     sePUT,       seDELETE);
- TTypeRequest     = (trHttp,      trHttps);
  TTypeObject      = (toDataset,   toParam,
                      toVariable,  toObject);
- TObjectDirection = (odIN, odOUT, odINOUT);
  TObjectValue     = (ovUnknown,         ovString,       ovSmallint,         ovInteger,    ovWord,                            // 0..4
                      ovBoolean,         ovFloat,        ovCurrency,         ovBCD,        ovDate,      ovTime,    ovDateTime,// 5..11
                      ovBytes,           ovVarBytes,     ovAutoInc,          ovBlob,       ovMemo,      ovGraphic, ovFmtMemo, //12..18
@@ -86,7 +81,7 @@ Type
 
 implementation
 
-Uses uDWJSONTools;
+//Uses uDWJSONTools;
 
 
 Function BytesArrToString(aValue : tIdBytes) : String;

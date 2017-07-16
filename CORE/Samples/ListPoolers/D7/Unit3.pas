@@ -39,6 +39,8 @@ begin
  RESTDWPoolerList1.Active        := False;
  RESTDWPoolerList1.PoolerService := Edit4.Text;
  RESTDWPoolerList1.PoolerPort    := StrToInt(Edit5.Text);
+ RESTDWPoolerList1.Login         := 'testserver';
+ RESTDWPoolerList1.Password      := 'testserver';
  RESTDWPoolerList1.Active        := True;
  If RESTDWPoolerList1.Active Then
   Begin

@@ -25,35 +25,37 @@ interface
 
 Uses
      {$IFDEF FPC}
-     SysUtils,           Classes,            ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
-     IdContext,          IdHTTPServer,       IdCustomHTTPServer,  IdSSLOpenSSL,   IdSSL,
-     IdAuthentication,   IdHTTPHeaderInfo,   uDWJSONTools,        uDWConsts,      IdHTTP,
-     uDWJSONParser,      uDWJSONObject,      IdMultipartFormData, IdMessageCoder,
-     SysTypes,           IdMessageCoderMIME, IdMessage,           IdGlobal,       IdGlobalProtocols;
+     SysUtils,                      Classes,            ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
+     IdContext,                     IdHTTPServer,       IdCustomHTTPServer,  IdSSLOpenSSL,    IdSSL,
+     IdAuthentication,              IdHTTPHeaderInfo,
+     IdHTTP, uDWJSONParser,         uDWConstsData,       IdMultipartFormData, IdMessageCoder,
+     IdMessageCoderMIME, IdMessage, uDWJSONObject, IdGlobal,            IdGlobalProtocols;
      {$ELSE}
      {$IF CompilerVersion < 21}
      SysUtils, Classes, EncdDecd,
      {$ELSE}
      System.SysUtils, System.Classes,
      {$IFEND}
-     ServerUtils, Windows,
-     IdContext,          IdHTTPServer,        IdCustomHTTPServer,    IdSSLOpenSSL, IdSSL,
-     IdAuthentication,   IdHTTPHeaderInfo,    uDWJSONTools,          uDWConsts,    IdHTTP,
-     uDWJSONParser,      uDWJSONObject,       IdMultipartFormData,   IdMessageCoder,
-     IdMessageCoderMIME, IdMessage,           IdGlobalProtocols,     IdGlobal,     SysTypes;
+     ServerUtils, Windows,  uDWConstsData,       uDWJSONObject,
+     IdContext,             IdHTTPServer,        IdCustomHTTPServer,    IdSSLOpenSSL,    IdSSL,
+     IdAuthentication,      IdHTTPHeaderInfo,
+     IdHTTP, uDWJSONParser, IdMultipartFormData, IdMessageCoder,
+     IdMessageCoderMIME,    IdMessage,           IdGlobalProtocols,     IdGlobal;
      {$ENDIF}
 
 Type
  TLastRequest  = Procedure (Value     : String)                  Of Object;
  TLastResponse = Procedure (Value     : String)                  Of Object;
- TReplyEvent   = Procedure (SendType  : TSendEvent;
-                            Arguments : TArguments)              Of Object;
  TEventContext = Procedure (AContext      : TIdContext;
                             ARequestInfo  : TIdHTTPRequestInfo;
                             AResponseInfo : TIdHTTPResponseInfo) Of Object;
 
 Type
- TCallBack =Procedure (JSon:String;DWParams:TDWParams) of Object;
+ TCallBack     = Procedure (JSon : String; DWParams : TDWParams) Of Object;
+
+Type
+ TServerMethodClass = Class(TComponent)
+End;
 
 TThread_Request = class(TThread)
   FHttpRequest :TIdHTTP;
@@ -119,7 +121,8 @@ Type
   vProxyOptions    : TProxyOptions;
   HTTPServer       : TIdHTTPServer;
   vServicePort     : Integer;
-  vServerMethod    : TClass;
+  vServerBaseMethod,
+  vServerMethod    : TComponentClass;
   vServerParams    : TServerParams;
   vLastRequest     : TLastRequest;
   vLastResponse    : TLastResponse;
@@ -139,6 +142,13 @@ Type
   Procedure GetSSLPassWord(Var Password: String);
   Procedure SetActive(Value : Boolean);
   Function  GetSecure : Boolean;
+  Procedure SetServerMethod(Value : TComponentClass);
+  Procedure GetPoolerList(ServerMethodsClass : TComponent;
+                          Var PoolerList     : String);
+  Function  ServiceMethods(BaseObject   : TComponent;
+                           UrlMethod    : String;
+                           Var DWParams : TDWParams;
+                           Var JSONStr  : String) : Boolean;
  Public
   Constructor Create(AOwner  : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                      //Destroy a Classe
@@ -149,7 +159,7 @@ Type
   Property ServicePort           : Integer         Read vServicePort           Write vServicePort;  //A Porta do Serviço do DataSet
   Property ProxyOptions          : TProxyOptions   Read vProxyOptions          Write vProxyOptions; //Se tem Proxy diz quais as opções
   Property ServerParams          : TServerParams   Read vServerParams          Write vServerParams;
-  Property ServerMethodClass     : TClass          Read vServerMethod          Write vServerMethod;
+  Property ServerMethodClass     : TComponentClass Read vServerMethod          Write SetServerMethod;
   Property SSLPrivateKeyFile     : String          Read aSSLPrivateKeyFile     Write aSSLPrivateKeyFile;
   Property SSLPrivateKeyPassword : String          Read aSSLPrivateKeyPassword Write aSSLPrivateKeyPassword;
   Property SSLCertFile           : String          Read aSSLCertFile           Write aSSLCertFile;
@@ -184,7 +194,7 @@ Type
   vRequestTimeOut   : Integer;
   Procedure SetUserName(Value : String);
   Procedure SetPassword(Value : String);
-  Procedure SetUrlPath(Value : String);
+  Procedure SetUrlPath(Value  : String);
  Public
   //Métodos, Propriedades, Variáveis, Procedures e Funções Publicas
   Function    SendEvent(EventData  : String;
@@ -211,303 +221,9 @@ Type
   Property ThreadRequest    : Boolean                Read vThreadRequest    Write vThreadRequest;
 End;
 
-Type
- TDWClientMethodExecute = Class(TComponent)
-  Private
-   vCompression          : Boolean;
-  {$IFNDEF FPC}
-   {$if CompilerVersion > 21}
-    vEncoding            : TEncoding;
-   {$IFEND}
-  {$ENDIF}
-  Public
-   Constructor Create(AOwner: TComponent);Override;
-   Destructor  Destroy; Override;
-   //Faz uma chamada de Execução para verificar o funcionamento do WebService
-   Function EchoPooler            (Value, Method_Prefix    : String;
-                                   TimeOut                 : Integer = 3000;
-                                   UserName                : String  = '';
-                                   Password                : String  = '')   : String;Virtual;
-   //Retorna todos os Poolers no DataModule do WebService
-   Function PoolersDataSet        (Method_Prefix           : String;
-                                   TimeOut                 : Integer = 3000;
-                                   UserName                : String  = '';
-                                   Password                : String  = '')   : TStringList;Virtual;
-   //Roda Comando SQL
-   Function InsertValue           (Pooler, Method_Prefix,
-                                   SQL                     : String;
-                                   Params                  : TDWParams;
-                                   Var Error               : Boolean;
-                                   Var MessageError        : String;
-                                   TimeOut                 : Integer = 3000;
-                                   UserName                : String  = '';
-                                   Password                : String  = '')   : Integer;Virtual;
-   Function ExecuteCommand        (Pooler, Method_Prefix,
-                                   SQL                     : String;
-                                   Params                  : TDWParams;
-                                   Var Error               : Boolean;
-                                   Var MessageError        : String;
-                                   Execute                 : Boolean;
-                                   TimeOut                 : Integer = 3000;
-                                   UserName                : String  = '';
-                                   Password                : String  = '')   : TJSONValue;Virtual;
-   Function ExecuteCommandJSON    (Pooler, Method_Prefix,
-                                   SQL                     : String;
-                                   Params                  : TDWParams;
-                                   Var Error               : Boolean;
-                                   Var MessageError        : String;
-                                   Execute                 : Boolean;
-                                   TimeOut                 : Integer = 3000;
-                                   UserName                : String  = '';
-                                   Password                : String  = '')   : TJSONValue;Virtual;
-   Function InsertValuePure       (Pooler, Method_Prefix,
-                                   SQL                     : String;
-                                   Var Error               : Boolean;
-                                   Var MessageError        : String;
-                                   TimeOut                 : Integer = 3000;
-                                   UserName                : String  = '';
-                                   Password                : String  = '')   : Integer;Virtual;
-   Function ExecuteCommandPure    (Pooler, Method_Prefix,
-                                   SQL                     : String;
-                                   Var Error               : Boolean;
-                                   Var MessageError        : String;
-                                   Execute                 : Boolean;
-                                   TimeOut                 : Integer = 3000;
-                                   UserName                : String  = '';
-                                   Password                : String  = '')   : TJSONValue;Virtual;
-   Function ExecuteCommandPureJSON(Pooler,
-                                   Method_Prefix,
-                                   SQL                     : String;
-                                   Var Error               : Boolean;
-                                   Var MessageError        : String;
-                                   Execute                 : Boolean;
-                                   TimeOut                 : Integer = 3000;
-                                   UserName                : String  = '';
-                                   Password                : String  = '')   : TJSONValue;Virtual;
-   //Executa um ApplyUpdate no Servidor
-   Procedure   ApplyChangesPure   (Pooler, Method_Prefix,
-                                   TableName,
-                                   SQL                     : String;
-                                   ADeltaList              : TDWDatalist;
-                                   Var Error               : Boolean;
-                                   Var MessageError        : String;
-                                   TimeOut                 : Integer = 3000;
-                                   UserName                : String  = '';
-                                   Password                : String  = '');Virtual;
-   Procedure   ApplyChanges       (Pooler, Method_Prefix,
-                                   TableName,
-                                   SQL                     : String;
-                                   Params                  : TDWParams;
-                                   ADeltaList              : TDWDatalist;
-                                   Var Error               : Boolean;
-                                   Var MessageError        : String;
-                                   TimeOut                 : Integer = 3000;
-                                   UserName                : String  = '';
-                                   Password                : String  = '');Virtual;
-   //Lista todos os Pooler's do Servidor
-   Procedure GetPoolerList        (Method_Prefix           : String;
-                                   Var PoolerList          : TStringList;
-                                   TimeOut                 : Integer = 3000;
-                                   UserName                : String  = '';
-                                   Password                : String  = '');Virtual;
-   //StoredProc
-   Procedure  ExecuteProcedure    (Pooler,
-                                   Method_Prefix,
-                                   ProcName                : String;
-                                   Params                  : TDWParams;
-                                   Var Error               : Boolean;
-                                   Var MessageError        : String);Virtual;
-   Procedure  ExecuteProcedurePure(Pooler,
-                                   Method_Prefix,
-                                   ProcName                : String;
-                                   Var Error               : Boolean;
-                                   Var MessageError        : String);Virtual;
-   Property Compression  : Boolean   Read vCompression Write vCompression;
-  {$IFNDEF FPC}
-   {$if CompilerVersion > 21}
-   Property Encoding     : TEncoding        Read vEncoding        Write vEncoding;
-   {$IFEND}
-  {$ENDIF}
-End;
-
 implementation
 
-Constructor TDWClientMethodExecute.Create(AOwner: TComponent);
-Begin
- //Herança de Metodos
- Inherited;
-
-End;
-
-Destructor  TDWClientMethodExecute.Destroy;
-Begin
- //Herança de Metodos
-
- Inherited;
-End;
-
-Function TDWClientMethodExecute.EchoPooler(Value, Method_Prefix    : String;
-                                           TimeOut                 : Integer = 3000;
-                                           UserName                : String  = '';
-                                           Password                : String  = '')   : String;
-Begin
- //Herança de Metodos
- Result := '';
- 
-End;
-
-Function TDWClientMethodExecute.PoolersDataSet(Method_Prefix           : String;
-                                               TimeOut                 : Integer = 3000;
-                                               UserName                : String  = '';
-                                               Password                : String  = '')   : TStringList;
-Begin
- //Herança de Metodos
- Result := Nil;
- 
-End;
-
-Function TDWClientMethodExecute.InsertValue(Pooler, Method_Prefix,
-                                            SQL                     : String;
-                                            Params                  : TDWParams;
-                                            Var Error               : Boolean;
-                                            Var MessageError        : String;
-                                            TimeOut                 : Integer = 3000;
-                                            UserName                : String  = '';
-                                            Password                : String  = '')   : Integer;
-Begin
- //Herança de Metodos
- Result := -1;
- 
-End;
-
-Function TDWClientMethodExecute.ExecuteCommand(Pooler, Method_Prefix,
-                                               SQL                     : String;
-                                               Params                  : TDWParams;
-                                               Var Error               : Boolean;
-                                               Var MessageError        : String;
-                                               Execute                 : Boolean;
-                                               TimeOut                 : Integer = 3000;
-                                               UserName                : String  = '';
-                                               Password                : String  = '')   : TJSONValue;
-Begin
- //Herança de Metodos
- Result := Nil;
- 
-End;
-
-Function TDWClientMethodExecute.ExecuteCommandJSON(Pooler, Method_Prefix,
-                                                   SQL                     : String;
-                                                   Params                  : TDWParams;
-                                                   Var Error               : Boolean;
-                                                   Var MessageError        : String;
-                                                   Execute                 : Boolean;
-                                                   TimeOut                 : Integer = 3000;
-                                                   UserName                : String  = '';
-                                                   Password                : String  = '')   : TJSONValue;
-Begin
- //Herança de Metodos
- Result := Nil;
- 
-End;
-
-Function TDWClientMethodExecute.InsertValuePure(Pooler, Method_Prefix,
-                                                SQL                     : String;
-                                                Var Error               : Boolean;
-                                                Var MessageError        : String;
-                                                TimeOut                 : Integer = 3000;
-                                                UserName                : String  = '';
-                                                Password                : String  = '')   : Integer;
-Begin
- //Herança de Metodos
- Result := -1;
- 
-End;
-
-Function TDWClientMethodExecute.ExecuteCommandPure(Pooler, Method_Prefix,
-                                                   SQL                     : String;
-                                                   Var Error               : Boolean;
-                                                   Var MessageError        : String;
-                                                   Execute                 : Boolean;
-                                                   TimeOut                 : Integer = 3000;
-                                                   UserName                : String  = '';
-                                                   Password                : String  = '')   : TJSONValue;
-Begin
- //Herança de Metodos
- Result := Nil;
- 
-End;
-
-Function TDWClientMethodExecute.ExecuteCommandPureJSON(Pooler, Method_Prefix,
-                                                       SQL                     : String;
-                                                       Var Error               : Boolean;
-                                                       Var MessageError        : String;
-                                                       Execute                 : Boolean;
-                                                       TimeOut                 : Integer = 3000;
-                                                       UserName                : String  = '';
-                                                       Password                : String  = '')   : TJSONValue;
-Begin
- //Herança de Metodos
- Result := Nil;
- 
-End;
-
-Procedure TDWClientMethodExecute.ApplyChangesPure(Pooler, Method_Prefix,
-                                                  TableName,
-                                                  SQL                     : String;
-                                                  ADeltaList              : TDWDatalist;
-                                                  Var Error               : Boolean;
-                                                  Var MessageError        : String;
-                                                  TimeOut                 : Integer = 3000;
-                                                  UserName                : String  = '';
-                                                  Password                : String  = '');
-Begin
- //Herança de Metodos
-
-End;
-
-Procedure   TDWClientMethodExecute.ApplyChanges(Pooler, Method_Prefix,
-                                                TableName,
-                                                SQL                     : String;
-                                                Params                  : TDWParams;
-                                                ADeltaList              : TDWDatalist;
-                                                Var Error               : Boolean;
-                                                Var MessageError        : String;
-                                                TimeOut                 : Integer = 3000;
-                                                UserName                : String  = '';
-                                                Password                : String  = '');
-Begin
- //Herança de Metodos
-
-End;
-
-Procedure TDWClientMethodExecute.GetPoolerList(Method_Prefix           : String;
-                                               Var PoolerList          : TStringList;
-                                               TimeOut                 : Integer = 3000;
-                                               UserName                : String  = '';
-                                               Password                : String  = '');
-Begin
- //Herança de Metodos
-
-End;
-
-Procedure  TDWClientMethodExecute.ExecuteProcedure(Pooler, Method_Prefix,
-                                                   ProcName                : String;
-                                                   Params                  : TDWParams;
-                                                   Var Error               : Boolean;
-                                                   Var MessageError        : String);
-Begin
- //Herança de Metodos
-
-End;
-
-Procedure  TDWClientMethodExecute.ExecuteProcedurePure(Pooler, Method_Prefix,
-                                                       ProcName                : String;
-                                                       Var Error               : Boolean;
-                                                       Var MessageError        : String);
-Begin
- //Herança de Metodos
-
-End;
+Uses uDWDatamodule, uRESTDWPoolerDB, SysTypes, uDWConsts, uDWJSONTools;
 
 Constructor TRESTClientPooler.Create(AOwner: TComponent);
 Begin
@@ -578,14 +294,14 @@ Var
           Continue;
          If GetObjectName(bJsonValue[0].Value.Value) <> toParam Then
           Break;
-         JSONParam := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(GetEncoding(vRSCharset)){$IFEND}{$ENDIF};
+         JSONParam := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(GetEncoding(TEncodeSelect(vRSCharset))){$IFEND}{$ENDIF};
          Try
           JSONParam.ParamName       := bJsonValue[4].Key;
           JSONParam.ObjectValue     := GetValueType(bJsonValue[3].Value.Value);
           JSONParam.ObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
           JSONParam.Encoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
           If JSONParam.Encoded Then
-           vValue := DecodeStrings(bJsonValue[4].Value.Value{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(vRSCharset){$IFEND}{$ENDIF})
+           vValue := DecodeStrings(bJsonValue[4].Value.Value{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(TEncodeSelect(vRSCharset)){$IFEND}{$ENDIF})
           Else
            vValue := bJsonValue[4].Value.Value;
           JSONParam.SetValue(vValue);
@@ -609,7 +325,7 @@ Var
   Finally
    If vTempValue <> '' Then
     Begin
-//     ResultJSON := DecodeStrings(vTempValue{$IFNDEF FPC}, GetEncoding(vRSCharset){$IFEND});
+//     ResultJSON := DecodeStrings(vTempValue{$IFNDEF FPC}, GetEncoding(uDWConsts.TEncodeSelect(vRSCharset)){$IFEND});
      ResultJSON := vTempValue;
     End;
   End;
@@ -846,7 +562,45 @@ Begin
   Inherited;
 End;
 
-{ TRESTServicePooler }
+Procedure TRESTServicePooler.GetPoolerList(ServerMethodsClass : TComponent;
+                                           Var PoolerList     : String);
+Var
+ I : Integer;
+Begin
+ If ServerMethodsClass <> Nil Then
+  Begin
+   For I := 0 To ServerMethodsClass.ComponentCount -1 Do
+    Begin
+     If ServerMethodsClass.Components[i] is TRESTDWPoolerDB Then
+      Begin
+       If PoolerList = '' then
+        PoolerList := Format('%s.%s', [ServerMethodsClass.ClassName, ServerMethodsClass.Components[i].Name])
+       Else
+        PoolerList := PoolerList + '|' + Format('%s.%s', [ServerMethodsClass.ClassName, ServerMethodsClass.Components[i].Name]);
+      End;
+    End;
+  End;
+End;
+
+Function TRESTServicePooler.ServiceMethods(BaseObject   : TComponent;
+                                           UrlMethod    : String;
+                                           Var DWParams : TDWParams;
+                                           Var JSONStr  : String) : Boolean;
+Var
+ vResult,
+ vUrlMethod : String;
+ PoolerList : TStringList;
+Begin
+ Result     := False;
+ vUrlMethod := UpperCase(UrlMethod);
+ If vUrlMethod = UpperCase('EchoPooler') Then
+  Begin
+   Result   := True;
+   GetPoolerList(BaseObject, vResult);
+   DWParams.ItemsString['Result'].SetValue(vResult);
+   JSONStr  := '{"MESSAGE":"OK","RESULT":"OK"}';
+  End;
+End;
 
 Procedure TRESTServicePooler.aCommandGet(AContext      : TIdContext;
                                          ARequestInfo  : TIdHTTPRequestInfo;
@@ -945,7 +699,7 @@ Begin
  DWParams           := TDWParams.Create;
  {$IFNDEF FPC}
   {$if CompilerVersion > 21}
-   DWParams.Encoding  := GetEncoding(VEncondig);
+   DWParams.Encoding  := GetEncoding(TEncodeSelect(VEncondig));
   {$IFEND}
  {$ENDIF}
  If ARequestInfo.PostStream <> Nil Then
@@ -982,11 +736,11 @@ Begin
      Begin
       If ARequestInfo.Params.Count > 0 Then
        DWParams  := TServerUtils.ParseWebFormsParams (ARequestInfo.Params, ARequestInfo.URI,
-                                                      UrlMethod{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(VEncondig){$IFEND}{$ENDIF})
+                                                      UrlMethod{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(TEncodeSelect(VEncondig)){$IFEND}{$ENDIF})
       Else
        Begin
         If Copy(Cmd, 1, 3) = 'GET' Then
-         DWParams  := TServerUtils.ParseRESTURL (ARequestInfo.URI{$IFNDEF FPC}{$if CompilerVersion > 21},GetEncoding(VEncondig){$IFEND}{$ENDIF})
+         DWParams  := TServerUtils.ParseRESTURL (ARequestInfo.URI{$IFNDEF FPC}{$if CompilerVersion > 21},GetEncoding(TEncodeSelect(VEncondig)){$IFEND}{$ENDIF})
         Else
          Begin
           Try
@@ -1039,7 +793,7 @@ Begin
          End;
        End;
       If Assigned(vServerMethod) Then
-       vTempServerMethods := vServerMethod.Create
+       vTempServerMethods := vServerMethod.Create(Nil)
       Else
        JSONStr := GetPairJSON(-5, 'Server Methods Cannot Assigned');
       Try
@@ -1076,10 +830,35 @@ Begin
           End;
          If vTempServerMethods <> Nil Then
           Begin
-           If UpperCase(Copy (Cmd, 1, 3)) = 'GET' Then
-            JSONStr := TServerMethods(vTempServerMethods).ReplyEvent(seGET, UrlMethod, DWParams);
-           If UpperCase(Copy (Cmd, 1, 4)) = 'POST' Then
-            JSONStr := TServerMethods(vTempServerMethods).ReplyEvent(sePOST, UrlMethod, DWParams);
+           If Not ServiceMethods(TComponent(vTempServerMethods), UrlMethod, DWParams, JSONStr) Then
+            Begin
+             If UpperCase(Copy (Cmd, 1, 3)) = 'GET' Then
+              Begin
+               If vServerBaseMethod = TServerMethods Then
+                Begin
+                 If Assigned(TServerMethods(vTempServerMethods).ReplyEvent) then
+                  TServerMethods(vTempServerMethods).ReplyEvent(seGET, UrlMethod, DWParams, JSONStr);
+                End
+               Else If vServerBaseMethod = TServerMethodDatamodule Then
+                Begin
+                 If Assigned(TServerMethodDatamodule(vTempServerMethods).OnReplyEvent) then
+                  TServerMethodDatamodule(vTempServerMethods).OnReplyEvent(seGET, UrlMethod, DWParams, JSONStr);
+                End;
+              End
+             Else If UpperCase(Copy (Cmd, 1, 4)) = 'POST' Then
+              Begin
+               If vServerBaseMethod = TServerMethods Then
+                Begin
+                 If Assigned(TServerMethods(vTempServerMethods).ReplyEvent) then
+                  TServerMethods(vTempServerMethods).ReplyEvent(sePOST, UrlMethod, DWParams, JSONStr);
+                End
+               Else If vServerBaseMethod = TServerMethodDatamodule Then
+                Begin
+                 If Assigned(TServerMethodDatamodule(vTempServerMethods).OnReplyEvent) then
+                  TServerMethodDatamodule(vTempServerMethods).OnReplyEvent(sePOST, UrlMethod, DWParams, JSONStr);
+                End;
+              End;
+            End;
           End;
         End;
        Try
@@ -1090,7 +869,7 @@ Begin
           mb                                 := TStringStream.Create(vReplyStringResult);
          End
         Else
-         mb                                  := TStringStream.Create(vReplyString{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(VEncondig){$IFEND}{$ENDIF});
+         mb                                  := TStringStream.Create(vReplyString{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(TEncodeSelect(VEncondig)){$IFEND}{$ENDIF});
         mb.Position                          := 0;
         AResponseInfo.ContentStream          := mb;
         AResponseInfo.ContentStream.Position := 0;
@@ -1153,9 +932,9 @@ Begin
  If (UpperCase(Copy (Cmd, 1, 3)) = 'PUT')    OR
     (UpperCase(Copy (Cmd, 1, 6)) = 'DELETE') Then
   Begin
-   DWParams := TServerUtils.ParseRESTURL (ARequestInfo.URI{$IFNDEF FPC}{$if CompilerVersion > 21},GetEncoding(VEncondig){$IFEND}{$ENDIF});
+   DWParams := TServerUtils.ParseRESTURL (ARequestInfo.URI{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(TEncodeSelect(VEncondig)){$IFEND}{$ENDIF});
    If Assigned(vServerMethod) Then
-    vTempServerMethods := vServerMethod.Create
+    vTempServerMethods := vServerMethod.Create(Nil)
    Else
     JSONStr := GetPairJSON(-5, 'Server Methods Cannot Assigned');
    Try
@@ -1179,9 +958,9 @@ Begin
       If vTempServerMethods <> Nil Then
        Begin
         If UpperCase(Copy (Cmd, 1, 3)) = 'PUT' Then
-         JSONStr := TServerMethods(vTempServerMethods).ReplyEvent(sePUT, '', DWParams);
+         TServerMethods(vTempServerMethods).ReplyEvent(sePUT, '', DWParams, JSONStr);
         If UpperCase(Copy (Cmd, 1, 6)) = 'DELETE' Then
-         JSONStr := TServerMethods(vTempServerMethods).ReplyEvent(seDELETE, '', DWParams);
+         TServerMethods(vTempServerMethods).ReplyEvent(seDELETE, '', DWParams, JSONStr);
        End;
      End;
     Try
@@ -1200,7 +979,7 @@ Begin
         EnterCriticalSection(vCriticalSection);
        {$ENDIF}
       {$ENDIF}
-       vLastResponse(DecodeStrings(JSONStr{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(VEncondig){$IFEND}{$ENDIF}));
+       vLastResponse(DecodeStrings(JSONStr{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(TEncodeSelect(VEncondig)){$IFEND}{$ENDIF}));
       {$IFDEF FPC}
        {$IFDEF WINDOWS}
         LeaveCriticalSection(vCriticalSection);
@@ -1306,6 +1085,22 @@ Begin
 End;
 
 
+Procedure TRESTServicePooler.SetServerMethod(Value : TComponentClass);
+Begin
+ If (Value.ClassParent      = TServerMethods) Or
+    (Value                  = TServerMethods) Then
+  Begin
+   vServerMethod     := Value;
+   vServerBaseMethod := TServerMethods;
+  End
+ Else If (Value.ClassParent = TServerMethodDatamodule) Or
+         (Value             = TServerMethodDatamodule) Then
+  Begin
+   vServerMethod := Value;
+   vServerBaseMethod := TServerMethodDatamodule;
+  End;
+End;
+
 {TThread_Request}
 constructor TThread_Request.Create;
 begin
@@ -1386,14 +1181,14 @@ VAR SResult ,
          bJsonValue := JsonParser.Output.Objects[A];
          If GetObjectName(bJsonValue[0].Value.Value) <> toParam Then
           Break;
-         JSONParam := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(GetEncoding(vRSCharset)){$IFEND}{$ENDIF};
+         JSONParam := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(GetEncoding(TEncodeSelect(vRSCharset))){$IFEND}{$ENDIF};
          Try
           JSONParam.ParamName       := bJsonValue[4].Key;
           JSONParam.ObjectValue     := GetValueType(bJsonValue[3].Value.Value);
           JSONParam.ObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
           JSONParam.Encoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
           If JSONParam.Encoded Then
-           vValue := DecodeStrings(bJsonValue[4].Value.Value{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(vRSCharset){$IFEND}{$ENDIF})
+           vValue := DecodeStrings(bJsonValue[4].Value.Value{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(TEncodeSelect(vRSCharset)){$IFEND}{$ENDIF})
           Else
            vValue := bJsonValue[4].Value.Value;
           JSONParam.SetValue(vValue);
@@ -1417,7 +1212,7 @@ VAR SResult ,
   Finally
    If vTempValue <> '' Then
     Begin
-//     ResultJSON := DecodeStrings(vTempValue{$IFNDEF FPC}, GetEncoding(vRSCharset){$IFEND});
+//     ResultJSON := DecodeStrings(vTempValue{$IFNDEF FPC}, GetEncoding(uDWConsts.TEncodeSelect(vRSCharset)){$IFEND});
      ResultJSON := vTempValue;
     End;
   End;
@@ -1602,3 +1397,4 @@ ss            := Nil;
 end;
 
 end.
+

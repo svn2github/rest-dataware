@@ -13,7 +13,7 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="12">
+    <Files Count="13">
       <Item1>
         <Filename Value="..\..\Source\libs\ServerUtils.pas"/>
         <UnitName Value="ServerUtils"/>
@@ -63,6 +63,10 @@
         <Filename Value="..\..\Source\libs\uzliblaz.pas"/>
         <UnitName Value="uZlibLaz"/>
       </Item12>
+      <Item13>
+        <Filename Value="..\..\Source\uDWPoolerMethod.pas"/>
+        <UnitName Value="uDWPoolerMethod"/>
+      </Item13>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>

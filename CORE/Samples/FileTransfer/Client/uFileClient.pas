@@ -60,8 +60,6 @@ Begin
  RESTClientPooler1.Password := edPasswordDW.Text;
  Try
   Try
-   RESTClientPooler1.Host := eHost.Text;
-   RESTClientPooler1.Port := StrToInt(ePort.Text);
    lResponse := RESTClientPooler1.SendEvent('FileList');
    If lResponse <> '' Then
     Begin

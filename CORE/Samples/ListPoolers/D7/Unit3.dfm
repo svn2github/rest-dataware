@@ -1,6 +1,6 @@
 object Form3: TForm3
-  Left = 753
-  Top = 279
+  Left = 398
+  Top = 209
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Lista de Poolers'
