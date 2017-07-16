@@ -54,7 +54,7 @@
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;soaprtl;dbrtl;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;soaprtl;dbrtl;dsnap;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -65,11 +65,12 @@
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <DCC_AdditionalSwitches>–LUDesignIDE</DCC_AdditionalSwitches>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Build>75</VerInfo_Build>
+        <VerInfo_Build>107</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=$(MSBuildProjectName);FileVersion=1.0.1.75;InternalName=REST Dataware CORE Version;LegalCopyright=REST Dataware CORE Version;LegalTrademarks=REST Dataware;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.1;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=$(MSBuildProjectName);FileVersion=1.0.1.107;InternalName=REST Dataware CORE Version;LegalCopyright=REST Dataware CORE Version;LegalTrademarks=REST Dataware;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.1;Comments=</VerInfo_Keys>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
     </PropertyGroup>
@@ -84,11 +85,13 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
+        <DCCReference Include="dbrtl.dcp"/>
+        <DCCReference Include="soaprtl.dcp"/>
+        <DCCReference Include="dsnap.dcp"/>
         <DCCReference Include="IndySystem.dcp"/>
         <DCCReference Include="IndyProtocols.dcp"/>
         <DCCReference Include="IndyCore.dcp"/>
-        <DCCReference Include="dbrtl.dcp"/>
-        <DCCReference Include="soaprtl.dcp"/>
+        <DCCReference Include="designide.dcp"/>
         <DCCReference Include="..\..\..\Source\uRESTDWBase.pas"/>
         <DCCReference Include="..\..\..\Source\uRESTDWMasterDetailData.pas"/>
         <DCCReference Include="..\..\..\Source\uRESTDWPoolerDB.pas"/>
@@ -99,6 +102,10 @@
         <DCCReference Include="..\..\..\Source\libs\uDWJSONObject.pas"/>
         <DCCReference Include="..\..\..\Source\libs\uDWJSONTools.pas"/>
         <DCCReference Include="..\..\..\Source\libs\JSON\uDWJSONParser.pas"/>
+        <DCCReference Include="..\..\..\Source\libs\uzliblaz.pas"/>
+        <DCCReference Include="..\..\..\Source\uDWPoolerMethod.pas"/>
+        <DCCReference Include="..\..\..\Source\libs\uDWConstsData.pas"/>
+        <DCCReference Include="..\..\..\Source\DmDados\uDWDatamodule.pas"/>
         <RcItem Include="..\..\..\Images\TRESTClientPooler.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TRESTClientPooler</ResourceId>
@@ -183,16 +190,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
                 <DeployClass Name="ProjectOSXResource">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\Resources</RemoteDir>
@@ -531,7 +529,16 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                </DeployClass>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
