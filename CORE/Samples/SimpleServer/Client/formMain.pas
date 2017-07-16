@@ -8,7 +8,8 @@ uses
   DB, memds, Grids, DBGrids, uRESTDWBase, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet, uDWJSONTools,
-  FireDAC.Comp.Client, uDWConsts, Vcl.ExtCtrls, Vcl.Imaging.pngimage;
+  FireDAC.Comp.Client, uDWConsts, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
+  uRESTDWPoolerDB;
 
 type
 
@@ -37,6 +38,7 @@ type
     Button1: TButton;
     CheckBox1: TCheckBox;
     RESTClientPooler1: TRESTClientPooler;
+    RESTDWDataBase1: TRESTDWDataBase;
     procedure btnGetClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private

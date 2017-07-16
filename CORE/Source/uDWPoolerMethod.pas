@@ -24,15 +24,20 @@ Uses {$IFDEF FPC}
      vEncoding           : TEncodeSelect;
     {$IFEND}
    {$ENDIF}
-   Host : String;
-   Port : Integer;
+   vHost : String;
+   vPort : Integer;
   Public
    Constructor Create(AOwner: TComponent);Override;
    Destructor  Destroy;Override;
-   Function EchoPooler            (Method_Prefix           : String;
+   Function GetPoolerList         (Method_Prefix           : String;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '')   : TStringList;
+                                   Password                : String  = '')   : TStringList;Overload;
+   Function EchoPooler            (Method_Prefix,
+                                   Pooler                  : String;
+                                   TimeOut                 : Integer = 3000;
+                                   UserName                : String  = '';
+                                   Password                : String  = '')   : String;
    //Retorna todos os Poolers no DataModule do WebService
    Function PoolersDataSet        (Method_Prefix           : String;
                                    TimeOut                 : Integer = 3000;
@@ -114,7 +119,7 @@ Uses {$IFDEF FPC}
                                    Var PoolerList          : TStringList;
                                    TimeOut                 : Integer = 3000;
                                    UserName                : String  = '';
-                                   Password                : String  = '');
+                                   Password                : String  = '');Overload;
    //StoredProc
    Procedure  ExecuteProcedure    (Pooler,
                                    Method_Prefix,
@@ -133,6 +138,8 @@ Uses {$IFDEF FPC}
    Property Encoding     : TEncodeSelect     Read vEncoding        Write vEncoding;
    {$IFEND}
   {$ENDIF}
+   Property    Host : String   Read vHost Write vHost;
+   Property    Port : Integer  Read vPort Write vPort;
   End;
 
 implementation
@@ -184,10 +191,10 @@ Begin
  Inherited;
 End;
 
-Function TDWPoolerMethodClient.EchoPooler(Method_Prefix  : String;
-                                          TimeOut        : Integer = 3000;
-                                          UserName       : String  = '';
-                                          Password       : String  = '')   : TStringList;
+Function TDWPoolerMethodClient.GetPoolerList(Method_Prefix  : String;
+                                             TimeOut        : Integer = 3000;
+                                             UserName       : String  = '';
+                                             Password       : String  = '')   : TStringList;
 Var
  RESTClientPooler : TRESTClientPooler;
  vTempString,
@@ -217,7 +224,7 @@ Begin
  DWParams.Add(JSONParam);
  Try
   Try
-   lResponse := RESTClientPooler.SendEvent('EchoPooler', DWParams);
+   lResponse := RESTClientPooler.SendEvent('GetPoolerList', DWParams);
    If lResponse <> '' Then
     Begin
      Result      := TStringList.Create;
@@ -236,6 +243,63 @@ Begin
         End;
       End;
     End;
+  Except
+  End;
+ Finally
+  RESTClientPooler.Free;
+  DWParams.Free;
+ End;
+End;
+
+Function TDWPoolerMethodClient.EchoPooler(Method_Prefix,
+                                          Pooler    : String;
+                                          TimeOut   : Integer;
+                                          UserName,
+                                          Password  : String) : String;
+Var
+ RESTClientPooler : TRESTClientPooler;
+ vTempString,
+ lResponse        : String;
+ JSONParam        : TJSONParam;
+ DWParams         : TDWParams;
+Begin
+ RESTClientPooler                := TRESTClientPooler.Create(Nil);
+ RESTClientPooler.Host           := Host;
+ RESTClientPooler.Port           := Port;
+ RESTClientPooler.UserName       := UserName;
+ RESTClientPooler.Password       := Password;
+ RESTClientPooler.RequestTimeOut := TimeOut;
+ RESTClientPooler.UrlPath        := Method_Prefix;
+ DWParams                        := TDWParams.Create;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+   RESTClientPooler.Encoding     := vEncoding;
+   JSONParam                     := TJSONParam.Create(GetEncoding(TEncodeSelect(RESTClientPooler.Encoding)));
+  {$ELSE}
+   JSONParam                     := TJSONParam.Create;
+  {$IFEND}
+ {$ENDIF}
+ JSONParam.ParamName             := 'Pooler';
+ JSONParam.ObjectDirection       := odIn;
+ JSONParam.SetValue(Pooler);
+ DWParams.Add(JSONParam);
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+   RESTClientPooler.Encoding     := vEncoding;
+   JSONParam                     := TJSONParam.Create(GetEncoding(TEncodeSelect(RESTClientPooler.Encoding)));
+  {$ELSE}
+   JSONParam                     := TJSONParam.Create;
+  {$IFEND}
+ {$ENDIF}
+ JSONParam.ParamName             := 'Result';
+ JSONParam.ObjectDirection       := odOUT;
+ JSONParam.SetValue('');
+ DWParams.Add(JSONParam);
+ Try
+  Try
+   lResponse := RESTClientPooler.SendEvent('EchoPooler', DWParams);
+   If lResponse <> '' Then
+    Result   := DWParams.ItemsString['Result'].Value;
   Except
   End;
  Finally

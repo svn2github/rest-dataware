@@ -27,6 +27,8 @@ Const
  TJsonStringValue      = '"%s"';
  TSepValueMemString    = '\\';
  TQuotedValueMemString = '\"';
+ TReplyOK              = '{"MESSAGE":"OK",  "RESULT":"OK"}';
+ TReplyNOK             = '{"MESSAGE":"NOK", "RESULT":"NOK"}';
  AuthRealm             = 'Provide Authentication';
  UrlBase               = '%s://%s:%d/%s';
  ByteBuffer            = 1024 * 8; //8kb

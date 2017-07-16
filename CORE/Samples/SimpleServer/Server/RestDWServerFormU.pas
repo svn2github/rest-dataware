@@ -219,10 +219,6 @@ Begin
 End;
 
 Procedure TRestDWForm.ShowBalloonTips(IconMessage : Integer = 0; MessageValue : String = '');
-Var
- TipInfo,
- TipTitle : String;
- HintIcon : TBalloonHintIcon;
 Begin
  Case IconMessage Of
   0 : ctiPrincipal.BalloonFlags := bfInfo;
@@ -320,15 +316,6 @@ End;
 
 procedure TRestDWForm.FormShow(Sender: TObject);
 Var
- porta_fb,
- porta_dw,
- servidor,
- database,
- pasta,
- usuarioDW,
- senhaDW,
- usuarioBD,
- senhaBD           : String;
  ini               : TIniFile;
  vTag, i           : Integer;
  aNetInterfaceList : tNetworkInterfaceList;

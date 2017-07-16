@@ -146,9 +146,13 @@ Type
   Procedure GetPoolerList(ServerMethodsClass : TComponent;
                           Var PoolerList     : String);
   Function  ServiceMethods(BaseObject   : TComponent;
+                           AContext     : TIdContext;
                            UrlMethod    : String;
                            Var DWParams : TDWParams;
                            Var JSONStr  : String) : Boolean;
+  Procedure EchoPooler(ServerMethodsClass : TComponent;
+                       AContext           : TIdContext;
+                       Var Pooler, MyIP   : String);
  Public
   Constructor Create(AOwner  : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                      //Destroy a Classe
@@ -582,23 +586,59 @@ Begin
   End;
 End;
 
+Procedure TRESTServicePooler.EchoPooler(ServerMethodsClass : TComponent;
+                                        AContext           : TIdContext;
+                                        Var Pooler,
+                                            MyIP           : String);
+Var
+ I : Integer;
+Begin
+ If ServerMethodsClass <> Nil Then
+  Begin
+   For I := 0 To ServerMethodsClass.ComponentCount -1 Do
+    Begin
+     If ServerMethodsClass.Components[i] is TRESTDWPoolerDB Then
+      Begin
+       If Pooler = Format('%s.%s', [ServerMethodsClass.ClassName, ServerMethodsClass.Components[i].Name]) Then
+        Begin
+         MyIP := AContext.Connection.Socket.Binding.IP;
+         Break;
+        End;
+      End;
+    End;
+  End;
+End;
+
 Function TRESTServicePooler.ServiceMethods(BaseObject   : TComponent;
+                                           AContext     : TIdContext;
                                            UrlMethod    : String;
                                            Var DWParams : TDWParams;
                                            Var JSONStr  : String) : Boolean;
 Var
  vResult,
- vUrlMethod : String;
- PoolerList : TStringList;
+ vResultIP,
+ vUrlMethod   :  String;
+ PoolerList   :  TStringList;
 Begin
- Result     := False;
- vUrlMethod := UpperCase(UrlMethod);
- If vUrlMethod = UpperCase('EchoPooler') Then
+ Result       := False;
+ vUrlMethod   := UpperCase(UrlMethod);
+ If vUrlMethod = UpperCase('GetPoolerList') Then
   Begin
-   Result   := True;
+   Result     := True;
    GetPoolerList(BaseObject, vResult);
    DWParams.ItemsString['Result'].SetValue(vResult);
-   JSONStr  := '{"MESSAGE":"OK","RESULT":"OK"}';
+   JSONStr    := TReplyOK;
+  End
+ Else If vUrlMethod = UpperCase('EchoPooler') Then
+  Begin
+   vResult    := DWParams.ItemsString['Pooler'].Value;
+   EchoPooler(BaseObject, AContext, vResult, vResultIP);
+   DWParams.ItemsString['Result'].SetValue(vResultIP);
+   Result     := vResultIP <> '';
+   If Result Then
+    JSONStr    := TReplyOK
+   Else
+    JSONStr    := TReplyNOK;
   End;
 End;
 
@@ -830,7 +870,7 @@ Begin
           End;
          If vTempServerMethods <> Nil Then
           Begin
-           If Not ServiceMethods(TComponent(vTempServerMethods), UrlMethod, DWParams, JSONStr) Then
+           If Not ServiceMethods(TComponent(vTempServerMethods), AContext, UrlMethod, DWParams, JSONStr) Then
             Begin
              If UpperCase(Copy (Cmd, 1, 3)) = 'GET' Then
               Begin

@@ -102,7 +102,7 @@ Type
   vAutoCheckData       : TAutoCheckData;             //Autocheck de Conexão
   vTimeOut             : Integer;
   VEncondig            : TEncodeSelect;              //Enconding se usar CORS usar UTF8 - Alexandre Abade
-  vContentex           : String ;                    //RestContexto - Alexandre Abade
+  vContentex           : String;                    //RestContexto - Alexandre Abade
   vStrsTrim,
   vStrsEmpty2Null,
   vStrsTrim2Len        : Boolean;
@@ -131,7 +131,8 @@ Type
                                Var Params       : TParams;
                                Var Error        : Boolean;
                                Var MessageError : String) : Integer;
-  Function GetStateDB : Boolean;
+  Function  GetStateDB : Boolean;
+  Procedure SetMyIp(Value : String);
  Public
   Function    GetRestPoolers : TStringList;          //Retorna a Lista de DataSet Sources do Pooler
   Constructor Create(AOwner  : TComponent);Override; //Cria o Componente
@@ -144,7 +145,7 @@ Type
   Property OnBeforeConnect    : TOnEventBeforeConnection Read vOnBeforeConnection Write vOnBeforeConnection; //Evento antes de Connectar o Database
   Property Active             : Boolean                  Read vConnected          Write SetConnection;      //Seta o Estado da Conexão
   Property Compression        : Boolean                  Read vCompression        Write vCompression;       //Compressão de Dados
-  Property MyIP               : String                   Read vMyIP;
+  Property MyIP               : String                   Read vMyIP               Write SetMyIp;
   Property Login              : String                   Read vLogin              Write vLogin;             //Login do Usuário caso haja autenticação
   Property Password           : String                   Read vPassword           Write vPassword;          //Senha do Usuário caso haja autenticação
   Property Proxy              : Boolean                  Read vProxy              Write vProxy;             //Diz se tem servidor Proxy
@@ -1147,18 +1148,16 @@ End;
 
 Function TRESTDWDataBase.GetRestPoolers : TStringList;
 Var
- I                 : Integer;
- vTempList         : TStringList;
- vDSRConnection    : TRESTClientPooler;
+ vTempList   : TStringList;
+ vConnection : TDWPoolerMethodClient;
+ I           : Integer;
 Begin
-{
- SetConnectionOptions(vDSRConnection);
- vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
- vRESTConnectionDB.Compression := vCompression;
- vRESTConnectionDB.Encoding    := GetEncoding(VEncondig);
-  Result           := TStringList.Create;
+ vConnection      := TDWPoolerMethodClient.Create(Nil);
+ vConnection.Host := vRestWebService;
+ vConnection.Port := vPoolerPort;
+ Result := TStringList.Create;
  Try
-  vTempList        := vRESTConnectionDB.PoolersDataSet(vRestModule, '', vTimeOut, vLogin, vPassword);
+  vTempList := vConnection.GetPoolerList(vRestModule, vTimeOut, vLogin, vPassword);
   Try
     For I := 0 To vTempList.Count -1 do
      Result.Add(vTempList[I]);
@@ -1170,14 +1169,10 @@ Begin
  Except
   On E : Exception do
    Begin
-    vDSRConnection.SessionID := '';
     if Assigned(vOnEventConnection) then
      vOnEventConnection(False, E.Message);
    End;
  End;
- vDSRConnection.Free;
- vRESTConnectionDB.Free;
-}
 End;
 
 Function TRESTDWDataBase.GetStateDB: Boolean;
@@ -1199,13 +1194,14 @@ End;
 Constructor TRESTDWDataBase.Create(AOwner : TComponent);
 Begin
  Inherited;
- vLogin                    := '';
+ vLogin                    := 'testserver';
  vMyIP                     := '0.0.0.0';
+ vRestWebService           := '127.0.0.1';
  vCompression              := True;
  vPassword                 := vLogin;
- vRestModule               := 'TServerMethods1';
- vRestPooler               := vPassword;
- vPoolerPort               := 8081;
+ vRestModule               := '';
+ vRestPooler               := '';
+ vPoolerPort               := 8082;
  vProxy                    := False;
  vProxyOptions             := TProxyOptions.Create;
  vAutoCheckData            := TAutoCheckData.Create;
@@ -1255,7 +1251,7 @@ Begin
  vConnection  := TDWPoolerMethodClient.Create(Nil);
  Try
   vPoolerList.Clear;
-  vPoolerList.Assign(vConnection.EchoPooler(vPoolerPrefix, 3000, vLogin, vPassword));
+  vPoolerList.Assign(vConnection.GetPoolerList(vPoolerPrefix, 3000, vLogin, vPassword));
   Result      := True;
  Except
  End;
@@ -1264,23 +1260,20 @@ End;
 
 Function  TRESTDWDataBase.TryConnect : Boolean;
 Var
- vTempSend,
- vTempResult       : String;
- vDSRConnection    : TRESTClientPooler;
+ vTempSend   : String;
+ vConnection : TDWPoolerMethodClient;
 Begin
- If vRestPooler = '' Then
-  vTempSend := 'ping'
- Else
-  vTempSend := vRestPooler;
-{
- SetConnectionOptions(vDSRConnection);
- vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
- vRESTConnectionDB.Encoding := GetEncoding(VEncondig);
+ Result       := False;
+ vConnection  := TDWPoolerMethodClient.Create(Nil);
  Try
-  vTempResult := vRESTConnectionDB.EchoPooler(vTempSend, vRestModule, '', vTimeOut, vLogin, vPassword);
-  vMyIP       := vTempResult;
+  vTempSend   := vConnection.EchoPooler(vRestURL, vRestPooler, vTimeOut, vLogin, vPassword);
+  Result      := Trim(vTempSend) <> '';
+  If Result Then
+   vMyIP       := vTempSend
+  Else
+   vMyIP       := '';
   If csDesigning in ComponentState Then
-   If Trim(vTempResult) = '' Then Raise Exception.Create(PChar('Error : ' + #13 + 'Authentication Error...'));
+   If Not Result Then Raise Exception.Create(PChar('Error : ' + #13 + 'Authentication Error...'));
   If Trim(vMyIP) = '' Then
    If Assigned(vOnEventConnection) Then
     vOnEventConnection(False, 'Authentication Error...');
@@ -1289,15 +1282,11 @@ Begin
    Begin
     If csDesigning in ComponentState Then
      Raise Exception.Create(PChar(E.Message));
-    vDSRConnection.SessionID := '';
     if Assigned(vOnEventConnection) then
      vOnEventConnection(False, E.Message);
    End;
  End;
- Result      := Trim(vTempResult) <> '';
- vDSRConnection.Free;
- vRESTConnectionDB.Free;
-}
+ vConnection.Free;
 End;
 
 Procedure TRESTDWDataBase.SetConnection(Value : Boolean);
@@ -2321,5 +2310,10 @@ procedure TRESTDWStoredProc.SetDataBase(const Value: TRESTDWDataBase);
 begin
  vRESTDataBase := Value;
 end;
+
+Procedure TRESTDWDataBase.SetMyIp(Value: String);
+Begin
+
+End;
 
 end.
