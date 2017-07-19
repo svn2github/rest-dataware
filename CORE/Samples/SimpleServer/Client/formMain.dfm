@@ -1115,6 +1115,17 @@ object Form2: TForm2
     Left = 216
     Top = 88
   end
+  object RESTDWClientSQL1: TRESTDWClientSQL
+    MasterCascadeDelete = True
+    DataCache = False
+    Params = <>
+    DataBase = RESTDWDataBase1
+    SQL.Strings = (
+      'select * from employee')
+    CacheUpdateRecords = True
+    Left = 320
+    Top = 160
+  end
   object RESTDWDataBase1: TRESTDWDataBase
     Active = False
     Compression = True
@@ -1125,7 +1136,6 @@ object Form2: TForm2
     PoolerService = '127.0.0.1'
     PoolerPort = 8082
     PoolerName = 'TServerMethodDM.RESTDWPoolerDB1'
-    RestModule = 'TServerMethods1'
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
     RequestTimeOut = 10000
@@ -1133,7 +1143,7 @@ object Form2: TForm2
     StrsTrim = False
     StrsEmpty2Null = False
     StrsTrim2Len = True
-    Left = 272
-    Top = 192
+    Left = 264
+    Top = 176
   end
 end

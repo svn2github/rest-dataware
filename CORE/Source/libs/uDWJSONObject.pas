@@ -94,12 +94,13 @@ Type
   Destructor  Destroy;Override;
   Procedure   FromJSON(JSON : String);
   Function    ToJSON        : String;
-  Procedure   CopyFrom(JSONParam:TJSONParam );
+  Procedure   CopyFrom(JSONParam : TJSONParam);
   Function    Value : String;
   Procedure   SetValue(aValue : String; Encode : Boolean = True);
   Procedure   LoadFromStream (Stream       : TMemoryStream;
                               Encode       : Boolean = True);
   Procedure   SaveToStream   (Stream       : TMemoryStream);
+  Procedure   LoadFromParam  (Param        : TParam);
   Property    ObjectDirection             : TObjectDirection Read vObjectDirection Write vObjectDirection;
   Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
   Property    ParamName                   : String           Read vParamName       Write SetParamName;
@@ -905,6 +906,30 @@ Begin
                      ovFixedWideChar, ovDate, ovTime,
                      ovDateTime]  Then
   Result := '"' + bValue + '"';
+End;
+
+Procedure TJSONParam.LoadFromParam(Param : TParam);
+Var
+ MemoryStream : TMemoryStream;
+Begin
+ If Param.DataType in [ftString, ftWideString, ftFixedChar] Then
+  SetValue(Param.AsString, True)
+ Else If Param.DataType in [{$IFNDEF FPC}{$if CompilerVersion > 21}ftExtended,{$IFEND}{$ENDIF}
+                            ftFloat, ftCurrency, ftFMTBcd,  ftBCD] Then
+  SetValue(Param.AsString, True)
+ Else If Param.DataType in [ftWideString, ftBytes, ftVarBytes, ftBlob, ftMemo,
+                            ftGraphic,    ftFmtMemo,     ftOraBlob, ftOraClob] Then
+  Begin
+   MemoryStream := TMemoryStream.Create;
+   Try
+    MemoryStream.CopyFrom(Param.AsStream, Param.AsStream.Size);
+    LoadFromStream(MemoryStream, True);
+   Finally
+    MemoryStream.Free;
+   End;
+  End
+ Else If Param.DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] Then
+  SetValue(Param.AsString, True);
 End;
 
 procedure TJSONParam.LoadFromStream(Stream: TMemoryStream; Encode: Boolean);

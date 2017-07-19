@@ -434,43 +434,59 @@ Type
   Property    PoolerOffMessage : String        Read vMessagePoolerOff Write vMessagePoolerOff;
 End;
 
-Procedure doUnGZIP(Input, gZipped : TMemoryStream);//helper function
-Procedure doGZIP  (Input, gZipped : TMemoryStream);//helper function
+{$IFNDEF FPC}
+ {$if CompilerVersion > 21}
+  Function GetDWParams(Params : TParams; Encondig : TEncodeSelect) : TDWParams;
+ {$ELSE}
+  Function GetDWParams(Params : TParams) : TDWParams;
+ {$IFEND}
+{$ELSE}
+ Function GetDWParams(Params : TParams) : TDWParams;
+{$ENDIF}
 
 implementation
 
-Procedure doGZIP(Input, gZipped : TMemoryStream);//helper function
-{
-Const
- GZIP = 31;//very important because gzip is a linux zip format
+{$IFNDEF FPC}
+ {$if CompilerVersion > 21}
+  Function GetDWParams(Params : TParams; Encondig : TEncodeSelect) : TDWParams;
+ {$ELSE}
+  Function GetDWParams(Params : TParams) : TDWParams;
+ {$IFEND}
+{$ELSE}
+ Function GetDWParams(Params : TParams) : TDWParams;
+{$ENDIF}
 Var
- CompactadorGZip : TZCompressionStream;
-}
+ I         : Integer;
+ JSONParam : TJSONParam;
 Begin
- {
- Input.Position   := 0;
- CompactadorGZip  := TZCompressionStream.Create(gZipped, zcMax, GZIP);
- CompactadorGZip.CopyFrom(Input, Input.Size);
- CompactadorGZip.Free;
- gZipped.Position := 0;
- }
-End;
-
-Procedure doUnGZIP(Input, gZipped : TMemoryStream);//helper function
-{
-Const
- GZIP = 31;//very important because gzip is a linux zip format
-Var
- CompactadorGZip : TZDecompressionStream;
-}
-Begin
- {
- Input.Position   := 0;
- CompactadorGZip  := TZDecompressionStream.Create(Input, GZIP);
- gZipped.CopyFrom(CompactadorGZip, CompactadorGZip.Size);
- CompactadorGZip.Free;
- gZipped.Position := 0;
- }
+ Result := Nil;
+ If Params <> Nil Then
+  Begin
+   If Params.Count > 0 Then
+    Begin
+     Result := TDWParams.Create;
+     {$IFNDEF FPC}
+      {$if CompilerVersion > 21}
+       Result.Encoding := GetEncoding(Encondig);
+      {$IFEND}
+     {$ENDIF}
+     For I := 0 To Params.Count -1 Do
+      Begin
+       {$IFNDEF FPC}
+        {$if CompilerVersion > 21}
+         JSONParam         := TJSONParam.Create(Result.Encoding);
+        {$ELSE}
+         JSONParam         := TJSONParam.Create;
+        {$IFEND}
+       {$ELSE}
+        JSONParam         := TJSONParam.Create;
+       {$ENDIF}
+       JSONParam.ParamName := Params[I].Name;
+       JSONParam.LoadFromParam(Params[I]);
+       Result.Add(JSONParam);
+      End;
+    End;
+  End;
 End;
 
 Procedure TAutoCheckData.Assign(Source: TPersistent);
@@ -588,10 +604,10 @@ Begin
 End;
 
 Function TRESTDWPoolerDB.ExecuteCommand(SQL              : String;
-                                      Params           : TDWParams;
-                                      Var Error        : Boolean;
-                                      Var MessageError : String;
-                                      Execute          : Boolean = False) : TJSONValue;
+                                        Params           : TDWParams;
+                                        Var Error        : Boolean;
+                                        Var MessageError : String;
+                                        Execute          : Boolean = False) : TJSONValue;
 Begin
  Result := Nil;
  If vRESTDriver <> Nil Then
@@ -994,16 +1010,9 @@ Function TRESTDWDataBase.ExecuteCommand(Var SQL          : TStringList;
                                         Var Error        : Boolean;
                                         Var MessageError : String;
                                         Execute          : Boolean = False) : TJSONValue;
-{
 Var
- vDSRConnection    : TRESTClientPooler;
- vRESTConnectionDB : TSMPoolerMethodClient;
- oJsonObject       : TJSONObject;
- Original,
- gZIPStream        : TMemoryStream;
- MemTable          : TDataset;
+ vRESTConnectionDB : TDWPoolerMethodClient;
  LDataSetList      : TJSONValue;
- vTempWriter       : TJSONValueWriter;
  Function GetLineSQL(Value : TStringList) : String;
  Var
   I : Integer;
@@ -1029,63 +1038,37 @@ Var
       Params[I].DataType := ftString;
     End;
  End;
-}
 Begin
-{
  Result := Nil;
  if vRestPooler = '' then
   Exit;
- SetConnectionOptions(vDSRConnection);
  ParseParams;
- vRESTConnectionDB := TSMPoolerMethodClient.Create(vDSRConnection, True);
+ vRESTConnectionDB             := TDWPoolerMethodClient.Create(Nil);
+ vRESTConnectionDB.Host        := vRestWebService;
+ vRESTConnectionDB.Port        := vPoolerPort;
  vRESTConnectionDB.Compression := vCompression;
- vRESTConnectionDB.Encoding    := GetEncoding(VEncondig);
+ vRESTConnectionDB.Encoding    := VEncondig;
  Try
   If Params.Count > 0 Then
-   oJsonObject := vRESTConnectionDB.ExecuteCommandJSON(vRestPooler,
-                                                       vRestModule, GetLineSQL(SQL),
-                                                       Params, Error,
-                                                       MessageError, Execute, '', vTimeOut, vLogin, vPassword)
+   LDataSetList := vRESTConnectionDB.ExecuteCommandJSON(vRestPooler,
+                                                        vRestModule, GetLineSQL(SQL),
+                                                        GetDWParams(Params, vEncondig), Error,
+                                                        MessageError, Execute, vTimeOut, vLogin, vPassword)
   Else
-   oJsonObject := vRESTConnectionDB.ExecuteCommandPureJSON(vRestPooler,
-                                                           vRestModule,
-                                                           GetLineSQL(SQL), Error,
-                                                           MessageError, Execute, '', vTimeOut, vLogin, vPassword);
-  Result := TJSONValue.Create;
-  If (oJsonObject <> Nil) Then
+   LDataSetList := vRESTConnectionDB.ExecuteCommandPureJSON(vRestPooler,
+                                                            vRestModule,
+                                                            GetLineSQL(SQL), Error,
+                                                            MessageError, Execute, vTimeOut, vLogin, vPassword);
+  If (LDataSetList <> Nil) Then
    Begin
-}
-//    If (Trim(oJsonObject.ToString) <> '{}') And
-{
-       (Trim(oJsonObject.ToString) <> '')   Then
+    Result := TJSONValue.Create;
+    If (Trim(LDataSetList.ToJSON) <> '{}') And
+       (Trim(LDataSetList.Value) <> '')   Then
      Begin
-      If vCompression Then
-       Begin
-        Original     := TMemoryStream.Create;
-        gZIPStream   := TMemoryStream.Create;
-        MemTable     := TDataset.Create(Nil);
-        LDataSetList := TJSONValue.Create;
-        vTempWriter       := TJSONValueWriter.Create(Result);
-        Try
-         TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, LDataSetList);
-         Assert(TJSONValueReader.GetListCount(LDataSetList) = 1);
-         MemTable.AppendData(TJSONValueReader.GetListValue(LDataSetList, 0));
-         MemTable.First;
-         TBlobField(MemTable.FieldByName('compress')).SaveToStream(Original);
-         MemTable.Close;
-         Original.Position := 0;
-         doUnGZIP(Original, gZIPStream);
-         MemTable.LoadFromStream(gZIPStream);
-         vTempWriter.ListAdd(Result, MemTable);
-        Finally
-         Original.Free;
-         gZIPStream.Free;
-         vTempWriter.Free;
-         LDataSetList.Free;
-        End;
-       End
-      Else
-       TFDJSONInterceptor.JSONObjectToDataSets(oJsonObject, Result);
+      Try
+       Result.LoadFromJSON(LDataSetList.ToJSON);
+      Finally
+      End;
      End;
    End;
   If Assigned(vOnEventConnection) Then
@@ -1093,14 +1076,12 @@ Begin
  Except
   On E : Exception do
    Begin
-    vDSRConnection.SessionID := '';
     if Assigned(vOnEventConnection) then
      vOnEventConnection(False, E.Message);
    End;
  End;
- vDSRConnection.Free;
+ LDataSetList.Free;
  vRESTConnectionDB.Free;
-}
 End;
 
 Procedure TRESTDWDataBase.ExecuteProcedure(ProcName         : String;
@@ -1249,6 +1230,8 @@ Var
 Begin
  Result       := False;
  vConnection  := TDWPoolerMethodClient.Create(Nil);
+ vConnection.Host := vRestWebService;
+ vConnection.Port := vPoolerPort;
  Try
   vPoolerList.Clear;
   vPoolerList.Assign(vConnection.GetPoolerList(vPoolerPrefix, 3000, vLogin, vPassword));
@@ -2177,7 +2160,6 @@ Begin
  Result := False;
  LDataSetList := nil;
  Self.Close;
-{
  If Assigned(vRESTDataBase) Then
   Begin
    Try
@@ -2185,16 +2167,11 @@ Begin
     If (LDataSetList <> Nil) And (Not (vError)) Then
      Begin
       vTempTable := TDataset.Create(Nil);
-      vTempTable.UpdateOptions.CountUpdatedRecords := False;
+//      vTempTable.UpdateOptions.CountUpdatedRecords := False;
       Try
-       Assert(TJSONValueReader.GetListCount(LDataSetList) = 1);
-       vTempTable.AppendData(TJSONValueReader.GetListValue(LDataSetList, 0));
+       LDataSetList.WriteToDataset(dtFull, LDataSetList.ToJSON, vTempTable);
        CloneDefinitions(vTempTable, Self);
-       If LDataSetList <> Nil Then
-        Begin
-         AppendData(TJSONValueReader.GetListValue(LDataSetList, 0));
-         Result := True;
-        End;
+       Result := True;
       Except
       End;
       vTempTable.Free;
@@ -2218,7 +2195,6 @@ Begin
   End
  Else
   Raise Exception.Create(PChar('Empty Database Property'));
- }
 End;
 
 Procedure TRESTDWClientSQL.SaveToStream(var Stream: TMemoryStream);

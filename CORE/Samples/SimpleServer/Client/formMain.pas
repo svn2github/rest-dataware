@@ -38,6 +38,7 @@ type
     Button1: TButton;
     CheckBox1: TCheckBox;
     RESTClientPooler1: TRESTClientPooler;
+    RESTDWClientSQL1: TRESTDWClientSQL;
     RESTDWDataBase1: TRESTDWDataBase;
     procedure btnGetClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -72,6 +73,7 @@ Begin
  RESTClientPooler1.UserName := edUserNameDW.Text;
  RESTClientPooler1.Password := edPasswordDW.Text;
  RESTClientPooler1.DataCompression := CheckBox1.Checked;
+ RESTDWClientSQL1.Open;
  SQL := mComando.Text;
  DWParams            := TDWParams.Create;
  DWParams.Encoding   := GetEncoding(RESTClientPooler1.Encoding);
