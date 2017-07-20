@@ -79,6 +79,7 @@ Type
  Function  ZCompressStr  (Const s     : String;
                           Var Value   : String) : Boolean;
  Function  BytesArrToString(aValue : tIdBytes) : String;
+ Function ObjectValueToFieldType  (TypeObject      : TObjectValue)     : TFieldType;
 
 
 implementation
@@ -319,6 +320,64 @@ Begin
   toParam    : Result := 'toParam';
   toVariable : Result := 'toVariable';
   toObject   : Result := 'toObject';
+ End;
+End;
+
+Function ObjectValueToFieldType(TypeObject : TObjectValue) : TFieldType;
+Begin
+ Result := ftUnknown;
+ Case TypeObject Of
+  ovString          : Result := ftString;
+  ovSmallint        : Result := ftSmallint;
+  ovInteger         : Result := ftInteger;
+  ovWord            : Result := ftWord;
+  ovBoolean         : Result := ftBoolean;
+  ovFloat           : Result := ftFloat;
+  ovCurrency        : Result := ftCurrency;
+  ovBCD             : Result := ftBCD;
+  ovDate            : Result := ftDate;
+  ovTime            : Result := ftTime;
+  ovDateTime        : Result := ftDateTime;
+  ovBytes           : Result := ftBytes;
+  ovVarBytes        : Result := ftVarBytes;
+  ovAutoInc         : Result := ftAutoInc;
+  ovBlob            : Result := ftBlob;
+  ovMemo            : Result := ftMemo;
+  ovGraphic         : Result := ftGraphic;
+  ovFmtMemo         : Result := ftFmtMemo;
+  ovParadoxOle      : Result := ftParadoxOle;
+  ovDBaseOle        : Result := ftDBaseOle;
+  ovTypedBinary     : Result := ftTypedBinary;
+  ovCursor          : Result := ftCursor;
+  ovFixedChar       : Result := ftFixedChar;
+  ovWideString      : Result := ftWideString;
+  ovLargeint        : Result := ftLargeint;
+  ovADT             : Result := ftADT;
+  ovArray           : Result := ftArray;
+  ovReference       : Result := ftReference;
+  ovDataSet         : Result := ftDataSet;
+  ovOraBlob         : Result := ftOraBlob;
+  ovOraClob         : Result := ftOraClob;
+  ovVariant         : Result := ftVariant;
+  ovInterface       : Result := ftInterface;
+  ovIDispatch       : Result := ftIDispatch;
+  ovGuid            : Result := ftGuid;
+  ovTimeStamp       : Result := ftTimeStamp;
+  ovFMTBcd          : Result := ftFMTBcd;
+  ovFixedWideChar   : Result := ftFixedWideChar;
+  ovWideMemo        : Result := ftWideMemo;
+  ovOraTimeStamp    : Result := ftOraTimeStamp;
+  ovOraInterval     : Result := ftOraInterval;
+  ovLongWord        : Result := ftLongWord;
+  ovShortint        : Result := ftShortint;
+  ovByte            : Result := ftByte;
+  ovExtended        : Result := ftExtended;
+  ovConnection      : Result := ftConnection;
+  ovParams          : Result := ftParams;
+  ovStream          : Result := ftStream;
+  ovTimeStampOffset : Result := ftTimeStampOffset;
+  ovObject          : Result := ftObject;
+  ovSingle          : Result := ftSingle;
  End;
 End;
 

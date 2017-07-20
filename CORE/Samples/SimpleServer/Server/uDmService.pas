@@ -9,12 +9,13 @@ uses
   FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.Phys.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.FB, Data.DB,
   FireDAC.Comp.Client, FireDAC.Comp.UI, FireDAC.Phys.IBBase,
-  FireDAC.Stan.StorageJSON, uRESTDWPoolerDB;
+  FireDAC.Stan.StorageJSON, RestDWServerFormU, uRESTDWPoolerDB, uRestDWDriverFD;
 
 
 type
   TServerMethodDM = class(TServerMethodDataModule)
     RESTDWPoolerDB1: TRESTDWPoolerDB;
+    RESTDWDriverFD1: TRESTDWDriverFD;
     procedure ServerMethodDataModuleReplyEvent(SendType: TSendEvent;
       Context: string; var Params: TDWParams; var Result: string);
     procedure ServerMethodDataModuleCreate(Sender: TObject);
@@ -31,8 +32,6 @@ var
 implementation
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
-
-uses RestDWServerFormU;
 
 {$R *.dfm}
 

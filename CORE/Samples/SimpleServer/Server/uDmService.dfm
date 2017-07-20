@@ -5,6 +5,7 @@ object ServerMethodDM: TServerMethodDM
   Height = 255
   Width = 366
   object RESTDWPoolerDB1: TRESTDWPoolerDB
+    RESTDriver = RESTDWDriverFD1
     Compression = True
     Encoding = esUtf8
     StrsTrim = False
@@ -13,6 +14,11 @@ object ServerMethodDM: TServerMethodDM
     Active = True
     PoolerOffMessage = 'RESTPooler not active.'
     Left = 152
-    Top = 96
+    Top = 64
+  end
+  object RESTDWDriverFD1: TRESTDWDriverFD
+    Connection = RestDWForm.Server_FDConnection
+    Left = 152
+    Top = 120
   end
 end
