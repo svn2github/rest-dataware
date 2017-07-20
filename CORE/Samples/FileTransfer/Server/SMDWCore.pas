@@ -2,7 +2,7 @@ unit SMDWCore;
 
 interface
 
-uses Windows, SysUtils, Classes, uDWConsts, uDWJSONTools, System.JSON, uDWJSONObject,
+uses Windows, SysUtils, Classes, uDWConsts, uDWConstsData, uDWJSONTools, System.JSON, uDWJSONObject,
      Winapi.ShellAPI, TypInfo, Dialogs, ServerUtils, SysTypes;
 
 Type
@@ -18,9 +18,10 @@ Type
    { Public declarations }
    Constructor Create    (aOwner : TComponent); Override;
    Destructor  Destroy; Override;
-   Function    ReplyEvent(SendType   : TSendEvent;
-                          Context    : String;
-                          Var Params : TDWParams) : String;Override;
+   Procedure   vReplyEvent(SendType   : TSendEvent;
+                           Context    : String;
+                           Var Params : TDWParams;
+                           Var Result : String);
   End;
 {$METHODINFO OFF}
 
@@ -28,9 +29,10 @@ implementation
 
 uses StrUtils, uPrincipal;
 
-Function TSMDWCore.ReplyEvent(SendType   : TSendEvent;
-                              Context    : String;
-                              Var Params : TDWParams) : String;
+Procedure TSMDWCore.vReplyEvent(SendType   : TSendEvent;
+                                Context    : String;
+                                Var Params : TDWParams;
+                                Var Result : String);
 Var
  JSONObject : TJSONObject;
 Begin
