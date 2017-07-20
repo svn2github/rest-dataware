@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics,
   Controls, Forms, Dialogs, StdCtrls, uDWJSONObject, System.JSON,
-  DB, memds, Grids, DBGrids, uRESTDWBase, FireDAC.Stan.Intf,
+  DB, Grids, DBGrids, uRESTDWBase, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet, uDWJSONTools,
   FireDAC.Comp.Client, uDWConsts, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
