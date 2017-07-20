@@ -202,13 +202,14 @@ Var
  JSONParam        : TJSONParam;
  DWParams         : TDWParams;
 Begin
- RESTClientPooler                := TRESTClientPooler.Create(Nil);
- RESTClientPooler.Host           := Host;
- RESTClientPooler.Port           := Port;
- RESTClientPooler.UserName       := UserName;
- RESTClientPooler.Password       := Password;
- RESTClientPooler.RequestTimeOut := TimeOut;
- RESTClientPooler.UrlPath        := Method_Prefix;
+ RESTClientPooler                 := TRESTClientPooler.Create(Nil);
+ RESTClientPooler.Host            := Host;
+ RESTClientPooler.Port            := Port;
+ RESTClientPooler.UserName        := UserName;
+ RESTClientPooler.Password        := Password;
+ RESTClientPooler.RequestTimeOut  := TimeOut;
+ RESTClientPooler.UrlPath         := Method_Prefix;
+ RESTClientPooler.DataCompression := Compression;
  {$IFNDEF FPC}
   {$if CompilerVersion > 21}
    RESTClientPooler.Encoding     := vEncoding;
@@ -216,6 +217,8 @@ Begin
   {$ELSE}
    JSONParam                     := TJSONParam.Create;
   {$IFEND}
+ {$ELSE}
+  JSONParam                     := TJSONParam.Create;
  {$ENDIF}
  JSONParam.ParamName             := 'Result';
  JSONParam.ObjectDirection       := odOUT;
@@ -278,6 +281,8 @@ Begin
   {$ELSE}
    JSONParam                     := TJSONParam.Create;
   {$IFEND}
+ {$ELSE}
+  JSONParam                     := TJSONParam.Create;
  {$ENDIF}
  JSONParam.ParamName             := 'Pooler';
  JSONParam.ObjectDirection       := odIn;
@@ -290,6 +295,8 @@ Begin
   {$ELSE}
    JSONParam                     := TJSONParam.Create;
   {$IFEND}
+ {$ELSE}
+  JSONParam                     := TJSONParam.Create;
  {$ENDIF}
  JSONParam.ParamName             := 'Result';
  JSONParam.ObjectDirection       := odOUT;
@@ -337,14 +344,15 @@ Var
  JSONParam        : TJSONParam;
  DWParams         : TDWParams;
 Begin
- RESTClientPooler                := TRESTClientPooler.Create(Nil);
- RESTClientPooler.Host           := Host;
- RESTClientPooler.Port           := Port;
- RESTClientPooler.UserName       := UserName;
- RESTClientPooler.Password       := Password;
- RESTClientPooler.RequestTimeOut := TimeOut;
- RESTClientPooler.UrlPath        := Method_Prefix;
- DWParams                        := TDWParams.Create;
+ RESTClientPooler                 := TRESTClientPooler.Create(Nil);
+ RESTClientPooler.Host            := Host;
+ RESTClientPooler.Port            := Port;
+ RESTClientPooler.UserName        := UserName;
+ RESTClientPooler.Password        := Password;
+ RESTClientPooler.RequestTimeOut  := TimeOut;
+ RESTClientPooler.UrlPath         := Method_Prefix;
+ RESTClientPooler.DataCompression := vCompression;
+ DWParams                         := TDWParams.Create;
  {$IFNDEF FPC}
   {$if CompilerVersion > 21}
    RESTClientPooler.Encoding     := vEncoding;

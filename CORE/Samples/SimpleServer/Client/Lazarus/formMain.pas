@@ -5,7 +5,7 @@ interface
 uses
   {$IFDEF WINDOWS}Windows, {$ELSE}LCLType, {$ENDIF}Messages, SysUtils, Variants, Classes, Graphics,
   Controls, Forms, Dialogs, StdCtrls, fpjson, jsonparser,
-  DB, BufDataset, memds, Grids, DBGrids, ExtCtrls, uRESTDWBase,
+  DB, BufDataset, memds, Grids, DBGrids, ExtCtrls, uRESTDWBase, uRESTDWPoolerDB,
   uDWConsts, uDWJSONObject, uDWJSONTools;
 
 type
@@ -65,6 +65,7 @@ Var
  DWParams  : TDWParams;
  JSONParam : TJSONParam;
 Begin
+ RESTDWDataBase1.active:=true;
  {$IFDEF UNIX}
  DateSeparator    := '/';
  ShortDateFormat  := 'd/m/yy';

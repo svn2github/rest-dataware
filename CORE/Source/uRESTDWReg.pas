@@ -5,12 +5,12 @@ interface
 uses
   Windows,
   {$IFDEF FPC}
-   LResources, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
+   LResources, Classes, propedits, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
   {$ELSE}
    {$if CompilerVersion > 21}
-    DMForm, DesignEditors, DesignIntf, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
+    DMForm, DesignEditors, DesignIntf, ExptIntf, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
    {$ELSE}
-    ToolsApi, DMForm, DesignEditors, DesignIntf, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
+    ToolsApi, DMForm, DesignEditors, DesignIntf, ExptIntf, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
    {$IFEND}
   {$ENDIF}
 
@@ -68,7 +68,8 @@ End;
 Procedure Register;
 Begin
  {$IFNDEF FPC}
-  RegisterCustomModule(TServerMethodDataModule,      TDataModuleCustomModule);
+  RegisterCustomModule(TServerMethodDataModule,      TCustomModule); //TDataModuleCustomModule);
+//  RegisterLibraryExpert(TServerMethodDataModule.Create);
  {$ENDIF}
  RegisterComponents('REST Dataware - Service',     [TRESTServicePooler, TRESTClientPooler]);
  RegisterComponents('REST Dataware - CORE - DB',   [TRESTDWPoolerDB, TRESTDWDataBase, TRESTDWClientSQL, TRESTDWStoredProc, TRESTDWPoolerList]);

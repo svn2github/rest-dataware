@@ -922,7 +922,15 @@ Begin
   Begin
    MemoryStream := TMemoryStream.Create;
    Try
-    MemoryStream.CopyFrom(Param.AsStream, Param.AsStream.Size);
+    {$IFDEF FPC}
+     Param.SetData(MemoryStream);
+    {$ELSE}
+     {$if CompilerVersion > 21}
+      MemoryStream.CopyFrom(Param.AsStream, Param.AsStream.Size);
+     {$ELSE}
+      Param.SetData(MemoryStream);
+     {$IFEND}
+    {$ENDIF}
     LoadFromStream(MemoryStream, True);
    Finally
     MemoryStream.Free;

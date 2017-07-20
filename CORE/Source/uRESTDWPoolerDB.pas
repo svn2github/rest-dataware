@@ -1047,13 +1047,20 @@ Begin
  vRESTConnectionDB.Host        := vRestWebService;
  vRESTConnectionDB.Port        := vPoolerPort;
  vRESTConnectionDB.Compression := vCompression;
- vRESTConnectionDB.Encoding    := VEncondig;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+  vRESTConnectionDB.Encoding    := VEncondig;
+  {$IFEND}
+ {$ENDIF}
  Try
   If Params.Count > 0 Then
    LDataSetList := vRESTConnectionDB.ExecuteCommandJSON(vRestPooler,
                                                         vRestModule, GetLineSQL(SQL),
-                                                        GetDWParams(Params, vEncondig), Error,
-                                                        MessageError, Execute, vTimeOut, vLogin, vPassword)
+                                                        GetDWParams(Params{$IFNDEF FPC}
+                                                                    {$if CompilerVersion > 21}
+                                                                     , vEncondig
+                                                                    {$IFEND}
+                                                                    {$ENDIF}), Error, MessageError, Execute, vTimeOut, vLogin, vPassword)
   Else
    LDataSetList := vRESTConnectionDB.ExecuteCommandPureJSON(vRestPooler,
                                                             vRestModule,
@@ -1133,9 +1140,10 @@ Var
  vConnection : TDWPoolerMethodClient;
  I           : Integer;
 Begin
- vConnection      := TDWPoolerMethodClient.Create(Nil);
- vConnection.Host := vRestWebService;
- vConnection.Port := vPoolerPort;
+ vConnection             := TDWPoolerMethodClient.Create(Nil);
+ vConnection.Host        := vRestWebService;
+ vConnection.Port        := vPoolerPort;
+ vConnection.Compression := vCompression;
  Result := TStringList.Create;
  Try
   vTempList := vConnection.GetPoolerList(vRestModule, vTimeOut, vLogin, vPassword);
@@ -1258,11 +1266,16 @@ Begin
   If csDesigning in ComponentState Then
    If Not Result Then Raise Exception.Create(PChar('Error : ' + #13 + 'Authentication Error...'));
   If Trim(vMyIP) = '' Then
-   If Assigned(vOnEventConnection) Then
-    vOnEventConnection(False, 'Authentication Error...');
+   Begin
+    Result      := False;
+    If Assigned(vOnEventConnection) Then
+     vOnEventConnection(False, 'Authentication Error...');
+   End;
  Except
   On E : Exception do
    Begin
+    Result      := False;
+    vMyIP       := '';
     If csDesigning in ComponentState Then
      Raise Exception.Create(PChar(E.Message));
     if Assigned(vOnEventConnection) then

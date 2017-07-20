@@ -3,11 +3,10 @@ unit uDmClientDW;
 interface
 
 uses
-  System.SysUtils, System.Classes, uRESTDWPoolerDB;
+  SysUtils, Classes, uRESTDWPoolerDB, uDWDatamodule;
 
 type
-  TDataModule2 = class(TDataModule)
-    RESTDWDataBase1: TRESTDWDataBase;
+  TDataModule2 = class(TServerMethodDataModule)
   private
     { Private declarations }
   public
