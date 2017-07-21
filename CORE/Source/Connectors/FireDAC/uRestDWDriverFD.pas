@@ -158,8 +158,20 @@ Begin
           Else
            Begin
             If vTempQuery.Params[A].DataType in [ftUnknown] Then
-             vTempQuery.Params[A].DataType := ObjectValueToFieldType(Params[I].ObjectValue);
-            vTempQuery.Params[A].Value    := Params[I].Value;
+             vTempQuery.Params[A].DataType := ObjectValueToFieldType(Params[I].ObjectValue)
+            Else If vTempQuery.Params[A].DataType in [ftInteger, ftSmallInt, ftWord,
+                                                      ftFloat,   ftCurrency, ftBCD] Then
+             Begin
+              If Trim(Params[I].Value) <> '' Then
+               Begin
+                If vTempQuery.Params[A].DataType = ftSmallInt Then
+                 vTempQuery.Params[A].AsSmallInt := StrToInt(Params[I].Value)
+                Else
+                 vTempQuery.Params[A].AsInteger  := StrToInt(Params[I].Value);
+               End;
+             End
+            Else
+             vTempQuery.Params[A].Value    := Params[I].Value;
            End;
          End;
        End

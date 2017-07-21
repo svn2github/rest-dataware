@@ -1103,9 +1103,10 @@ object Form2: TForm2
     DataCache = False
     Params = <
       item
-        DataType = ftUnknown
+        DataType = ftSmallint
         Name = 'emp_no'
         ParamType = ptUnknown
+        Value = '2'
       end>
     DataBase = RESTDWDataBase1
     SQL.Strings = (
@@ -1116,8 +1117,9 @@ object Form2: TForm2
     Top = 240
   end
   object RESTDWDataBase1: TRESTDWDataBase
-    Active = False
+    Active = True
     Compression = True
+    MyIP = '127.0.0.1'
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
