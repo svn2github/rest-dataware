@@ -54,7 +54,7 @@ implementation
 procedure TForm2.Button1Click(Sender: TObject);
 Begin
  RESTDWClientSQL1.Close;
- RESTDWClientSQL1.Open;
+ RESTDWClientSQL1.Active := True;
 End;
 
 end.

@@ -1099,6 +1099,7 @@ object Form2: TForm2
   object RESTDWClientSQL1: TRESTDWClientSQL
     FieldDefs = <>
     MasterCascadeDelete = True
+    Inactive = False
     DataCache = False
     Params = <>
     DataBase = RESTDWDataBase1
