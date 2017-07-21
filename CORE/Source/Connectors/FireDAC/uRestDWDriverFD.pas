@@ -63,7 +63,7 @@ Procedure Register;
 
 implementation
 
-{ TRESTDriver }
+Uses uDWJSONTools;
 
 {$IFDEF MSWINDOWS}
 Procedure Register;
@@ -172,7 +172,7 @@ Begin
     vTempQuery.Active := True;
     Result := TJSONValue.Create;
     Try
-     Result.LoadFromDataset('', vTempQuery, True);
+     Result.LoadFromDataset('RESULTDATA', vTempQuery, False);
     Finally
     End;
    End
@@ -190,6 +190,9 @@ Begin
     End;
     Error := True;
     MessageError := E.Message;
+    Result := TJSONValue.Create;
+    Result.Encoded := True;
+    Result.SetValue(GetPairJSON('NOK', MessageError));
    End;
  End;
  vTempQuery.Free;
@@ -335,7 +338,7 @@ Begin
     vTempQuery.Open;
     Result         := TJSONValue.Create;
     Try
-     Result.LoadFromDataset('', vTempQuery, False);
+     Result.LoadFromDataset('RESULTDATA', vTempQuery, False);
      Error         := False;
     Finally
     End;

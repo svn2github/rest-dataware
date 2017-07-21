@@ -1075,16 +1075,25 @@ Begin
     Result := TJSONValue.Create;
     Error  := Trim(MessageError) <> '';
     If (Trim(LDataSetList.ToJSON) <> '{}') And
-       (Trim(LDataSetList.Value) <> '')   Then
+       (Trim(LDataSetList.Value) <> '')    And
+       (Not (Error))                       Then
      Begin
       Try
        Result.LoadFromJSON(LDataSetList.ToJSON);
       Finally
       End;
      End;
+    If (Not (Error)) Then
+     Begin
+      If Assigned(vOnEventConnection) Then
+       vOnEventConnection(True, 'ExecuteCommand Ok');
+     End;
+   End
+  Else
+   Begin
+    If Assigned(vOnEventConnection) Then
+     vOnEventConnection(False, MessageError);
    End;
-  If Assigned(vOnEventConnection) Then
-   vOnEventConnection(True, 'ExecuteCommand Ok');
  Except
   On E : Exception do
    Begin

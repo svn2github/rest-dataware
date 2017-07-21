@@ -273,7 +273,6 @@ Var
  SendParams    : TIdMultipartFormDataStream;
  ss            : TStringStream;
  thd : TThread_Request;
-
  Procedure SetData(InputValue     : String;
                    Var ParamsData : TDWParams;
                    Var ResultJSON : String);
@@ -661,7 +660,9 @@ Var
  vError,
  vExecute  : Boolean;
  vMessageError : String;
+ DWParamsD     : TDWParams;
 Begin
+ DWParamsD := Nil;
  If ServerMethodsClass <> Nil Then
   Begin
    For I := 0 To ServerMethodsClass.ComponentCount -1 Do
@@ -674,10 +675,23 @@ Begin
           Begin
            vExecute := StringToBoolean(DWParams.ItemsString['Execute'].Value);
            vError   := StringToBoolean(DWParams.ItemsString['Error'].Value);
-           vTempJSON := TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver.ExecuteCommand(DWParams.ItemsString['SQL'].Value,
-                                                                                                    vError,
-                                                                                                    vMessageError,
-                                                                                                    vExecute);
+           If DWParams.ItemsString['Params'] <> Nil Then
+            Begin
+             DWParamsD := TDWParams.Create;
+             DWParamsD.FromJSON(DWParams.ItemsString['Params'].Value);
+            End;
+           If DWParamsD <> Nil Then
+            Begin
+             vTempJSON := TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver.ExecuteCommand(DWParams.ItemsString['SQL'].Value,
+                                                                                                      DWParamsD, vError, vMessageError,
+                                                                                                      vExecute);
+             DWParamsD.Free;
+            End
+           Else
+            vTempJSON := TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver.ExecuteCommand(DWParams.ItemsString['SQL'].Value,
+                                                                                                     vError,
+                                                                                                     vMessageError,
+                                                                                                     vExecute);
            DWParams.ItemsString['MessageError'].SetValue(vMessageError);
            DWParams.ItemsString['Error'].SetValue(BooleanToString(vError));
            DWParams.ItemsString['Result'].SetValue(vTempJSON.ToJSON);
@@ -724,7 +738,7 @@ Begin
   Begin
    vResult    := DWParams.ItemsString['Pooler'].Value;
    ExecuteCommandPureJSON(BaseObject, vResult, DWParams);
-   Result     := DWParams.ItemsString['Result'].Value <> '';
+   Result     := (DWParams.ItemsString['Result'].Value <> '');
    If Result Then
     JSONStr    := TReplyOK
    Else
@@ -734,7 +748,7 @@ Begin
   Begin
    vResult    := DWParams.ItemsString['Pooler'].Value;
    ExecuteCommandJSON(BaseObject, vResult, DWParams);
-   Result     := DWParams.ItemsString['Result'].Value <> '';
+   Result     := (DWParams.ItemsString['Result'].Value <> '');
    If Result Then
     JSONStr    := TReplyOK
    Else

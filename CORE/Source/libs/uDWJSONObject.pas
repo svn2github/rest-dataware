@@ -220,8 +220,36 @@ Begin
 End;
 
 Procedure TDWParams.FromJSON(JSON : String);
+Var
+ JsonParser    : TJsonParser;
+ bJsonValue    : TJsonObject;
+ JSONParam     : TJSONParam;
+ vTempValue    : String;
+ I             : Integer;
 Begin
+ ClearJsonParser(JsonParser);
+ Try
+  ParseJson(JsonParser, JSON);
+  For I := 0 To Length(JsonParser.Output.Objects) -1 Do
+   Begin
+    bJsonValue       := JsonParser.Output.Objects[I];
+    {$IFNDEF FPC}
+     {$if CompilerVersion > 21}
+      JSONParam                     := TJSONParam.Create(GetEncoding(TEncodeSelect(vEncoding)));
+     {$ELSE}
+      JSONParam                     := TJSONParam.Create;
+     {$IFEND}
+    {$ENDIF}
+    JSONParam.ParamName             := bJsonValue[4].Key;
+    JSONParam.ObjectDirection       := GetDirectionName(bJsonValue[1].Value.Value);
+    JSONParam.ObjectValue           := GetValueType    (bJsonValue[3].Value.Value);
+    JSONParam.Encoded               := GetBooleanFromString(bJsonValue[2].Value.Value);
+    JSONParam.SetValue(bJsonValue[4].Value.Value);
+    Add(JSONParam);
+   End;
+ Finally
 
+ End;
 End;
 
 Procedure TDWParams.CopyFrom(DWParams:TDWParams );
@@ -923,8 +951,8 @@ Begin
  If Param.DataType in [ftString, ftWideString, ftFixedChar] Then
   SetValue(Param.AsString, True)
  Else If Param.DataType in [{$IFNDEF FPC}{$if CompilerVersion > 21}ftExtended,{$IFEND}{$ENDIF}
-                            ftFloat, ftCurrency, ftFMTBcd,  ftBCD] Then
-  SetValue(Param.AsString, True)
+                            ftInteger, ftSmallInt, ftFloat, ftCurrency, ftFMTBcd,  ftBCD] Then
+  SetValue(Param.AsString, False)
  Else If Param.DataType in [ftWideString, ftBytes, ftVarBytes, ftBlob, ftMemo,
                             ftGraphic,    ftFmtMemo,     ftOraBlob, ftOraClob] Then
   Begin
@@ -946,6 +974,7 @@ Begin
   End
  Else If Param.DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] Then
   SetValue(Param.AsString, True);
+ vObjectValue := FieldTypeToObjectValue(Param.DataType);
 End;
 
 procedure TJSONParam.LoadFromStream(Stream: TMemoryStream; Encode: Boolean);
