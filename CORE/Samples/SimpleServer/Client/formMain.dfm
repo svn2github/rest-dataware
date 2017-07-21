@@ -1101,10 +1101,17 @@ object Form2: TForm2
     MasterCascadeDelete = True
     Inactive = False
     DataCache = False
-    Params = <>
+    Params = <
+      item
+        DataType = ftString
+        Name = 'emp_no'
+        ParamType = ptUnknown
+        Value = '0'
+      end>
     DataBase = RESTDWDataBase1
     SQL.Strings = (
-      'select * from employee')
+      'select * from employee'
+      'where emp_no = :emp_no')
     CacheUpdateRecords = True
     Left = 320
     Top = 160

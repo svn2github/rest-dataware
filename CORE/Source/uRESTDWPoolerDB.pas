@@ -1063,7 +1063,8 @@ Begin
                                                                     {$if CompilerVersion > 21}
                                                                      , vEncondig
                                                                     {$IFEND}
-                                                                    {$ENDIF}), Error, MessageError, Execute, vTimeOut, vLogin, vPassword)
+                                                                    {$ENDIF}), Error,
+                                                        MessageError, Execute, vTimeOut, vLogin, vPassword)
   Else
    LDataSetList := vRESTConnectionDB.ExecuteCommandPureJSON(vRestPooler,
                                                             vRestModule,
@@ -1380,7 +1381,7 @@ Begin
  vReadData                         := False;
  vCascadeDelete                    := True;
  vSQL                              := TStringList.Create;
-// vSQL.OnChange                     := OnChangingSQL;
+ vSQL.OnChange                     := OnChangingSQL;
  vParams                           := TParams.Create;
 // vCacheDataDB                      := Self.CloneSource;
  vUpdateTableName                  := '';
@@ -2243,8 +2244,7 @@ Procedure TRESTDWClientSQL.SetActiveDB(Value : Boolean);
 Begin
  If vInactive then
   Begin
-   If Value Then
-    TJvMemoryData(Self).Active := True;
+   TJvMemoryData(Self).Active := Value;
    Exit;
   End;
  vActive := False;

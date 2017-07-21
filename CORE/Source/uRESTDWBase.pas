@@ -156,6 +156,9 @@ Type
   Procedure ExecuteCommandPureJSON(ServerMethodsClass : TComponent;
                                    Var Pooler         : String;
                                    Var DWParams       : TDWParams);
+  Procedure ExecuteCommandJSON(ServerMethodsClass     : TComponent;
+                               Var Pooler             : String;
+                               Var DWParams           : TDWParams);
  Public
   Constructor Create(AOwner  : TComponent);Override; //Cria o Componente
   Destructor  Destroy;Override;                      //Destroy a Classe
@@ -649,6 +652,43 @@ Begin
   End;
 End;
 
+Procedure TRESTServicePooler.ExecuteCommandJSON(ServerMethodsClass : TComponent;
+                                                Var Pooler         : String;
+                                                Var DWParams       : TDWParams);
+Var
+ I         : Integer;
+ vTempJSON : TJSONValue;
+ vError,
+ vExecute  : Boolean;
+ vMessageError : String;
+Begin
+ If ServerMethodsClass <> Nil Then
+  Begin
+   For I := 0 To ServerMethodsClass.ComponentCount -1 Do
+    Begin
+     If ServerMethodsClass.Components[i] is TRESTDWPoolerDB Then
+      Begin
+       If UpperCase(Pooler) = UpperCase(Format('%s.%s', [ServerMethodsClass.ClassName, ServerMethodsClass.Components[i].Name])) then
+        Begin
+         If TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver <> Nil Then
+          Begin
+           vExecute := StringToBoolean(DWParams.ItemsString['Execute'].Value);
+           vError   := StringToBoolean(DWParams.ItemsString['Error'].Value);
+           vTempJSON := TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver.ExecuteCommand(DWParams.ItemsString['SQL'].Value,
+                                                                                                    vError,
+                                                                                                    vMessageError,
+                                                                                                    vExecute);
+           DWParams.ItemsString['MessageError'].SetValue(vMessageError);
+           DWParams.ItemsString['Error'].SetValue(BooleanToString(vError));
+           DWParams.ItemsString['Result'].SetValue(vTempJSON.ToJSON);
+          End;
+         Break;
+        End;
+      End;
+    End;
+  End;
+End;
+
 Function TRESTServicePooler.ServiceMethods(BaseObject   : TComponent;
                                            AContext     : TIdContext;
                                            UrlMethod    : String;
@@ -684,6 +724,16 @@ Begin
   Begin
    vResult    := DWParams.ItemsString['Pooler'].Value;
    ExecuteCommandPureJSON(BaseObject, vResult, DWParams);
+   Result     := DWParams.ItemsString['Result'].Value <> '';
+   If Result Then
+    JSONStr    := TReplyOK
+   Else
+    JSONStr    := TReplyNOK;
+  End
+ Else If vUrlMethod = UpperCase('ExecuteCommandJSON') Then
+  Begin
+   vResult    := DWParams.ItemsString['Pooler'].Value;
+   ExecuteCommandJSON(BaseObject, vResult, DWParams);
    Result     := DWParams.ItemsString['Result'].Value <> '';
    If Result Then
     JSONStr    := TReplyOK
