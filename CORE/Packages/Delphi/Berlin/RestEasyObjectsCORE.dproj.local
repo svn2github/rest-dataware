@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>2017/06/20 20:49:31.000.324,C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Package1.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\RestEasyObjectsCORE.dproj</Transaction>
-    <Transaction>2017/06/20 20:51:46.000.630,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWBase.pas</Transaction>
-    <Transaction>2017/06/20 21:13:38.000.307,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWReg.pas</Transaction>
+    <Transaction>2017/06/20 20:49:31.000.324,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\RestEasyObjectsCORE.dproj=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Package1.dproj</Transaction>
+    <Transaction>2017/06/20 20:51:46.000.630,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWBase.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas</Transaction>
+    <Transaction>2017/06/20 21:13:38.000.307,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\uRESTDWReg.pas=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Packages\Delphi\Unit1.pas</Transaction>
   </Transactions>
 	<ActiveMobileDevice>
 		<NoProfile iOSSimulator="iPhone5"/>
@@ -42,6 +42,9 @@
     <File Path="IndyCore.dcp"/>
     <File Path="IndyProtocols.dcp"/>
     <File Path="IndySystem.dcp"/>
+    <File Path="Jcl.dcp"/>
+    <File Path="JvCore.dcp"/>
+    <File Path="JvDB.dcp"/>
     <File Path="rtl.dcp"/>
     <File Path="soaprtl.dcp"/>
   </ProjectSortOrder>

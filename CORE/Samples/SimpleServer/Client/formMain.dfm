@@ -1079,28 +1079,9 @@ object Form2: TForm2
   end
   object DataSource1: TDataSource
     AutoEdit = False
-    DataSet = MemDataset1
-    Left = 128
-    Top = 88
-  end
-  object MemDataset1: TFDMemTable
-    FieldDefs = <
-      item
-        Name = 'Alunos'
-        DataType = ftString
-        Size = 100
-      end>
-    IndexDefs = <>
-    FetchOptions.AssignedValues = [evMode]
-    FetchOptions.Mode = fmAll
-    ResourceOptions.AssignedValues = [rvSilentMode]
-    ResourceOptions.SilentMode = True
-    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
-    UpdateOptions.CheckRequired = False
-    UpdateOptions.AutoCommitUpdates = True
-    StoreDefs = True
-    Left = 80
-    Top = 88
+    DataSet = RESTDWClientSQL1
+    Left = 368
+    Top = 160
   end
   object RESTClientPooler1: TRESTClientPooler
     DataCompression = True
@@ -1116,6 +1097,7 @@ object Form2: TForm2
     Top = 88
   end
   object RESTDWClientSQL1: TRESTDWClientSQL
+    FieldDefs = <>
     MasterCascadeDelete = True
     DataCache = False
     Params = <>
@@ -1127,8 +1109,9 @@ object Form2: TForm2
     Top = 160
   end
   object RESTDWDataBase1: TRESTDWDataBase
-    Active = False
+    Active = True
     Compression = True
+    MyIP = '127.0.0.1'
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
@@ -1139,11 +1122,11 @@ object Form2: TForm2
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
     RequestTimeOut = 10000
-    Encoding = esUtf8
+    Encoding = esASCII
     StrsTrim = False
     StrsEmpty2Null = False
     StrsTrim2Len = True
-    Left = 264
-    Top = 176
+    Left = 248
+    Top = 184
   end
 end

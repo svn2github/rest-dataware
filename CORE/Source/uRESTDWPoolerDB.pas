@@ -13,7 +13,8 @@ interface
 
 uses SysUtils,  Classes,      uDWJSONObject,
      DB,        uRESTDWBase,  uDWPoolerMethod,
-     uRESTDWMasterDetailData, uDWConsts, uDWConstsData, SyncObjs;
+     uRESTDWMasterDetailData, uDWConsts, uDWConstsData, SyncObjs,
+     JvMemoryDataset;
 
 Type
  TOnEventDB               = Procedure (DataSet : TDataSet)         of Object;
@@ -165,7 +166,7 @@ Type
 End;
 
 Type
- TRESTDWClientSQL   = Class(TDataset)                    //Classe com as funcionalidades de um DBQuery
+ TRESTDWClientSQL   = Class(TJvMemoryData)                    //Classe com as funcionalidades de um DBQuery
  Private
   vOldStatus           : TDatasetState;
   vDataSource          : TDataSource;
@@ -180,6 +181,7 @@ Type
   vActualRec           : Integer;
   vMasterFields,
   vUpdateTableName     : String;                          //Tabela que será feito Update no Servidor se for usada Reflexão de Dados
+  vInactive,
   vCacheUpdateRecords,
   vReadData,
   vCascadeDelete,
@@ -199,8 +201,8 @@ Type
   FieldDefsUPD         : TFieldDefs;
   vMasterDataSet       : TRESTDWClientSQL;
   vMasterDetailList    : TMasterDetailList;               //DataSet MasterDetail Function
-  Procedure CloneDefinitions(Source : TDataset;
-                             aSelf  : TRESTDWClientSQL);    //Fields em Definições
+  Procedure CloneDefinitions(Source : TJvMemoryData;
+                             aSelf  : TJvMemoryData);     //Fields em Definições
   Procedure OnChangingSQL(Sender: TObject);               //Quando Altera o SQL da Lista
   Procedure SetActiveDB(Value : Boolean);                 //Seta o Estado do Dataset
   Procedure SetSQL(Value : TStringList);                  //Seta o SQL a ser usado
@@ -245,8 +247,9 @@ Type
   Procedure   Refresh;
   Procedure   SaveToStream(Var Stream : TMemoryStream);
  Published
-  Property MasterDataSet       : TRESTDWClientSQL      Read vMasterDataSet            Write SetMasterDataSet;
+  Property MasterDataSet       : TRESTDWClientSQL    Read vMasterDataSet            Write SetMasterDataSet;
   Property MasterCascadeDelete : Boolean             Read vCascadeDelete            Write vCascadeDelete;
+  Property Inactive            : Boolean             Read vInactive                 Write vInactive;
   Property AfterDelete         : TDataSetNotifyEvent Read vOnAfterDelete            Write vOnAfterDelete;
   Property OnGetDataError      : TOnEventConnection  Read vOnGetDataError           Write vOnGetDataError;         //Recebe os Erros de ExecSQL ou de GetData
   Property AfterScroll         : TOnAfterScroll      Read vOnAfterScroll            Write vOnAfterScroll;
@@ -1069,6 +1072,7 @@ Begin
   If (LDataSetList <> Nil) Then
    Begin
     Result := TJSONValue.Create;
+    Error  := Trim(MessageError) <> '';
     If (Trim(LDataSetList.ToJSON) <> '{}') And
        (Trim(LDataSetList.Value) <> '')   Then
      Begin
@@ -1422,6 +1426,7 @@ Begin
  If vCacheDataDB <> Nil Then
   vCacheDataDB.Free;
  OldData.Free;
+ vInactive := False;
  Inherited;
 End;
 
@@ -1982,8 +1987,11 @@ End;
 
 Procedure TRESTDWClientSQL.Open;
 Begin
- If Not vActive Then
-  SetActiveDB(True);
+ If Not vInactive Then
+  Begin
+   If Not vActive Then
+    SetActiveDB(True);
+  End;
  If vActive Then
   Inherited Open;
 End;
@@ -2002,7 +2010,7 @@ End;
 
 Procedure TRESTDWClientSQL.OpenCursor(InfoQuery: Boolean);
 Begin
- If Not vBeforeClone Then
+ If Not (vBeforeClone) And Not(vInactive) Then
   Begin
    vBeforeClone := True;
    If vRESTDataBase <> Nil Then
@@ -2043,7 +2051,26 @@ Begin
       End;
     End
    Else
-    Raise Exception.Create(PChar('Empty Database Property'));  
+    Raise Exception.Create(PChar('Empty Database Property'));
+  End
+ Else If vInactive Then
+  Begin
+   Try
+    Inherited OpenCursor(InfoQuery);
+   Except
+    On E : Exception do
+     Begin
+      If csDesigning in ComponentState Then
+       Raise Exception.Create(PChar(E.Message))
+      Else
+       Begin
+        If Assigned(vOnGetDataError) Then
+         vOnGetDataError(False, E.Message)
+        Else
+         Raise Exception.Create(PChar(E.Message));
+       End;
+     End;
+   End;
   End;
 End;
 
@@ -2081,7 +2108,7 @@ Begin
  Inherited Loaded;
 End;
 
-Procedure TRESTDWClientSQL.CloneDefinitions(Source : TDataset; aSelf : TRESTDWClientSQL);
+Procedure TRESTDWClientSQL.CloneDefinitions(Source : TJvMemoryData; aSelf : TJvMemoryData);
 Var
  I, A : Integer;
 Begin
@@ -2106,7 +2133,7 @@ Begin
     End;
   End;
  If aSelf.FieldDefs.Count > 0 Then
-  aSelf.CreateDataSet;
+  aSelf.Open;
 End;
 
 Procedure TRESTDWClientSQL.PrepareDetailsNew;
@@ -2168,7 +2195,6 @@ Var
  LDataSetList  : TJSONValue;
  vError        : Boolean;
  vMessageError : String;
- vTempTable    : TDataset;
 Begin
  Result := False;
  LDataSetList := nil;
@@ -2179,15 +2205,13 @@ Begin
     LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, False);
     If (LDataSetList <> Nil) And (Not (vError)) Then
      Begin
-      vTempTable := TDataset.Create(Nil);
 //      vTempTable.UpdateOptions.CountUpdatedRecords := False;
       Try
-       LDataSetList.WriteToDataset(dtFull, LDataSetList.ToJSON, vTempTable);
-       CloneDefinitions(vTempTable, Self);
+       Self.FieldDefs.Clear;
+       LDataSetList.WriteToDataset(dtFull, LDataSetList.ToJSON, Self);
        Result := True;
       Except
       End;
-      vTempTable.Free;
      End;
    Except
     If LDataSetList <> Nil Then
@@ -2217,6 +2241,12 @@ End;
 
 Procedure TRESTDWClientSQL.SetActiveDB(Value : Boolean);
 Begin
+ If vInactive then
+  Begin
+   If Value Then
+    TJvMemoryData(Self).Active := True;
+   Exit;
+  End;
  vActive := False;
  If (vRESTDataBase <> Nil) And (Value) Then
   Begin

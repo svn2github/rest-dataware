@@ -333,9 +333,10 @@ Begin
   If Not Execute Then
    Begin
     vTempQuery.Open;
-    Result := TJSONValue.Create;
+    Result         := TJSONValue.Create;
     Try
-     Result.LoadFromDataset('', vTempQuery, True);
+     Result.LoadFromDataset('', vTempQuery, False);
+     Error         := False;
     Finally
     End;
    End
@@ -343,6 +344,7 @@ Begin
    Begin
     vTempQuery.ExecSQL;
     vFDConnection.CommitRetaining;
+    Error         := False;
    End;
  Except
   On E : Exception do

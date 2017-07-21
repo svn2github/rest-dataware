@@ -62,6 +62,8 @@ Type
  Function GetValueType            (ObjectValue     : String)           : TObjectValue;    Overload;
  Function GetFieldType            (FieldType       : TFieldType)       : String;          Overload;
  Function GetFieldType            (FieldType       : String)           : TFieldType;      Overload;
+ Function StringToBoolean         (aValue          : String)           : Boolean;
+ Function BooleanToString         (aValue          : Boolean)          : String;
  Function StringFloat             (aValue          : String)           : String;
  Function GenerateStringFromStream(Stream          : TStream{$IFNDEF FPC}{$if CompilerVersion > 21};AEncoding : TEncoding{$IFEND}{$ENDIF}) : String;Overload;
  //Function GenerateStringFromStream(Stream          : TStream)   : String;Overload;
@@ -300,6 +302,20 @@ Begin
  BinToHex(@idBytes, PChar(Result), Length(idBytes));
 End;
 }
+
+Function StringToBoolean(aValue : String) : Boolean;
+Begin
+ Result := lowercase(trim(aValue)) = 'true';
+End;
+
+Function BooleanToString(aValue : Boolean) : String;
+Begin
+ If aValue Then
+  Result := 'true'
+ Else
+  Result := 'false';
+End;
+
 Function StringFloat     (aValue          : String)           : String;
 Begin
  Result := StringReplace(aValue, '.', '', [rfReplaceall]);

@@ -3,14 +3,14 @@ unit uDWJSONObject;
 interface
 
 Uses {$IFDEF FPC}
-      SysUtils, Classes, uDWJSONTools, IdGlobal, DB, uDWJSONParser, uDWConsts, uDWConstsData;
+      SysUtils, Classes, uDWJSONTools, IdGlobal, DB, uDWJSONParser, uDWConsts, uDWConstsData, JvMemoryDataset;
      {$ELSE}
       {$if CompilerVersion > 21} // Delphi 2010 pra cima
        System.SysUtils, System.Classes, uDWJSONTools, uDWConsts, uDWJSONParser, uDWConstsData,
-       IdGlobal,        System.Rtti,    Data.DB,      Soap.EncdDecd, Datasnap.DbClient;
+       IdGlobal,        System.Rtti,    Data.DB,      Soap.EncdDecd, Datasnap.DbClient, JvMemoryDataset;
       {$ELSE}
        SysUtils, Classes, uDWJSONTools, uDWJSONParser,
-       IdGlobal,        DB,     EncdDecd, DbClient, uDWConsts, uDWConstsData;
+       IdGlobal,        DB,     EncdDecd, DbClient, uDWConsts, uDWConstsData, JvMemoryDataset;
       {$IFEND}
      {$ENDIF}
 
@@ -141,6 +141,8 @@ Type
 End;
 
 implementation
+
+uses uRESTDWPoolerDB;
 
 Function CopyValue(Var bValue : String) : String;
 Var
@@ -645,7 +647,7 @@ begin
       FieldDef.Name      := bJsonValue[0].Value.Value;
       FieldDef.DataType  := GetFieldType(bJsonValue[1].Value.Value);
       FieldDef.Required  := UpperCase(bJsonValue[3].Value.Value) = 'S';
-      If Not(FieldDef.DataType In [ftFloat, ftCurrency, ftBCD, ftFMTBcd]) Then
+      If Not(FieldDef.DataType In [ftSmallInt, ftInteger, ftFloat, ftCurrency, ftBCD, ftFMTBcd]) Then
        Begin
         FieldDef.Size      := StrToInt(bJsonValue[4].Value.Value);
         FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
@@ -655,6 +657,12 @@ begin
      {$IFNDEF FPC}
       If DestDS Is TClientDataset Then
        TClientDataset(DestDS).CreateDataSet
+      Else If DestDS Is TJvMemoryData Then
+       Begin
+        TRESTDWClientSQL(DestDS).Inactive := True;
+        TRESTDWClientSQL(DestDS).Active   := True;
+        TRESTDWClientSQL(DestDS).Inactive := False;
+       End
       Else
        DestDS.Open;
      {$ELSE}
@@ -668,12 +676,12 @@ begin
       bJsonValue         := JsonParser.Output.Objects[J];
       If UpperCase(bJsonValue[2].Value.Value) = 'S' Then
        Begin
-        Field := DestDS.FieldByName(bJsonValue[0].Value.Value);
+        Field := TJvMemoryData(DestDS).FindField(bJsonValue[0].Value.Value);
         If Field <> Nil Then
          Field.ProviderFlags := [pfInUpdate, pfInWhere, pfInKey];
        End;
      End;
-    For J := 3 To Length(JsonParser.Output.Arrays) -1 Do
+    For J := 5 To Length(JsonParser.Output.Arrays) -1 Do
      Begin
       JsonArray  := JsonParser.Output.Arrays[J];
       DestDS.Append;

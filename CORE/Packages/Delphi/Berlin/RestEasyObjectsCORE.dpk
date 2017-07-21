@@ -26,7 +26,7 @@ package RestEasyObjectsCORE;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   rtl,
@@ -36,7 +36,10 @@ requires
   IndySystem,
   IndyProtocols,
   IndyCore,
-  designide;
+  designide,
+  Jcl,
+  JvCore,
+  JvDB;
 
 contains
   uRESTDWBase in '..\..\..\Source\uRESTDWBase.pas',

@@ -35,6 +35,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
         <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <GenDll>true</GenDll>
@@ -54,7 +55,7 @@
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;soaprtl;dbrtl;dsnap;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;soaprtl;dbrtl;dsnap;Jcl;JvCore;JvDB;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -67,10 +68,10 @@
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_AdditionalSwitches>–LUDesignIDE</DCC_AdditionalSwitches>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Build>112</VerInfo_Build>
+        <VerInfo_Build>115</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=$(MSBuildProjectName);FileVersion=1.0.1.112;InternalName=REST Dataware CORE Version;LegalCopyright=REST Dataware CORE Version;LegalTrademarks=REST Dataware;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.1;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=$(MSBuildProjectName);FileVersion=1.0.1.115;InternalName=REST Dataware CORE Version;LegalCopyright=REST Dataware CORE Version;LegalTrademarks=REST Dataware;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.1;Comments=</VerInfo_Keys>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
     </PropertyGroup>
@@ -92,6 +93,9 @@
         <DCCReference Include="IndyProtocols.dcp"/>
         <DCCReference Include="IndyCore.dcp"/>
         <DCCReference Include="designide.dcp"/>
+        <DCCReference Include="Jcl.dcp"/>
+        <DCCReference Include="JvCore.dcp"/>
+        <DCCReference Include="JvDB.dcp"/>
         <DCCReference Include="..\..\..\Source\uRESTDWBase.pas"/>
         <DCCReference Include="..\..\..\Source\uRESTDWMasterDetailData.pas"/>
         <DCCReference Include="..\..\..\Source\uRESTDWPoolerDB.pas"/>
