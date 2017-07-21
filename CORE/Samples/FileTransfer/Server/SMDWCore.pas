@@ -60,6 +60,7 @@ End;
 Constructor TSMDWCore.Create (aOwner : TComponent);
 Begin
  Inherited Create (aOwner);
+ ReplyEvent := vReplyEvent;
 End;
 
 Destructor TSMDWCore.Destroy;
