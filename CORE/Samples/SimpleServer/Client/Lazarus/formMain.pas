@@ -33,7 +33,6 @@ type
     Label8: TLabel;
     mComando: TMemo;
     DataSource1: TDataSource;
-    RESTClientPooler1: TRESTClientPooler;
     RESTDWClientSQL1: TRESTDWClientSQL;
     RESTDWDataBase1: TRESTDWDataBase;
     procedure Button1Click(Sender: TObject);
@@ -61,12 +60,17 @@ procedure TForm2.Button1Click(Sender: TObject);
 Begin
  {$IFDEF UNIX}
  DateSeparator    := '/';
- ShortDateFormat  := 'd/m/yy';
- LongDateFormat   := 'd mmmm yyyy';
+ ShortDateFormat  := 'dd/mm/yyyy';
+ LongDateFormat   := 'dd mmmm yyyy';
  DecimalSeparator := ',';
  CurrencyDecimals := 2;
  {$ENDIF}
- RESTDWClientSQL1.Active:=True;
+ RESTDWDataBase1.PoolerService := eHost.Text;
+ RESTDWDataBase1.PoolerPort    := StrToInt(ePort.Text);
+ RESTDWDataBase1.Login         := edUserNameDW.Text;
+ RESTDWDataBase1.Password      := edPasswordDW.Text;
+ RESTDWDataBase1.Compression   := CheckBox1.Checked;
+ RESTDWClientSQL1.Active       := True;
 End;
 
 end.

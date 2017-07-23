@@ -1082,19 +1082,6 @@ object Form2: TForm2
     left = 160
     top = 328
   end
-  object RESTClientPooler1: TRESTClientPooler
-    DataCompression = False
-    Encoding = esASCII
-    Host = 'localhost'
-    UserName = 'testserver'
-    Password = 'testserver'
-    ProxyOptions.BasicAuthentication = False
-    ProxyOptions.ProxyPort = 0
-    RequestTimeOut = 10000
-    ThreadRequest = False
-    left = 336
-    top = 72
-  end
   object RESTDWDataBase1: TRESTDWDataBase
     Active = True
     Compression = True
@@ -1120,6 +1107,11 @@ object Form2: TForm2
     Active = False
     FieldDefs = <    
       item
+        Name = 'EMP_NO'
+        DataType = ftSmallint
+        Precision = -1
+      end    
+      item
         Name = 'FIRST_NAME'
         DataType = ftString
         Size = 15
@@ -1128,6 +1120,45 @@ object Form2: TForm2
         Name = 'LAST_NAME'
         DataType = ftString
         Size = 20
+      end    
+      item
+        Name = 'PHONE_EXT'
+        DataType = ftString
+        Size = 4
+      end    
+      item
+        Name = 'HIRE_DATE'
+        DataType = ftDateTime
+      end    
+      item
+        Name = 'DEPT_NO'
+        DataType = ftString
+        Size = 3
+      end    
+      item
+        Name = 'JOB_CODE'
+        DataType = ftString
+        Size = 5
+      end    
+      item
+        Name = 'JOB_GRADE'
+        DataType = ftSmallint
+        Precision = -1
+      end    
+      item
+        Name = 'JOB_COUNTRY'
+        DataType = ftString
+        Size = 15
+      end    
+      item
+        Name = 'SALARY'
+        DataType = ftFloat
+        Precision = -1
+      end    
+      item
+        Name = 'FULL_NAME'
+        DataType = ftString
+        Size = 37
       end>
     MasterCascadeDelete = True
     Inactive = False
