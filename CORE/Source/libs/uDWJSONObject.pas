@@ -598,9 +598,10 @@ var
  JsonParser  : TJsonParser;
  bJsonValue  : TJsonObject;
  JsonArray   : TJsonArray;
- J, I        : Integer;
+ A, J, I     : Integer;
  FieldDef    : TFieldDef;
  Field       : TField;
+ vFindFlag   : Boolean;
  vBlobStream : TStringStream;
  ListFields  : TStringList;
  Procedure SetValueA(Field : TField; Value : String);
@@ -664,6 +665,7 @@ var
  End;
 begin
  ClearJsonParser(JsonParser);
+ ListFields  := TStringList.Create;
  Try
   ParseJson(JsonParser, JSONValue);
   If Length(JsonParser.Output.Objects) > 0 Then
@@ -681,7 +683,6 @@ begin
     {$IFNDEF FPC}
      DestDS.FieldDefs.Clear;
     {$ENDIF}
-    ListFields  := TStringList.Create;
     If DestDS.FieldDefs.Count = 0 Then
      Begin
       For J := 1 To Length(JsonParser.Output.Objects) -1 Do
@@ -689,7 +690,6 @@ begin
         bJsonValue         := JsonParser.Output.Objects[J];
         If Trim(bJsonValue[0].Value.Value) <> '' Then
          Begin
-          ListFields.Add(bJsonValue[0].Value.Value);
           If TRESTDWClientSQL(DestDS).FieldDefExist(bJsonValue[0].Value.Value) = Nil Then
            Begin
             FieldDef           := TFieldDef.Create(DestDS.FieldDefs,
@@ -705,15 +705,6 @@ begin
              End;
            End;
          End;
-       End;
-     End
-    Else
-     Begin
-      For J := 1 To Length(JsonParser.Output.Objects) -1 Do
-       Begin
-        bJsonValue         := JsonParser.Output.Objects[J];
-        If Trim(bJsonValue[0].Value.Value) <> '' Then
-         ListFields.Add(bJsonValue[0].Value.Value);
        End;
      End;
     Try
@@ -753,12 +744,33 @@ begin
          Field.ProviderFlags := [pfInUpdate, pfInWhere, pfInKey];
        End;
      End;
+    For A := 0 To DestDS.FieldDefs.Count -1 Do
+     Begin
+      vFindFlag := False;
+      For J := 1 To Length(JsonParser.Output.Objects) -1 Do
+       Begin
+        bJsonValue         := JsonParser.Output.Objects[J];
+        If Trim(bJsonValue[0].Value.Value) <> '' Then
+         Begin
+          vFindFlag := UpperCase(Trim(bJsonValue[0].Value.Value)) = UpperCase(DestDS.FieldDefs[A].Name);
+          If vFindFlag Then
+           Begin
+            ListFields.Add(IntToStr(J -1));
+            Break;
+           End;
+         End;
+       End;
+      If Not vFindFlag Then
+       ListFields.Add('-1');
+     End;
     For J := 5 To Length(JsonParser.Output.Arrays) -1 Do
      Begin
       JsonArray  := JsonParser.Output.Arrays[J];
       DestDS.Append;
       For I := 0 To DestDS.Fields.Count -1 Do
        Begin
+        If StrToInt(ListFields[I]) = -1 Then
+         Continue;
         If DestDS.Fields[I].DataType In [ftMemo, ftGraphic, ftFmtMemo,
                                          ftParadoxOle,      ftDBaseOle,
                                          ftTypedBinary,     ftCursor,
@@ -769,9 +781,9 @@ begin
                                          ,ftParams,         ftStream{$IFEND}{$ENDIF}]  Then
          Begin
           If vEncoded Then
-           vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[FieldIndex(DestDS.Fields[I].FieldName)].Value{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF}))
+           vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[StrToInt(ListFields[I])].Value{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF}))
           Else
-           vBlobStream := TStringStream.Create(JsonArray[FieldIndex(DestDS.Fields[I].FieldName)].Value);
+           vBlobStream := TStringStream.Create(JsonArray[StrToInt(ListFields[I])].Value);
           Try
            vBlobStream.Position := 0;
            DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
@@ -786,21 +798,21 @@ begin
          End
         Else
          Begin
-          If JsonArray[FieldIndex(DestDS.Fields[I].FieldName)].Value <> '' Then
+          If JsonArray[StrToInt(ListFields[I])].Value <> '' Then
            Begin
             If DestDS.Fields[I].DataType in [ftString, ftWideString, ftFixedChar] Then
              Begin
               If vEncoded Then
-               DestDS.Fields[I].AsString := DecodeStrings(JsonArray[FieldIndex(DestDS.Fields[I].FieldName)].Value{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF})
+               DestDS.Fields[I].AsString := DecodeStrings(JsonArray[StrToInt(ListFields[I])].Value{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF})
               Else
-               DestDS.Fields[I].AsString := JsonArray[FieldIndex(DestDS.Fields[I].FieldName)].Value;
+               DestDS.Fields[I].AsString := JsonArray[StrToInt(ListFields[I])].Value;
              End
             Else
              Begin
               {$IFNDEF FPC}
                DestDS.Fields[I].Value := JsonArray[I].Value;
               {$ELSE}
-               SetValueA(DestDS.Fields[I], JsonArray[FieldIndex(DestDS.Fields[I].FieldName)].Value);
+               SetValueA(DestDS.Fields[I], JsonArray[StrToInt(ListFields[I])].Value);
               {$ENDIF}
              End;
            End;
@@ -815,6 +827,7 @@ begin
     Raise Exception.Create('Invalid JSON Data...');
    End;
  Finally
+  ListFields.Free;
   If DestDS.Active Then
    DestDS.First;
   DestDS.EnableControls;
