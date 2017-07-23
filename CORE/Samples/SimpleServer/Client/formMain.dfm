@@ -1083,19 +1083,6 @@ object Form2: TForm2
     Left = 296
     Top = 80
   end
-  object RESTClientPooler1: TRESTClientPooler
-    DataCompression = True
-    Encoding = esASCII
-    Host = 'localhost'
-    UserName = 'testserver'
-    Password = 'testserver'
-    ProxyOptions.BasicAuthentication = False
-    ProxyOptions.ProxyPort = 0
-    RequestTimeOut = 10000
-    ThreadRequest = False
-    Left = 232
-    Top = 80
-  end
   object RESTDWClientSQL1: TRESTDWClientSQL
     FieldDefs = <
       item

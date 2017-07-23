@@ -34,7 +34,6 @@ type
     mComando: TMemo;
     Button1: TButton;
     CheckBox1: TCheckBox;
-    RESTClientPooler1: TRESTClientPooler;
     RESTDWClientSQL1: TRESTDWClientSQL;
     RESTDWDataBase1: TRESTDWDataBase;
     procedure Button1Click(Sender: TObject);
@@ -53,6 +52,13 @@ implementation
 
 procedure TForm2.Button1Click(Sender: TObject);
 Begin
+ RESTDWDataBase1.Close;
+ RESTDWDataBase1.PoolerService := eHost.Text;
+ RESTDWDataBase1.PoolerPort    := StrToInt(ePort.Text);
+ RESTDWDataBase1.Login         := edUserNameDW.Text;
+ RESTDWDataBase1.Password      := edPasswordDW.Text;
+ RESTDWDataBase1.Compression   := CheckBox1.Checked;
+ RESTDWDataBase1.Open;
  RESTDWClientSQL1.Close;
  RESTDWClientSQL1.SQL.Clear;
  RESTDWClientSQL1.SQL.Add(mComando.Text);
