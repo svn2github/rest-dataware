@@ -1077,14 +1077,10 @@ object Form2: TForm2
     TabOrder = 7
   end
   object DataSource1: TDataSource
-    DataSet = MemDataset1
-    left = 176
-    top = 273
-  end
-  object MemDataset1: TMemDataset
-    FieldDefs = <>
-    left = 312
-    top = 265
+    AutoEdit = False
+    DataSet = RESTDWClientSQL1
+    left = 160
+    top = 328
   end
   object RESTClientPooler1: TRESTClientPooler
     DataCompression = False
@@ -1098,5 +1094,51 @@ object Form2: TForm2
     ThreadRequest = False
     left = 336
     top = 72
+  end
+  object RESTDWDataBase1: TRESTDWDataBase
+    Active = True
+    Compression = True
+    MyIP = '127.0.0.1'
+    Login = 'testserver'
+    Password = 'testserver'
+    Proxy = False
+    ProxyOptions.Port = 8888
+    PoolerService = '127.0.0.1'
+    PoolerPort = 8082
+    PoolerName = 'TServerMethodDM.RESTDWPoolerDB1'
+    StateConnection.AutoCheck = False
+    StateConnection.InTime = 1000
+    RequestTimeOut = 10000
+    Encoding = esASCII
+    StrsTrim = False
+    StrsEmpty2Null = False
+    StrsTrim2Len = True
+    left = 344
+    top = 280
+  end
+  object RESTDWClientSQL1: TRESTDWClientSQL
+    Active = False
+    FieldDefs = <    
+      item
+        Name = 'FIRST_NAME'
+        DataType = ftString
+        Size = 15
+      end    
+      item
+        Name = 'LAST_NAME'
+        DataType = ftString
+        Size = 20
+      end>
+    MasterCascadeDelete = True
+    Inactive = False
+    DataCache = False
+    Params = <>
+    DataBase = RESTDWDataBase1
+    SQL.Strings = (
+      'SELECT * FROM EMPLOYEE'
+    )
+    CacheUpdateRecords = True
+    left = 255
+    top = 288
   end
 end

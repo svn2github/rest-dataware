@@ -14,8 +14,11 @@ interface
 uses SysUtils,  Classes,      uDWJSONObject,
      DB,        uRESTDWBase,  uDWPoolerMethod,
      uRESTDWMasterDetailData, uDWConsts, uDWConstsData, SyncObjs,
+     {$IFDEF FPC}
+      memds;
+     {$ELSE}
      JvMemoryDataset;
-
+     {$ENDIF}
 Type
  TOnEventDB               = Procedure (DataSet : TDataSet)         of Object;
  TOnAfterScroll           = Procedure (DataSet : TDataSet)         of Object;
@@ -166,7 +169,11 @@ Type
 End;
 
 Type
- TRESTDWClientSQL   = Class(TJvMemoryData)                    //Classe com as funcionalidades de um DBQuery
+ {$IFDEF FPC}
+  TRESTDWClientSQL   = Class(TMemDataset)                    //Classe com as funcionalidades de um DBQuery
+ {$ELSE}
+  TRESTDWClientSQL   = Class(TJvMemoryData)                    //Classe com as funcionalidades de um DBQuery
+ {$ENDIF}
  Private
   vOldStatus           : TDatasetState;
   vDataSource          : TDataSource;
@@ -201,8 +208,13 @@ Type
   FieldDefsUPD         : TFieldDefs;
   vMasterDataSet       : TRESTDWClientSQL;
   vMasterDetailList    : TMasterDetailList;               //DataSet MasterDetail Function
-  Procedure CloneDefinitions(Source : TJvMemoryData;
-                             aSelf  : TJvMemoryData);     //Fields em Definições
+  {$IFDEF FPC}
+   Procedure CloneDefinitions(Source : TMemDataset;
+                              aSelf  : TMemDataset);      //Fields em Definições
+  {$ELSE}
+   Procedure CloneDefinitions(Source : TJvMemoryData;
+                              aSelf  : TJvMemoryData);    //Fields em Definições
+  {$ENDIF}
   Procedure OnChangingSQL(Sender: TObject);               //Quando Altera o SQL da Lista
   Procedure SetActiveDB(Value : Boolean);                 //Seta o Estado do Dataset
   Procedure SetSQL(Value : TStringList);                  //Seta o SQL a ser usado
@@ -726,7 +738,7 @@ Begin
  vStrsEmpty2Null   := False;
  vStrsTrim2Len     := True;
  vActive           := True;
- vEncoding         := esUtf8;
+ vEncoding         := esASCII;
  vMessagePoolerOff := 'RESTPooler not active.';
 End;
 
@@ -1214,7 +1226,7 @@ Begin
  vAutoCheckData.vInTime    := 1000;
  vTimeOut                  := 10000;
 // vAutoCheckData.vEvent     := CheckConnection;
- VEncondig                 := esUtf8;
+ VEncondig                 := esASCII;
  vContentex                := '';
  vStrsTrim                 := False;
  vStrsEmpty2Null           := False;
@@ -1394,7 +1406,11 @@ Begin
  vReadData                         := False;
  vCascadeDelete                    := True;
  vSQL                              := TStringList.Create;
- vSQL.OnChange                     := OnChangingSQL;
+ {$IFDEF FPC}
+  vSQL.OnChange                     := @OnChangingSQL;
+ {$ELSE}
+  vSQL.OnChange                    := OnChangingSQL;
+ {$ENDIF}
  vParams                           := TParams.Create;
 // vCacheDataDB                      := Self.CloneSource;
  vUpdateTableName                  := '';
@@ -1999,7 +2015,11 @@ End;
 Procedure TRESTDWClientSQL.CreateDataSet;
 Begin
  vCreateDS := True;
- TJvMemoryData(Self).Open;
+ {$IFDEF FPC}
+  TMemDataset(Self).Open;
+ {$ELSE}
+  TJvMemoryData(Self).Open;
+ {$ENDIF}
  vActive   := True;
  vCreateDS := False;
 End;
@@ -2142,7 +2162,11 @@ Begin
  Inherited Loaded;
 End;
 
+{$IFDEF FPC}
+Procedure TRESTDWClientSQL.CloneDefinitions(Source : TMemDataset; aSelf : TMemDataset);
+{$ELSE}
 Procedure TRESTDWClientSQL.CloneDefinitions(Source : TJvMemoryData; aSelf : TJvMemoryData);
+{$ENDIF}
 Var
  I, A : Integer;
 Begin

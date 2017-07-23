@@ -32,13 +32,13 @@ type
     Label7: TLabel;
     Label8: TLabel;
     mComando: TMemo;
-    MemDataset1: TMemDataset;
     DataSource1: TDataSource;
     RESTClientPooler1: TRESTClientPooler;
+    RESTDWClientSQL1: TRESTDWClientSQL;
+    RESTDWDataBase1: TRESTDWDataBase;
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
-    procedure ListAlunos(Value : String);
   public
     { Public declarations }
   end;
@@ -58,14 +58,7 @@ implementation
 { TForm2 }
 
 procedure TForm2.Button1Click(Sender: TObject);
-Var
- lResponse,
- SQL : String;
- JSONValue : TJSONValue;
- DWParams  : TDWParams;
- JSONParam : TJSONParam;
 Begin
- RESTDWDataBase1.active:=true;
  {$IFDEF UNIX}
  DateSeparator    := '/';
  ShortDateFormat  := 'd/m/yy';
@@ -73,47 +66,7 @@ Begin
  DecimalSeparator := ',';
  CurrencyDecimals := 2;
  {$ENDIF}
- RESTClientPooler1.DataCompression := CheckBox1.Checked;
- RESTClientPooler1.Host            := eHost.Text;
- RESTClientPooler1.Port            := StrToInt(ePort.Text);
- RESTClientPooler1.UserName        := edUserNameDW.Text;
- RESTClientPooler1.Password        := edPasswordDW.Text;
- SQL                               := mComando.Text;
- DWParams                          := TDWParams.Create;
- JSONParam                         := TJSONParam.Create;
- JSONParam.ParamName               := 'SQL';
- JSONParam.SetValue(SQL);
- DWParams.Add(JSONParam);
- JSONParam                  := TJSONParam.Create;
- JSONParam.ParamName        := 'TESTPARAM';
- JSONParam.SetValue('');
- DWParams.Add(JSONParam);
- If SQL <> '' Then
-  Begin
-   Try
-    RESTClientPooler1.Host := eHost.Text;
-    RESTClientPooler1.Port := StrToInt(ePort.Text);
-    lResponse := RESTClientPooler1.SendEvent('ConsultaBanco', DWParams);
-    JSONValue := TJSONValue.Create;
-    Try
-     DBGrid1.DataSource := Nil;
-     DBGrid1.Columns.Clear;
-     MemDataset1.Clear;   //corrige bug no TMemDataset
-     JSONValue.WriteToDataset(dtFull, lResponse, MemDataset1);
-     DBGrid1.DataSource := DataSource1;
-    Finally
-     JSONValue.Free;
-    End;
-    Showmessage(Format('Mostrando o Parametro "TESTPARAM" Retornando o valor "%s" do Servidor',
-                       [DWParams.ItemsString['TESTPARAM'].Value]));
-   Except
-   End;
-  End;
+ RESTDWClientSQL1.Active:=True;
 End;
-
-procedure TForm2.ListAlunos(Value: String);
-begin
-
-end;
 
 end.

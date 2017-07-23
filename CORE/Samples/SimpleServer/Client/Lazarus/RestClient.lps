@@ -4,13 +4,13 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="57">
+    <Units Count="58">
       <Unit0>
         <Filename Value="RestClient.lpr"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="19"/>
-        <UsageCount Value="67"/>
+        <UsageCount Value="69"/>
       </Unit0>
       <Unit1>
         <Filename Value="formMain.pas"/>
@@ -19,11 +19,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="60"/>
-        <CursorPos Y="67"/>
-        <UsageCount Value="67"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="54"/>
+        <CursorPos Y="69"/>
+        <UsageCount Value="69"/>
       </Unit1>
       <Unit2>
         <Filename Value="urestrequest.pas"/>
@@ -32,7 +31,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="117"/>
         <CursorPos X="17" Y="127"/>
-        <UsageCount Value="63"/>
+        <UsageCount Value="65"/>
         <Bookmarks Count="2">
           <Item0 X="2" Y="124" ID="2"/>
           <Item1 X="119" Y="41" ID="1"/>
@@ -196,12 +195,11 @@
       <Unit25>
         <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="990"/>
-        <CursorPos Y="1016"/>
-        <UsageCount Value="22"/>
-        <Bookmarks Count="2">
-          <Item0 X="56" Y="393" ID="2"/>
-          <Item1 X="13" Y="232" ID="3"/>
+        <TopLine Value="723"/>
+        <CursorPos Y="735"/>
+        <UsageCount Value="23"/>
+        <Bookmarks Count="1">
+          <Item0 X="13" Y="232" ID="3"/>
         </Bookmarks>
       </Unit25>
       <Unit26>
@@ -415,45 +413,47 @@
       <Unit55>
         <Filename Value="..\..\..\..\Source\uRESTDWPoolerDB.pas"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="1175"/>
-        <CursorPos Y="1184"/>
-        <UsageCount Value="10"/>
-        <Bookmarks Count="1">
-          <Item0 X="44" Y="1049" ID="1"/>
+        <TopLine Value="2295"/>
+        <CursorPos Y="2304"/>
+        <UsageCount Value="11"/>
+        <Bookmarks Count="2">
+          <Item0 X="13" Y="18" ID="1"/>
+          <Item1 Y="172" ID="2"/>
         </Bookmarks>
       </Unit55>
       <Unit56>
         <Filename Value="..\..\..\..\Source\uDWPoolerMethod.pas"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="264"/>
-        <CursorPos Y="273"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="642"/>
+        <CursorPos X="27" Y="649"/>
+        <UsageCount Value="11"/>
       </Unit56>
+      <Unit57>
+        <Filename Value="formMain.lfm"/>
+        <EditorIndex Value="-1"/>
+        <ExtraEditorCount Value="1"/>
+        <ExtraEditor1>
+          <EditorIndex Value="4"/>
+        </ExtraEditor1>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit57>
     </Units>
-    <JumpHistory Count="5" HistoryIndex="4">
-      <Position1>
-        <Filename Value="formMain.pas"/>
-        <Caret Line="69" TopLine="61"/>
-      </Position1>
-      <Position2>
-        <Filename Value="formMain.pas"/>
-        <Caret Line="68" TopLine="61"/>
-      </Position2>
-      <Position3>
-        <Filename Value="formMain.pas"/>
-        <Caret Line="67" TopLine="60"/>
-      </Position3>
-      <Position4>
-        <Filename Value="formMain.pas"/>
-        <Caret Line="68" TopLine="61"/>
-      </Position4>
-      <Position5>
-        <Filename Value="formMain.pas"/>
-        <Caret Line="67" TopLine="60"/>
-      </Position5>
-    </JumpHistory>
+    <General>
+      <ActiveWindowIndexAtStart Value="-1"/>
+    </General>
+    <JumpHistory HistoryIndex="-1"/>
   </ProjectSession>
   <Debugging>
+    <BreakPoints Count="1">
+      <Item1>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
+        <Line Value="771"/>
+      </Item1>
+    </BreakPoints>
     <Watches Count="2">
       <Item1>
         <Expression Value="DestDS.RECORDCOUNT"/>
