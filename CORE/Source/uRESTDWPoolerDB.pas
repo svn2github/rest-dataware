@@ -2067,7 +2067,8 @@ Begin
    vBeforeClone := True;
    If vRESTDataBase <> Nil Then
     Begin
-     vRESTDataBase.Active := True;
+     If Not vRESTDataBase.Active Then
+      vRESTDataBase.Active := True;
      If vRESTDataBase.Active Then
       Begin
        Try

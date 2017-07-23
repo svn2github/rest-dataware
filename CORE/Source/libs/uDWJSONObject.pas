@@ -695,8 +695,8 @@ begin
             FieldDef           := TFieldDef.Create(DestDS.FieldDefs,
                                                    bJsonValue[0].Value.Value,
                                                    GetFieldType(bJsonValue[1].Value.Value),
-                                                   StrToInt(bJsonValue[4].Value.Value),
-                                                   UpperCase(bJsonValue[3].Value.Value) = 'S',
+                                                   StrToInt    (bJsonValue[4].Value.Value),
+                                                   UpperCase   (bJsonValue[3].Value.Value) = 'S',
                                                    DestDS.FieldDefs.Count);
             If Not(FieldDef.DataType In [ftSmallInt, ftInteger, ftFloat, ftCurrency, ftBCD, ftFMTBcd]) Then
              Begin
@@ -715,6 +715,7 @@ begin
        Begin
         TRESTDWClientSQL(DestDS).Inactive := True;
         DestDS.Open;
+        TRESTDWClientSQL(DestDS).Active   := True;
         TRESTDWClientSQL(DestDS).Inactive := False;
        End
       Else
