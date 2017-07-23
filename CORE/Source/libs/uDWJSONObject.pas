@@ -665,30 +665,45 @@ begin
     If DestDS.Active Then
      DestDS.Close;
     DestDS.FieldDefs.Clear;
-    {$IFDEF FPC}
-    DestDS.Fields.Clear;
-    {$ENDIF}
+//    DestDS.Fields.Clear;
     For J := 1 To Length(JsonParser.Output.Objects) -1 Do
      Begin
       bJsonValue         := JsonParser.Output.Objects[J];
-      FieldDef           := DestDS.FieldDefs.AddFieldDef;
-      FieldDef.Name      := bJsonValue[0].Value.Value;
-      FieldDef.DataType  := GetFieldType(bJsonValue[1].Value.Value);
-      FieldDef.Required  := UpperCase(bJsonValue[3].Value.Value) = 'S';
-      If Not(FieldDef.DataType In [ftSmallInt, ftInteger, ftFloat, ftCurrency, ftBCD, ftFMTBcd]) Then
+      If Trim(bJsonValue[0].Value.Value) <> '' Then
        Begin
-        FieldDef.Size      := StrToInt(bJsonValue[4].Value.Value);
-        FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
+        If TRESTDWClientSQL(DestDS).FieldDefExist(bJsonValue[0].Value.Value) = Nil Then
+         Begin
+          FieldDef           := TFieldDef.Create(DestDS.FieldDefs,
+                                                 bJsonValue[0].Value.Value,
+                                                 GetFieldType(bJsonValue[1].Value.Value),
+                                                 StrToInt(bJsonValue[4].Value.Value),
+                                                 UpperCase(bJsonValue[3].Value.Value) = 'S',
+                                                 DestDS.FieldDefs.Count);
+          If Not(FieldDef.DataType In [ftSmallInt, ftInteger, ftFloat, ftCurrency, ftBCD, ftFMTBcd]) Then
+           Begin
+            FieldDef.Size      := StrToInt(bJsonValue[4].Value.Value);
+            FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
+           End;
+         End;
        End;
      End;
     Try
      {$IFNDEF FPC}
       If DestDS Is TClientDataset Then
        TClientDataset(DestDS).CreateDataSet
-      Else If DestDS Is TJvMemoryData Then
+      Else If DestDS Is TRESTDWClientSQL Then
        Begin
         TRESTDWClientSQL(DestDS).Inactive := True;
-        TRESTDWClientSQL(DestDS).Active   := True;
+        {
+        TRESTDWClientSQL(DestDS).FieldDefs.Update;
+        For J := 0 To TRESTDWClientSQL(DestDS).FieldDefs.Count -1 Do
+         Begin
+          If TRESTDWClientSQL(DestDS).FindField(TRESTDWClientSQL(DestDS).FieldDefs[J].Name) = Nil Then
+           TRESTDWClientSQL(DestDS).FieldDefs[J].CreateField(TRESTDWClientSQL(DestDS));
+         End;
+        }
+        DestDS.Open;
+//        TRESTDWClientSQL(DestDS).CreateDataSet;
         TRESTDWClientSQL(DestDS).Inactive := False;
        End
       Else

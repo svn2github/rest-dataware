@@ -216,7 +216,7 @@ Type
   Procedure PrepareDetails(ActiveMode : Boolean);
   Procedure SetCacheUpdateRecords(Value : Boolean);
   Procedure PrepareDetailsNew;
-  Function  FirstWord(Value : String) : String;
+  Function  FirstWord       (Value   : String) : String;
   Procedure ProcAfterScroll (DataSet : TDataSet);
   Procedure ProcAfterOpen   (DataSet : TDataSet);
   Procedure ProcAfterClose  (DataSet : TDataSet);
@@ -228,6 +228,8 @@ Type
  Protected
  Public
   //Métodos
+  Procedure   FieldDefsToFields;
+  Function    FieldDefExist(Value : String) : TFieldDef;
   Procedure   Open;Overload; Virtual;                     //Método Open que será utilizado no Componente
   Procedure   Open(SQL: String);Overload; Virtual;        //Método Open que será utilizado no Componente
   Procedure   ExecOrOpen;                                 //Método Open que será utilizado no Componente
@@ -1381,7 +1383,9 @@ End;
 
 Constructor TRESTDWClientSQL.Create(AOwner : TComponent);
 Begin
+ vInactive                         := True;
  Inherited;
+ vInactive                         := False;
  vDataCache                        := False;
  vConnectedOnce                    := True;
  vActive                           := False;
@@ -1882,6 +1886,23 @@ Begin
  Result := vParams.Count;
 End;
 
+Procedure TRESTDWClientSQL.FieldDefsToFields;
+Var
+ I          : Integer;
+ FieldValue : TField;
+Begin
+ For I := 0 To FieldDefs.Count -1 Do
+  Begin
+   FieldValue           := TField.Create(Self);
+   FieldValue.DataSet   := Self;
+   FieldValue.FieldName := FieldDefs[I].Name;
+   FieldValue.SetFieldType(FieldDefs[I].DataType);
+   FieldValue.Size      := FieldDefs[I].Size;
+//   FieldValue.Offset    := FieldDefs[I].Precision;
+   Fields.Add(FieldValue);
+  End;
+End;
+
 Function TRESTDWClientSQL.FirstWord(Value : String) : String;
 Var
  vTempValue : PChar;
@@ -1978,16 +1999,17 @@ End;
 Procedure TRESTDWClientSQL.CreateDataSet;
 Begin
  vCreateDS := True;
+ TJvMemoryData(Self).Open;
+ vActive   := True;
  vCreateDS := False;
- vActive   := Self.Active;
 End;
 
 Procedure TRESTDWClientSQL.Close;
 Begin
  vActive := False;
  Inherited Close;
- If TDataset(Self).Fields.Count = 0 Then
-  TDataset(Self).FieldDefs.Clear;
+// TDataset(Self).Fields.Clear;
+// TDataset(Self).FieldDefs.Clear;
 End;
 
 Procedure TRESTDWClientSQL.CommitData;
@@ -2067,6 +2089,8 @@ Begin
   Begin
    Try
     Inherited OpenCursor(InfoQuery);
+    If Not (csDesigning in ComponentState) Then
+     vActive := True;
    Except
     On E : Exception do
      Begin
@@ -2134,12 +2158,16 @@ Begin
   End;
  For I := 0 to Source.FieldDefs.Count -1 do
   Begin
-   With aSelf.FieldDefs.AddFieldDef Do
+   If Trim(Source.FieldDefs[I].Name) <> '' Then
     Begin
-     Name     := Source.FieldDefs[I].Name;
-     DataType := Source.FieldDefs[I].DataType;
-     Size     := Source.FieldDefs[I].Size;
-     Required := Source.FieldDefs[I].Required;
+     With aSelf.FieldDefs.AddFieldDef Do
+      Begin
+       Name     := Source.FieldDefs[I].Name;
+       DataType := Source.FieldDefs[I].DataType;
+       Size     := Source.FieldDefs[I].Size;
+       Required := Source.FieldDefs[I].Required;
+       CreateField(aSelf);
+      End;
     End;
   End;
  If aSelf.FieldDefs.Count > 0 Then
@@ -2215,9 +2243,7 @@ Begin
     LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, False);
     If (LDataSetList <> Nil) And (Not (vError)) Then
      Begin
-//      vTempTable.UpdateOptions.CountUpdatedRecords := False;
       Try
-       Self.FieldDefs.Clear;
        LDataSetList.WriteToDataset(dtFull, LDataSetList.ToJSON, Self);
        Result := True;
       Except
@@ -2253,7 +2279,7 @@ Procedure TRESTDWClientSQL.SetActiveDB(Value : Boolean);
 Begin
  If vInactive then
   Begin
-   TJvMemoryData(Self).Active := Value;
+   vActive := Value;
    Exit;
   End;
  vActive := False;
@@ -2294,8 +2320,9 @@ Begin
   Begin
    vActive := False;
    Close;
-   If vRESTDataBase = Nil Then
-    Raise Exception.Create(PChar('Empty Database Property'));
+   If Value Then
+    If vRESTDataBase = Nil Then
+     Raise Exception.Create(PChar('Empty Database Property'));
   End;
 End;
 
@@ -2341,7 +2368,21 @@ end;
 
 Procedure TRESTDWDataBase.SetMyIp(Value: String);
 Begin
+End;
 
+Function TRESTDWClientSQL.FieldDefExist(Value: String): TFieldDef;
+Var
+ I : Integer;
+Begin
+ Result := Nil;
+ For I := 0 To FieldDefs.Count -1 Do
+  Begin
+   If UpperCase(Value) = UpperCase(FieldDefs[I].Name) Then
+    Begin
+     Result := FieldDefs[I];
+     Break;
+    End;
+  End;
 End;
 
 end.

@@ -1833,7 +1833,9 @@ object Form2: TForm2
     Left = 13
     Top = 55
     Width = 136
-    Height = 21
+    Height = 19
+    Ctl3D = False
+    ParentCtl3D = False
     TabOrder = 0
     Text = 'localhost'
   end
@@ -1841,7 +1843,9 @@ object Form2: TForm2
     Left = 155
     Top = 55
     Width = 40
-    Height = 21
+    Height = 19
+    Ctl3D = False
+    ParentCtl3D = False
     TabOrder = 1
     Text = '8082'
   end
@@ -1849,7 +1853,9 @@ object Form2: TForm2
     Left = 123
     Top = 97
     Width = 100
-    Height = 21
+    Height = 19
+    Ctl3D = False
+    ParentCtl3D = False
     PasswordChar = '*'
     TabOrder = 2
     Text = 'testserver'
@@ -1858,7 +1864,9 @@ object Form2: TForm2
     Left = 13
     Top = 97
     Width = 100
-    Height = 21
+    Height = 19
+    Ctl3D = False
+    ParentCtl3D = False
     TabOrder = 3
     Text = 'testserver'
   end
@@ -1867,12 +1875,14 @@ object Form2: TForm2
     Top = 242
     Width = 491
     Height = 187
+    Ctl3D = False
     DataSource = DataSource1
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
+    ParentCtl3D = False
     ParentFont = False
     TabOrder = 4
     TitleFont.Charset = DEFAULT_CHARSET
@@ -1886,6 +1896,7 @@ object Form2: TForm2
     Top = 145
     Width = 354
     Height = 72
+    Ctl3D = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -1893,6 +1904,7 @@ object Form2: TForm2
     Font.Style = [fsBold]
     Lines.Strings = (
       'SELECT * FROM EMPLOYEE')
+    ParentCtl3D = False
     ParentFont = False
     TabOrder = 5
   end
@@ -1918,38 +1930,116 @@ object Form2: TForm2
     Height = 19
     Caption = 'Compression'
     Checked = True
+    Ctl3D = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
+    ParentCtl3D = False
     ParentFont = False
     State = cbChecked
     TabOrder = 7
   end
+  object RESTDWDataBase1: TRESTDWDataBase
+    Active = True
+    Compression = True
+    MyIP = '127.0.0.1'
+    Login = 'testserver'
+    Password = 'testserver'
+    Proxy = False
+    ProxyOptions.Port = 8888
+    PoolerService = '127.0.0.1'
+    PoolerPort = 8082
+    PoolerName = 'TServerMethodDM.RESTDWPoolerDB1'
+    StateConnection.AutoCheck = False
+    StateConnection.InTime = 1000
+    RequestTimeOut = 10000
+    Encoding = esASCII
+    StrsTrim = False
+    StrsEmpty2Null = False
+    StrsTrim2Len = True
+    Left = 208
+    Top = 144
+  end
+  object RESTDWClientSQL1: TRESTDWClientSQL
+    Active = False
+    FieldDefs = <
+      item
+        Name = 'EMP_NO'
+        Attributes = [faRequired]
+        DataType = ftSmallint
+      end
+      item
+        Name = 'FIRST_NAME'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 15
+      end
+      item
+        Name = 'LAST_NAME'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 20
+      end
+      item
+        Name = 'PHONE_EXT'
+        DataType = ftString
+        Size = 4
+      end
+      item
+        Name = 'HIRE_DATE'
+        Attributes = [faRequired]
+        DataType = ftTimeStamp
+      end
+      item
+        Name = 'DEPT_NO'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 3
+      end
+      item
+        Name = 'JOB_CODE'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 5
+      end
+      item
+        Name = 'JOB_GRADE'
+        Attributes = [faRequired]
+        DataType = ftSmallint
+      end
+      item
+        Name = 'JOB_COUNTRY'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 15
+      end
+      item
+        Name = 'SALARY'
+        Attributes = [faRequired]
+        DataType = ftFloat
+      end
+      item
+        Name = 'FULL_NAME'
+        DataType = ftString
+        Size = 37
+      end>
+    MasterCascadeDelete = True
+    Inactive = False
+    DataCache = False
+    Params = <>
+    DataBase = RESTDWDataBase1
+    SQL.Strings = (
+      'SELECT * FROM EMPLOYEE')
+    CacheUpdateRecords = True
+    Left = 248
+    Top = 144
+  end
   object DataSource1: TDataSource
     AutoEdit = False
-    DataSet = ClientDataSet1
-    Left = 128
-    Top = 88
-  end
-  object RESTClientPooler1: TRESTClientPooler
-    DataCompression = True
-    Encoding = esASCII
-    Host = 'localhost'
-    UserName = 'testserver'
-    Password = 'testserver'
-    ProxyOptions.BasicAuthentication = False
-    ProxyOptions.ProxyPort = 0
-    RequestTimeOut = 10000
-    ThreadRequest = False
-    Left = 216
-    Top = 88
-  end
-  object ClientDataSet1: TClientDataSet
-    Aggregates = <>
-    Params = <>
-    Left = 104
-    Top = 120
+    DataSet = RESTDWClientSQL1
+    Left = 288
+    Top = 144
   end
 end

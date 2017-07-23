@@ -381,20 +381,24 @@ Begin
   ftGuid            : Result := ovGuid;
   ftTimeStamp       : Result := ovTimeStamp;
   ftFMTBcd          : Result := ovFMTBcd;
-  ftFixedWideChar   : Result := ovFixedWideChar;
-  ftWideMemo        : Result := ovWideMemo;
-  ftOraTimeStamp    : Result := ovOraTimeStamp;
-  ftOraInterval     : Result := ovOraInterval;
-  ftLongWord        : Result := ovLongWord;
-  ftShortint        : Result := ovShortint;
-  ftByte            : Result := ovByte;
-  ftExtended        : Result := ovExtended;
-  ftConnection      : Result := ovConnection;
-  ftParams          : Result := ovParams;
-  ftStream          : Result := ovStream;
-  ftTimeStampOffset : Result := ovTimeStampOffset;
-  ftObject          : Result := ovObject;
-  ftSingle          : Result := ovSingle;
+  {$IFNDEF FPC}
+   {$if CompilerVersion > 21} // Delphi 2010 acima
+    ftFixedWideChar   : Result := ovFixedWideChar;
+    ftWideMemo        : Result := ovWideMemo;
+    ftOraTimeStamp    : Result := ovOraTimeStamp;
+    ftOraInterval     : Result := ovOraInterval;
+    ftLongWord        : Result := ovLongWord;
+    ftShortint        : Result := ovShortint;
+    ftByte            : Result := ovByte;
+    ftExtended        : Result := ovExtended;
+    ftConnection      : Result := ovConnection;
+    ftParams          : Result := ovParams;
+    ftStream          : Result := ovStream;
+    ftTimeStampOffset : Result := ovTimeStampOffset;
+    ftObject          : Result := ovObject;
+    ftSingle          : Result := ovSingle;
+   {$IFEND}
+  {$ENDIF}
  End;
 End;
 
@@ -439,20 +443,24 @@ Begin
   ovGuid            : Result := ftGuid;
   ovTimeStamp       : Result := ftTimeStamp;
   ovFMTBcd          : Result := ftFMTBcd;
-  ovFixedWideChar   : Result := ftFixedWideChar;
-  ovWideMemo        : Result := ftWideMemo;
-  ovOraTimeStamp    : Result := ftOraTimeStamp;
-  ovOraInterval     : Result := ftOraInterval;
-  ovLongWord        : Result := ftLongWord;
-  ovShortint        : Result := ftShortint;
-  ovByte            : Result := ftByte;
-  ovExtended        : Result := ftExtended;
-  ovConnection      : Result := ftConnection;
-  ovParams          : Result := ftParams;
-  ovStream          : Result := ftStream;
-  ovTimeStampOffset : Result := ftTimeStampOffset;
-  ovObject          : Result := ftObject;
-  ovSingle          : Result := ftSingle;
+  {$IFNDEF FPC}
+   {$if CompilerVersion > 21} // Delphi 2010 acima
+    ovFixedWideChar   : Result := ftFixedWideChar;
+    ovWideMemo        : Result := ftWideMemo;
+    ovOraTimeStamp    : Result := ftOraTimeStamp;
+    ovOraInterval     : Result := ftOraInterval;
+    ovLongWord        : Result := ftLongWord;
+    ovShortint        : Result := ftShortint;
+    ovByte            : Result := ftByte;
+    ovExtended        : Result := ftExtended;
+    ovConnection      : Result := ftConnection;
+    ovParams          : Result := ftParams;
+    ovStream          : Result := ftStream;
+    ovTimeStampOffset : Result := ftTimeStampOffset;
+    ovObject          : Result := ftObject;
+    ovSingle          : Result := ftSingle;
+   {$IFEND}
+  {$ENDIF}
  End;
 End;
 

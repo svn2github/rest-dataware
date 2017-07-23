@@ -33,7 +33,11 @@ requires
   IndySystem70,
   IndyProtocols70,
   inet,
-  DesignIDE;
+  DesignIDE,
+  vcljpg,
+  Jcl,
+  JvCore,
+  JvDB;
 
 contains
   uRESTDWBase in '..\..\..\Source\uRESTDWBase.pas',

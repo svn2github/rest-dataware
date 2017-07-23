@@ -1080,8 +1080,8 @@ object Form2: TForm2
   object DataSource1: TDataSource
     AutoEdit = False
     DataSet = RESTDWClientSQL1
-    Left = 328
-    Top = 240
+    Left = 296
+    Top = 80
   end
   object RESTClientPooler1: TRESTClientPooler
     DataCompression = True
@@ -1093,8 +1093,8 @@ object Form2: TForm2
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 10000
     ThreadRequest = False
-    Left = 112
-    Top = 240
+    Left = 232
+    Top = 80
   end
   object RESTDWClientSQL1: TRESTDWClientSQL
     FieldDefs = <>
@@ -1113,8 +1113,8 @@ object Form2: TForm2
       'select * from employee'
       'where emp_no = :emp_no')
     CacheUpdateRecords = True
-    Left = 264
-    Top = 240
+    Left = 296
+    Top = 32
   end
   object RESTDWDataBase1: TRESTDWDataBase
     Active = True
@@ -1134,7 +1134,7 @@ object Form2: TForm2
     StrsTrim = False
     StrsEmpty2Null = False
     StrsTrim2Len = True
-    Left = 192
-    Top = 240
+    Left = 232
+    Top = 32
   end
 end
