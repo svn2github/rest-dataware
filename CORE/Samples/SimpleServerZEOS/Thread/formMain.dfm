@@ -1215,6 +1215,7 @@ object Form2: TForm2
     Top = 56
   end
   object RESTClientPooler1: TRESTClientPooler
+    DataCompression = True
     Encoding = esASCII
     Host = 'localhost'
     UserName = 'testserver'
@@ -1222,6 +1223,7 @@ object Form2: TForm2
     ProxyOptions.BasicAuthentication = False
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 10000
+    ThreadRequest = False
     Left = 285
     Top = 145
   end

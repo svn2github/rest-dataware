@@ -703,6 +703,12 @@ begin
               FieldDef.Size      := StrToInt(bJsonValue[4].Value.Value);
               FieldDef.Precision := StrToInt(bJsonValue[5].Value.Value);
              End;
+//            {$IFNDEF FPC}
+//             {$if CompilerVersion < 21}
+//              If TRESTDWClientSQL(DestDS).FindField(bJsonValue[0].Value.Value) = Nil Then
+//               FieldDef.CreateField(DestDS, Nil, bJsonValue[0].Value.Value);
+//             {$IFEND}
+//            {$ENDIF}
            End;
          End;
        End;
@@ -745,7 +751,7 @@ begin
          Field.ProviderFlags := [pfInUpdate, pfInWhere, pfInKey];
        End;
      End;
-    For A := 0 To DestDS.FieldDefs.Count -1 Do
+    For A := 0 To DestDS.Fields.Count -1 Do
      Begin
       vFindFlag := False;
       For J := 1 To Length(JsonParser.Output.Objects) -1 Do

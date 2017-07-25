@@ -8,7 +8,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics,
   Controls, Forms, Dialogs, StdCtrls, uDWJSONObject, System.JSON,
   DB, Grids, DBGrids, uDWJSONTools, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
-  JvMemoryDataset, uRESTDWBase, uDWConsts;
+  JvMemoryDataset, uRESTDWBase, uDWConsts, uDWConstsData;
 
 
 Type
@@ -177,7 +177,7 @@ Begin
  JSONParam.SetValue('');
  DWParams.Add(JSONParam);
 
- lResponse := RESTClientPooler1.SendEvent('ConsultaBanco', DWParams {$IFDEF INTHREAD},sePOST,CallBack {$ENDIF});// {$IFDEF INTHREAD},CallBack {$ENDIF});
+ lResponse := RESTClientPooler1.SendEvent('ConsultaBanco', DWParams {$IFDEF INTHREAD}, sePOST, CallBack {$ENDIF});// {$IFDEF INTHREAD},CallBack {$ENDIF});
 
  if not cheThread.Checked then
  begin

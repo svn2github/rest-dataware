@@ -2,7 +2,7 @@ unit ServerMethodsUnit1;
 
 interface
 
-uses SysUtils, Classes, Windows, uDWConsts, uDWJSONTools, uDWJSONObject,
+uses SysUtils, Classes, Windows, uDWConsts, uDWConstsData, uDWJSONTools, uDWJSONObject,
      System.JSON, Dialogs, ServerUtils, SysTypes,
      {$IFDEF FPC}
      {$ELSE}
@@ -37,11 +37,10 @@ Type
    { Public declarations }
    Constructor Create    (aOwner : TComponent); Override;
    Destructor  Destroy; Override;
-   Function    ReplyEvent(SendType  : TSendEvent;
-                          Arguments : TArguments) : String;Override;
-   Function    ReplyEvent(SendType   : TSendEvent;
-                          Context    : String;
-                          Var Params : TDWParams) : String;Override;
+   Procedure   vReplyEvent(SendType   : TSendEvent;
+                           Context    : String;
+                           Var Params : TDWParams;
+                           Var Result : String);
   End;
 {$METHODINFO OFF}
 
@@ -53,6 +52,7 @@ uses StrUtils, RestDWServerFormU;
 Constructor TServerMethods1.Create (aOwner : TComponent);
 Begin
  Inherited Create (aOwner);
+ ReplyEvent := vReplyEvent;
 End;
 
 Destructor TServerMethods1.Destroy;
@@ -195,9 +195,10 @@ Begin
  End;
 End;
 
-Function TServerMethods1.ReplyEvent(SendType   : TSendEvent;
-                                    Context    : String;
-                                    Var Params : TDWParams) : String;
+Procedure TServerMethods1.vReplyEvent(SendType   : TSendEvent;
+                                      Context    : String;
+                                      Var Params : TDWParams;
+                                      Var Result : String);
 Var
  JSONObject : TJSONObject;
 Begin
@@ -216,17 +217,6 @@ Begin
    End;
  End;
  JSONObject.Free;
-End;
-
-Function TServerMethods1.ReplyEvent(SendType  : TSendEvent;
-                                    Arguments : TArguments) : String;
-Begin
- Case SendType Of
-  seGET    : Result := CallGETServerMethod   (Arguments);
-  sePOST   : Result := CallPOSTServerMethod  (Arguments);
-  sePUT    : Result := CallPUTServerMethod   (Arguments);
-  seDELETE : Result := CallDELETEServerMethod(Arguments);
- End;
 End;
 
 Function TServerMethods1.ConsultaAluno (NomeAluno : String) : String;
