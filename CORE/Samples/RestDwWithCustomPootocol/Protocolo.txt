@@ -1,5 +1,3 @@
-protocolo DevUpper/RestDW/Mormot
-
 Qualquer requisição
 Parâmetros
 	0 ID DA REQUISIÇÃO (GUID GERADO AUTOMATICAMENTE)
