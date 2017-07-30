@@ -376,6 +376,7 @@ begin
    RESTServicePooler1.SSLPrivateKeyFile     := ePrivKeyFile.Text;
    RESTServicePooler1.SSLPrivateKeyPassword := ePrivKeyPass.Text;
    RESTServicePooler1.SSLCertFile           := eCertFile.Text;
+   RESTServicePooler1.EncodeStrings         := cbEncode.Checked;
    RESTServicePooler1.Active                := True;
    RESTServicePooler1.DataCompression       := CheckBox1.Checked;
    If Not RESTServicePooler1.Active Then

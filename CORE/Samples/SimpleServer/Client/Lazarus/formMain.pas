@@ -70,6 +70,9 @@ Begin
  RESTDWDataBase1.Login         := edUserNameDW.Text;
  RESTDWDataBase1.Password      := edPasswordDW.Text;
  RESTDWDataBase1.Compression   := CheckBox1.Checked;
+ RESTDWClientSQL1.Close;
+ RESTDWClientSQL1.sql.clear;
+ RESTDWClientSQL1.sql.add(mComando.Text);
  RESTDWClientSQL1.Active       := True;
 End;
 

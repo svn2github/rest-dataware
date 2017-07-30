@@ -117,6 +117,7 @@ Type
                           AResponseInfo : TIdHTTPResponseInfo);
  Private
   vDataCompress,
+  vEncodeStrings,
   vActive          : Boolean;
   vProxyOptions    : TProxyOptions;
   HTTPServer       : TIdHTTPServer;
@@ -166,6 +167,7 @@ Type
   Property Active                : Boolean         Read vActive                Write SetActive;
   Property DataCompression       : Boolean         Read vDatacompress          Write vDatacompress;
   Property Secure                : Boolean         Read GetSecure;
+  Property EncodeStrings         : Boolean         Read vEncodeStrings         Write vEncodeStrings;
   Property ServicePort           : Integer         Read vServicePort           Write vServicePort;  //A Porta do Serviço do DataSet
   Property ProxyOptions          : TProxyOptions   Read vProxyOptions          Write vProxyOptions; //Se tem Proxy diz quais as opções
   Property ServerParams          : TServerParams   Read vServerParams          Write vServerParams;
@@ -310,7 +312,7 @@ Var
           JSONParam.ObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
           JSONParam.Encoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
           If JSONParam.Encoded Then
-           vValue := DecodeStrings(bJsonValue[4].Value.Value{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(TEncodeSelect(vRSCharset)){$IFEND}{$ENDIF})
+           vValue := DecodeStrings(bJsonValue[4].Value.Value)
           Else
            vValue := bJsonValue[4].Value.Value;
           JSONParam.SetValue(vValue);
@@ -636,6 +638,7 @@ Begin
           Begin
            vExecute := StringToBoolean(DWParams.ItemsString['Execute'].Value);
            vError   := StringToBoolean(DWParams.ItemsString['Error'].Value);
+           TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver.EncodeStringsJSON := vEncodeStrings;
            vTempJSON := TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver.ExecuteCommand(DWParams.ItemsString['SQL'].Value,
                                                                                                     vError,
                                                                                                     vMessageError,
@@ -675,6 +678,7 @@ Begin
           Begin
            vExecute := StringToBoolean(DWParams.ItemsString['Execute'].Value);
            vError   := StringToBoolean(DWParams.ItemsString['Error'].Value);
+           TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver.EncodeStringsJSON := vEncodeStrings;
            If DWParams.ItemsString['Params'] <> Nil Then
             Begin
              DWParamsD := TDWParams.Create;
@@ -1133,7 +1137,7 @@ Begin
         EnterCriticalSection(vCriticalSection);
        {$ENDIF}
       {$ENDIF}
-       vLastResponse(DecodeStrings(JSONStr{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(TEncodeSelect(VEncondig)){$IFEND}{$ENDIF}));
+       vLastResponse(DecodeStrings(JSONStr));
       {$IFDEF FPC}
        {$IFDEF WINDOWS}
         LeaveCriticalSection(vCriticalSection);
@@ -1163,6 +1167,7 @@ Begin
  {$ENDIF}
  vServerParams                   := TServerParams.Create;
  vActive                         := False;
+ vEncodeStrings                  := True;
  vServerParams.HasAuthentication := True;
  vServerParams.UserName          := 'testserver';
  vServerParams.Password          := 'testserver';
@@ -1342,7 +1347,7 @@ VAR SResult ,
           JSONParam.ObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
           JSONParam.Encoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
           If JSONParam.Encoded Then
-           vValue := DecodeStrings(bJsonValue[4].Value.Value{$IFNDEF FPC}{$if CompilerVersion > 21}, GetEncoding(TEncodeSelect(vRSCharset)){$IFEND}{$ENDIF})
+           vValue := DecodeStrings(bJsonValue[4].Value.Value)
           Else
            vValue := bJsonValue[4].Value.Value;
           JSONParam.SetValue(vValue);

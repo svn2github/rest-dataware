@@ -99,6 +99,7 @@ Type
   vPoolerPort          : Integer;                    //A Porta do Pooler
   vProxy               : Boolean;                    //Diz se tem servidor Proxy
   vProxyOptions        : TProxyOptions;              //Se tem Proxy diz quais as opções
+  vEncodeStrings,
   vCompression,                                      //Se Vai haver compressão de Dados
   vConnected           : Boolean;                    //Diz o Estado da Conexão
   vOnEventConnection   : TOnEventConnection;         //Evento de Estado da Conexão
@@ -161,6 +162,7 @@ Type
   Property RestModule         : String                   Read vRestModule         Write vRestModule;        //Classe do Servidor REST Principal
   Property StateConnection    : TAutoCheckData           Read vAutoCheckData      Write vAutoCheckData;     //Autocheck da Conexão
   Property RequestTimeOut     : Integer                  Read vTimeOut            Write vTimeOut;           //Timeout da Requisição
+  Property EncodeStrings      : Boolean                  Read vEncodeStrings      Write vEncodeStrings;
   Property Encoding           : TEncodeSelect            Read VEncondig           Write VEncondig;          //Encoding da string
   Property Context            : string                   Read vContentex          Write vContentex;         //Contexto
   Property StrsTrim           : Boolean                  Read vStrsTrim           Write vStrsTrim;
@@ -340,9 +342,11 @@ Type
   vStrsTrim,
   vStrsEmpty2Null,
   vStrsTrim2Len,
+  vEncodeStrings,
   vCompression       : Boolean;
   vEncoding          : TEncodeSelect;
  Public
+  Constructor Create(AOwner  : TComponent);Override; //Cria o Componente
   Procedure ApplyChanges        (TableName,
                                  SQL               : String;
                                  Params            : TDWParams;
@@ -383,6 +387,7 @@ Type
   Property StrsEmpty2Null : Boolean       Read vStrsEmpty2Null Write vStrsEmpty2Null;
   Property StrsTrim2Len   : Boolean       Read vStrsTrim2Len   Write vStrsTrim2Len;
   Property Compression    : Boolean       Read vCompression    Write vCompression;
+  Property EncodeStringsJSON : Boolean       Read vEncodeStrings  Write vEncodeStrings;
   Property Encoding       : TEncodeSelect Read vEncoding       Write vEncoding;
 End;
 
@@ -1220,6 +1225,7 @@ Begin
  vRestPooler               := '';
  vPoolerPort               := 8082;
  vProxy                    := False;
+ vEncodeStrings            := True;
  vProxyOptions             := TProxyOptions.Create;
  vAutoCheckData            := TAutoCheckData.Create;
  vAutoCheckData.vAutoCheck := False;
@@ -1282,8 +1288,16 @@ Var
  vTempSend   : String;
  vConnection : TDWPoolerMethodClient;
 Begin
- Result       := False;
- vConnection  := TDWPoolerMethodClient.Create(Nil);
+ Result                  := False;
+ vConnection             := TDWPoolerMethodClient.Create(Nil);
+ vConnection.Host        := vRestWebService;
+ vConnection.Port        := vPoolerPort;
+ vConnection.Compression := vCompression;
+ {$IFNDEF FPC}
+  {$if CompilerVersion > 21}
+  vConnection.Encoding    := VEncondig;
+  {$IFEND}
+ {$ENDIF}
  Try
   vTempSend   := vConnection.EchoPooler(vRestURL, vRestPooler, vTimeOut, vLogin, vPassword);
   Result      := Trim(vTempSend) <> '';
@@ -2222,6 +2236,7 @@ Begin
     If (LDataSetList <> Nil) And (Not (vError)) Then
      Begin
       Try
+       LDataSetList.Encoded := vRESTDataBase.EncodeStrings;
        LDataSetList.WriteToDataset(dtFull, LDataSetList.ToJSON, Self);
        Result := True;
       Except
@@ -2377,6 +2392,14 @@ Begin
      Break;
     End;
   End;
+End;
+
+{ TRESTDWDriver }
+
+Constructor TRESTDWDriver.Create(AOwner: TComponent);
+Begin
+ Inherited;
+ vEncodeStrings := True;
 End;
 
 end.

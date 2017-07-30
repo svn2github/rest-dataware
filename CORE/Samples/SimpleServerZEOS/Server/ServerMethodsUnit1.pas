@@ -315,7 +315,7 @@ Begin
  JSONValue.LoadFromJSON(SQL);
  If JSONValue.Value <> '' Then
   Begin
-   vSQL      := DecodeStrings(JSONValue.Value{$IFNDEF FPC}, GetEncoding(RestDWForm.RESTServicePooler1.Encoding){$ENDIF});
+   vSQL      := DecodeStrings(JSONValue.Value);
    {$IFDEF FPC}
    {$ELSE}
     fdQuery   := TZQuery.Create(Nil);

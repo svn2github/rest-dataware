@@ -1944,6 +1944,7 @@ object Form2: TForm2
   object RESTDWDataBase1: TRESTDWDataBase
     Active = False
     Compression = True
+    MyIP = '0.0.0.0'
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
@@ -1954,6 +1955,7 @@ object Form2: TForm2
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
     RequestTimeOut = 10000
+    EncodeStrings = True
     Encoding = esASCII
     StrsTrim = False
     StrsEmpty2Null = False

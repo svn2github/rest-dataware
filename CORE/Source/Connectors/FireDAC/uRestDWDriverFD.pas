@@ -185,7 +185,7 @@ Begin
     vTempQuery.Active := True;
     Result := TJSONValue.Create;
     Try
-     Result.LoadFromDataset('RESULTDATA', vTempQuery, False);
+     Result.LoadFromDataset('RESULTDATA', vTempQuery, EncodeStringsJSON);
     Finally
     End;
    End
@@ -351,7 +351,7 @@ Begin
     vTempQuery.Open;
     Result         := TJSONValue.Create;
     Try
-     Result.LoadFromDataset('RESULTDATA', vTempQuery, False);
+     Result.LoadFromDataset('RESULTDATA', vTempQuery, EncodeStringsJSON);
      Error         := False;
     Finally
     End;

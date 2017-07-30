@@ -416,7 +416,7 @@ Begin
    Else
     Begin
      If Length(vTempString) > 0 Then
-      vTempString := DecodeStrings(vTempString{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF});
+      vTempString := DecodeStrings(vTempString);
     End;
   End
  Else
@@ -493,7 +493,7 @@ Var
        vStringStream.CopyFrom(bStream, bStream.Size);
        vStringStream.Position := 0;
        If vEncoded Then
-        vTempValue := Format('"%s"', [EncodeStrings(vStringStream.DataString{$IFNDEF FPC}{$if CompilerVersion > 21}  , vEncoding{$IFEND}{$ENDIF})])
+        vTempValue := Format('"%s"', [EncodeStrings(vStringStream.DataString)])
        Else
         vTempValue := Format('"%s"', [vStringStream.DataString])
       Finally
@@ -505,7 +505,7 @@ Var
       If bValue.Fields[I].DataType in [ftString, ftWideString, ftFixedChar] Then
        Begin
         If vEncoded Then
-         vTempValue := Format('"%s"', [EncodeStrings(bValue.Fields[I].AsString{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF})])
+         vTempValue := Format('"%s"', [EncodeStrings(bValue.Fields[I].AsString)])
         Else
          vTempValue := Format('"%s"', [bValue.Fields[I].AsString])
        End
@@ -788,7 +788,7 @@ begin
                                          ,ftParams,         ftStream{$IFEND}{$ENDIF}]  Then
          Begin
           If vEncoded Then
-           vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[StrToInt(ListFields[I])].Value{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF}))
+           vBlobStream := TStringStream.Create(DecodeStrings(JsonArray[StrToInt(ListFields[I])].Value))
           Else
            vBlobStream := TStringStream.Create(JsonArray[StrToInt(ListFields[I])].Value);
           Try
@@ -810,14 +810,14 @@ begin
             If DestDS.Fields[I].DataType in [ftString, ftWideString, ftFixedChar] Then
              Begin
               If vEncoded Then
-               DestDS.Fields[I].AsString := DecodeStrings(JsonArray[StrToInt(ListFields[I])].Value{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF})
+               DestDS.Fields[I].AsString := DecodeStrings(JsonArray[StrToInt(ListFields[I])].Value)
               Else
                DestDS.Fields[I].AsString := JsonArray[StrToInt(ListFields[I])].Value;
              End
             Else
              Begin
               {$IFNDEF FPC}
-               DestDS.Fields[I].Value := JsonArray[I].Value;
+               DestDS.Fields[I].Value := JsonArray[StrToInt(ListFields[I])].Value;
               {$ELSE}
                SetValueA(DestDS.Fields[I], JsonArray[StrToInt(ListFields[I])].Value);
               {$ENDIF}
@@ -864,7 +864,6 @@ Begin
   bJsonValue       := JsonParser.Output.Objects[0];
   vTypeObject      := GetObjectName   (bJsonValue[0].Value.Value);
   vObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
-  vEncoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
   vObjectValue     := GetValueType    (bJsonValue[3].Value.Value);
   vtagName         := Lowercase       (bJsonValue[4].Key);
   If vEncoded Then
@@ -882,12 +881,13 @@ Begin
       End;
      End
     Else
-     vTempValue := DecodeStrings(vTempValue{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF});
+     vTempValue := DecodeStrings(vTempValue);
    End;
   If Not(vObjectValue In [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
                           ovMemo,     ovGraphic, ovFmtMemo,  ovOraBlob,
                           ovOraClob]) Then
    SetValue(vTempValue, vEncoded);
+//  vEncoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
  Finally
 
  End;
@@ -911,7 +911,7 @@ begin
                        ovOraClob] Then
     WriteValue(Value)
    Else
-    WriteValue(EncodeStrings(Value{$IFNDEF FPC}{$if CompilerVersion > 21} , vEncoding{$IFEND}{$ENDIF}))
+    WriteValue(EncodeStrings(Value))
   End
  Else
   WriteValue(Value);
@@ -1109,7 +1109,7 @@ Begin
  vEncoded            := Encode;
  vJSONValue.vEncoded := vEncoded;
  If Encode Then
-  WriteValue(EncodeStrings(aValue{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncoding{$IFEND}{$ENDIF}))
+  WriteValue(EncodeStrings(aValue))
  Else
   WriteValue(aValue);
  vBinary             := False;

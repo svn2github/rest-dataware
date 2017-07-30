@@ -215,7 +215,7 @@ Begin
  Stream.Position := 0;
 End;
 
-Function StreamToHex(Stream  : TStream): string;
+Function StreamToHex(Stream  : TStream) : String;
 Begin
  Stream.Position := 0;
  SetLength     (Result, Stream.Size * 2);

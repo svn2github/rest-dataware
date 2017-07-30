@@ -1165,7 +1165,6 @@ object Form2: TForm2
   object RESTDWDataBase1: TRESTDWDataBase
     Active = False
     Compression = True
-    MyIP = '0.0.0.0'
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False

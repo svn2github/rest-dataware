@@ -2,9 +2,9 @@ unit ServerMethodsUnit1;
 
 interface
 
-uses SysUtils, Classes, uDWConsts,
-     fpjson, Dialogs, ServerUtils, SysTypes,
-     uDWJSONObject, sqldb, uDWJSONTools;
+uses SysUtils, Classes, uDWConsts, uDWConstsData,
+     Dialogs, ServerUtils, SysTypes,
+     sqldb, uDWJSONTools, uDWJSONObject;
 
 Type
 {$METHODINFO ON}
@@ -16,9 +16,10 @@ Type
    { Public declarations }
    Constructor Create    (aOwner : TComponent); Override;
    Destructor  Destroy; Override;
-   Function    ReplyEvent(SendType   : TSendEvent;
-                          Context    : String;
-                          Var Params : TDWParams)  : String;Override;
+   Procedure   vReplyEvent(SendType   : TSendEvent;
+                           Context    : String;
+                           Var Params : TDWParams;
+                           Var Result : String);
   End;
 {$METHODINFO OFF}
 
@@ -30,6 +31,7 @@ uses StrUtils, formMain;
 Constructor TServerMethods1.Create (aOwner : TComponent);
 Begin
  Inherited Create (aOwner);
+ ReplyEvent := @vReplyEvent;
 End;
 
 Destructor TServerMethods1.Destroy;
@@ -37,24 +39,21 @@ Begin
  Inherited Destroy;
 End;
 
-Function TServerMethods1.ReplyEvent(SendType   : TSendEvent;
-                                    Context    : String;
-                                    Var Params : TDWParams) : String;
+Procedure TServerMethods1.vReplyEvent(SendType   : TSendEvent;
+                                      Context    : String;
+                                      Var Params : TDWParams;
+                                      Var Result : String);
 Var
- JSONObject : uDWJSONObject.TJSONValue;
+ JSONObject : TJSONValue;
 Begin
- JSONObject := uDWJSONObject.TJSONValue.Create;
+ JSONObject := TJSONValue.Create;
  Case SendType Of
   sePOST   :
    Begin
     If UpperCase(Context) = Uppercase('ConsultaBanco') Then
      Result := ConsultaBanco(Params)
     Else
-     Begin
-//      JSONObject.AddPair(TJSONPair.Create('STATUS',   'NOK'));
-//      JSONObject.AddPair(TJSONPair.Create('MENSAGEM', 'Método não encontrado'));
-      Result := JSONObject.ToJSON;
-     End;
+     Result := JSONObject.ToJSON;
    End;
  End;
  JSONObject.Free;
