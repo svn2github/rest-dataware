@@ -2076,24 +2076,24 @@ End;
 
 Procedure TRESTDWClientSQL.OpenCursor(InfoQuery: Boolean);
 Begin
-   Try
-    Inherited OpenCursor(InfoQuery);
-    If FieldDefs.Count = 0 Then
-     FieldDefs.Update;
-   Except
-    On E : Exception do
+ Try
+  Inherited OpenCursor(InfoQuery);
+  If FieldDefs.Count = 0 Then
+   FieldDefs.Update;
+ Except
+  On E : Exception do
+   Begin
+    If csDesigning in ComponentState Then
+     Raise Exception.Create(PChar(E.Message))
+    Else
      Begin
-      If csDesigning in ComponentState Then
-       Raise Exception.Create(PChar(E.Message))
+      If Assigned(vOnGetDataError) Then
+       vOnGetDataError(False, E.Message)
       Else
-       Begin
-        If Assigned(vOnGetDataError) Then
-         vOnGetDataError(False, E.Message)
-        Else
-         Raise Exception.Create(PChar(E.Message));
-       End;
+       Raise Exception.Create(PChar(E.Message));
      End;
    End;
+ End;
 End;
 
 Procedure TRESTDWClientSQL.OldAfterPost(DataSet: TDataSet);

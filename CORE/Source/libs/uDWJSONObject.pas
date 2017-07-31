@@ -712,7 +712,11 @@ begin
            End;
          End;
        End;
-     End;
+     End
+    {$IFDEF FPC}
+     Else
+      DestDS.FieldDefs.Update
+    {$ENDIF};
     Try
      {$IFNDEF FPC}
       If DestDS Is TClientDataset Then

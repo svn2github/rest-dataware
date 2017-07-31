@@ -1957,8 +1957,9 @@ object Form2: TForm2
     OnClick = Button2Click
   end
   object RESTDWDataBase1: TRESTDWDataBase
-    Active = False
+    Active = True
     Compression = True
+    MyIP = '127.0.0.1'
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
@@ -1980,11 +1981,6 @@ object Form2: TForm2
   object RESTDWClientSQL1: TRESTDWClientSQL
     Active = False
     FieldDefs = <
-      item
-        Name = 'EMP_NO'
-        Attributes = [faRequired]
-        DataType = ftSmallint
-      end
       item
         Name = 'FIRST_NAME'
         Attributes = [faRequired]
