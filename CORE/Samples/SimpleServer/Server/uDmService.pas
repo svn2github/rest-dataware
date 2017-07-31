@@ -69,7 +69,7 @@ End;
 
 procedure TServerMethodDM.ServerMethodDataModuleCreate(Sender: TObject);
 begin
- RESTDWPoolerDB1.Active := True;
+ RESTDWPoolerDB1.Active := RestDWForm.cbPoolerState.Checked;
 end;
 
 procedure TServerMethodDM.ServerMethodDataModuleReplyEvent(SendType: TSendEvent;

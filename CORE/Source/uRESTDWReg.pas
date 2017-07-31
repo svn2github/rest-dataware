@@ -8,11 +8,15 @@ uses
    LResources, Classes, propedits, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
   {$ELSE}
    {$if CompilerVersion > 21}
-    DMForm, DesignEditors, DesignIntf, ExptIntf, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
+    ToolsApi, DMForm, DesignEditors, DesignIntf, ExptIntf, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
    {$ELSE}
     ToolsApi, DMForm, DesignEditors, DesignIntf, ExptIntf, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
    {$IFEND}
   {$ENDIF}
+
+{$IFNDEF FPC}
+
+{$ENDIF}
 
 Type
  TPoolersList = Class(TStringProperty)
@@ -68,8 +72,8 @@ End;
 Procedure Register;
 Begin
  {$IFNDEF FPC}
-  RegisterCustomModule(TServerMethodDataModule,      TCustomModule); //TDataModuleCustomModule);
-//  RegisterLibraryExpert(TServerMethodDataModule.Create);
+  RegisterNoIcon([TServerMethodDataModule]);
+  RegisterCustomModule(TServerMethodDataModule, TCustomModule); //TDataModuleDesignerCustomModule);
  {$ENDIF}
  RegisterComponents('REST Dataware - Service',     [TRESTServicePooler, TRESTClientPooler]);
  RegisterComponents('REST Dataware - CORE - DB',   [TRESTDWPoolerDB, TRESTDWDataBase, TRESTDWClientSQL, TRESTDWStoredProc, TRESTDWPoolerList]);
