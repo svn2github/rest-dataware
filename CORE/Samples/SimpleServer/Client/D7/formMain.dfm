@@ -1910,7 +1910,7 @@ object Form2: TForm2
   end
   object Button1: TButton
     Left = 366
-    Top = 169
+    Top = 153
     Width = 133
     Height = 24
     Caption = 'Open'
@@ -1941,10 +1941,24 @@ object Form2: TForm2
     State = cbChecked
     TabOrder = 7
   end
+  object Button2: TButton
+    Left = 366
+    Top = 185
+    Width = 133
+    Height = 24
+    Caption = 'Execute'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 8
+    OnClick = Button2Click
+  end
   object RESTDWDataBase1: TRESTDWDataBase
     Active = False
     Compression = True
-    MyIP = '0.0.0.0'
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False

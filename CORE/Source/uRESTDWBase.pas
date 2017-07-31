@@ -645,7 +645,13 @@ Begin
                                                                                                     vExecute);
            DWParams.ItemsString['MessageError'].SetValue(vMessageError);
            DWParams.ItemsString['Error'].SetValue(BooleanToString(vError));
-           DWParams.ItemsString['Result'].SetValue(vTempJSON.ToJSON);
+           If DWParams.ItemsString['Result'] <> Nil Then
+            Begin
+             If vTempJSON <> Nil Then
+              DWParams.ItemsString['Result'].SetValue(vTempJSON.ToJSON)
+             Else
+              DWParams.ItemsString['Result'].SetValue('');
+            End;
           End;
          Break;
         End;
@@ -698,7 +704,13 @@ Begin
                                                                                                      vExecute);
            DWParams.ItemsString['MessageError'].SetValue(vMessageError);
            DWParams.ItemsString['Error'].SetValue(BooleanToString(vError));
-           DWParams.ItemsString['Result'].SetValue(vTempJSON.ToJSON);
+           If DWParams.ItemsString['Result'] <> Nil Then
+            Begin
+             If vTempJSON <> Nil Then
+              DWParams.ItemsString['Result'].SetValue(vTempJSON.ToJSON)
+             Else
+              DWParams.ItemsString['Result'].SetValue('');
+            End;
           End;
          Break;
         End;
@@ -742,7 +754,7 @@ Begin
   Begin
    vResult    := DWParams.ItemsString['Pooler'].Value;
    ExecuteCommandPureJSON(BaseObject, vResult, DWParams);
-   Result     := (DWParams.ItemsString['Result'].Value <> '');
+   Result     := Not(StringToBoolean(DWParams.ItemsString['Error'].Value));
    If Result Then
     JSONStr    := TReplyOK
    Else
@@ -752,7 +764,7 @@ Begin
   Begin
    vResult    := DWParams.ItemsString['Pooler'].Value;
    ExecuteCommandJSON(BaseObject, vResult, DWParams);
-   Result     := (DWParams.ItemsString['Result'].Value <> '');
+   Result     := Not(StringToBoolean(DWParams.ItemsString['Error'].Value));
    If Result Then
     JSONStr    := TReplyOK
    Else

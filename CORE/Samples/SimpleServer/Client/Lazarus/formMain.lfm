@@ -1050,7 +1050,7 @@ object Form2: TForm2
   object Button1: TButton
     Left = 366
     Height = 24
-    Top = 162
+    Top = 148
     Width = 133
     Caption = 'Open'
     Font.Color = clWindowText
@@ -1075,6 +1075,20 @@ object Form2: TForm2
     ParentFont = False
     State = cbChecked
     TabOrder = 7
+  end
+  object Button2: TButton
+    Left = 366
+    Height = 24
+    Top = 176
+    Width = 133
+    Caption = 'Execute'
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    OnClick = Button2Click
+    ParentFont = False
+    TabOrder = 8
   end
   object DataSource1: TDataSource
     AutoEdit = False

@@ -1048,7 +1048,7 @@ object Form2: TForm2
   end
   object Button1: TButton
     Left = 366
-    Top = 169
+    Top = 156
     Width = 133
     Height = 24
     Caption = 'Open'
@@ -1076,6 +1076,21 @@ object Form2: TForm2
     ParentFont = False
     State = cbChecked
     TabOrder = 7
+  end
+  object Button2: TButton
+    Left = 366
+    Top = 185
+    Width = 133
+    Height = 24
+    Caption = 'Execute'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 8
+    OnClick = Button2Click
   end
   object DataSource1: TDataSource
     AutoEdit = False
@@ -1175,6 +1190,7 @@ object Form2: TForm2
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
     RequestTimeOut = 10000
+    EncodeStrings = True
     Encoding = esASCII
     StrsTrim = False
     StrsEmpty2Null = False

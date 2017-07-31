@@ -599,7 +599,11 @@ Begin
     Begin
      Result         := TJSONValue.Create;
      Result.Encoded := False;
-     Result.LoadFromJSON(DWParams.ItemsString['Result'].Value);
+     If DWParams.ItemsString['Result'] <> Nil Then
+      Begin
+       If DWParams.ItemsString['Result'].Value <> '' Then
+        Result.LoadFromJSON(DWParams.ItemsString['Result'].Value);
+      End;
      If DWParams.ItemsString['Error'] <> Nil Then
       Error         := StringToBoolean(DWParams.ItemsString['Error'].Value);
      If DWParams.ItemsString['MessageError'] <> Nil Then
@@ -754,7 +758,11 @@ Begin
     Begin
      Result         := TJSONValue.Create;
      Result.Encoded := False;
-     Result.LoadFromJSON(DWParams.ItemsString['Result'].Value);
+     If DWParams.ItemsString['Result'] <> Nil Then
+      Begin
+       If DWParams.ItemsString['Result'].Value <> '' Then
+        Result.LoadFromJSON(DWParams.ItemsString['Result'].Value);
+      End;
     End;
   Except
   End;

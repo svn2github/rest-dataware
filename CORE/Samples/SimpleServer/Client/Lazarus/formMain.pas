@@ -17,6 +17,7 @@ type
     Bevel2: TBevel;
     Bevel3: TBevel;
     Button1: TButton;
+    Button2: TButton;
     CheckBox1: TCheckBox;
     DBGrid1: TDBGrid;
     edPasswordDW: TEdit;
@@ -36,6 +37,7 @@ type
     RESTDWClientSQL1: TRESTDWClientSQL;
     RESTDWDataBase1: TRESTDWDataBase;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -75,5 +77,27 @@ Begin
  RESTDWClientSQL1.sql.add(mComando.Text);
  RESTDWClientSQL1.Active       := True;
 End;
+
+procedure TForm2.Button2Click(Sender: TObject);
+Var
+ vError : String;
+begin
+ RESTDWDataBase1.Close;
+ RESTDWDataBase1.PoolerService := eHost.Text;
+ RESTDWDataBase1.PoolerPort    := StrToInt(ePort.Text);
+ RESTDWDataBase1.Login         := edUserNameDW.Text;
+ RESTDWDataBase1.Password      := edPasswordDW.Text;
+ RESTDWDataBase1.Compression   := CheckBox1.Checked;
+ RESTDWDataBase1.Open;
+ RESTDWClientSQL1.Close;
+ RESTDWClientSQL1.SQL.Clear;
+ RESTDWClientSQL1.SQL.Add(mComando.Text);
+ If Not RESTDWClientSQL1.ExecSQL(vError) Then
+  MessageBox(0, PChar('Erro executando o comando ' + RESTDWClientSQL1.SQL.Text),
+                         'Erro...', mb_iconerror + mb_ok)
+ Else
+  MessageBox(0, 'Comando executado com sucesso...',
+                         'Informação !!!', mb_iconinformation + mb_ok);
+end;
 
 end.

@@ -36,7 +36,9 @@ type
     CheckBox1: TCheckBox;
     RESTDWClientSQL1: TRESTDWClientSQL;
     RESTDWDataBase1: TRESTDWDataBase;
+    Button2: TButton;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -64,5 +66,27 @@ Begin
  RESTDWClientSQL1.SQL.Add(mComando.Text);
  RESTDWClientSQL1.Open;
 End;
+
+procedure TForm2.Button2Click(Sender: TObject);
+Var
+ vError : String;
+begin
+ RESTDWDataBase1.Close;
+ RESTDWDataBase1.PoolerService := eHost.Text;
+ RESTDWDataBase1.PoolerPort    := StrToInt(ePort.Text);
+ RESTDWDataBase1.Login         := edUserNameDW.Text;
+ RESTDWDataBase1.Password      := edPasswordDW.Text;
+ RESTDWDataBase1.Compression   := CheckBox1.Checked;
+ RESTDWDataBase1.Open;
+ RESTDWClientSQL1.Close;
+ RESTDWClientSQL1.SQL.Clear;
+ RESTDWClientSQL1.SQL.Add(mComando.Text);
+ If Not RESTDWClientSQL1.ExecSQL(vError) Then
+  Application.MessageBox(PChar('Erro executando o comando ' + RESTDWClientSQL1.SQL.Text),
+                         'Erro...', mb_iconerror + mb_ok)
+ Else
+  Application.MessageBox('Comando executado com sucesso...',
+                         'Informação !!!', mb_iconinformation + mb_ok);
+end;
 
 end.
