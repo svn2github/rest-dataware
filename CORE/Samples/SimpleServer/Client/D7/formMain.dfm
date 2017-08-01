@@ -1910,7 +1910,7 @@ object Form2: TForm2
   end
   object Button1: TButton
     Left = 366
-    Top = 153
+    Top = 145
     Width = 133
     Height = 24
     Caption = 'Open'
@@ -1943,7 +1943,7 @@ object Form2: TForm2
   end
   object Button2: TButton
     Left = 366
-    Top = 185
+    Top = 171
     Width = 133
     Height = 24
     Caption = 'Execute'
@@ -1956,10 +1956,17 @@ object Form2: TForm2
     TabOrder = 8
     OnClick = Button2Click
   end
+  object ProgressBar1: TProgressBar
+    Left = 366
+    Top = 199
+    Width = 133
+    Height = 17
+    TabOrder = 9
+  end
   object RESTDWDataBase1: TRESTDWDataBase
-    Active = True
+    Active = False
     Compression = True
-    MyIP = '127.0.0.1'
+    MyIP = '0.0.0.0'
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
@@ -1975,6 +1982,9 @@ object Form2: TForm2
     StrsTrim = False
     StrsEmpty2Null = False
     StrsTrim2Len = True
+    OnWork = RESTDWDataBase1Work
+    OnWorkBegin = RESTDWDataBase1WorkBegin
+    OnWorkEnd = RESTDWDataBase1WorkEnd
     Left = 208
     Top = 144
   end

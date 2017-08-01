@@ -3,10 +3,12 @@ unit formMain;
 interface
 
 uses
-  {$IFDEF WINDOWS}Windows, {$ELSE}LCLType, {$ENDIF}Messages, SysUtils, Variants, Classes, Graphics,
-  Controls, Forms, Dialogs, StdCtrls, fpjson, jsonparser,
-  DB, BufDataset, memds, Grids, DBGrids, ExtCtrls, uRESTDWBase, uRESTDWPoolerDB,
-  uDWConsts, uDWJSONObject, uDWJSONTools;
+  {$IFDEF WINDOWS}Windows,
+  {$ELSE}Lcl,{$ENDIF}
+  Messages, SysUtils, Variants, Classes, Graphics,
+  Controls, Forms, Dialogs, StdCtrls, fpjson, jsonparser, DB, BufDataset, memds,
+  Grids, DBGrids, ExtCtrls, ComCtrls, uRESTDWBase, uRESTDWPoolerDB, uDWConsts,
+  uDWJSONObject, uDWJSONTools, IdComponent;
 
 type
 
@@ -34,12 +36,19 @@ type
     Label8: TLabel;
     mComando: TMemo;
     DataSource1: TDataSource;
+    ProgressBar1: TProgressBar;
     RESTDWClientSQL1: TRESTDWClientSQL;
     RESTDWDataBase1: TRESTDWDataBase;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure RESTDWDataBase1Work(ASender: TObject; AWorkMode: TWorkMode;
+      AWorkCount: Int64);
+    procedure RESTDWDataBase1WorkBegin(ASender: TObject; AWorkMode: TWorkMode;
+      AWorkCountMax: Int64);
+    procedure RESTDWDataBase1WorkEnd(ASender: TObject; AWorkMode: TWorkMode);
   private
     { Private declarations }
+   FBytesToTransfer : Int64;
   public
     { Public declarations }
   end;
@@ -98,6 +107,28 @@ begin
  Else
   MessageBox(0, 'Comando executado com sucesso...',
                          'Informação !!!', mb_iconinformation + mb_ok);
+end;
+
+procedure TForm2.RESTDWDataBase1Work(ASender: TObject; AWorkMode: TWorkMode;
+  AWorkCount: Int64);
+begin
+ If FBytesToTransfer = 0 Then // No Update File
+  Exit;
+ ProgressBar1.Position := AWorkCount;
+end;
+
+procedure TForm2.RESTDWDataBase1WorkBegin(ASender: TObject;
+  AWorkMode: TWorkMode; AWorkCountMax: Int64);
+begin
+ FBytesToTransfer      := AWorkCountMax;
+ ProgressBar1.Max      := FBytesToTransfer;
+ ProgressBar1.Position := 0;
+end;
+
+procedure TForm2.RESTDWDataBase1WorkEnd(ASender: TObject; AWorkMode: TWorkMode);
+begin
+ ProgressBar1.Position := FBytesToTransfer;
+ FBytesToTransfer      := 0;
 end;
 
 end.

@@ -1050,7 +1050,7 @@ object Form2: TForm2
   object Button1: TButton
     Left = 366
     Height = 24
-    Top = 148
+    Top = 138
     Width = 133
     Caption = 'Open'
     Font.Color = clWindowText
@@ -1079,7 +1079,7 @@ object Form2: TForm2
   object Button2: TButton
     Left = 366
     Height = 24
-    Top = 176
+    Top = 166
     Width = 133
     Caption = 'Execute'
     Font.Color = clWindowText
@@ -1090,6 +1090,13 @@ object Form2: TForm2
     ParentFont = False
     TabOrder = 8
   end
+  object ProgressBar1: TProgressBar
+    Left = 366
+    Height = 17
+    Top = 193
+    Width = 133
+    TabOrder = 9
+  end
   object DataSource1: TDataSource
     AutoEdit = False
     DataSet = RESTDWClientSQL1
@@ -1097,9 +1104,9 @@ object Form2: TForm2
     top = 328
   end
   object RESTDWDataBase1: TRESTDWDataBase
-    Active = True
+    Active = False
     Compression = True
-    MyIP = '127.0.0.1'
+    MyIP = '0.0.0.0'
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
@@ -1115,6 +1122,9 @@ object Form2: TForm2
     StrsTrim = False
     StrsEmpty2Null = False
     StrsTrim2Len = True
+    OnWork = RESTDWDataBase1Work
+    OnWorkBegin = RESTDWDataBase1WorkBegin
+    OnWorkEnd = RESTDWDataBase1WorkEnd
     left = 344
     top = 280
   end
