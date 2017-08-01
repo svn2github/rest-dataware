@@ -92,7 +92,6 @@ Var
  DWParams     : TDWParams;
  JSONParam    : TJSONParam;
  StringStream : TStringStream;
- MemoryStream : TMemoryStream;
 Begin
  If lbLocalFiles.ItemIndex > -1 Then
   Begin
@@ -143,7 +142,6 @@ End;
 
 procedure TForm4.Button3Click(Sender: TObject);
 Var
- vCMWebServiceOnLine : TRESTClientPooler;
  DWParams            : TDWParams;
  JSONParam           : TJSONParam;
  lResponse           : String;
@@ -153,7 +151,7 @@ Begin
   If OpenDialog1.Execute Then
   Begin
    DWParams                     := TDWParams.Create;
-   DWParams.Encoding            := GetEncoding(vCMWebServiceOnLine.Encoding);
+   DWParams.Encoding            := GetEncoding(RESTClientPooler1.Encoding);
    JSONParam                    := TJSONParam.Create(DWParams.Encoding);
    JSONParam.ParamName          := 'Arquivo';
    JSONParam.ObjectDirection    := odIN;

@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics,
   Controls, Forms, Dialogs, StdCtrls, uRESTDWBase, ExtCtrls,
-  pngimage, uDWJSONObject, uDWConsts, acPNG;
+  pngimage, uDWJSONObject, uDWConsts, uDWConstsData, acPNG,
+  ComCtrls, idComponent;
 
 type
   TForm4 = class(TForm)
@@ -30,12 +31,20 @@ type
     OpenDialog1: TOpenDialog;
     cmb_tmp: TComboBox;
     Label2: TLabel;
+    ProgressBar1: TProgressBar;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure RESTClientPooler1Work(ASender: TObject; AWorkMode: TWorkMode;
+      AWorkCount: Int64);
+    procedure RESTClientPooler1WorkBegin(ASender: TObject;
+      AWorkMode: TWorkMode; AWorkCountMax: Int64);
+    procedure RESTClientPooler1WorkEnd(ASender: TObject;
+      AWorkMode: TWorkMode);
   private
     { Private declarations }
+   FBytesToTransfer : Int64;
   public
     { Public declarations }
    DirName : String;
@@ -86,8 +95,7 @@ Var
  JSONValue    : TJSONValue;
  DWParams     : TDWParams;
  JSONParam    : TJSONParam;
- StringStream,
- MemoryStream : TMemoryStream;
+ StringStream : TMemoryStream;
 Begin
  If lbLocalFiles.ItemIndex > -1 Then
   Begin
@@ -137,7 +145,6 @@ End;
 
 procedure TForm4.Button3Click(Sender: TObject);
 Var
- vCMWebServiceOnLine : TRESTClientPooler;
  DWParams            : TDWParams;
  JSONParam           : TJSONParam;
  lResponse           : String;
@@ -184,6 +191,29 @@ begin
              IncludeTrailingPathDelimiter('filelist');
  If Not DirectoryExists(DirName) Then
   ForceDirectories(DirName);
+end;
+
+procedure TForm4.RESTClientPooler1Work(ASender: TObject;
+  AWorkMode: TWorkMode; AWorkCount: Int64);
+begin
+  If FBytesToTransfer = 0 Then // No Update File
+   Exit;
+  ProgressBar1.Position := AWorkCount;
+end;
+
+procedure TForm4.RESTClientPooler1WorkBegin(ASender: TObject;
+  AWorkMode: TWorkMode; AWorkCountMax: Int64);
+begin
+ FBytesToTransfer := AWorkCountMax;
+ ProgressBar1.Max := FBytesToTransfer;
+ ProgressBar1.Position := 0;
+end;
+
+procedure TForm4.RESTClientPooler1WorkEnd(ASender: TObject;
+  AWorkMode: TWorkMode);
+begin
+ ProgressBar1.Position := FBytesToTransfer;
+ FBytesToTransfer      := 0;
 end;
 
 end.
