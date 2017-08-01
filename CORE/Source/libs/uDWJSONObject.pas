@@ -890,7 +890,17 @@ Begin
   If Not(vObjectValue In [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
                           ovMemo,     ovGraphic, ovFmtMemo,  ovOraBlob,
                           ovOraClob]) Then
-   SetValue(vTempValue, vEncoded);
+   SetValue(vTempValue, vEncoded)
+  Else
+   Begin
+    Try
+     vStringStream := TMemoryStream.Create;
+     HexToStream(vTempValue, vStringStream);
+     aValue := tIdBytes(StreamToBytes(vStringStream));
+    Finally
+     vStringStream.Free;
+    End;
+   End;
 //  vEncoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
  Finally
 
@@ -944,7 +954,7 @@ Begin
  Else
   {$IFNDEF FPC}
    {$if CompilerVersion > 21}
-    aValue := tIdBytes(vEncoding.GetBytes(bValue));
+    aValue := ToBytes(bValue); //tIdBytes(vEncoding.GetBytes(bValue));
    {$ELSE}
     aValue := ToBytes(bValue);
    {$IFEND}
@@ -1049,7 +1059,7 @@ procedure TJSONParam.LoadFromStream(Stream: TMemoryStream; Encode: Boolean);
 begin
  ObjectValue        := ovBlob;
  vBinary            := False;
- SetValue(StreamToHex(Stream), Encode);
+ SetValue(StreamToHex(Stream), False);
 end;
 
 procedure TJSONParam.FromJSON(JSON: String);

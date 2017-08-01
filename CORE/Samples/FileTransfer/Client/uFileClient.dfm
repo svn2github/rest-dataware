@@ -1075,6 +1075,13 @@ object Form4: TForm4
       '3 minutos'
       '5 minutos')
   end
+  object ProgressBar1: TProgressBar
+    Left = 376
+    Top = 303
+    Width = 119
+    Height = 17
+    TabOrder = 9
+  end
   object RESTClientPooler1: TRESTClientPooler
     DataCompression = False
     Encoding = esASCII
@@ -1085,6 +1092,9 @@ object Form4: TForm4
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 60000
     ThreadRequest = False
+    OnWork = RESTClientPooler1Work
+    OnWorkBegin = RESTClientPooler1WorkBegin
+    OnWorkEnd = RESTClientPooler1WorkEnd
     Left = 77
     Top = 41
   end

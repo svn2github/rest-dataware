@@ -89,6 +89,10 @@ End;
 Type
  TRESTDWDataBase = Class(TComponent)
  Private
+  vOnWork              : TOnWork;
+  vOnWorkBegin         : TOnWorkBegin;
+  vOnWorkEnd           : TOnWorkEnd;
+  vOnStatus            : TOnStatus;
   vLogin,                                            //Login do Usuário caso haja autenticação
   vPassword,                                         //Senha do Usuário caso haja autenticação
   vRestWebService,                                   //Rest WebService para consultas
@@ -111,9 +115,13 @@ Type
   vStrsTrim,
   vStrsEmpty2Null,
   vStrsTrim2Len        : Boolean;
-  Procedure SetConnection(Value : Boolean);          //Seta o Estado da Conexão
-  Procedure SetRestPooler(Value : String);           //Seta o Restpooler a ser utilizado
-  Procedure SetPoolerPort(Value : Integer);          //Seta a Porta do Pooler a ser usada
+  Procedure SetOnWork     (Value : TOnWork);
+  Procedure SetOnWorkBegin(Value : TOnWorkBegin);
+  Procedure SetOnWorkEnd  (Value : TOnWorkEnd);
+  Procedure SetOnStatus   (Value : TOnStatus);
+  Procedure SetConnection (Value : Boolean);          //Seta o Estado da Conexão
+  Procedure SetRestPooler (Value : String);           //Seta o Restpooler a ser utilizado
+  Procedure SetPoolerPort (Value : Integer);          //Seta a Porta do Pooler a ser usada
   Procedure CheckConnection;                         //Checa o Estado automatico da Conexão
   Function  TryConnect : Boolean;                    //Tenta Conectar o Servidor para saber se posso executar comandos
   Procedure SetConnectionOptions(Var Value : TRESTClientPooler); //Seta as Opções de Conexão
@@ -168,6 +176,10 @@ Type
   Property StrsTrim           : Boolean                  Read vStrsTrim           Write vStrsTrim;
   Property StrsEmpty2Null     : Boolean                  Read vStrsEmpty2Null     Write vStrsEmpty2Null;
   Property StrsTrim2Len       : Boolean                  Read vStrsTrim2Len       Write vStrsTrim2Len;
+  Property OnWork             : TOnWork                  Read vOnWork             Write SetOnWork;
+  Property OnWorkBegin        : TOnWorkBegin             Read vOnWorkBegin        Write SetOnWorkBegin;
+  Property OnWorkEnd          : TOnWorkEnd               Read vOnWorkEnd          Write SetOnWorkEnd;
+  Property OnStatus           : TOnStatus                Read vOnStatus           Write SetOnStatus;
 End;
 
 Type
@@ -861,6 +873,42 @@ Begin
   End;
 End;
 
+Procedure TRESTDWDataBase.SetOnStatus(Value : TOnStatus);
+Begin
+ {$IFDEF FPC}
+  vOnStatus            := Value;
+ {$ELSE}
+  vOnStatus            := Value;
+ {$ENDIF}
+End;
+
+Procedure TRESTDWDataBase.SetOnWork(Value : TOnWork);
+Begin
+ {$IFDEF FPC}
+  vOnWork            := Value;
+ {$ELSE}
+  vOnWork            := Value;
+ {$ENDIF}
+End;
+
+Procedure TRESTDWDataBase.SetOnWorkBegin(Value : TOnWorkBegin);
+Begin
+ {$IFDEF FPC}
+  vOnWorkBegin            := Value;
+ {$ELSE}
+  vOnWorkBegin            := Value;
+ {$ENDIF}
+End;
+
+Procedure TRESTDWDataBase.SetOnWorkEnd(Value : TOnWorkEnd);
+Begin
+ {$IFDEF FPC}
+  vOnWorkEnd            := Value;
+ {$ELSE}
+  vOnWorkEnd            := Value;
+ {$ENDIF}
+End;
+
 Procedure TRESTDWDataBase.SetConnectionOptions(Var Value : TRESTClientPooler);
 Begin
  Value                     := TRESTClientPooler.Create(Nil);
@@ -1065,14 +1113,23 @@ Begin
  if vRestPooler = '' then
   Exit;
  ParseParams;
- vRESTConnectionDB             := TDWPoolerMethodClient.Create(Nil);
- vRESTConnectionDB.Host        := vRestWebService;
- vRESTConnectionDB.Port        := vPoolerPort;
- vRESTConnectionDB.Compression := vCompression;
+ vRESTConnectionDB              := TDWPoolerMethodClient.Create(Nil);
+ vRESTConnectionDB.Host         := vRestWebService;
+ vRESTConnectionDB.Port         := vPoolerPort;
+ vRESTConnectionDB.Compression  := vCompression;
  {$IFNDEF FPC}
+  vRESTConnectionDB.OnWork      := vOnWork;
+  vRESTConnectionDB.OnWorkBegin := vOnWorkBegin;
+  vRESTConnectionDB.OnWorkEnd   := vOnWorkEnd;
+  vRESTConnectionDB.OnStatus    := vOnStatus;
   {$if CompilerVersion > 21}
   vRESTConnectionDB.Encoding    := VEncondig;
   {$IFEND}
+ {$ELSE}
+  vRESTConnectionDB.OnWork      := vOnWork;
+  vRESTConnectionDB.OnWorkBegin := vOnWorkBegin;
+  vRESTConnectionDB.OnWorkEnd   := vOnWorkEnd;
+  vRESTConnectionDB.OnStatus    := vOnStatus;
  {$ENDIF}
  Try
   If Params.Count > 0 Then
@@ -1294,9 +1351,18 @@ Begin
  vConnection.Port        := vPoolerPort;
  vConnection.Compression := vCompression;
  {$IFNDEF FPC}
+  vConnection.OnWork      := vOnWork;
+  vConnection.OnWorkBegin := vOnWorkBegin;
+  vConnection.OnWorkEnd   := vOnWorkEnd;
+  vConnection.OnStatus    := vOnStatus;
   {$if CompilerVersion > 21}
   vConnection.Encoding    := VEncondig;
   {$IFEND}
+ {$ELSE}
+  vConnection.OnWork      := vOnWork;
+  vConnection.OnWorkBegin := vOnWorkBegin;
+  vConnection.OnWorkEnd   := vOnWorkEnd;
+  vConnection.OnStatus    := vOnStatus;
  {$ENDIF}
  Try
   vTempSend   := vConnection.EchoPooler(vRestURL, vRestPooler, vTimeOut, vLogin, vPassword);

@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, uRESTDWBase, Vcl.ExtCtrls,
-  Vcl.Imaging.pngimage, uDWJSONObject, uDWConsts, uDWConstsData;
+  Vcl.Imaging.pngimage, uDWJSONObject, uDWConsts, uDWConstsData, Vcl.ComCtrls, idComponent;
 
 type
   TForm4 = class(TForm)
@@ -30,12 +30,19 @@ type
     OpenDialog1: TOpenDialog;
     cmb_tmp: TComboBox;
     Label2: TLabel;
+    ProgressBar1: TProgressBar;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure RESTClientPooler1Work(ASender: TObject; AWorkMode: TWorkMode;
+      AWorkCount: Int64);
+    procedure RESTClientPooler1WorkBegin(ASender: TObject; AWorkMode: TWorkMode;
+      AWorkCountMax: Int64);
+    procedure RESTClientPooler1WorkEnd(ASender: TObject; AWorkMode: TWorkMode);
   private
     { Private declarations }
+   FBytesToTransfer : Int64;
   public
     { Public declarations }
    DirName : String;
@@ -184,6 +191,29 @@ begin
              IncludeTrailingPathDelimiter('filelist');
  If Not DirectoryExists(DirName) Then
   ForceDirectories(DirName);
+end;
+
+procedure TForm4.RESTClientPooler1Work(ASender: TObject; AWorkMode: TWorkMode;
+  AWorkCount: Int64);
+begin
+  If FBytesToTransfer = 0 Then // No Update File
+   Exit;
+  ProgressBar1.Position := AWorkCount;
+end;
+
+procedure TForm4.RESTClientPooler1WorkBegin(ASender: TObject;
+  AWorkMode: TWorkMode; AWorkCountMax: Int64);
+begin
+ FBytesToTransfer := AWorkCountMax;
+ ProgressBar1.Max := FBytesToTransfer;
+ ProgressBar1.Position := 0;
+end;
+
+procedure TForm4.RESTClientPooler1WorkEnd(ASender: TObject;
+  AWorkMode: TWorkMode);
+begin
+ ProgressBar1.Position := FBytesToTransfer;
+ FBytesToTransfer      := 0;
 end;
 
 end.

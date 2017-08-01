@@ -26,9 +26,9 @@ interface
 Uses
      {$IFDEF FPC}
      SysUtils,                      Classes,            ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
-     IdContext,                     IdHTTPServer,       IdCustomHTTPServer,  IdSSLOpenSSL,    IdSSL,
-     IdAuthentication,              IdHTTPHeaderInfo,
-     IdHTTP, uDWJSONParser,         uDWConstsData,       IdMultipartFormData, IdMessageCoder,
+     IdContext, IdTCPConnection,    IdHTTPServer,       IdCustomHTTPServer,  IdSSLOpenSSL,    IdSSL,
+     IdAuthentication,              IdTCPClient,        IdHTTPHeaderInfo,    IdComponent, IdBaseComponent,
+     IdHTTP, uDWJSONParser,         uDWConstsData,      IdMultipartFormData, IdMessageCoder,
      IdMessageCoderMIME, IdMessage, uDWJSONObject, IdGlobal,            IdGlobalProtocols;
      {$ELSE}
      {$IF CompilerVersion < 21}
@@ -36,19 +36,30 @@ Uses
      {$ELSE}
      System.SysUtils, System.Classes,
      {$IFEND}
-     ServerUtils, Windows,  uDWConstsData,       IdMultipartFormData,
+     ServerUtils, Windows,  uDWConstsData,       IdTCPClient,           IdMultipartFormData,
      IdContext,             IdHTTPServer,        IdCustomHTTPServer,    IdSSLOpenSSL,    IdSSL,
-     IdAuthentication,      IdHTTPHeaderInfo,
+     IdAuthentication,      IdHTTPHeaderInfo,    IdComponent, IdBaseComponent, IdTCPConnection,
      IdHTTP, uDWJSONParser, uDWJSONObject,       IdMessageCoder,
      IdMessageCoderMIME,    IdMessage,           IdGlobalProtocols,     IdGlobal;
      {$ENDIF}
 
 Type
- TLastRequest  = Procedure (Value     : String)                  Of Object;
- TLastResponse = Procedure (Value     : String)                  Of Object;
- TEventContext = Procedure (AContext      : TIdContext;
-                            ARequestInfo  : TIdHTTPRequestInfo;
-                            AResponseInfo : TIdHTTPResponseInfo) Of Object;
+ TLastRequest  = Procedure (Value             : String)              Of Object;
+ TLastResponse = Procedure (Value             : String)              Of Object;
+ TEventContext = Procedure (AContext          : TIdContext;
+                            ARequestInfo      : TIdHTTPRequestInfo;
+                            AResponseInfo     : TIdHTTPResponseInfo) Of Object;
+ TOnWork       = Procedure (ASender           : TObject;
+                            AWorkMode         : TWorkMode;
+                            AWorkCount        : Int64)               Of Object;
+ TOnWorkBegin  = Procedure (ASender           : TObject;
+                            AWorkMode         : TWorkMode;
+                            AWorkCountMax     : Int64)               Of Object;
+ TOnWorkEnd    = Procedure (ASender           : TObject;
+                            AWorkMode         : TWorkMode)           Of Object;
+ TOnStatus     = Procedure (ASender           : TObject;
+                            Const AStatus     : TIdStatus;
+                            Const AStatusText : String)              Of Object;
 
 Type
  TCallBack     = Procedure (JSon : String; DWParams : TDWParams) Of Object;
@@ -58,7 +69,7 @@ Type
 End;
 
 TThread_Request = class(TThread)
-  FHttpRequest :TIdHTTP;
+  FHttpRequest      : TIdHTTP;
   vUserName,
   vPassword,
   vHost             : String;
@@ -190,8 +201,16 @@ Type
   //Variáveis, Procedures e  Funções Protegidas
   HttpRequest       : TIdHTTP;
   Procedure SetParams;
+  Procedure SetOnWork     (Value : TOnWork);
+  Procedure SetOnWorkBegin(Value : TOnWorkBegin);
+  Procedure SetOnWorkEnd  (Value : TOnWorkEnd);
+  Procedure SetOnStatus   (Value : TOnStatus);
  Private
   //Variáveis, Procedures e Funções Privadas
+  vOnWork           : TOnWork;
+  vOnWorkBegin      : TOnWorkBegin;
+  vOnWorkEnd        : TOnWorkEnd;
+  vOnStatus         : TOnStatus;
   vTypeRequest      : TTypeRequest;
   vRSCharset        : TEncodeSelect;
   vUrlPath,
@@ -231,6 +250,10 @@ Type
   Property ProxyOptions     : TIdProxyConnectionInfo Read vTransparentProxy Write vTransparentProxy;
   Property RequestTimeOut   : Integer                Read vRequestTimeOut   Write vRequestTimeOut;
   Property ThreadRequest    : Boolean                Read vThreadRequest    Write vThreadRequest;
+  Property OnWork           : TOnWork                Read vOnWork           Write SetOnWork;
+  Property OnWorkBegin      : TOnWorkBegin           Read vOnWorkBegin      Write SetOnWorkBegin;
+  Property OnWorkEnd        : TOnWorkEnd             Read vOnWorkEnd        Write SetOnWorkEnd;
+  Property OnStatus         : TOnStatus              Read vOnStatus         Write SetOnStatus;
 End;
 
 implementation
@@ -513,6 +536,50 @@ Begin
  Except
  End;
  RBody.Free;
+End;
+
+Procedure TRESTClientPooler.SetOnStatus(Value : TOnStatus);
+Begin
+ {$IFDEF FPC}
+  vOnStatus            := Value;
+  HttpRequest.OnStatus := vOnStatus;
+ {$ELSE}
+  vOnStatus            := Value;
+  HttpRequest.OnStatus := vOnStatus;
+ {$ENDIF}
+End;
+
+Procedure TRESTClientPooler.SetOnWork(Value : TOnWork);
+Begin
+ {$IFDEF FPC}
+  vOnWork            := Value;
+  HttpRequest.OnWork := vOnWork;
+ {$ELSE}
+  vOnWork            := Value;
+  HttpRequest.OnWork := vOnWork;
+ {$ENDIF}
+End;
+
+Procedure TRESTClientPooler.SetOnWorkBegin(Value : TOnWorkBegin);
+Begin
+ {$IFDEF FPC}
+  vOnWorkBegin            := Value;
+  HttpRequest.OnWorkBegin := vOnWorkBegin;
+ {$ELSE}
+  vOnWorkBegin            := Value;
+  HttpRequest.OnWorkBegin := vOnWorkBegin;
+ {$ENDIF}
+End;
+
+Procedure TRESTClientPooler.SetOnWorkEnd(Value : TOnWorkEnd);
+Begin
+ {$IFDEF FPC}
+  vOnWorkEnd            := Value;
+  HttpRequest.OnWorkEnd := vOnWorkEnd;
+ {$ELSE}
+  vOnWorkEnd            := Value;
+  HttpRequest.OnWorkEnd := vOnWorkEnd;
+ {$ENDIF}
 End;
 
 Procedure TRESTClientPooler.SetParams;

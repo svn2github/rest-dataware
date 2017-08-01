@@ -12,7 +12,8 @@ Uses Winapi.Windows,    Winapi.Messages, System.SysUtils,         System.Variant
   FireDAC.Stan.Error, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
   FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.FB, Data.DB,
   FireDAC.Comp.Client, FireDAC.Comp.UI, FireDAC.Phys.IBBase,
-  FireDAC.Stan.StorageJSON;
+  FireDAC.Stan.StorageJSON, IdComponent, IdBaseComponent, IdTCPConnection,
+  IdTCPClient, IdHTTP;
 
 type
   TRestDWForm = class(TForm)

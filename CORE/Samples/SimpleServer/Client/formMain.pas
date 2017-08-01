@@ -7,7 +7,8 @@ uses
   Controls, Forms, Dialogs, StdCtrls, uDWJSONObject,
   DB, Grids, DBGrids, uRESTDWBase,  uDWJSONTools,
   uDWConsts, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
-  uRESTDWPoolerDB, JvMemoryDataset;
+  uRESTDWPoolerDB, JvMemoryDataset, Vcl.ComCtrls,
+  idComponent;
 
 type
 
@@ -37,10 +38,17 @@ type
     RESTDWClientSQL1: TRESTDWClientSQL;
     RESTDWDataBase1: TRESTDWDataBase;
     Button2: TButton;
+    ProgressBar1: TProgressBar;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure RESTDWDataBase1WorkBegin(ASender: TObject; AWorkMode: TWorkMode;
+      AWorkCountMax: Int64);
+    procedure RESTDWDataBase1Work(ASender: TObject; AWorkMode: TWorkMode;
+      AWorkCount: Int64);
+    procedure RESTDWDataBase1WorkEnd(ASender: TObject; AWorkMode: TWorkMode);
   private
     { Private declarations }
+   FBytesToTransfer : Int64;
   public
     { Public declarations }
   end;
@@ -87,6 +95,28 @@ begin
  Else
   Application.MessageBox('Comando executado com sucesso...',
                          'Informação !!!', mb_iconinformation + mb_ok);
+end;
+
+procedure TForm2.RESTDWDataBase1Work(ASender: TObject; AWorkMode: TWorkMode;
+  AWorkCount: Int64);
+begin
+  If FBytesToTransfer = 0 Then // No Update File
+   Exit;
+  ProgressBar1.Position := AWorkCount;
+end;
+
+procedure TForm2.RESTDWDataBase1WorkBegin(ASender: TObject;
+  AWorkMode: TWorkMode; AWorkCountMax: Int64);
+begin
+ FBytesToTransfer      := AWorkCountMax;
+ ProgressBar1.Max      := FBytesToTransfer;
+ ProgressBar1.Position := 0;
+end;
+
+procedure TForm2.RESTDWDataBase1WorkEnd(ASender: TObject; AWorkMode: TWorkMode);
+begin
+ ProgressBar1.Position := FBytesToTransfer;
+ FBytesToTransfer      := 0;
 end;
 
 end.

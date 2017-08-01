@@ -18,6 +18,10 @@ Uses {$IFDEF FPC}
  Type
   TDWPoolerMethodClient  = Class(TComponent)
   Private
+   vOnWork               : TOnWork;
+   vOnWorkBegin          : TOnWorkBegin;
+   vOnWorkEnd            : TOnWorkEnd;
+   vOnStatus             : TOnStatus;
    vCompression          : Boolean;
    {$IFNDEF FPC}
     {$if CompilerVersion > 21}
@@ -26,6 +30,10 @@ Uses {$IFDEF FPC}
    {$ENDIF}
    vHost : String;
    vPort : Integer;
+   Procedure SetOnWork     (Value : TOnWork);
+   Procedure SetOnWorkBegin(Value : TOnWorkBegin);
+   Procedure SetOnWorkEnd  (Value : TOnWorkEnd);
+   Procedure SetOnStatus   (Value : TOnStatus);
   Public
    Constructor Create(AOwner: TComponent);Override;
    Destructor  Destroy;Override;
@@ -135,11 +143,15 @@ Uses {$IFDEF FPC}
    Property Compression  : Boolean   Read vCompression Write vCompression;
   {$IFNDEF FPC}
    {$if CompilerVersion > 21}
-   Property Encoding     : TEncodeSelect     Read vEncoding        Write vEncoding;
+   Property Encoding    : TEncodeSelect Read vEncoding    Write vEncoding;
    {$IFEND}
   {$ENDIF}
-   Property    Host : String   Read vHost Write vHost;
-   Property    Port : Integer  Read vPort Write vPort;
+   Property Host        : String        Read vHost        Write vHost;
+   Property Port        : Integer       Read vPort        Write vPort;
+   Property OnWork      : TOnWork       Read vOnWork      Write SetOnWork;
+   Property OnWorkBegin : TOnWorkBegin  Read vOnWorkBegin Write SetOnWorkBegin;
+   Property OnWorkEnd   : TOnWorkEnd    Read vOnWorkEnd   Write SetOnWorkEnd;
+   Property OnStatus    : TOnStatus     Read vOnStatus    Write SetOnStatus;
   End;
 
 implementation
@@ -171,6 +183,42 @@ Procedure TDWPoolerMethodClient.ApplyChangesPure(Pooler, Method_Prefix,
                                                  Password                : String  = '');
 Begin
 
+End;
+
+Procedure TDWPoolerMethodClient.SetOnStatus(Value : TOnStatus);
+Begin
+ {$IFDEF FPC}
+  vOnStatus            := Value;
+ {$ELSE}
+  vOnStatus            := Value;
+ {$ENDIF}
+End;
+
+Procedure TDWPoolerMethodClient.SetOnWork(Value : TOnWork);
+Begin
+ {$IFDEF FPC}
+  vOnWork            := Value;
+ {$ELSE}
+  vOnWork            := Value;
+ {$ENDIF}
+End;
+
+Procedure TDWPoolerMethodClient.SetOnWorkBegin(Value : TOnWorkBegin);
+Begin
+ {$IFDEF FPC}
+  vOnWorkBegin            := Value;
+ {$ELSE}
+  vOnWorkBegin            := Value;
+ {$ENDIF}
+End;
+
+Procedure TDWPoolerMethodClient.SetOnWorkEnd(Value : TOnWorkEnd);
+Begin
+ {$IFDEF FPC}
+  vOnWorkEnd            := Value;
+ {$ELSE}
+  vOnWorkEnd            := Value;
+ {$ENDIF}
 End;
 
 Constructor TDWPoolerMethodClient.Create(AOwner: TComponent);
@@ -210,6 +258,17 @@ Begin
  RESTClientPooler.RequestTimeOut  := TimeOut;
  RESTClientPooler.UrlPath         := Method_Prefix;
  RESTClientPooler.DataCompression := Compression;
+ {$IFDEF FPC}
+  RESTClientPooler.OnWork        := vOnWork;
+  RESTClientPooler.OnWorkBegin   := vOnWorkBegin;
+  RESTClientPooler.OnWorkEnd     := vOnWorkEnd;
+  RESTClientPooler.OnStatus      := vOnStatus;
+ {$ELSE}
+  RESTClientPooler.OnWork        := vOnWork;
+  RESTClientPooler.OnWorkBegin   := vOnWorkBegin;
+  RESTClientPooler.OnWorkEnd     := vOnWorkEnd;
+  RESTClientPooler.OnStatus      := vOnStatus;
+ {$ENDIF}
  {$IFNDEF FPC}
   {$if CompilerVersion > 21}
    RESTClientPooler.Encoding     := vEncoding;
@@ -273,6 +332,17 @@ Begin
  RESTClientPooler.Password       := Password;
  RESTClientPooler.RequestTimeOut := TimeOut;
  RESTClientPooler.UrlPath        := Method_Prefix;
+ {$IFDEF FPC}
+  RESTClientPooler.OnWork        := vOnWork;
+  RESTClientPooler.OnWorkBegin   := vOnWorkBegin;
+  RESTClientPooler.OnWorkEnd     := vOnWorkEnd;
+  RESTClientPooler.OnStatus      := vOnStatus;
+ {$ELSE}
+  RESTClientPooler.OnWork        := vOnWork;
+  RESTClientPooler.OnWorkBegin   := vOnWorkBegin;
+  RESTClientPooler.OnWorkEnd     := vOnWorkEnd;
+  RESTClientPooler.OnStatus      := vOnStatus;
+ {$ENDIF}
  DWParams                        := TDWParams.Create;
  {$IFNDEF FPC}
   {$if CompilerVersion > 21}
@@ -338,6 +408,17 @@ Begin
  RESTClientPooler.Password       := Password;
  RESTClientPooler.RequestTimeOut := TimeOut;
  RESTClientPooler.UrlPath        := Method_Prefix;
+ {$IFDEF FPC}
+  RESTClientPooler.OnWork        := vOnWork;
+  RESTClientPooler.OnWorkBegin   := vOnWorkBegin;
+  RESTClientPooler.OnWorkEnd     := vOnWorkEnd;
+  RESTClientPooler.OnStatus      := vOnStatus;
+ {$ELSE}
+  RESTClientPooler.OnWork        := vOnWork;
+  RESTClientPooler.OnWorkBegin   := vOnWorkBegin;
+  RESTClientPooler.OnWorkEnd     := vOnWorkEnd;
+  RESTClientPooler.OnStatus      := vOnStatus;
+ {$ENDIF}
  DWParams                        := TDWParams.Create;
  {$IFNDEF FPC}
   {$if CompilerVersion > 21}
@@ -479,6 +560,17 @@ Begin
  RESTClientPooler.Password       := Password;
  RESTClientPooler.RequestTimeOut := TimeOut;
  RESTClientPooler.UrlPath        := Method_Prefix;
+ {$IFDEF FPC}
+  RESTClientPooler.OnWork        := vOnWork;
+  RESTClientPooler.OnWorkBegin   := vOnWorkBegin;
+  RESTClientPooler.OnWorkEnd     := vOnWorkEnd;
+  RESTClientPooler.OnStatus      := vOnStatus;
+ {$ELSE}
+  RESTClientPooler.OnWork        := vOnWork;
+  RESTClientPooler.OnWorkBegin   := vOnWorkBegin;
+  RESTClientPooler.OnWorkEnd     := vOnWorkEnd;
+  RESTClientPooler.OnStatus      := vOnStatus;
+ {$ENDIF}
  DWParams                        := TDWParams.Create;
  {$IFNDEF FPC}
   {$if CompilerVersion > 21}
@@ -652,6 +744,17 @@ Begin
  RESTClientPooler.Password       := Password;
  RESTClientPooler.RequestTimeOut := TimeOut;
  RESTClientPooler.UrlPath        := Method_Prefix;
+ {$IFDEF FPC}
+  RESTClientPooler.OnWork        := vOnWork;
+  RESTClientPooler.OnWorkBegin   := vOnWorkBegin;
+  RESTClientPooler.OnWorkEnd     := vOnWorkEnd;
+  RESTClientPooler.OnStatus      := vOnStatus;
+ {$ELSE}
+  RESTClientPooler.OnWork        := vOnWork;
+  RESTClientPooler.OnWorkBegin   := vOnWorkBegin;
+  RESTClientPooler.OnWorkEnd     := vOnWorkEnd;
+  RESTClientPooler.OnStatus      := vOnStatus;
+ {$ENDIF}
  DWParams                        := TDWParams.Create;
  {$IFNDEF FPC}
   {$if CompilerVersion > 21}

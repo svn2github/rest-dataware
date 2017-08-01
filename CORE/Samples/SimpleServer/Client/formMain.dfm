@@ -1048,7 +1048,7 @@ object Form2: TForm2
   end
   object Button1: TButton
     Left = 366
-    Top = 156
+    Top = 145
     Width = 133
     Height = 24
     Caption = 'Open'
@@ -1079,7 +1079,7 @@ object Form2: TForm2
   end
   object Button2: TButton
     Left = 366
-    Top = 185
+    Top = 173
     Width = 133
     Height = 24
     Caption = 'Execute'
@@ -1091,6 +1091,13 @@ object Form2: TForm2
     ParentFont = False
     TabOrder = 8
     OnClick = Button2Click
+  end
+  object ProgressBar1: TProgressBar
+    Left = 366
+    Top = 200
+    Width = 133
+    Height = 17
+    TabOrder = 9
   end
   object DataSource1: TDataSource
     AutoEdit = False
@@ -1195,6 +1202,9 @@ object Form2: TForm2
     StrsTrim = False
     StrsEmpty2Null = False
     StrsTrim2Len = True
+    OnWork = RESTDWDataBase1Work
+    OnWorkBegin = RESTDWDataBase1WorkBegin
+    OnWorkEnd = RESTDWDataBase1WorkEnd
     Left = 232
     Top = 32
   end
