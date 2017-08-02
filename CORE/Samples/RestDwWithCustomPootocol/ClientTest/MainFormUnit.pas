@@ -7,12 +7,10 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uRESTDWPoolerDB, Data.DB, Vcl.StdCtrls,
   uRESTDWBase, Vcl.Grids, Vcl.DBGrids, uDWConstsData, uDWJSONObject, uDWConsts,
-  kbmMemTable, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error,
-  FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
-  FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait, FireDAC.Comp.Client,
+  kbmMemTable,
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.DBCtrls, Protocol, RequestFrameUnit,
-  Vcl.Samples.Spin, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
-  FireDAC.Comp.DataSet, Vcl.Imaging.pngimage;
+  Vcl.Samples.Spin, Vcl.Imaging.pngimage, mmsystem, IdBaseComponent,
+  IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, JvComponentBase, JvComputerInfoEx;
 
 type
   TForm1 = class(TForm)
@@ -39,12 +37,22 @@ type
     Label2: TLabel;
     Label3: TLabel;
     ListBox1: TListBox;
+    JvComputerInfoEx1: TJvComputerInfoEx;
     procedure FormCreate(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure RESTClientPooler1Status(ASender: TObject;
+      const AStatus: TIdStatus; const AStatusText: string);
+    procedure RESTClientPooler1Work(ASender: TObject; AWorkMode: TWorkMode;
+      AWorkCount: Int64);
+    procedure RESTClientPooler1WorkBegin(ASender: TObject; AWorkMode: TWorkMode;
+      AWorkCountMax: Int64);
+    procedure RESTClientPooler1WorkEnd(ASender: TObject; AWorkMode: TWorkMode);
   private
+    WorkBeginTime, WorkEndTime: Cardinal;
+
     LastPage: Integer;
     procedure AddLog(Text: string; ShowTime: Boolean = True);
     procedure RaiseServerException(const Response: string;
@@ -181,22 +189,22 @@ var
   JSONValue: uDWJSONObject.TJSONValue;
   I: Integer;
   RequestFrame: TRequestFrame;
-  AfterTime, BeforeTime: TDateTime;
+  StartTime, ProcessTime: Cardinal;
 begin
+  AddLog('');
   RESTClientPooler1.Port := StrToInt(ePort.Text);
   RESTClientPooler1.Host := eHost.Text;
   RESTClientPooler1.UserName := edUserNameDW.Text;
   RESTClientPooler1.Password := edPasswordDW.Text;
 
   DataBaseRequest := TDataBaseRequest.Create(RESTClientPooler1.Encoding);
-  DataBaseRequest.AddJSONParam(1, 'Total SQL');
+  DataBaseRequest.TerminalID := JvComputerInfoEx1.Misc.HardwareProfile.GUID;
+  DataBaseRequest.SqlCount := 1;
   RequestFrame := TRequestFrame
     (FindComponent('RequestFrame' + IntToStr(SqlPageControl.ActivePage.Tag)));
-  if Trim(RequestFrame.SqlMemo.Lines.Text) = '' then
-    Exit;
+  if Trim(RequestFrame.SqlMemo.Lines.Text) = '' then Exit;
   { Sql sentence }
-  DataBaseRequest.AddJSONParam(RequestFrame.SqlMemo.Lines.Text,
-    RequestFrame.Name);
+  DataBaseRequest.AddJSONParam(RequestFrame.SqlMemo.Lines.Text, RequestFrame.Name);
   { DML Type }
   DataBaseRequest.AddJSONParam(RequestFrame.DMLTypeRadioGroup.ItemIndex);
   { Number of params }
@@ -205,32 +213,31 @@ begin
     RequestFrame.ParamsDataSet.First;
     while not RequestFrame.ParamsDataSet.Eof do begin
       { Param name }
-      DataBaseRequest.AddJSONParam
-        (RequestFrame.ParamsDataSetPARAM_NAME.AsString);
+      DataBaseRequest.AddJSONParam(RequestFrame.ParamsDataSetPARAM_NAME.AsString);
       { Param type }
-      DataBaseRequest.AddJSONParam
-        (RequestFrame.ParamsDataSetPARAM_TYPE.AsInteger);
+      DataBaseRequest.AddJSONParam(RequestFrame.ParamsDataSetPARAM_TYPE.AsInteger);
       { Param value }
-      DataBaseRequest.AddJSONParam
-        (RequestFrame.ParamsDataSetPARAM_VALUE.AsString);
+      DataBaseRequest.AddJSONParam(RequestFrame.ParamsDataSetPARAM_VALUE.AsString);
       RequestFrame.ParamsDataSet.Next;
     end;
   end;
 
-  BeforeTime := Now;
-  sResponseStatus := RESTClientPooler1.SendEvent('ExecuteDML',
-    TDWParams(DataBaseRequest));
-  AfterTime := Now;
-  AddLog('Server response: ' + TimeToStr(AfterTime-BeforeTime));
+  StartTime := TimeGetTime;
+  DataBaseRequest.MountParams;
+  sResponseStatus := RESTClientPooler1.SendEvent('ExecuteDML', TDWParams(DataBaseRequest));
+  ProcessTime := TimeGetTime - StartTime;
+  AddLog('Server response: ' + IntToStr(ProcessTime));
   RaiseServerException(sResponseStatus, DataBaseRequest);
+
+  AddLog('Server Process Time: ' + DataBaseRequest.ItemsString[SERVER_TIME_TO_PROCESS].Value);
 
   JSONValue := uDWJSONObject.TJSONValue.Create;
   try
-    BeforeTime := Now;
+    StartTime := TimeGetTime;
     JSONValue.WriteToDataset(dtFull, DataBaseRequest.ItemsString
       [RequestFrame.Name].Value, RequestFrame.ResponseDataSet);
-    AfterTime := Now;
-    AddLog('Load to dataset: ' + TimeToStr(AfterTime-BeforeTime));
+    ProcessTime := TimeGetTime - StartTime;
+    AddLog('Load to dataset: ' + IntToStr(ProcessTime));
   finally
     JSONValue.Free;
   end;
@@ -245,29 +252,13 @@ begin
   RequestFrame := TRequestFrame(FindComponent('RequestFrame' + IntToStr(SqlPageControl.ActivePage.Tag)));
   FreeAndNil(RequestFrame);
   SqlPageControl.ActivePage.Free;
-//  SqlPageControl.ActivePage.TabVisible := False;
-//  { Procurando a proxima tabshhet para frente }
-//  for I := SqlPageControl.ActivePage.PageIndex to SqlPageControl.PageCount - 1 do begin
-//    if SqlPageControl.Pages[I].TabVisible then begin
-//      SqlPageControl.ActivePageIndex := I;
-//      Break;
-//    end;
-//  end;
-//  { Se não encontrou procura para trás }
-//  for
-//
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   LastPage := 0;
-  RESTClientPooler1.Host := '127.0.0.1';
-  RESTClientPooler1.Port := 8082;
-  RESTClientPooler1.UserName := 'testserver';
-  RESTClientPooler1.Password := 'testserver';
-  RESTClientPooler1.DataCompression := True;
 
-  AddSql;
+  AddSql('select FIRST 100 * from DU_ENTITY_FIELD');
 
   // AddSql('select * from EMPLOYEE where first_name like :FNAME');
   // AddSql('select * from JOB_CODE from JOB');
@@ -287,12 +278,39 @@ procedure TForm1.RaiseServerException(const Response: string;
 var
   sExceptionClassName, sExceptionMessage: string;
 begin
-  if Response = 'EXCEPTION' then begin
-    sExceptionClassName := DWParams.ItemsString['ClassName'].Value;
-    sExceptionMessage := DWParams.ItemsString['Message'].Value;
+  if Response = RESPONSE_EXCEPTION then begin
+    sExceptionClassName := DWParams.ItemsString[EXCEPTION_CLASS_NAME].Value;
+    sExceptionMessage := DWParams.ItemsString[EXCEPTION_MESSAGE].Value;
     raise Exception.Create(sExceptionClassName + #13#10 + #13#10 +
       sExceptionMessage);
   end;
+end;
+
+procedure TForm1.RESTClientPooler1Status(ASender: TObject;
+  const AStatus: TIdStatus; const AStatusText: string);
+begin
+//  AddLog('Status : ' + AStatusText);
+end;
+
+procedure TForm1.RESTClientPooler1Work(ASender: TObject; AWorkMode: TWorkMode;
+  AWorkCount: Int64);
+begin
+  AddLog('OnWork');
+end;
+
+procedure TForm1.RESTClientPooler1WorkBegin(ASender: TObject;
+  AWorkMode: TWorkMode; AWorkCountMax: Int64);
+begin
+  WorkBeginTime := TimeGetTime;
+  AddLog('Work begin');
+end;
+
+procedure TForm1.RESTClientPooler1WorkEnd(ASender: TObject;
+  AWorkMode: TWorkMode);
+begin
+  WorkEndTime := TimeGetTime;
+  AddLog('Work end: ' + IntToStr(WorkEndTime - WorkBeginTime));
+
 end;
 
 end.

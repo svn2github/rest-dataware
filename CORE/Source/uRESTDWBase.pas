@@ -1030,7 +1030,10 @@ Begin
          End;
        End;
       If Assigned(vServerMethod) Then
-       vTempServerMethods := vServerMethod.Create(Nil)
+       Begin
+        vTempServerMethods := vServerMethod.Create(Nil);
+        TServerMethods(vTempServerMethods).Encoding := Encoding;
+       End
       Else
        JSONStr := GetPairJSON(-5, 'Server Methods Cannot Assigned');
       Try

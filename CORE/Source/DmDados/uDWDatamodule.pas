@@ -10,6 +10,7 @@ Uses
   Private
    vReplyEvent : TReplyEvent;
   Public
+   Encoding: TEncodeSelect;
   Published
    Property OnReplyEvent : TReplyEvent Read vReplyEvent Write vReplyEvent;
  End;

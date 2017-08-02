@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   Caption = 'RestDwCore Custom Protocol Client'
   ClientHeight = 558
-  ClientWidth = 1053
+  ClientWidth = 888
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,7 +17,7 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 1053
+    Width = 888
     Height = 185
     Align = alTop
     TabOrder = 0
@@ -1062,15 +1062,15 @@ object Form1: TForm1
   object SqlPageControl: TPageControl
     Left = 0
     Top = 185
-    Width = 755
+    Width = 711
     Height = 373
     Align = alClient
     TabOrder = 1
   end
   object ListBox1: TListBox
-    Left = 755
+    Left = 711
     Top = 185
-    Width = 298
+    Width = 177
     Height = 373
     Align = alRight
     ItemHeight = 13
@@ -1078,7 +1078,7 @@ object Form1: TForm1
   end
   object RESTClientPooler1: TRESTClientPooler
     DataCompression = True
-    Encoding = esASCII
+    Encoding = esUtf8
     Host = 'localhost'
     UserName = 'testserver'
     Password = 'testserver'
@@ -1086,7 +1086,15 @@ object Form1: TForm1
     ProxyOptions.ProxyPort = 0
     RequestTimeOut = 10000
     ThreadRequest = False
-    Left = 392
-    Top = 136
+    OnWork = RESTClientPooler1Work
+    OnWorkBegin = RESTClientPooler1WorkBegin
+    OnWorkEnd = RESTClientPooler1WorkEnd
+    OnStatus = RESTClientPooler1Status
+    Left = 504
+    Top = 120
+  end
+  object JvComputerInfoEx1: TJvComputerInfoEx
+    Left = 520
+    Top = 284
   end
 end

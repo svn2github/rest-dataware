@@ -1,17 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>2017/07/12 03:08:59.000.848,=C:\Users\Windows\Documents\Embarcadero\Studio\Projects\GroupedItems1.pas</Transaction>
-    <Transaction>2017/07/12 03:09:02.000.115,=C:\Users\Windows\Documents\Embarcadero\Studio\Projects\SplitItemDetail1.pas</Transaction>
-    <Transaction>2017/07/12 03:09:23.000.915,=C:\Users\Windows\Documents\Embarcadero\Studio\Projects\GroupedItems2.pas</Transaction>
-    <Transaction>2017/07/12 03:09:24.000.578,=C:\Users\Windows\Documents\Embarcadero\Studio\Projects\ItemDetail1.pas</Transaction>
-    <Transaction>2017/07/20 00:17:02.000.959,=C:\Users\Windows\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2017/07/20 00:17:30.000.793,C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\MainFormUnit.dfm=C:\Users\Windows\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
-    <Transaction>2017/07/20 00:17:30.000.793,C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\MainFormUnit.pas=C:\Users\Windows\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2017/07/20 00:17:42.000.094,C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\ClientTeste.dproj=C:\Users\Windows\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
-    <Transaction>2017/07/23 05:37:12.000.580,=C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\Protocol.pas</Transaction>
-    <Transaction>2017/07/23 13:27:42.000.888,=C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\Unit1.pas</Transaction>
-    <Transaction>2017/07/23 13:28:04.000.445,C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\Unit1.pas=C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\RequestFrameUnit.pas</Transaction>
-    <Transaction>2017/07/23 13:28:04.000.445,C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\Unit1.dfm=C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\RequestFrameUnit.dfm</Transaction>
+    <Transaction>2017/07/20 00:17:30.000.793,C:\Users\Windows\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\MainFormUnit.dfm</Transaction>
+    <Transaction>2017/07/20 00:17:42.000.094,C:\Users\Windows\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\ClientTeste.dproj</Transaction>
+    <Transaction>2017/07/23 13:28:04.000.445,C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\RequestFrameUnit.dfm=C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\Unit1.dfm</Transaction>
+    <Transaction>2017/08/01 10:58:47.000.289,C:\Projects\Obbjeto\DevUpperProjects\src\ObbjetoAppServer\ClientTest\Unit2.dfm=C:\Projects\Obbjeto\DevUpperProjects\src\PedidoPdf\PrincipalFormUnit.dfm</Transaction>
   </Transactions>
 </BorlandProject>

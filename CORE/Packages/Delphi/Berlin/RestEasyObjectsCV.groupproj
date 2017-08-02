@@ -33,9 +33,6 @@
         <Projects Include="..\..\..\Samples\SimpleServerZEOS\Server\RestDWServerProjectZEOS.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="..\..\..\Samples\ListPoolers\ListDWPoolers.dproj">
-            <Dependencies/>
-        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -134,23 +131,14 @@
     <Target Name="RestDWServerProjectZEOS:Make">
         <MSBuild Projects="..\..\..\Samples\SimpleServerZEOS\Server\RestDWServerProjectZEOS.dproj" Targets="Make"/>
     </Target>
-    <Target Name="ListDWPoolers">
-        <MSBuild Projects="..\..\..\Samples\ListPoolers\ListDWPoolers.dproj"/>
-    </Target>
-    <Target Name="ListDWPoolers:Clean">
-        <MSBuild Projects="..\..\..\Samples\ListPoolers\ListDWPoolers.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="ListDWPoolers:Make">
-        <MSBuild Projects="..\..\..\Samples\ListPoolers\ListDWPoolers.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="RestEasyObjectsCORE;RESTDWDriverFD;FileClient;FileServer;JSONDatasetSample;LoadfromJSON;RestDWServerProject;RestDWClientProject;RestDWClientProjectThread;RestDWServerProjectZEOS;ListDWPoolers"/>
+        <CallTarget Targets="RestEasyObjectsCORE;RESTDWDriverFD;FileClient;FileServer;JSONDatasetSample;LoadfromJSON;RestDWServerProject;RestDWClientProject;RestDWClientProjectThread;RestDWServerProjectZEOS"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RestEasyObjectsCORE:Clean;RESTDWDriverFD:Clean;FileClient:Clean;FileServer:Clean;JSONDatasetSample:Clean;LoadfromJSON:Clean;RestDWServerProject:Clean;RestDWClientProject:Clean;RestDWClientProjectThread:Clean;RestDWServerProjectZEOS:Clean;ListDWPoolers:Clean"/>
+        <CallTarget Targets="RestEasyObjectsCORE:Clean;RESTDWDriverFD:Clean;FileClient:Clean;FileServer:Clean;JSONDatasetSample:Clean;LoadfromJSON:Clean;RestDWServerProject:Clean;RestDWClientProject:Clean;RestDWClientProjectThread:Clean;RestDWServerProjectZEOS:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RestEasyObjectsCORE:Make;RESTDWDriverFD:Make;FileClient:Make;FileServer:Make;JSONDatasetSample:Make;LoadfromJSON:Make;RestDWServerProject:Make;RestDWClientProject:Make;RestDWClientProjectThread:Make;RestDWServerProjectZEOS:Make;ListDWPoolers:Make"/>
+        <CallTarget Targets="RestEasyObjectsCORE:Make;RESTDWDriverFD:Make;FileClient:Make;FileServer:Make;JSONDatasetSample:Make;LoadfromJSON:Make;RestDWServerProject:Make;RestDWClientProject:Make;RestDWClientProjectThread:Make;RestDWServerProjectZEOS:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

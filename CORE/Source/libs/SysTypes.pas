@@ -44,6 +44,7 @@ Type
    Function ReturnIncorrectArgs: String;
    Function ReturnMethodNotFound: String;
   Public
+   Encoding: TEncodeSelect;
    Constructor Create(aOwner: TComponent); Override;
    Destructor Destroy; Override;
   Published

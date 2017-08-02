@@ -1127,7 +1127,7 @@ object Form1: TForm1
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 0
-        Text = '7000'
+        Text = '8082'
       end
       object edUserNameDW: TEdit
         Left = 57
@@ -1264,10 +1264,6 @@ object Form1: TForm1
     object tsLogs: TTabSheet
       Caption = 'Logs'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 537
-      ExplicitHeight = 0
       object Label19: TLabel
         Left = 7
         Top = 147

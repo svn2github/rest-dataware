@@ -1317,12 +1317,13 @@ object Form1: TForm1
   object RESTServicePooler1: TRESTServicePooler
     Active = False
     DataCompression = True
+    EncodeStrings = True
     ServicePort = 8082
     ProxyOptions.Port = 8888
     SSLVersion = sslvSSLv2
     OnLastRequest = RESTServicePooler1LastRequest
     OnLastResponse = RESTServicePooler1LastResponse
-    Encoding = esASCII
+    Encoding = esUtf8
     ServerContext = 'restdataware'
     Left = 320
     Top = 40
