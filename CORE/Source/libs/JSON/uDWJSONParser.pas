@@ -327,7 +327,7 @@ begin
   case JsonParser.Ch of
     '-', '0'..'9':
     begin
-      Result.Kind  := JVKNumber;
+      Result.Kind  := JVKString;
       Result.Index := N;
       Result.Value := FloatToStr(Number(JsonParser));
     end;
@@ -339,7 +339,7 @@ begin
     end;
     't', 'f', 'n':
     begin
-      Result.Kind := JVKWord;
+      Result.Kind := JVKString;
       Result.Index := N;
       Result.Value := IntToStr(Integer(Word_(JsonParser)));
     end;

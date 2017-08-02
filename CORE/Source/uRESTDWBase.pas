@@ -821,8 +821,8 @@ Begin
   Begin
    vResult    := DWParams.ItemsString['Pooler'].Value;
    ExecuteCommandPureJSON(BaseObject, vResult, DWParams);
-   Result     := Not(StringToBoolean(DWParams.ItemsString['Error'].Value));
-   If Result Then
+   Result     := True;
+   If Not(StringToBoolean(DWParams.ItemsString['Error'].Value)) Then
     JSONStr    := TReplyOK
    Else
     JSONStr    := TReplyNOK;
@@ -831,8 +831,8 @@ Begin
   Begin
    vResult    := DWParams.ItemsString['Pooler'].Value;
    ExecuteCommandJSON(BaseObject, vResult, DWParams);
-   Result     := Not(StringToBoolean(DWParams.ItemsString['Error'].Value));
-   If Result Then
+   Result     := True;
+   If Not(StringToBoolean(DWParams.ItemsString['Error'].Value)) Then
     JSONStr    := TReplyOK
    Else
     JSONStr    := TReplyNOK;

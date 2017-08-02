@@ -523,11 +523,12 @@ Begin
     Begin
      Result         := TJSONValue.Create;
      Result.Encoded := False;
-     Result.LoadFromJSON(DWParams.ItemsString['Result'].Value);
      If DWParams.ItemsString['Error'] <> Nil Then
       Error         := StringToBoolean(DWParams.ItemsString['Error'].Value);
      If DWParams.ItemsString['MessageError'] <> Nil Then
       MessageError  := DWParams.ItemsString['MessageError'].Value;
+     If DWParams.ItemsString['Result'] <> Nil Then
+      Result.LoadFromJSON(DWParams.ItemsString['Result'].Value);
     End;
   Except
   End;
@@ -691,15 +692,15 @@ Begin
     Begin
      Result         := TJSONValue.Create;
      Result.Encoded := False;
+     If DWParams.ItemsString['MessageError'] <> Nil Then
+      MessageError  := DWParams.ItemsString['MessageError'].Value;
+     If DWParams.ItemsString['Error'] <> Nil Then
+      Error         := StringToBoolean(DWParams.ItemsString['Error'].Value);
      If DWParams.ItemsString['Result'] <> Nil Then
       Begin
        If DWParams.ItemsString['Result'].Value <> '' Then
         Result.LoadFromJSON(DWParams.ItemsString['Result'].Value);
       End;
-     If DWParams.ItemsString['Error'] <> Nil Then
-      Error         := StringToBoolean(DWParams.ItemsString['Error'].Value);
-     If DWParams.ItemsString['MessageError'] <> Nil Then
-      MessageError  := DWParams.ItemsString['MessageError'].Value;
     End;
   Except
   End;
@@ -861,6 +862,10 @@ Begin
     Begin
      Result         := TJSONValue.Create;
      Result.Encoded := False;
+     If DWParams.ItemsString['MessageError'] <> Nil Then
+      MessageError  := DWParams.ItemsString['MessageError'].Value;
+     If DWParams.ItemsString['Error'] <> Nil Then
+      Error         := StringToBoolean(DWParams.ItemsString['Error'].Value);
      If DWParams.ItemsString['Result'] <> Nil Then
       Begin
        If DWParams.ItemsString['Result'].Value <> '' Then

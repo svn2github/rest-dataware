@@ -125,6 +125,7 @@ Begin
  Inherited;
  Result := Nil;
  Error  := False;
+ Result := TJSONValue.Create;
  vTempQuery               := TFDQuery.Create(Owner);
  Try
   vTempQuery.Connection   := vFDConnection;
@@ -198,14 +199,13 @@ Begin
   On E : Exception do
    Begin
     Try
+     Error        := True;
+     MessageError := E.Message;
+     Result.Encoded := True;
+     Result.SetValue(GetPairJSON('NOK', MessageError));
      vFDConnection.RollbackRetaining;
     Except
     End;
-    Error := True;
-    MessageError := E.Message;
-    Result := TJSONValue.Create;
-    Result.Encoded := True;
-    Result.SetValue(GetPairJSON('NOK', MessageError));
    End;
  End;
  vTempQuery.Free;
@@ -336,6 +336,7 @@ Begin
  Inherited;
  Result := Nil;
  Error  := False;
+ Result := TJSONValue.Create;
  vTempQuery               := TFDQuery.Create(Owner);
  Try
   If Not vFDConnection.Connected Then
@@ -366,11 +367,13 @@ Begin
   On E : Exception do
    Begin
     Try
+     Error        := True;
+     MessageError := E.Message;
+     Result.Encoded := True;
+     Result.SetValue(GetPairJSON('NOK', MessageError));
      vFDConnection.RollbackRetaining;
     Except
     End;
-    Error := True;
-    MessageError := E.Message;
    End;
  End;
  vTempQuery.Free;

@@ -1163,6 +1163,13 @@ Begin
      Begin
       If Assigned(vOnEventConnection) Then
        vOnEventConnection(True, 'ExecuteCommand Ok');
+     End
+    Else
+     Begin
+      If Assigned(vOnEventConnection) then
+       vOnEventConnection(False, MessageError)
+      Else
+       Raise Exception.Create(PChar(MessageError));
      End;
    End
   Else
@@ -2368,9 +2375,9 @@ Begin
    Try
     If Not(vActive) And (Value) Then
      Begin
-      Filter                       := '';
-      Filtered                     := False;
-      vActive                      := GetData;
+      Filter   := '';
+      Filtered := False;
+      vActive  := GetData;
      End;
     If State = dsBrowse Then
      PrepareDetails(True)
