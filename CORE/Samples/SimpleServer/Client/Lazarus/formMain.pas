@@ -102,11 +102,9 @@ begin
  RESTDWClientSQL1.SQL.Clear;
  RESTDWClientSQL1.SQL.Add(mComando.Text);
  If Not RESTDWClientSQL1.ExecSQL(vError) Then
-  MessageBox(0, PChar('Erro executando o comando ' + RESTDWClientSQL1.SQL.Text),
-                         'Erro...', mb_iconerror + mb_ok)
+  Showmessage('Erro executando o comando ' + RESTDWClientSQL1.SQL.Text)
  Else
-  MessageBox(0, 'Comando executado com sucesso...',
-                         'Informação !!!', mb_iconinformation + mb_ok);
+  Showmessage('Comando executado com sucesso...');
 end;
 
 procedure TForm2.RESTDWDataBase1Work(ASender: TObject; AWorkMode: TWorkMode;

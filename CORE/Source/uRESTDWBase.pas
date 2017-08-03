@@ -1040,7 +1040,7 @@ Begin
           vLastRequest(ARequestInfo.UserAgent + #13#10 +
                       ARequestInfo.RawHTTPCommand);
          Finally
-          {$IFDEF UNIX}
+          {$IFNDEF UNIX}
            LeaveCriticalSection(vCriticalSection);
            DeleteCriticalSection(vCriticalSection);
           {$ENDIF}

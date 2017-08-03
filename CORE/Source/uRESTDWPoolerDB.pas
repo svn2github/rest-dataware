@@ -554,7 +554,6 @@ Begin
   Inherited;
 End;
 
-{$IFDEF MSWINDOWS}
 Function  TRESTDWPoolerDB.GetConnection : TRESTDWDriver;
 Begin
  Result := vRESTDriverBack;
@@ -765,7 +764,6 @@ Begin
  FLock.Free;
  Inherited;
 End;
-{$ENDIF}
 
 Constructor TAutoCheckData.Create;
 Begin

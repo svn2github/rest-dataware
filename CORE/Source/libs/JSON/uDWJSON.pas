@@ -34,7 +34,9 @@ unit uDWJSON;
 Interface
 
 Uses
- Windows, SysUtils, Classes, TypInfo;
+ {$IFNDEF UNIX}Windows,
+ {$ELSE}Lcl,
+ {$ENDIF}SysUtils, Classes, TypInfo;
 
 Type
     {

@@ -3,10 +3,11 @@ unit uRESTDWReg;
 interface
 
 uses
-  Windows,
   {$IFDEF FPC}
-   LResources, Classes, propedits, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
+   {$IFNDEF UNIX}Windows,
+   {$ELSE}Lcl,{$ENDIF}LResources, Classes, propedits, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
   {$ELSE}
+   Windows,
    {$if CompilerVersion > 21}
     ToolsApi, DMForm, DesignEditors, DesignIntf, ExptIntf, Classes, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
    {$ELSE}
