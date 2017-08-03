@@ -78,6 +78,8 @@ Type
                                Dest   : TStream);
  Function  ZDecompressStr(Const S     : String;
                           Var Value   : String) : Boolean;
+ Function  ZDecompressStreamD(Const S   : String;
+                              Var Value : TStringStream) : Boolean;
  Function  ZCompressStr  (Const s     : String;
                           Var Value   : String) : Boolean;
  Function  BytesArrToString(aValue : tIdBytes) : String;
@@ -122,19 +124,19 @@ Begin
  {$IFDEF FPC}
   Utf8Stream := TStringStream.Create(S);
  {$ELSE}
-  Utf8Stream := TStringStream.Create(S   {$if CompilerVersion > 21}, TEncoding.UTF8 {$IFEND});
+  Utf8Stream := TStringStream.Create(S{$if CompilerVersion > 21}, TEncoding.UTF8{$IFEND});
  {$ENDIF}
  Try
   Compressed := TMemoryStream.Create;
   Try
     ZCompressStream(Utf8Stream, Compressed);
     Compressed.Position := 0;
-    Base64Stream := TStringStream.Create(''{$IFNDEF FPC}{$if CompilerVersion > 21}, TEncoding.ASCII{$IFEND}{$ENDIF});
+    Base64Stream := TStringStream.Create(''{$IFNDEF FPC}{$if CompilerVersion > 21},TEncoding.ASCII{$IFEND}{$ENDIF});
    Try
     {$IFDEF FPC}
      Encoder       := TBase64EncodingStream.Create(Base64Stream);
      Encoder.CopyFrom(Compressed, Compressed.Size);
-     Encoder.Free;
+     FreeAndNil(Encoder);
     {$ELSE}
      EncodeStream(Compressed, Base64Stream);
     {$ENDIF}
@@ -142,15 +144,62 @@ Begin
     Result := True;
    Finally
     {$IFNDEF FPC}{$if CompilerVersion > 21}Base64Stream.Clear;{$IFEND}{$ENDIF}
-    Base64Stream.Free;
+    FreeAndNil(Base64Stream);
    End;
   Finally
    {$IFNDEF FPC}{$if CompilerVersion > 21}Compressed.Clear;{$IFEND}{$ENDIF}
-   Compressed.Free;
+   FreeAndNil(Compressed);
   End;
  Finally
   {$IFNDEF FPC}{$if CompilerVersion > 21}Utf8Stream.Clear;{$IFEND}{$ENDIF}
-  Utf8Stream.Free;
+  FreeAndNil(Utf8Stream);
+ End;
+End;
+
+Function ZDecompressStreamD(Const S   : String;
+                            Var Value : TStringStream) : Boolean;
+Var
+ Utf8Stream,
+ Base64Stream : TStringStream;
+ {$IFDEF FPC}
+  Encoder     : TBase64DecodingStream;
+ {$ENDIF}
+Begin
+ {$IFDEF FPC}
+  Base64Stream := TStringStream.Create(S);
+ {$ELSE}
+  Base64Stream := TStringStream.Create(S{$if CompilerVersion > 21}, TEncoding.ASCII{$IFEND});
+ {$ENDIF}
+ Try
+  Value := TStringStream.Create('');
+  Try
+   Try
+    {$IFDEF FPC}
+     Utf8Stream    := TStringStream.Create('');
+     Encoder       := TBase64DecodingStream.Create(Base64Stream);
+     Utf8Stream.CopyFrom(Encoder, Encoder.Size);
+     Utf8Stream.Position := 0;
+     FreeAndNil(Encoder);
+     Value.position := 0;
+     ZDecompressStream(Utf8Stream, Value);
+    {$ELSE}
+     Utf8Stream := TStringStream.Create(''{$if CompilerVersion > 21}, TEncoding.UTF8{$IFEND});
+     DecodeStream(Base64Stream, Utf8Stream);
+     Utf8Stream.position := 0;
+     ZDecompressStream(Utf8Stream, Value);
+     Value.Position := 0;
+    {$ENDIF}
+    Result := True;
+   Except
+    Result := False;
+   End;
+  Finally
+   {$IFNDEF FPC}Utf8Stream.Size := 0;{$ENDIF}
+    FreeAndNil(Utf8Stream);
+  End;
+ Finally
+  {$IFNDEF FPC}Base64Stream.Size := 0;{$ENDIF}
+  FreeAndNil(Base64Stream);
  End;
 End;
 
@@ -168,7 +217,7 @@ Begin
  {$IFDEF FPC}
   Base64Stream := TStringStream.Create(S);
  {$ELSE}
-  Base64Stream := TStringStream.Create(S  {$if CompilerVersion > 21}, TEncoding.ASCII{$IFEND});
+  Base64Stream := TStringStream.Create(S{$if CompilerVersion > 21}, TEncoding.ASCII{$IFEND});
  {$ENDIF}
  Try
   Compressed := TStringStream.Create('');
@@ -178,7 +227,7 @@ Begin
     Encoder       := TBase64DecodingStream.Create(Base64Stream);
     Utf8Stream.CopyFrom(Encoder, Encoder.Size);
     Utf8Stream.Position := 0;
-    Encoder.Free;
+    FreeAndNil(Encoder);
     Compressed.position := 0;
     ZDecompressStream(Utf8Stream, Compressed);
    {$ELSE}
@@ -192,16 +241,16 @@ Begin
     Value := Compressed.DataString;
     Result := True;
    Finally
-    {$IFNDEF FPC}{$if CompilerVersion > 21}Utf8Stream.Clear;{$IFEND}{$ENDIF}
-    Utf8Stream.Free;
+    {$IFNDEF FPC}Utf8Stream.Size := 0;{$ENDIF}
+    FreeAndNil(Utf8Stream);
    End;
   Finally
-   {$IFNDEF FPC}{$if CompilerVersion > 21}Compressed.Clear;{$IFEND}{$ENDIF}
-   Compressed.Free;
+   {$IFNDEF FPC}Compressed.Size := 0;{$ENDIF}
+   FreeAndNil(Compressed);
   End;
  Finally
-  {$IFNDEF FPC}{$if CompilerVersion > 21}Base64Stream.Clear;{$IFEND}{$ENDIF}
-  Base64Stream.Free;
+  {$IFNDEF FPC}Base64Stream.Size := 0;{$ENDIF}
+  FreeAndNil(Base64Stream);
  End;
 End;
 

@@ -104,7 +104,7 @@ object RestDWForm: TRestDWForm
     Top = 0
     Width = 520
     Height = 353
-    ActivePage = tsLogs
+    ActivePage = tsConfigs
     Align = alTop
     TabOrder = 3
     object tsConfigs: TTabSheet

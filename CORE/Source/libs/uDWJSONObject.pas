@@ -34,14 +34,14 @@ Type
     vEncoding          : TEncoding;
    {$IFEND}
   {$ENDIF}
-  Function    GetValue                    : String;
-  Procedure   WriteValue     (bValue      : String);
-  Function    FormatValue    (bValue      : String)   : String;
-  Function    GetValueJSON   (bValue      : String)   : String;
-  Function    DatasetValues  (bValue      : TDataset) : String;
+  Function    GetValue                     : String;
+  Procedure   WriteValue     (bValue       : String);
+  Function    FormatValue    (bValue       : String)   : String;
+  Function    GetValueJSON   (bValue       : String)   : String;
+  Function    DatasetValues  (bValue       : TDataset) : String;
   Function    EncodedString  : String;
  Public
-  Procedure   ToStream       (Var bValue  : TMemoryStream);
+  Procedure   ToStream       (Var bValue   : TMemoryStream);
   Procedure   LoadFromDataset(TableName    : String;
                               bValue       : TDataset;
                               EncodedValue : Boolean = True);
@@ -75,7 +75,7 @@ Type
   vJSONValue                         : TJSONValue;
   {$IFNDEF FPC}
    {$if CompilerVersion > 21}
-    vEncoding                          : TEncoding;
+    vEncoding                        : TEncoding;
    {$IFEND}
   {$ENDIF}
   vTypeObject                        : TTypeObject;
@@ -97,10 +97,10 @@ Type
   Procedure   CopyFrom(JSONParam : TJSONParam);
   Function    Value : String;
   Procedure   SetValue(aValue : String; Encode : Boolean = True);
-  Procedure   LoadFromStream (Stream       : TMemoryStream;
-                              Encode       : Boolean = True);
-  Procedure   SaveToStream   (Stream       : TMemoryStream);
-  Procedure   LoadFromParam  (Param        : TParam);
+  Procedure   LoadFromStream (Stream      : TMemoryStream;
+                              Encode      : Boolean = True);
+  Procedure   SaveToStream   (Stream      : TMemoryStream);
+  Procedure   LoadFromParam  (Param       : TParam);
   Property    ObjectDirection             : TObjectDirection Read vObjectDirection Write vObjectDirection;
   Property    ObjectValue                 : TObjectValue     Read vObjectValue     Write vObjectValue;
   Property    ParamName                   : String           Read vParamName       Write SetParamName;
@@ -1019,7 +1019,7 @@ end;
 
 destructor TJSONParam.Destroy;
 Begin
- vJSONValue.Free;
+ FreeAndNil(vJSONValue);
  inherited;
 End;
 

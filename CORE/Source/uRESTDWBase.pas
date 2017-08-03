@@ -459,8 +459,7 @@ Begin
          If vDatacompress Then
           Begin
            vResult      := HttpRequest.Post(vURL, SendParams);
-           ZDecompressStr(vResult, vResultSTR);
-           StringStream := TStringStream.Create(vResultSTR);
+           ZDecompressStreamD(vResult, StringStream);
           End
          Else
           HttpRequest.Post(vURL, SendParams, StringStream);
@@ -475,15 +474,15 @@ Begin
         End;
        If SendParams <> Nil Then
         Begin
-         {$IFNDEF FPC}{$if CompilerVersion > 21}SendParams.Clear;{$IFEND}{$ENDIF}
-         SendParams.Free;
+         {$IFNDEF FPC}SendParams.Clear;{$ENDIF}
+         FreeAndNil(SendParams);
         End;
        StringStream.Position := 0;
        Try
         SetData(StringStream.DataString, Params, Result);
        Finally
-        {$IFNDEF FPC}{$if CompilerVersion > 21}StringStream.Clear;{$IFEND}{$ENDIF}
-        StringStream.Free;
+        {$IFNDEF FPC}StringStream.Size := 0;{$ENDIF}
+        FreeAndNil(StringStream);
        End;
       End
      Else If EventType = sePUT Then
@@ -496,8 +495,8 @@ Begin
        Try
         SetData(StringStream.DataString, Params, Result);
        Finally
-        {$IFNDEF FPC}{$if CompilerVersion > 21}StringStream.Clear;{$IFEND}{$ENDIF}
-        StringStream.Free;
+        {$IFNDEF FPC}StringStream.Size := 0;{$ENDIF}
+        FreeAndNil(StringStream);
        End;
       End
      Else If EventType = seDELETE Then
@@ -522,7 +521,7 @@ Begin
     Raise Exception.Create(e.Message);
    End;
  End;
- vResultParams.Free;
+ FreeAndNil(vResultParams);
 End;
 
 Function TRESTClientPooler.SendEvent(EventData : String;
@@ -1006,14 +1005,14 @@ Begin
                ms.Position := 0;
                newdecoder  := Decoder.ReadBody(ms, msgEnd);
                tmp         := Decoder.Headers.Text;
-  //             fname       := decoder.Filename;
-               Decoder.Free;
+               FreeAndNil(Decoder);
                Decoder     := newdecoder;
                If Decoder <> Nil Then
                 TIdMessageDecoderMIME(Decoder).MIMEBoundary := Boundary;
                JSONParam   := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(DWParams.Encoding){$IFEND}{$ENDIF};
                JSONParam.FromJSON(ms.DataString);
                DWParams.Add(JSONParam);
+               {$IFNDEF FPC}ms.Size := 0;{$ENDIF}
                FreeAndNil(ms);
               End;
              mcptIgnore :
@@ -1035,7 +1034,7 @@ Begin
            Until (Decoder = Nil) Or (msgEnd);
           Finally
            If decoder <> nil then
-            decoder.Free;
+            FreeAndNil(decoder);
           End;
          End;
        End;
@@ -1126,10 +1125,9 @@ Begin
         AResponseInfo.ResponseNo             := 200;
         AResponseInfo.WriteHeader;
         AResponseInfo.WriteContent;
-        AResponseInfo.ContentStream          := Nil;
-        AResponseInfo.ContentStream.Free;
        Finally
-//        mb.Free;
+        AResponseInfo.ContentStream := Nil;
+        AResponseInfo.ContentStream.Free;
        End;
        If Assigned(vLastResponse) Then
         Begin
@@ -1148,12 +1146,12 @@ Begin
         End;
       Finally
        If Assigned(vServerMethod) Then
-        vTempServerMethods.Free;
+        FreeAndNil(vTempServerMethods);
       End;
      End;
    End;
  Finally
-  DWParams.Free;
+  FreeAndNil(DWParams);
  End;
 End;
 
