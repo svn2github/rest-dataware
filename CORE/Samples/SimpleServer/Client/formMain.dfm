@@ -1130,7 +1130,7 @@ object Form2: TForm2
     PoolerName = 'TServerMethodDM.RESTDWPoolerDB1'
     StateConnection.AutoCheck = False
     StateConnection.InTime = 1000
-    RequestTimeOut = 10000
+    RequestTimeOut = 120000
     EncodeStrings = True
     Encoding = esASCII
     StrsTrim = False

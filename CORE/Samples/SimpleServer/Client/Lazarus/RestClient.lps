@@ -10,7 +10,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="19"/>
-        <UsageCount Value="166"/>
+        <UsageCount Value="167"/>
       </Unit0>
       <Unit1>
         <Filename Value="formMain.pas"/>
@@ -18,8 +18,9 @@
         <ComponentName Value="Form2"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <CursorPos X="3" Y="8"/>
-        <UsageCount Value="166"/>
+        <IsVisibleTab Value="True"/>
+        <CursorPos Y="6"/>
+        <UsageCount Value="167"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -29,7 +30,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="117"/>
         <CursorPos X="17" Y="127"/>
-        <UsageCount Value="162"/>
+        <UsageCount Value="163"/>
         <Bookmarks Count="2">
           <Item0 X="2" Y="124" ID="2"/>
           <Item1 X="119" Y="41" ID="1"/>
@@ -143,10 +144,9 @@
       </Unit17>
       <Unit18>
         <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <TopLine Value="832"/>
-        <CursorPos X="48" Y="835"/>
+        <CursorPos X="39" Y="834"/>
         <UsageCount Value="69"/>
         <Bookmarks Count="1">
           <Item0 X="13" Y="232" ID="3"/>

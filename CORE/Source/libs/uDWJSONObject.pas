@@ -518,23 +518,26 @@ Var
  End;
 Begin
  bValue.DisableControls;
- If Not bValue.Active Then
-  bValue.Open;
- bValue.First;
- Result := '{"fields":[' + GenerateHeader + ']}, {"lines":[%s]}';
- A := 0;
- While Not bValue.Eof Do
-  Begin
-   If bValue.RecNo = 1 Then
-    vLines := Format('{"line%d":[%s]}', [A, GenerateLine])
-   Else
-    vLines := vLines + Format(', {"line%d":[%s]}', [A, GenerateLine]);
-   bValue.Next;
-   Inc(A);
-  End;
- Result := Format(Result, [vLines]);
- bValue.First;
- bValue.EnableControls;
+ Try
+  If Not bValue.Active Then
+   bValue.Open;
+  bValue.First;
+  Result := '{"fields":[' + GenerateHeader + ']}, {"lines":[%s]}';
+  A := 0;
+  While Not bValue.Eof Do
+   Begin
+    If bValue.RecNo = 1 Then
+     vLines := Format('{"line%d":[%s]}', [A, GenerateLine])
+    Else
+     vLines := vLines + Format(', {"line%d":[%s]}', [A, GenerateLine]);
+    bValue.Next;
+    Inc(A);
+   End;
+  Result := Format(Result, [vLines]);
+  bValue.First;
+ Finally
+  bValue.EnableControls;
+ End;
 End;
 
 Function TJSONValue.EncodedString : String;

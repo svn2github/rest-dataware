@@ -208,6 +208,7 @@ Begin
     End;
    End;
  End;
+ vTempQuery.Close;
  vTempQuery.Free;
 End;
 
@@ -376,6 +377,7 @@ Begin
     End;
    End;
  End;
+ vTempQuery.Close;
  vTempQuery.Free;
 End;
 

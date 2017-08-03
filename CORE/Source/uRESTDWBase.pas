@@ -138,11 +138,6 @@ Type
   vServerParams    : TServerParams;
   vLastRequest     : TLastRequest;
   vLastResponse    : TLastResponse;
-  {$IFDEF FPC}
-   {$IFDEF WINDOWS}
-    vCriticalSection : TRTLCriticalSection;
-   {$ENDIF}
-  {$ENDIF}
   lHandler         : TIdServerIOHandlerSSLOpenSSL;
   aSSLVersion      : TIdSSLVersion;
   vServerContext,
@@ -841,6 +836,9 @@ Procedure TRESTServicePooler.aCommandGet(AContext      : TIdContext;
                                          ARequestInfo  : TIdHTTPRequestInfo;
                                          AResponseInfo : TIdHTTPResponseInfo);
 Var
+ {$IFNDEF UNIX}
+  vCriticalSection : TRTLCriticalSection;
+ {$ENDIF}
  DWParams           : TDWParams;
  boundary,
  startboundary,
@@ -1034,18 +1032,19 @@ Begin
       Try
        If Assigned(vLastRequest) Then
         Begin
-         {$IFDEF FPC}
-          {$IFDEF WINDOWS}
-           EnterCriticalSection(vCriticalSection);
-          {$ENDIF}
+         {$IFNDEF UNIX}
+          InitializeCriticalSection(vCriticalSection);
+          EnterCriticalSection(vCriticalSection);
          {$ENDIF}
-         vLastRequest(ARequestInfo.UserAgent + #13#10 +
+         Try
+          vLastRequest(ARequestInfo.UserAgent + #13#10 +
                       ARequestInfo.RawHTTPCommand);
-         {$IFDEF FPC}
-          {$IFDEF WINDOWS}
+         Finally
+          {$IFDEF UNIX}
            LeaveCriticalSection(vCriticalSection);
+           DeleteCriticalSection(vCriticalSection);
           {$ENDIF}
-         {$ENDIF}
+         End;
         End;
        If Assigned(vServerMethod) Then
         Begin
@@ -1120,17 +1119,18 @@ Begin
        End;
        If Assigned(vLastResponse) Then
         Begin
-         {$IFDEF FPC}
-          {$IFDEF WINDOWS}
-           EnterCriticalSection(vCriticalSection);
-          {$ENDIF}
+         {$IFNDEF UNIX}
+          InitializeCriticalSection(vCriticalSection);
+          EnterCriticalSection(vCriticalSection);
          {$ENDIF}
-         vLastResponse(vReplyString);
-         {$IFDEF FPC}
-          {$IFDEF WINDOWS}
+         Try
+          vLastResponse(vReplyString);
+         Finally
+          {$IFNDEF UNIX}
            LeaveCriticalSection(vCriticalSection);
+           DeleteCriticalSection(vCriticalSection);
           {$ENDIF}
-         {$ENDIF}
+         End;
         End;
       Finally
        If Assigned(vServerMethod) Then
@@ -1147,6 +1147,9 @@ Procedure TRESTServicePooler.aCommandOther(AContext      : TIdContext;
                                            ARequestInfo  : TIdHTTPRequestInfo;
                                            AResponseInfo : TIdHTTPResponseInfo);
 Var
+ {$IFNDEF UNIX}
+  vCriticalSection : TRTLCriticalSection;
+ {$ENDIF}
  DWParams           : TDWParams;
  vReplyString,
  Cmd, JSONStr       : String;
@@ -1175,18 +1178,19 @@ Begin
    Try
     If Assigned(vLastRequest) Then
      Begin
-      {$IFDEF FPC}
-       {$IFDEF WINDOWS}
-        EnterCriticalSection(vCriticalSection);
-       {$ENDIF}
+      {$IFNDEF UNIX}
+       InitializeCriticalSection(vCriticalSection);
+       EnterCriticalSection(vCriticalSection);
       {$ENDIF}
-      vLastRequest(ARequestInfo.UserAgent + #13#10 +
-                   ARequestInfo.RawHTTPCommand);
-      {$IFDEF FPC}
-       {$IFDEF WINDOWS}
+      Try
+       vLastRequest(ARequestInfo.UserAgent + #13#10 +
+                    ARequestInfo.RawHTTPCommand);
+      Finally
+       {$IFNDEF UNIX}
         LeaveCriticalSection(vCriticalSection);
+        DeleteCriticalSection(vCriticalSection);
        {$ENDIF}
-      {$ENDIF}
+      End;
      End;
     If Assigned(vServerMethod) Then
      Begin
@@ -1209,17 +1213,18 @@ Begin
     End;
     If Assigned(vLastResponse) Then
      Begin
-      {$IFDEF FPC}
-       {$IFDEF WINDOWS}
-        EnterCriticalSection(vCriticalSection);
-       {$ENDIF}
+      {$IFNDEF UNIX}
+       InitializeCriticalSection(vCriticalSection);
+       EnterCriticalSection(vCriticalSection);
       {$ENDIF}
+      Try
        vLastResponse(DecodeStrings(JSONStr));
-      {$IFDEF FPC}
-       {$IFDEF WINDOWS}
+      Finally
+       {$IFNDEF UNIX}
         LeaveCriticalSection(vCriticalSection);
+        DeleteCriticalSection(vCriticalSection);
        {$ENDIF}
-      {$ENDIF}
+      End;
      End;
     AResponseInfo.WriteContent;
    Finally
@@ -1252,11 +1257,6 @@ Begin
  VEncondig                       := esASCII;
  vServicePort                    := 8082;
  vDataCompress                   := True;
- {$IFDEF FPC}
-  {$IFDEF WINDOWS}
-   InitializeCriticalSection(vCriticalSection);
-  {$ENDIF}
- {$ENDIF}
 End;
 
 Destructor TRESTServicePooler.Destroy;
@@ -1266,11 +1266,6 @@ Begin
  HTTPServer.Free;
  vServerParams.Free;
  lHandler.Free;
- {$IFDEF FPC}
-  {$IFDEF WINDOWS}
-   DeleteCriticalSection(vCriticalSection);
-  {$ENDIF}
- {$ENDIF}
  Inherited;
 End;
 
