@@ -8,8 +8,8 @@ interface
 
 uses
   ServerUtils, SysTypes, uDWConsts, uDWJSONObject, uDWJSONTools, uRESTDWBase, 
-  uRESTDWReg, uDWJSONParser, uRESTDWMasterDetailData, uRESTDWPoolerDB, 
-  uZlibLaz, uDWPoolerMethod, uDWDatamodule, LazarusPackageIntf;
+  uRESTDWReg, uRESTDWMasterDetailData, uRESTDWPoolerDB, uZlibLaz, 
+  uDWPoolerMethod, uDWDatamodule, uDWJSON, LazarusPackageIntf;
 
 implementation
 

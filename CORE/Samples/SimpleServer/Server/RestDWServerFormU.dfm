@@ -109,10 +109,6 @@ object RestDWForm: TRestDWForm
     TabOrder = 3
     object tsConfigs: TTabSheet
       Caption = 'Configuration'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 7
         Top = 37

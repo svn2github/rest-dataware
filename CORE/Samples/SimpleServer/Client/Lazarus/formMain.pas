@@ -5,7 +5,7 @@ interface
 uses
   {$IFDEF WINDOWS}Windows,
   {$ELSE}Lcl,{$ENDIF}
-  Messages, SysUtils, Variants, Classes, Graphics,
+  uDWJSON,  Messages, SysUtils, Variants, Classes, Graphics,
   Controls, Forms, Dialogs, StdCtrls, fpjson, jsonparser, DB, BufDataset, memds,
   Grids, DBGrids, ExtCtrls, ComCtrls, uRESTDWBase, uRESTDWPoolerDB, uDWConsts,
   uDWJSONObject, uDWJSONTools, IdComponent;

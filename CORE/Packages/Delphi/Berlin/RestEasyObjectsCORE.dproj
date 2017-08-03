@@ -68,10 +68,10 @@
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_AdditionalSwitches>–LUDesignIDE</DCC_AdditionalSwitches>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Build>143</VerInfo_Build>
+        <VerInfo_Build>150</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=$(MSBuildProjectName);FileVersion=1.0.1.143;InternalName=REST Dataware CORE Version;LegalCopyright=REST Dataware CORE Version;LegalTrademarks=REST Dataware;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.1;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=XyberPower Desenvolvimento;FileDescription=$(MSBuildProjectName);FileVersion=1.0.1.150;InternalName=REST Dataware CORE Version;LegalCopyright=REST Dataware CORE Version;LegalTrademarks=REST Dataware;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.1;Comments=</VerInfo_Keys>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
     </PropertyGroup>
@@ -105,11 +105,11 @@
         <DCCReference Include="..\..\..\Source\libs\uDWConsts.pas"/>
         <DCCReference Include="..\..\..\Source\libs\uDWJSONObject.pas"/>
         <DCCReference Include="..\..\..\Source\libs\uDWJSONTools.pas"/>
-        <DCCReference Include="..\..\..\Source\libs\JSON\uDWJSONParser.pas"/>
         <DCCReference Include="..\..\..\Source\libs\uzliblaz.pas"/>
         <DCCReference Include="..\..\..\Source\uDWPoolerMethod.pas"/>
         <DCCReference Include="..\..\..\Source\libs\uDWConstsData.pas"/>
         <DCCReference Include="..\..\..\Source\DmDados\uDWDatamodule.pas"/>
+        <DCCReference Include="..\..\..\Source\libs\JSON\uDWJSON.pas"/>
         <RcItem Include="..\..\..\Images\TRESTClientPooler.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TRESTClientPooler</ResourceId>

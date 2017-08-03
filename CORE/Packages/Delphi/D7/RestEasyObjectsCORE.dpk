@@ -48,10 +48,10 @@ contains
   uDWConsts in '..\..\..\Source\libs\uDWConsts.pas',
   uDWJSONTools in '..\..\..\Source\libs\uDWJSONTools.pas',
   uDWJSONObject in '..\..\..\Source\libs\uDWJSONObject.pas',
-  uDWJSONParser in '..\..\..\Source\libs\JSON\uDWJSONParser.pas',
   uRESTDWPoolerDB in '..\..\..\Source\uRESTDWPoolerDB.pas',
   uRESTDWMasterDetailData in '..\..\..\Source\uRESTDWMasterDetailData.pas',
   uzliblaz in '..\..\..\Source\libs\uzliblaz.pas',
-  uDWDatamodule in '..\..\..\Source\DmDados\uDWDatamodule.pas' {ServerMethodDataModule: TDataModule};
+  uDWDatamodule in '..\..\..\Source\DmDados\uDWDatamodule.pas' {ServerMethodDataModule: TDataModule},
+  uDWJSON in '..\..\..\Source\libs\JSON\uDWJSON.pas';
 
 end.

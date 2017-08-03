@@ -51,11 +51,11 @@ contains
   uDWConsts in '..\..\..\Source\libs\uDWConsts.pas',
   uDWJSONObject in '..\..\..\Source\libs\uDWJSONObject.pas',
   uDWJSONTools in '..\..\..\Source\libs\uDWJSONTools.pas',
-  uDWJSONParser in '..\..\..\Source\libs\JSON\uDWJSONParser.pas',
   uzliblaz in '..\..\..\Source\libs\uzliblaz.pas',
   uDWPoolerMethod in '..\..\..\Source\uDWPoolerMethod.pas',
   uDWConstsData in '..\..\..\Source\libs\uDWConstsData.pas',
-  uDWDatamodule in '..\..\..\Source\DmDados\uDWDatamodule.pas';
+  uDWDatamodule in '..\..\..\Source\DmDados\uDWDatamodule.pas',
+  uDWJSON in '..\..\..\Source\libs\JSON\uDWJSON.pas';
 
 end.
 

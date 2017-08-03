@@ -48,28 +48,28 @@
         <Type Value="LRS"/>
       </Item8>
       <Item9>
-        <Filename Value="..\..\Source\libs\JSON\uDWJSONParser.pas"/>
-        <UnitName Value="uDWJSONParser"/>
-      </Item9>
-      <Item10>
         <Filename Value="..\..\Source\uRESTDWMasterDetailData.pas"/>
         <UnitName Value="uRESTDWMasterDetailData"/>
-      </Item10>
-      <Item11>
+      </Item9>
+      <Item10>
         <Filename Value="..\..\Source\uRESTDWPoolerDB.pas"/>
         <UnitName Value="uRESTDWPoolerDB"/>
-      </Item11>
-      <Item12>
+      </Item10>
+      <Item11>
         <Filename Value="..\..\Source\libs\uzliblaz.pas"/>
         <UnitName Value="uZlibLaz"/>
-      </Item12>
-      <Item13>
+      </Item11>
+      <Item12>
         <Filename Value="..\..\Source\uDWPoolerMethod.pas"/>
         <UnitName Value="uDWPoolerMethod"/>
-      </Item13>
-      <Item14>
+      </Item12>
+      <Item13>
         <Filename Value="..\..\Source\DmDados\uDWDatamodule.pas"/>
         <UnitName Value="uDWDatamodule"/>
+      </Item13>
+      <Item14>
+        <Filename Value="..\..\Source\libs\JSON\uDWJSON.pas"/>
+        <UnitName Value="uDWJSON"/>
       </Item14>
     </Files>
     <RequiredPkgs Count="2">

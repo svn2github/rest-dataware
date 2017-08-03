@@ -28,18 +28,18 @@ Uses
      SysUtils,                      Classes,            ServerUtils, {$IFDEF WINDOWS}Windows,{$ENDIF}
      IdContext, IdTCPConnection,    IdHTTPServer,       IdCustomHTTPServer,  IdSSLOpenSSL,    IdSSL,
      IdAuthentication,              IdTCPClient,        IdHTTPHeaderInfo,    IdComponent, IdBaseComponent,
-     IdHTTP, uDWJSONParser,         uDWConstsData,      IdMultipartFormData, IdMessageCoder,
-     IdMessageCoderMIME, IdMessage, uDWJSONObject, IdGlobal,            IdGlobalProtocols;
+     IdHTTP,                        uDWConstsData,      IdMultipartFormData, IdMessageCoder,
+     IdMessageCoderMIME, IdMessage, uDWJSONObject, IdGlobal, uDWJSON, IdGlobalProtocols;
      {$ELSE}
      {$IF CompilerVersion < 21}
      SysUtils, Classes, EncdDecd,
      {$ELSE}
      System.SysUtils, System.Classes,
      {$IFEND}
-     ServerUtils, Windows,  uDWConstsData,       IdTCPClient,           IdMultipartFormData,
+     ServerUtils, Windows,  uDWConstsData,       IdTCPClient, uDWJSON,  IdMultipartFormData,
      IdContext,             IdHTTPServer,        IdCustomHTTPServer,    IdSSLOpenSSL,    IdSSL,
      IdAuthentication,      IdHTTPHeaderInfo,    IdComponent, IdBaseComponent, IdTCPConnection,
-     IdHTTP, uDWJSONParser, uDWJSONObject,       IdMessageCoder,
+     IdHTTP,                uDWJSONObject,       IdMessageCoder,
      IdMessageCoderMIME,    IdMessage,           IdGlobalProtocols,     IdGlobal;
      {$ENDIF}
 
@@ -302,66 +302,64 @@ Var
                    Var ParamsData : TDWParams;
                    Var ResultJSON : String);
  Var
-  JsonParser  : TJsonParser;
-  bJsonValue  : TJsonObject;
-  JSONParam   : TJSONParam;
-  JSONParamNew: TJSONParam;
+  bJsonOBJ,
+  bJsonValue    : TJsonObject;
+  bJsonOBJTemp  : TJSONArray;
+  JSONParam     : TJSONParam;
+  JSONParamNew  : TJSONParam;
   A, I, InitPos : Integer;
   vValue,
   vTempValue    : String;
  Begin
-  ClearJsonParser(JsonParser);
   Try
    InitPos    := Pos('"RESULT":[', InputValue) + Length('"RESULT":[') -1;
    vTempValue := Copy(InputValue, InitPos +1, Pos(']}', InputValue) - InitPos - 1);
    InputValue := Copy(InputValue, 1, InitPos) + ']}'; //Delete(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
    If Params <> Nil Then
-//   If Params.ParamsReturn Then  //testar parametro de retorno
     Begin
-     ParseJson(JsonParser, InputValue);
-     If Length(JsonParser.Output.Objects) > 0 Then
+     bJsonValue    := TJsonObject.Create(InputValue);
+     bJsonOBJTemp  := TJSONArray.Create(bJsonValue.opt(bJsonValue.names.get(0).ToString).ToString);
+     If bJsonOBJTemp.length > 0 Then
       Begin
-       For A := 1 To Length(JsonParser.Output.Objects) -1 Do
+       For A := 0 To bJsonOBJTemp.length -1 Do
         Begin
-         bJsonValue := JsonParser.Output.Objects[A];
-         If Length(bJsonValue) = 0 Then
+         bJsonOBJ := TJsonObject.Create(bJsonOBJTemp.get(A).ToString);
+         If Length(bJsonOBJ.opt(bJsonOBJ.names.get(0).ToString).ToString) = 0 Then
           Continue;
-         If GetObjectName(bJsonValue[0].Value.Value) <> toParam Then
+         If GetObjectName(bJsonOBJ.opt(bJsonOBJ.names.get(0).ToString).ToString) <> toParam Then
           Break;
          JSONParam := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(GetEncoding(TEncodeSelect(vRSCharset))){$IFEND}{$ENDIF};
          Try
-          JSONParam.ParamName       := bJsonValue[4].Key;
-          JSONParam.ObjectValue     := GetValueType(bJsonValue[3].Value.Value);
-          JSONParam.ObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
-          JSONParam.Encoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
+          JSONParam.ParamName       := bJsonOBJ.names.get(4).ToString;
+          JSONParam.ObjectValue     := GetValueType(bJsonOBJ.opt(bJsonOBJ.names.get(3).ToString).ToString);
+          JSONParam.ObjectDirection := GetDirectionName(bJsonOBJ.opt(bJsonOBJ.names.get(1).ToString).ToString);
+          JSONParam.Encoded         := GetBooleanFromString(bJsonOBJ.opt(bJsonOBJ.names.get(2).ToString).ToString);
           If JSONParam.Encoded Then
-           vValue := DecodeStrings(bJsonValue[4].Value.Value)
+           vValue := DecodeStrings(bJsonOBJ.opt(bJsonOBJ.names.get(4).ToString).ToString)
           Else
-           vValue := bJsonValue[4].Value.Value;
+           vValue := bJsonOBJ.opt(bJsonOBJ.names.get(4).ToString).ToString;
           JSONParam.SetValue(vValue);
-          {TODO CRISTIANO BAROBSA}  //parametro criandos no servidor
+          bJsonOBJ.Free;
+          //parametro criandos no servidor
           If ParamsData.ItemsString[JSONParam.ParamName] = Nil Then
-          begin
+           Begin
             JSONParamNew           := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(ParamsData.Encoding){$IFEND}{$ENDIF};
             JSONParamNew.ParamName := JSONParam.ParamName;
             JSONParamNew.SetValue(JSONParam.Value, JSONParam.Encoded);
             ParamsData.Add(JSONParamNew);
-          end
-          else
-            ParamsData.ItemsString[JSONParam.ParamName].SetValue(JSONParam.Value, JSONParam.Encoded);
-  //        ParamsData.WriteString(Format('%s=%s', [JSONParam.ParamName, JSONParam.ToJSON]) + TSepParams);
+           End
+          Else
+           ParamsData.ItemsString[JSONParam.ParamName].SetValue(JSONParam.Value, JSONParam.Encoded);
          Finally
           JSONParam.Free;
          End;
         End;
       End;
+     bJsonValue.Free;
     End;
   Finally
    If vTempValue <> '' Then
-    Begin
-//     ResultJSON := DecodeStrings(vTempValue{$IFNDEF FPC}, GetEncoding(uDWConsts.TEncodeSelect(vRSCharset)){$IFEND});
-     ResultJSON := vTempValue;
-    End;
+    ResultJSON := vTempValue;
   End;
  End;
  Procedure SetParamsValues(DWParams : TDWParams; SendParamsData : TIdMultipartFormDataStream);
@@ -1030,10 +1028,7 @@ Begin
          End;
        End;
       If Assigned(vServerMethod) Then
-       Begin
-        vTempServerMethods := vServerMethod.Create(Nil);
-        TServerMethods(vTempServerMethods).Encoding := Encoding;
-       End
+       vTempServerMethods := vServerMethod.Create(Nil)
       Else
        JSONStr := GetPairJSON(-5, 'Server Methods Cannot Assigned');
       Try
@@ -1393,67 +1388,67 @@ VAR SResult ,
  StringStream  : TStringStream;
  SendParams    : TIdMultipartFormDataStream;
  ss            : TStringStream;
- thd : TThread_Request;
-
+ thd           : TThread_Request;
  Procedure SetData(InputValue     : String;
                    Var ParamsData : TDWParams;
                    Var ResultJSON : String);
  Var
-  JsonParser  : TJsonParser;
-  bJsonValue  : TJsonObject;
-  JSONParam   : TJSONParam;
-  JSONParamNew: TJSONParam;
+  bJsonOBJ,
+  bJsonValue    : TJsonObject;
+  bJsonOBJTemp  : TJSONArray;
+  JSONParam     : TJSONParam;
+  JSONParamNew  : TJSONParam;
   A, I, InitPos : Integer;
   vValue,
   vTempValue  : String;
  Begin
-  ClearJsonParser(JsonParser);
   Try
    InitPos    := Pos('"RESULT":[', InputValue) + 10;
    vTempValue := Copy(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
    Delete(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
    If Params <> Nil Then
     Begin
-     ParseJson(JsonParser, InputValue);
-     If Length(JsonParser.Output.Objects) > 0 Then
+     bJsonValue    := TJsonObject.Create(InputValue);
+     bJsonOBJTemp  := TJSONArray.Create(bJsonValue.opt(bJsonValue.names.get(0).ToString).ToString);
+     If bJsonOBJTemp.length > 0 Then
       Begin
-       For A := 1 To Length(JsonParser.Output.Objects) -1 Do
+       For A := 0 To bJsonValue.names.length -1 Do
         Begin
-         bJsonValue := JsonParser.Output.Objects[A];
-         If GetObjectName(bJsonValue[0].Value.Value) <> toParam Then
-          Break;
+         bJsonOBJ := TJsonObject.Create(bJsonOBJTemp.get(A).ToString);
+         If Length(bJsonOBJ.opt(bJsonOBJ.names.get(0).ToString).ToString) = 0 Then
+          Continue;
          JSONParam := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(GetEncoding(TEncodeSelect(vRSCharset))){$IFEND}{$ENDIF};
          Try
-          JSONParam.ParamName       := bJsonValue[4].Key;
-          JSONParam.ObjectValue     := GetValueType(bJsonValue[3].Value.Value);
-          JSONParam.ObjectDirection := GetDirectionName(bJsonValue[1].Value.Value);
-          JSONParam.Encoded         := GetBooleanFromString(bJsonValue[2].Value.Value);
+          JSONParam.ParamName       := bJsonOBJ.names.get(4).ToString;
+          JSONParam.ObjectValue     := GetValueType(bJsonOBJ.opt(bJsonOBJ.names.get(3).ToString).ToString);
+          JSONParam.ObjectDirection := GetDirectionName(bJsonOBJ.opt(bJsonOBJ.names.get(1).ToString).ToString);
+          JSONParam.Encoded         := GetBooleanFromString(bJsonOBJ.opt(bJsonOBJ.names.get(2).ToString).ToString);
           If JSONParam.Encoded Then
-           vValue := DecodeStrings(bJsonValue[4].Value.Value)
+           vValue := DecodeStrings(bJsonOBJ.opt(bJsonOBJ.names.get(4).ToString).ToString)
           Else
-           vValue := bJsonValue[4].Value.Value;
+           vValue := bJsonOBJ.opt(bJsonOBJ.names.get(4).ToString).ToString;
           JSONParam.SetValue(vValue);
-          {TODO CRISTIANO BAROBSA}  //parametro criandos no servidor
+          bJsonOBJ.Free;
+          //parametro criandos no servidor
           If ParamsData.ItemsString[JSONParam.ParamName] = Nil Then
-          begin
+           Begin
             JSONParamNew           := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(ParamsData.Encoding){$IFEND}{$ENDIF};
             JSONParamNew.ParamName := JSONParam.ParamName;
             JSONParamNew.SetValue(JSONParam.Value, JSONParam.Encoded);
             ParamsData.Add(JSONParamNew);
-          end
-          else
-            ParamsData.ItemsString[JSONParam.ParamName].SetValue(JSONParam.Value, JSONParam.Encoded);
-  //        ParamsData.WriteString(Format('%s=%s', [JSONParam.ParamName, JSONParam.ToJSON]) + TSepParams);
+           End
+          Else
+           ParamsData.ItemsString[JSONParam.ParamName].SetValue(JSONParam.Value, JSONParam.Encoded);
          Finally
           JSONParam.Free;
          End;
         End;
       End;
+     bJsonValue.Free;
     End;
   Finally
    If vTempValue <> '' Then
     Begin
-//     ResultJSON := DecodeStrings(vTempValue{$IFNDEF FPC}, GetEncoding(uDWConsts.TEncodeSelect(vRSCharset)){$IFEND});
      ResultJSON := vTempValue;
     End;
   End;
