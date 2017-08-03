@@ -713,10 +713,12 @@ begin
             End;
          End;
         Finally
-         bJsonOBJ.Free;
+         bJsonOBJ.Clean;
+         FreeAndNil(bJsonOBJ);
         End;
        End;
-      bJsonArray.Free;
+      FreeAndNil(bJsonArraySub);
+//      FreeAndNil(bJsonArray);
      End
     {$IFDEF FPC}
      Else
@@ -764,7 +766,8 @@ begin
           Field.ProviderFlags := [pfInUpdate, pfInWhere, pfInKey];
         End;
       Finally
-       bJsonOBJ.Free;
+       bJsonOBJ.clean;
+       FreeAndNil(bJsonOBJ);
       End;
      End;
     For A := 0 To DestDS.Fields.Count -1 Do
@@ -782,12 +785,13 @@ begin
             Break;
            End;
          End;
-        bJsonOBJ.Free;
+        bJsonOBJ.clean;
+        FreeAndNil(bJsonOBJ);
        End;
       If Not vFindFlag Then
        ListFields.Add('-1');
      End;
-    bJsonArray.Free;
+    FreeAndNil(bJsonArray);
     bJsonArray    := bJsonValue.optJSONArray(bJsonValue.names.get(4).ToString);
     bJsonArraySub := TJSONObject.Create(bJsonArray.opt(1).ToString);
     bJsonArray    := bJsonArraySub.optJSONArray(bJsonArraySub.names.get(0).ToString);
@@ -796,60 +800,65 @@ begin
       bJsonOBJ     := TJsonObject.create(bJsonArray.get(J).ToString);
       bJsonOBJTemp := bJsonOBJ.optJSONArray(bJsonOBJ.names.get(0).ToString);
       DestDS.Append;
-      For I := 0 To DestDS.Fields.Count -1 Do
-       Begin
-        If StrToInt(ListFields[I]) = -1 Then
-         Continue;
-        If DestDS.Fields[I].DataType In [ftMemo, ftGraphic, ftFmtMemo,
-                                         ftParadoxOle,      ftDBaseOle,
-                                         ftTypedBinary,     ftCursor,
-                                         ftDataSet,         ftOraBlob,
-                                         ftOraClob,         ftWideString
-                                         {$IFNDEF FPC}
-                                         {$if CompilerVersion > 21}
-                                         ,ftParams,         ftStream{$IFEND}{$ENDIF}]  Then
-         Begin
-          If vEncoded Then
-           vBlobStream := TStringStream.Create(DecodeStrings(bJsonOBJTemp.get(StrToInt(ListFields[I])).toString))
-          Else
-           vBlobStream := TStringStream.Create(bJsonOBJTemp.get(StrToInt(ListFields[I])).toString);
-          Try
-           vBlobStream.Position := 0;
-           DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
-          Finally
-           {$IFNDEF FPC}
-            {$if CompilerVersion > 21}
-             vBlobStream.Clear;
-            {$IFEND}
-           {$ENDIF}
-           vBlobStream.Free;
-          End;
-         End
-        Else
-         Begin
-          If bJsonOBJTemp.get(StrToInt(ListFields[I])).toString <> '' Then
-           Begin
-            If DestDS.Fields[I].DataType in [ftString, ftWideString, ftFixedChar] Then
-             Begin
-              If vEncoded Then
-               DestDS.Fields[I].AsString := DecodeStrings(bJsonOBJTemp.get(StrToInt(ListFields[I])).toString)
-              Else
-               DestDS.Fields[I].AsString := bJsonOBJTemp.get(StrToInt(ListFields[I])).toString;
-             End
-            Else
-             Begin
-              {$IFNDEF FPC}
-               DestDS.Fields[I].Value := bJsonOBJTemp.get(StrToInt(ListFields[I])).toString;
-              {$ELSE}
-               SetValueA(DestDS.Fields[I], bJsonOBJTemp.get(StrToInt(ListFields[I])).toString);
-              {$ENDIF}
-             End;
+      Try
+       For I := 0 To DestDS.Fields.Count -1 Do
+        Begin
+         If StrToInt(ListFields[I]) = -1 Then
+          Continue;
+         If DestDS.Fields[I].DataType In [ftMemo, ftGraphic, ftFmtMemo,
+                                          ftParadoxOle,      ftDBaseOle,
+                                          ftTypedBinary,     ftCursor,
+                                          ftDataSet,         ftOraBlob,
+                                          ftOraClob,         ftWideString
+                                          {$IFNDEF FPC}
+                                          {$if CompilerVersion > 21}
+                                          ,ftParams,         ftStream{$IFEND}{$ENDIF}]  Then
+          Begin
+           If vEncoded Then
+            vBlobStream := TStringStream.Create(DecodeStrings(bJsonOBJTemp.get(StrToInt(ListFields[I])).toString))
+           Else
+            vBlobStream := TStringStream.Create(bJsonOBJTemp.get(StrToInt(ListFields[I])).toString);
+           Try
+            vBlobStream.Position := 0;
+            DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
+           Finally
+            {$IFNDEF FPC}
+             {$if CompilerVersion > 21}
+              vBlobStream.Clear;
+             {$IFEND}
+            {$ENDIF}
+            vBlobStream.Free;
            End;
-         End;
-       End;
+          End
+         Else
+          Begin
+           If bJsonOBJTemp.get(StrToInt(ListFields[I])).toString <> '' Then
+            Begin
+             If DestDS.Fields[I].DataType in [ftString, ftWideString, ftFixedChar] Then
+              Begin
+               If vEncoded Then
+                DestDS.Fields[I].AsString := DecodeStrings(bJsonOBJTemp.get(StrToInt(ListFields[I])).toString)
+               Else
+                DestDS.Fields[I].AsString := bJsonOBJTemp.get(StrToInt(ListFields[I])).toString;
+              End
+             Else
+              Begin
+               {$IFNDEF FPC}
+                DestDS.Fields[I].Value := bJsonOBJTemp.get(StrToInt(ListFields[I])).toString;
+               {$ELSE}
+                SetValueA(DestDS.Fields[I], bJsonOBJTemp.get(StrToInt(ListFields[I])).toString);
+               {$ENDIF}
+              End;
+            End;
+          End;
+        End;
+      Finally
+       bJsonOBJ.clean;
+       FreeAndNil(bJsonOBJ);
+      End;
       DestDS.Post;
-      bJsonOBJ.Free;
      End;
+    FreeAndNil(bJsonArraySub);
    End
   Else
    Begin
@@ -857,6 +866,8 @@ begin
     Raise Exception.Create('Invalid JSON Data...');
    End;
  Finally
+  bJsonValue.clean;
+  FreeAndNil(bJsonValue);
   ListFields.Free;
   If DestDS.Active Then
    DestDS.First;

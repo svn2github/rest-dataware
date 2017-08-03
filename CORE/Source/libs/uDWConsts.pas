@@ -134,18 +134,22 @@ Begin
     {$IFDEF FPC}
      Encoder       := TBase64EncodingStream.Create(Base64Stream);
      Encoder.CopyFrom(Compressed, Compressed.Size);
+     Encoder.Free;
     {$ELSE}
      EncodeStream(Compressed, Base64Stream);
     {$ENDIF}
     Value  := Base64Stream.DataString;
     Result := True;
    Finally
+    {$IFNDEF FPC}{$if CompilerVersion > 21}Base64Stream.Clear;{$IFEND}{$ENDIF}
     Base64Stream.Free;
    End;
   Finally
+   {$IFNDEF FPC}{$if CompilerVersion > 21}Compressed.Clear;{$IFEND}{$ENDIF}
    Compressed.Free;
   End;
  Finally
+  {$IFNDEF FPC}{$if CompilerVersion > 21}Utf8Stream.Clear;{$IFEND}{$ENDIF}
   Utf8Stream.Free;
  End;
 End;
@@ -157,7 +161,7 @@ Var
  Compressed,
  Base64Stream : TStringStream;
  {$IFDEF FPC}
-  Encoder      : TBase64DecodingStream;
+  Encoder     : TBase64DecodingStream;
  {$ENDIF}
 Begin
  Result := False;
@@ -174,6 +178,7 @@ Begin
     Encoder       := TBase64DecodingStream.Create(Base64Stream);
     Utf8Stream.CopyFrom(Encoder, Encoder.Size);
     Utf8Stream.Position := 0;
+    Encoder.Free;
     Compressed.position := 0;
     ZDecompressStream(Utf8Stream, Compressed);
    {$ELSE}
@@ -187,12 +192,15 @@ Begin
     Value := Compressed.DataString;
     Result := True;
    Finally
+    {$IFNDEF FPC}{$if CompilerVersion > 21}Utf8Stream.Clear;{$IFEND}{$ENDIF}
     Utf8Stream.Free;
    End;
   Finally
+   {$IFNDEF FPC}{$if CompilerVersion > 21}Compressed.Clear;{$IFEND}{$ENDIF}
    Compressed.Free;
   End;
  Finally
+  {$IFNDEF FPC}{$if CompilerVersion > 21}Base64Stream.Clear;{$IFEND}{$ENDIF}
   Base64Stream.Free;
  End;
 End;

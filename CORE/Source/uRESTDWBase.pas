@@ -320,9 +320,15 @@ Var
         Begin
          bJsonOBJ := TJsonObject.Create(bJsonOBJTemp.get(A).ToString);
          If Length(bJsonOBJ.opt(bJsonOBJ.names.get(0).ToString).ToString) = 0 Then
-          Continue;
+          Begin
+           FreeAndNil(bJsonOBJ);
+           Continue;
+          End;
          If GetObjectName(bJsonOBJ.opt(bJsonOBJ.names.get(0).ToString).ToString) <> toParam Then
-          Break;
+          Begin
+           FreeAndNil(bJsonOBJ);
+           Break;
+          End;
          JSONParam := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(GetEncoding(TEncodeSelect(vRSCharset))){$IFEND}{$ENDIF};
          Try
           JSONParam.ParamName       := bJsonOBJ.names.get(4).ToString;
@@ -334,7 +340,8 @@ Var
           Else
            vValue := bJsonOBJ.opt(bJsonOBJ.names.get(4).ToString).ToString;
           JSONParam.SetValue(vValue);
-          bJsonOBJ.Free;
+          bJsonOBJ.clean;
+          FreeAndNil(bJsonOBJ);
           //parametro criandos no servidor
           If ParamsData.ItemsString[JSONParam.ParamName] = Nil Then
            Begin
@@ -346,11 +353,13 @@ Var
           Else
            ParamsData.ItemsString[JSONParam.ParamName].SetValue(JSONParam.Value, JSONParam.Encoded);
          Finally
-          JSONParam.Free;
+          FreeAndNil(JSONParam);
          End;
         End;
       End;
-     bJsonValue.Free;
+     bJsonValue.Clean;
+     FreeAndNil(bJsonValue);
+     FreeAndNil(bJsonOBJTemp);
     End;
   Finally
    If vTempValue <> '' Then
@@ -465,11 +474,15 @@ Begin
          StringStream := TStringStream.Create(vResult);
         End;
        If SendParams <> Nil Then
-        SendParams.Free;
+        Begin
+         {$IFNDEF FPC}{$if CompilerVersion > 21}SendParams.Clear;{$IFEND}{$ENDIF}
+         SendParams.Free;
+        End;
        StringStream.Position := 0;
        Try
         SetData(StringStream.DataString, Params, Result);
        Finally
+        {$IFNDEF FPC}{$if CompilerVersion > 21}StringStream.Clear;{$IFEND}{$ENDIF}
         StringStream.Free;
        End;
       End
@@ -483,6 +496,7 @@ Begin
        Try
         SetData(StringStream.DataString, Params, Result);
        Finally
+        {$IFNDEF FPC}{$if CompilerVersion > 21}StringStream.Clear;{$IFEND}{$ENDIF}
         StringStream.Free;
        End;
       End

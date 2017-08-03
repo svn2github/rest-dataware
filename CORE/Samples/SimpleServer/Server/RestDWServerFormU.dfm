@@ -104,7 +104,7 @@ object RestDWForm: TRestDWForm
     Top = 0
     Width = 520
     Height = 353
-    ActivePage = tsConfigs
+    ActivePage = tsLogs
     Align = alTop
     TabOrder = 3
     object tsConfigs: TTabSheet
@@ -1349,10 +1349,6 @@ object RestDWForm: TRestDWForm
     object tsLogs: TTabSheet
       Caption = 'Logs'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label19: TLabel
         Left = 7
         Top = 147
@@ -1458,5 +1454,11 @@ object RestDWForm: TRestDWForm
     ServerContext = 'restdataware'
     Left = 132
     Top = 192
+  end
+  object tupdatelogs: TTimer
+    Enabled = False
+    OnTimer = tupdatelogsTimer
+    Left = 324
+    Top = 120
   end
 end

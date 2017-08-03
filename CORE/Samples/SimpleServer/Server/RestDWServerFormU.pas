@@ -75,6 +75,7 @@ type
     cbEncode: TCheckBox;
     RESTServicePooler1: TRESTServicePooler;
     CheckBox1: TCheckBox;
+    tupdatelogs: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);
@@ -88,8 +89,11 @@ type
     procedure RESTServicePooler1LastRequest(Value: string);
     procedure RESTServicePooler1LastResponse(Value: string);
     procedure Server_FDConnectionBeforeConnect(Sender: TObject);
+    procedure tupdatelogsTimer(Sender: TObject);
   Private
    {Private declarations}
+   vLastRequest,
+   vLastRequestB,
    vDatabaseName,
    FCfgName,
    vDatabaseIP,
@@ -164,13 +168,12 @@ end;
 
 procedure TRestDWForm.RESTServicePooler1LastRequest(Value: string);
 begin
- memoReq.Lines.Add(Value);
+ vLastRequest := Value;
 end;
 
 procedure TRestDWForm.RESTServicePooler1LastResponse(Value: string);
 begin
- memoResp.Lines.Clear;
- memoResp.Lines.Add(Value);
+ vLastRequestB := Value;
 end;
 
 procedure TRestDWForm.SairdaAplicao1Click(Sender: TObject);
@@ -279,6 +282,7 @@ End;
 
 procedure TRestDWForm.ButtonStopClick(Sender: TObject);
 begin
+ tupdatelogs.Enabled       := False;
  RESTServicePooler1.Active := False;
  Server_FDConnection.Connected := False;
  PageControl1.ActivePage := tsConfigs;
@@ -385,6 +389,7 @@ begin
    Server_FDConnection.Connected := True;
    PageControl1.ActivePage := tsLogs;
    HideApplication;
+   tupdatelogs.Enabled     := True;
   End;
  If RESTServicePooler1.Secure Then
   Begin
@@ -396,6 +401,41 @@ begin
    lSeguro.Font.Color := clRed;
    lSeguro.Caption    := 'Seguro : Não';
   End;
+end;
+
+procedure TRestDWForm.tupdatelogsTimer(Sender: TObject);
+Var
+ vTempLastRequest,
+ vTempLastRequestB : String;
+begin
+ tupdatelogs.Enabled := False;
+ Try
+  vTempLastRequest  := vLastRequest;
+  vTempLastRequestB := vLastRequestB;
+  If (vTempLastRequest <> '') Then
+   Begin
+    If memoReq.Lines.Count > 0 Then
+     If memoReq.Lines[memoReq.Lines.Count -1] = vTempLastRequest Then
+      Exit;
+    If memoReq.Lines.Count = 0 Then
+     memoReq.Lines.Add(Copy(vTempLastRequest, 1, 100))
+    Else
+     memoReq.Lines[memoReq.Lines.Count -1] := Copy(vTempLastRequest, 1, 100);
+    If Length(vTempLastRequest) > 1000 Then
+     memoReq.Lines[memoReq.Lines.Count -1] := memoReq.Lines[memoReq.Lines.Count -1] + '...';
+    If memoResp.Lines.Count > 0 Then
+     If memoResp.Lines[memoResp.Lines.Count -1] = vTempLastRequestB Then
+      Exit;
+    If memoResp.Lines.Count = 0 Then
+     memoResp.Lines.Add(Copy(vTempLastRequestB, 1, 100))
+    Else
+     memoResp.Lines[memoResp.Lines.Count -1] := Copy(vTempLastRequestB, 1, 100);
+    If Length(vTempLastRequest) > 1000 Then
+     memoResp.Lines[memoResp.Lines.Count -1] := memoResp.Lines[memoResp.Lines.Count -1] + '...';
+   End;
+ Finally
+  tupdatelogs.Enabled := True;
+ End;
 end;
 
 end.
