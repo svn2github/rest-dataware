@@ -267,6 +267,31 @@ end;
 Procedure HexToStream(Str    : String;
                       Stream : TStream);
 Begin
+ If Length(Str) > 0 Then
+  Begin
+   If Str[1] = '{' Then
+    Delete(Str, 1, 1);
+  End;
+ If Length(Str) > 0 Then
+  Begin
+   If Str[1] = #13 Then
+    Delete(Str, 1, 1);
+  End;
+ If Length(Str) > 0 Then
+  Begin
+   If Str[1] = '"' Then
+    Delete(Str, 1, 1);
+  End;
+ If Length(Str) > 0 Then
+  Begin
+   If Str[1] = 'L' Then
+    Delete(Str, 1, 1);
+  End;
+ If Length(Str) > 0 Then
+  Begin
+   If Str[Length(Str)] = '"' Then
+    Delete(Str, Length(Str), 1);
+  End;
  TMemoryStream(Stream).Size := Length(Str) Div 2;
  HexToBin(PChar (Str),   TMemoryStream(Stream).Memory, TMemoryStream(Stream).Size);
  Stream.Position := 0;
@@ -277,6 +302,7 @@ Begin
  Stream.Position := 0;
  SetLength     (Result, Stream.Size * 2);
  BinToHex      (TMemoryStream(Stream).Memory, PChar(Result), Stream.Size);
+ Result := '"' + Result + '"';
 End;
 
 Function FileToStr(Const FileName : String):string;

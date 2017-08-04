@@ -335,7 +335,7 @@ Type
     function toString : string; overload; override;
     function toString (indentFactor : integer) : string; overload;
     function toString (indentFactor, indent : integer) : string; overload;
-    function toList () : TList;
+    function toList : TList;
   private
     myArrayList : TList;
   end;
@@ -2182,7 +2182,7 @@ end;
 destructor TJSONObject.destroy;
 begin
   clean;
-  myHashMap.Free;
+  FreeAndNil(myHashMap);
   inherited;
 end;
 
@@ -2608,17 +2608,16 @@ end;
  * @return      A TJSONArray value, or null if the index has no value,
  * or if the value is not a TJSONArray.
  *)
-function TJSONArray.optJSONArray(index: integer): TJSONArray;
-var
+Function TJSONArray.optJSONArray(index: integer): TJSONArray;
+Var
  o : TZAbstractObject;
-begin
-  o := opt(index);
-  if (o is TJSONArray) then begin
-    result := TJSONArray (o) ;
-  end else begin
-    result := nil;
-  end;
-end;
+Begin
+ o := opt(index);
+ If (o is TJSONArray) Then
+  Result := TJSONArray(o)
+ Else
+  Result := Nil;
+End;
 
 (**
  * Get the optional TJSONObject associated with an index.
@@ -2628,17 +2627,17 @@ end;
  * @param index The index must be between 0 and length() - 1.
  * @return      A TJSONObject value.
  *)
-function TJSONArray.optJSONObject(index: integer): TJSONObject;
-var
-  o : TZAbstractObject;
-begin
-  o := opt(index);
-  if (o is TJSONObject) then begin
-      result := TJSONObject (o);
-  end else begin
-      result := nil;
-  end;
-end;
+
+Function TJSONArray.optJSONObject(index: integer): TJSONObject;
+Var
+ o : TZAbstractObject;
+Begin
+ o := opt(index);
+ If (o is TJSONObject) Then
+  Result := TJSONObject(o)
+ Else
+  Result := Nil;
+End;
 
 
 (**
@@ -2649,10 +2648,11 @@ end;
  * @param index The index must be between 0 and length() - 1.
  * @return      A String value.
  *)
-function TJSONArray.optString(index: integer): string;
-begin
-  result := optString(index, '');
-end;
+
+Function TJSONArray.optString(index: integer): string;
+Begin
+ Result := optString(index, '');
+End;
 
 (**
  * Get the optional string associated with an index.
@@ -2662,19 +2662,17 @@ end;
  * @param defaultValue     The default value.
  * @return      A String value.
  *)
-function TJSONArray.optString(index: integer; defaultValue: string): string;
-var
-  o : TZAbstractObject;
-begin
-  o := opt(index);
-  if (o <> nil) then begin
-     result := o.toString();
-  end else begin
-     result := defaultValue;
-  end;
-end;
 
-
+Function TJSONArray.optString(index: integer; defaultValue: string): string;
+Var
+ o : TZAbstractObject;
+Begin
+ o := opt(index);
+ If (o <> Nil) Then
+  Result := o.toString
+ Else
+  Result := defaultValue;
+End;
 
 (**
  * Append a boolean value.
@@ -2682,11 +2680,12 @@ end;
  * @param value A boolean value.
  * @return this.
  *)
-function TJSONArray.put(value: boolean): TJSONArray;
-begin
-  put(_Boolean.valueOf(value));
-  result :=  self;
-end;
+
+Function TJSONArray.put(value: boolean): TJSONArray;
+Begin
+ put(_Boolean.valueOf(value));
+ Result :=  self;
+End;
 
 (**
  * Append a double value.
@@ -2694,11 +2693,12 @@ end;
  * @param value A double value.
  * @return this.
  *)
-function TJSONArray.put(value: double): TJSONArray;
-begin
-    put(_Double.create(value));
-    result := self;
-end;
+
+Function TJSONArray.put(value: double): TJSONArray;
+Begin
+ put(_Double.create(value));
+ Result := self;
+End;
 
 (**
  * Append an int value.
@@ -2706,19 +2706,18 @@ end;
  * @param value An int value.
  * @return this.
  *)
-function TJSONArray.put(value: integer): TJSONArray;
-begin
-  put(_Integer.create(value));
-  result := self;
-end;
 
+Function TJSONArray.put(value: integer): TJSONArray;
+Begin
+ put(_Integer.create(value));
+ Result := self;
+End;
 
-function TJSONArray.put(value: string): TJSONArray;
-begin
-    put (_String.create (value));
-    result := self;
-end;
-
+Function TJSONArray.put(value: string): TJSONArray;
+Begin
+ put(_String.create (value));
+ Result := self;
+End;
 
 (**
  * Append an object value.
@@ -2727,11 +2726,12 @@ end;
  *  TJSONObject.NULL object.
  * @return this.
  *)
-function TJSONArray.put(value: TZAbstractObject): TJSONArray;
-begin
-    myArrayList.add(value);
-    result := self;
-end;
+
+Function TJSONArray.put(value: TZAbstractObject): TJSONArray;
+Begin
+ myArrayList.add(value);
+ Result := self;
+End;
 
 (**
  * Put or replace a boolean value in the TJSONArray.
@@ -2742,30 +2742,30 @@ end;
  * @return this.
  * @raises (NoSuchElementException The index must not be negative.)
  *)
-function TJSONArray.put(index: integer; value: boolean): TJSONArray;
-begin
-  put(index, _Boolean.valueOf(value));
-  result := self;
-end;
 
-function TJSONArray.put(index, value: integer): TJSONArray;
-begin
-  put(index, _Integer.create(value));
-  result := self;
-end;
+Function TJSONArray.put(index: integer; value: boolean): TJSONArray;
+Begin
+ put(index, _Boolean.valueOf(value));
+ Result := self;
+End;
 
+Function TJSONArray.put(index, value: integer): TJSONArray;
+Begin
+ put(index, _Integer.create(value));
+ Result := self;
+End;
 
-function TJSONArray.put(index: integer; value: double): TJSONArray;
-begin
-  put(index, _Double.create(value));
-  result := self;
-end;
+Function TJSONArray.put(index: integer; value: double): TJSONArray;
+Begin
+ put(index, _Double.create(value));
+ Result := self;
+End;
 
-function TJSONArray.put(index: integer; value: string): TJSONArray;
-begin
-  put (index,_String.create (value));
-  result := self;
-end;
+Function TJSONArray.put(index: integer; value: string): TJSONArray;
+Begin
+ put(index,_String.create (value));
+ Result := self;
+End;
 
 (**
      * Put or replace an object value in the TJSONArray.
@@ -2777,23 +2777,23 @@ end;
      * @raises (NoSuchElementException The index must not be negative.)
      * @raises (NullPointerException   The index must not be null.)
      *)
-function TJSONArray.put(index: integer; value: TZAbstractObject): TJSONArray;
-begin
-    if (index < 0) then begin
-        raise NoSuchElementException.create('TJSONArray['
-          + intToStr(index) + '] not found.');
-    end else if (value = nil) then begin
-        raise NullPointerException.create('');
-    end else if (index < length()) then begin
-        myArrayList[index] := value;
-    end else begin
-        while (index <> length()) do begin
-            put(nil);
-        end;
-        put(value);
-    end;
-    result := self;
-end;
+
+Function TJSONArray.put(index: integer; value: TZAbstractObject): TJSONArray;
+Begin
+ If (index < 0) Then
+  Raise NoSuchElementException.create('TJSONArray[' + intToStr(index) + '] not found.')
+ Else If (value = Nil) Then
+  Raise NullPointerException.create('')
+ Else If (index < length()) Then
+  myArrayList[index] := Value
+ Else
+  Begin
+   While (index <> length) Do
+    put(nil);
+   put(value);
+  End;
+ Result := self;
+End;
 
 (**
  * Produce a TJSONObject by combining a TJSONArray of names with the values
@@ -2803,21 +2803,21 @@ end;
  * @return A TJSONObject, or null if there are no names or if this TJSONArray
  * has no values.
  *)
-function TJSONArray.toJSONObject(names :TJSONArray): TJSONObject;
-var
-  jo : TJSONObject ;
-  i : integer;
-begin
-  if ((names = nil) or (names.length() = 0) or (length() = 0)) then begin
-      result := nil;
-  end;
-  jo := TJSONObject.create();
-  for i := 0 to names.length() do begin
-      jo.put(names.getString(i), self.opt(i));
-  end;
-  result := jo;
-end;
 
+Function TJSONArray.toJSONObject(names :TJSONArray): TJSONObject;
+Var
+ jo : TJSONObject;
+ i  : Integer;
+Begin
+ If ((names = Nil)      Or
+     (names.length = 0) Or
+     (length = 0))      Then
+  Result := Nil;
+ jo := TJSONObject.Create;
+ For i := 0 To names.length Do
+  jo.put(names.getString(i), self.opt(i));
+ Result := jo;
+End;
 
 (**
  * Make an JSON external form string of this TJSONArray. For compactness, no
@@ -2827,10 +2827,11 @@ end;
  * @return a printable, displayable, transmittable
  *  representation of the array.
  *)
-function TJSONArray.toString: string;
-begin
-   result := '[' + join(',') + ']';
-end;
+
+Function TJSONArray.toString : String;
+Begin
+ Result := '[' + join(',') + ']';
+End;
 
 (**
      * Make a prettyprinted JSON string of this TJSONArray.
@@ -2842,20 +2843,22 @@ end;
      *  with <code>[</code>&nbsp;<small>(left bracket)</small> and ending
      *  with <code>]</code>&nbsp;<small>(right bracket)</small>.
      *)
-function TJSONArray.toString(indentFactor: integer): string;
-begin
-  result := toString(indentFactor, 0);
-end;
+
+Function TJSONArray.toString(indentFactor : Integer) : String;
+Begin
+ Result := toString(indentFactor, 0);
+End;
 
 (**
   * Make a TList of TJSONArray;
   * @return a TList object
 *)
-function TJSONArray.toList: TList;
-begin
-  result := TList.create ;
-  result.Assign(myArrayList,laCopy);
-end;
+
+Function TJSONArray.toList : TList;
+Begin
+ Result := TList.Create;
+ Result.Assign(myArrayList, laCopy);
+End;
 
 (**
      * Make a prettyprinted string of this TJSONArray.
@@ -2866,142 +2869,136 @@ end;
      * @return a printable, displayable, transmittable
      *  representation of the array.
      *)
-function TJSONArray.toString(indentFactor, indent: integer): string;
-var
-  len, i,j, newindent : integer;
-  sb : string;
-begin
-    len := length();
-    if (len = 0) then begin
-        result := '[]';
-        exit;
-    end;
-    i := 0;
-    sb := '[';
-    if (len = 1) then begin
-        sb := sb + TJSONObject
-        .valueToString(TZAbstractObject( myArrayList[0]),indentFactor, indent);
-    end else begin
-        newindent := indent + indentFactor;
-        sb := sb + #10 ;
-        for i := 0 to len -1 do begin
-            if (i > 0) then begin
-                sb := sb +',' + #10;
-            end;
-            for j := 0 to newindent-1 do begin
-                sb := sb + ' ';
-            end;
-            sb := sb + (TJSONObject
-              .valueToString(TZAbstractObject(myArrayList[i]),
-                    indentFactor, newindent));
-        end;
-        sb := sb + #10;
-        for i := 0 to indent-1 do begin
-            sb := sb + ' ';
-        end;
-    end;
-    sb := sb + ']';
-    result := sb;
-end;
 
+Function TJSONArray.toString(indentFactor, indent: integer): string;
+Var
+ len, i,j, newindent : integer;
+ sb : string;
+Begin
+ len := length;
+ If (len = 0) Then
+  Begin
+   Result := '[]';
+   Exit;
+  End;
+ i := 0;
+ sb := '[';
+ If (len = 1) Then
+  sb := sb + TJSONObject.valueToString(TZAbstractObject( myArrayList[0]),indentFactor, indent)
+ Else
+  Begin
+   newindent := indent + indentFactor;
+   sb := sb + #10 ;
+   For i := 0 To len -1 Do
+    Begin
+     If (i > 0) Then
+      sb := sb +',' + #10;
+     For j := 0 To newindent -1 Do
+      sb := sb + ' ';
+     sb := sb + (TJSONObject.valueToString(TZAbstractObject(myArrayList[i]), indentFactor, newindent));
+    End;
+   sb := sb + #10;
+   For i := 0 To indent -1 Do
+    sb := sb + ' ';
+  End;
+ sb := sb + ']';
+ Result := sb;
+End;
 
 { _NULL }
 
-function NULL.Equals(const Value: TZAbstractObject): Boolean;
-begin
-  if (value = nil) then begin
-    result := true;
-  end else begin
-    result := (value is NULL) ;
-  end;
-end;
+Function NULL.Equals(Const Value: TZAbstractObject): Boolean;
+Begin
+ If (value = Nil) Then
+  result := True
+ Else
+  Result := (value is NULL);
+End;
 
-function NULL.toString: string;
-begin
-  result := 'null';
-end;
-
+Function NULL.toString : String;
+Begin
+ Result := 'null';
+End;
 
 { TZAbstractObject }
 
-function TZAbstractObject.Clone: TZAbstractObject;
-begin
-  newNotImplmentedFeature();
-end;
+Function TZAbstractObject.Clone : TZAbstractObject;
+Begin
+ newNotImplmentedFeature;
+End;
 
-function TZAbstractObject.Equals(const Value: TZAbstractObject): Boolean;
-begin
-  result := (value <> nil) and (value = self);
-end;
+Function TZAbstractObject.Equals(Const Value : TZAbstractObject) : Boolean;
+Begin
+ Result := (value <> nil) And (value = self);
+End;
 
-function TZAbstractObject.Hash: LongInt;
-begin
-  result := integer(addr(self));
-end;
+Function TZAbstractObject.Hash: LongInt;
+Begin
+ Result := integer(addr(self));
+End;
 
-function TZAbstractObject.InstanceOf(
-  const Value: TZAbstractObject): Boolean;
-begin
-  result := value is TZAbstractObject;
-end;
+Function TZAbstractObject.InstanceOf(Const Value : TZAbstractObject) : Boolean;
+Begin
+ Result := value is TZAbstractObject;
+End;
 
-function TZAbstractObject.ToString: string;
-begin
- result := Format('%s <%p>', [ClassName, addr(Self)]);
-end;
+Function TZAbstractObject.ToString: string;
+Begin
+ Result := Format('%s <%p>', [ClassName, addr(Self)]);
+End;
 
-procedure TJSONObject.clean;
+Procedure TJSONObject.clean;
 begin
-  while myHashMap.Count > 0 do begin
-      if (myHashMap.Objects [0] <> CONST_FALSE)
-        and (myHashMap.Objects [0] <> CONST_TRUE)
-        and (myHashMap.Objects [0] <> CNULL) then begin
-        myHashMap.Objects [0].Free;
-      end;
-      myHashMap.Objects [0] := nil;
-      myHashMap.Delete(0);
-  end;
-end;
-
+ While myHashMap.Count > 0 do
+  Begin
+   If (myHashMap.Objects[0] <> CONST_FALSE) And
+      (myHashMap.Objects[0] <> CONST_TRUE)  And
+      (myHashMap.Objects[0] <> CNULL)       Then
+    Begin
+     myHashMap.Objects[0] := Nil;
+     myHashMap.Objects[0].Free;
+    End;
+   myHashMap.Delete(0);
+  End;
+End;
 
 (**
 * Assign the values to other json Object.
 * @param TJSONObject  objeto to assign Values
 *)
-procedure TJSONObject.assignTo (json : TJSONObject) ;
-var
+
+Procedure TJSONObject.assignTo(json : TJSONObject) ;
+Var
  _keys : TStringList;
  i : integer;
-begin
-  _keys := keys;
-  try
-    for i := 0 to _keys.Count -1 do begin
-      json.put (_keys[i],get(_keys[i]).clone);
-    end;
-  finally
-   _keys.free;
-  end;
-end;
+Begin
+ _keys := keys;
+ Try
+  For i := 0 To _keys.Count -1 Do
+   json.put (_keys[i],get(_keys[i]).clone);
+ Finally
+  FreeAndNil(_keys);
+ End;
+End;
 
-function TJSONObject.clone: TZAbstractObject;
-var
+Function TJSONObject.clone: TZAbstractObject;
+Var
  json : TJSONObject;
-begin
-  json := TJSONObject.create (self.toString());
-  result := json;
-end;
-
+Begin
+ json := TJSONObject.Create(self.toString);
+ result := json;
+End;
 
 { _Number }
 
+Initialization
+  CONST_FALSE := _Boolean.Create(false);
+  CONST_TRUE  := _Boolean.Create(true);
+  CNULL       := NULL.Create;
 
-initialization
-  CONST_FALSE :=  _Boolean.create (false);
-  CONST_TRUE :=  _Boolean.create (true);
-  CNULL := NULL.create;
-
-finalization
+Finalization
   CONST_FALSE.free;
   CONST_TRUE.Free;
   CNULL.free;
-end.
+
+End.
