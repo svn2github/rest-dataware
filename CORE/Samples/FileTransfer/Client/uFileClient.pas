@@ -122,6 +122,7 @@ Begin
          If FileExists(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]) Then
           DeleteFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
          StringStream.SaveToFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
+         StringStream.SetSize(0);
          Showmessage('Download concluído...');
         Finally
          StringStream.Free;
@@ -133,7 +134,7 @@ Begin
     Except
     End;
    Finally
-
+    DWParams.Free;
    End;
   End
  Else
@@ -164,6 +165,7 @@ Begin
    MemoryStream                 := TMemoryStream.Create;
    MemoryStream.LoadFromFile(OpenDialog1.FileName);
    JSONParam.LoadFromStream(MemoryStream);
+   MemoryStream.SetSize(0);
    MemoryStream.Free;
    DWParams.Add(JSONParam);
    JSONParam                    := TJSONParam.Create(DWParams.Encoding);
@@ -180,6 +182,7 @@ Begin
       Finally
       End;
     End;
+   DWParams.Free;
   End;
 end;
 

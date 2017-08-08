@@ -1047,6 +1047,7 @@ object fServer: TfServer
   object rspServerFiles: TRESTServicePooler
     Active = False
     DataCompression = False
+    EncodeStrings = True
     ServicePort = 0
     ProxyOptions.Port = 8888
     SSLVersion = sslvSSLv2

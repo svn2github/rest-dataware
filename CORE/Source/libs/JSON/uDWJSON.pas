@@ -168,21 +168,22 @@ Type
     (**
       sobreescreve o metodo clone de  TZAbstractObject
     *)
-    function clone : TZAbstractObject; override;
-    function accumulate (key : string; value : TZAbstractObject): TJSONObject;
-    function get (key : string) : TZAbstractObject;
-    function getBoolean (key : string): boolean;
-    function getDouble (key : string): double;
-    function getInt (key : string): integer;
-    function getJSONArray (key : string) :TJSONArray;
-    function getJSONObject (key : string) : TJSONObject;
-    function getString (key : string): string;
-    function has (key : string) : boolean;
-    function isNull (key : string) : boolean;
+    function clone               : TZAbstractObject;   override;
+    function accumulate   (key   : string;
+                           value : TZAbstractObject) : TJSONObject;
+    function get          (key   : string)           : TZAbstractObject;
+    function getBoolean   (key   : string)           : Boolean;
+    function getDouble    (key   : string)           : Double;
+    function getInt       (key   : string)           : Integer;
+    function getJSONArray (key   : string)           : TJSONArray;
+    function getJSONObject(key   : string)           : TJSONObject;
+    function getString    (key   : string)           : String;
+    function has          (key   : string)           : Boolean;
+    function isNull       (key   : string)           : Boolean;
     (**
       retorna um TStringList com todos os nomes dos atributos do TJSONObject
     *)
-    function keys : TStringList ;
+    function keys : TStringList;
     (**
       Retorna quantos atributos tem o TJSONObject
     *)
@@ -2985,7 +2986,7 @@ Function TJSONObject.clone: TZAbstractObject;
 Var
  json : TJSONObject;
 Begin
- json := TJSONObject.Create(self.toString);
+ json   := TJSONObject.Create(self.toString);
  result := json;
 End;
 

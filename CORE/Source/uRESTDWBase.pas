@@ -195,11 +195,15 @@ Type
  Protected
   //Variáveis, Procedures e  Funções Protegidas
   HttpRequest       : TIdHTTP;
-  Procedure SetParams;
-  Procedure SetOnWork     (Value : TOnWork);
-  Procedure SetOnWorkBegin(Value : TOnWorkBegin);
-  Procedure SetOnWorkEnd  (Value : TOnWorkEnd);
-  Procedure SetOnStatus   (Value : TOnStatus);
+  Procedure SetParams      (Var aHttpRequest : TIdHTTP);
+  Procedure SetOnWork      (Value            : TOnWork);
+  Procedure SetOnWorkBegin (Value            : TOnWorkBegin);
+  Procedure SetOnWorkEnd   (Value            : TOnWorkEnd);
+  Procedure SetOnStatus    (Value            : TOnStatus);
+  Function  GetAllowCookies                  : Boolean;
+  Procedure SetAllowCookies(Value            : Boolean);
+  Function  GetHandleRedirects               : Boolean;
+  Procedure SetHandleRedirects(Value         : Boolean);
  Private
   //Variáveis, Procedures e Funções Privadas
   vOnWork           : TOnWork;
@@ -220,7 +224,7 @@ Type
   vRequestTimeOut   : Integer;
   Procedure SetUserName(Value : String);
   Procedure SetPassword(Value : String);
-  Procedure SetUrlPath(Value  : String);
+  Procedure SetUrlPath (Value : String);
  Public
   //Métodos, Propriedades, Variáveis, Procedures e Funções Publicas
   Function    SendEvent(EventData  : String;
@@ -233,22 +237,24 @@ Type
   Destructor  Destroy;Override;
  Published
   //Métodos e Propriedades
-  Property DataCompression  : Boolean                Read vDatacompress     Write vDatacompress;
-  Property UrlPath          : String                 Read vUrlPath          Write SetUrlPath;
-  Property Encoding         : TEncodeSelect          Read vRSCharset        Write vRSCharset;
-  Property TypeRequest      : TTypeRequest           Read vTypeRequest      Write vTypeRequest       Default trHttp;
-  Property Host             : String                 Read vHost             Write vHost;
-  Property Port             : Integer                Read vPort             Write vPort              Default 8082;
-  Property UserName         : String                 Read vUserName         Write SetUserName;
-  Property Password         : String                 Read vPassword         Write SetPassword;
-  Property Autenticacao     : Boolean                Read vAutenticacao     Write vAutenticacao      Default True;
-  Property ProxyOptions     : TIdProxyConnectionInfo Read vTransparentProxy Write vTransparentProxy;
-  Property RequestTimeOut   : Integer                Read vRequestTimeOut   Write vRequestTimeOut;
-  Property ThreadRequest    : Boolean                Read vThreadRequest    Write vThreadRequest;
-  Property OnWork           : TOnWork                Read vOnWork           Write SetOnWork;
-  Property OnWorkBegin      : TOnWorkBegin           Read vOnWorkBegin      Write SetOnWorkBegin;
-  Property OnWorkEnd        : TOnWorkEnd             Read vOnWorkEnd        Write SetOnWorkEnd;
-  Property OnStatus         : TOnStatus              Read vOnStatus         Write SetOnStatus;
+  Property DataCompression  : Boolean                Read vDatacompress      Write vDatacompress;
+  Property UrlPath          : String                 Read vUrlPath           Write SetUrlPath;
+  Property Encoding         : TEncodeSelect          Read vRSCharset         Write vRSCharset;
+  Property TypeRequest      : TTypeRequest           Read vTypeRequest       Write vTypeRequest       Default trHttp;
+  Property Host             : String                 Read vHost              Write vHost;
+  Property Port             : Integer                Read vPort              Write vPort              Default 8082;
+  Property UserName         : String                 Read vUserName          Write SetUserName;
+  Property Password         : String                 Read vPassword          Write SetPassword;
+  Property Autenticacao     : Boolean                Read vAutenticacao      Write vAutenticacao      Default True;
+  Property ProxyOptions     : TIdProxyConnectionInfo Read vTransparentProxy  Write vTransparentProxy;
+  Property RequestTimeOut   : Integer                Read vRequestTimeOut    Write vRequestTimeOut;
+  Property ThreadRequest    : Boolean                Read vThreadRequest     Write vThreadRequest;
+  Property AllowCookies     : Boolean                Read GetAllowCookies    Write SetAllowCookies;
+  Property HandleRedirects  : Boolean                Read GetHandleRedirects Write SetHandleRedirects;
+  Property OnWork           : TOnWork                Read vOnWork            Write SetOnWork;
+  Property OnWorkBegin      : TOnWorkBegin           Read vOnWorkBegin       Write SetOnWorkBegin;
+  Property OnWorkEnd        : TOnWorkEnd             Read vOnWorkEnd         Write SetOnWorkEnd;
+  Property OnStatus         : TOnStatus              Read vOnStatus          Write SetOnStatus;
 End;
 
 implementation
@@ -260,6 +266,9 @@ Begin
  Inherited;
  HttpRequest                     := TIdHTTP.Create(Nil);
  HttpRequest.Request.ContentType := 'application/json';
+ HttpRequest.AllowCookies        := False;
+ HttpRequest.HandleRedirects     := False;
+ HttpRequest.HTTPOptions         := [hoKeepOrigProtocol];
  vTransparentProxy               := TIdProxyConnectionInfo.Create;
  vHost                           := 'localhost';
  vPort                           := 8082;
@@ -279,6 +288,16 @@ Begin
  Inherited;
 End;
 
+Function TRESTClientPooler.GetAllowCookies: Boolean;
+Begin
+ Result := HttpRequest.AllowCookies;
+End;
+
+Function TRESTClientPooler.GetHandleRedirects : Boolean;
+Begin
+ Result := HttpRequest.HandleRedirects;
+End;
+
 Function TRESTClientPooler.SendEvent(EventData  : String;
                                      Var Params : TDWParams;
                                      EventType  : TSendEvent = sePOST;
@@ -292,7 +311,8 @@ Var
  StringStream  : TStringStream;
  SendParams    : TIdMultipartFormDataStream;
  ss            : TStringStream;
- thd : TThread_Request;
+ thd           : TThread_Request;
+ aHttpRequest  : TIdHTTP;
  Procedure SetData(InputValue     : String;
                    Var ParamsData : TDWParams;
                    Var ResultJSON : String);
@@ -377,15 +397,14 @@ Var
       If DWParams.Items[I].ObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
                                            ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob, ovOraClob] Then
        Begin
-        ss := TStringStream.Create(DWParams.Items[I].ToJSON);
         {$IFNDEF FPC}
          {$if CompilerVersion > 21}
-          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, ss);
+          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
          {$ELSE}
-          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, ss);
+          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
          {$IFEND}
         {$ELSE}
-         SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, ss);
+         SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
         {$ENDIF}
        End
       Else
@@ -427,18 +446,19 @@ Begin
   vTpRequest := 'http'
  Else If vTypeRequest = trHttps Then
   vTpRequest := 'https';
- SetParams;
  Try
   vURL := LowerCase(Format(UrlBase, [vTpRequest, vHost, vPort, vUrlPath])) + EventData;
   If vRSCharset = esUtf8 Then
    HttpRequest.Request.Charset := 'utf-8'
   Else If vRSCharset = esASCII Then
    HttpRequest.Request.Charset := 'ansi';
+  aHttpRequest  := TIdHTTP.Create(Nil);
+  SetParams(aHttpRequest);
   Case EventType Of
    seGET :
     Begin
-     HttpRequest.Request.ContentType := 'application/json';
-     Result := HttpRequest.Get(EventData);
+     aHttpRequest.Request.ContentType := 'application/json';
+     Result := aHttpRequest.Get(EventData);
     End;
    sePOST,
    sePUT,
@@ -450,46 +470,52 @@ Begin
         Begin
          SendParams := TIdMultiPartFormDataStream.Create;
          SetParamsValues(Params, SendParams);
-        End;
+        End
+       Else
+        SendParams := Nil;
        If Params <> Nil Then
         Begin
-         HttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
-         HttpRequest.Request.ContentEncoding := 'multipart/form-data';
-         StringStream          := TStringStream.Create('');
+         aHttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
+         aHttpRequest.Request.ContentEncoding := 'multipart/form-data';
+         StringStream                         := TStringStream.Create('');
          If vDatacompress Then
           Begin
-           vResult      := HttpRequest.Post(vURL, SendParams);
+           vResult                            := aHttpRequest.Post(vURL, SendParams);
            ZDecompressStreamD(vResult, StringStream);
           End
          Else
-          HttpRequest.Post(vURL, SendParams, StringStream);
+          aHttpRequest.Post(vURL, SendParams, StringStream);
          StringStream.Position := 0;
+         If SendParams <> Nil Then
+          Begin
+           {$IFNDEF FPC}SendParams.Clear;{$ENDIF}
+           FreeAndNil(SendParams);
+          End;
         End
        Else
         Begin
-         HttpRequest.Request.ContentType := 'application/json';
-         HttpRequest.Request.ContentEncoding := '';
-         vResult      := HttpRequest.Get(EventData);
+         aHttpRequest.Request.ContentType     := 'application/json';
+         aHttpRequest.Request.ContentEncoding := '';
+         vResult      := aHttpRequest.Get(EventData);
          StringStream := TStringStream.Create(vResult);
         End;
-       If SendParams <> Nil Then
-        Begin
-         {$IFNDEF FPC}SendParams.Clear;{$ENDIF}
-         FreeAndNil(SendParams);
-        End;
+       aHttpRequest.Request.Clear;
        StringStream.Position := 0;
        Try
         SetData(StringStream.DataString, Params, Result);
        Finally
-        {$IFNDEF FPC}StringStream.Size := 0;{$ENDIF}
+        {$IFNDEF FPC}
+        StringStream.Clear;
+        StringStream.Size := 0;
+        {$ENDIF}
         FreeAndNil(StringStream);
        End;
       End
      Else If EventType = sePUT Then
       Begin
-       HttpRequest.Request.ContentType := 'application/x-www-form-urlencoded';
+       aHttpRequest.Request.ContentType := 'application/x-www-form-urlencoded';
        StringStream  := TStringStream.Create('');
-       HttpRequest.Post(vURL, SendParams, StringStream);
+       aHttpRequest.Post(vURL, SendParams, StringStream);
        StringStream.WriteBuffer(#0' ', 1);
        StringStream.Position := 0;
        Try
@@ -502,8 +528,8 @@ Begin
      Else If EventType = seDELETE Then
       Begin
        Try
-        HttpRequest.Request.ContentType := 'application/json';
-        HttpRequest.Delete(vURL);
+        aHttpRequest.Request.ContentType := 'application/json';
+        aHttpRequest.Delete(vURL);
         Result := GetPairJSON('OK', 'DELETE COMMAND OK');
        Except
         On e:exception Do
@@ -522,6 +548,7 @@ Begin
    End;
  End;
  FreeAndNil(vResultParams);
+ FreeAndNil(aHttpRequest);
 End;
 
 Function TRESTClientPooler.SendEvent(EventData : String;
@@ -542,6 +569,16 @@ Begin
  Except
  End;
  RBody.Free;
+End;
+
+Procedure TRESTClientPooler.SetAllowCookies(Value: Boolean);
+Begin
+ HttpRequest.AllowCookies    := Value;
+End;
+
+Procedure TRESTClientPooler.SetHandleRedirects(Value: Boolean);
+Begin
+ HttpRequest.HandleRedirects := Value;
 End;
 
 Procedure TRESTClientPooler.SetOnStatus(Value : TOnStatus);
@@ -588,18 +625,23 @@ Begin
  {$ENDIF}
 End;
 
-Procedure TRESTClientPooler.SetParams;
+Procedure TRESTClientPooler.SetParams(Var aHttpRequest  : TIdHTTP);
 Begin
- HttpRequest.Request.BasicAuthentication := vAutenticacao;
- If HttpRequest.Request.BasicAuthentication Then
+ aHttpRequest.Request.BasicAuthentication := vAutenticacao;
+ If aHttpRequest.Request.BasicAuthentication Then
   Begin
-   If HttpRequest.Request.Authentication = Nil Then
-    HttpRequest.Request.Authentication         := TIdBasicAuthentication.Create;
-   HttpRequest.Request.Authentication.Password := vPassword;
-   HttpRequest.Request.Authentication.Username := vUserName;
+   If aHttpRequest.Request.Authentication = Nil Then
+    aHttpRequest.Request.Authentication         := TIdBasicAuthentication.Create;
+   aHttpRequest.Request.Authentication.Password := vPassword;
+   aHttpRequest.Request.Authentication.Username := vUserName;
   End;
- HttpRequest.ProxyParams := vTransparentProxy;
- HttpRequest.ReadTimeout := vRequestTimeout;
+ aHttpRequest.ProxyParams         := vTransparentProxy;
+ aHttpRequest.ReadTimeout         := vRequestTimeout;
+ aHttpRequest.Request.ContentType := HttpRequest.Request.ContentType;
+ aHttpRequest.AllowCookies        := HttpRequest.AllowCookies;
+ aHttpRequest.HandleRedirects     := HttpRequest.HandleRedirects;
+ aHttpRequest.HTTPOptions         := HttpRequest.HTTPOptions;
+ aHttpRequest.Request.Charset     := HttpRequest.Request.Charset;
 End;
 
 procedure TRESTClientPooler.SetPassword(Value : String);

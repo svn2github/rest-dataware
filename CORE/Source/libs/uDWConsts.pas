@@ -264,34 +264,39 @@ Begin
  End;
 end;
 
+Procedure LimpaLixoHex(Var Value : String);
+Begin
+ If Length(Value) > 0 Then
+  Begin
+   If Value[1] = '{' Then
+    Delete(Value, 1, 1);
+  End;
+ If Length(Value) > 0 Then
+  Begin
+   If Value[1] = #13 Then
+    Delete(Value, 1, 1);
+  End;
+ If Length(Value) > 0 Then
+  Begin
+   If Value[1] = '"' Then
+    Delete(Value, 1, 1);
+  End;
+ If Length(Value) > 0 Then
+  Begin
+   If Value[1] = 'L' Then
+    Delete(Value, 1, 1);
+  End;
+ If Length(Value) > 0 Then
+  Begin
+   If Value[Length(Value)] = '"' Then
+    Delete(Value, Length(Value), 1);
+  End;
+End;
+
 Procedure HexToStream(Str    : String;
                       Stream : TStream);
 Begin
- If Length(Str) > 0 Then
-  Begin
-   If Str[1] = '{' Then
-    Delete(Str, 1, 1);
-  End;
- If Length(Str) > 0 Then
-  Begin
-   If Str[1] = #13 Then
-    Delete(Str, 1, 1);
-  End;
- If Length(Str) > 0 Then
-  Begin
-   If Str[1] = '"' Then
-    Delete(Str, 1, 1);
-  End;
- If Length(Str) > 0 Then
-  Begin
-   If Str[1] = 'L' Then
-    Delete(Str, 1, 1);
-  End;
- If Length(Str) > 0 Then
-  Begin
-   If Str[Length(Str)] = '"' Then
-    Delete(Str, Length(Str), 1);
-  End;
+ LimpaLixoHex(Str);
  TMemoryStream(Stream).Size := Length(Str) Div 2;
  HexToBin(PChar (Str),   TMemoryStream(Stream).Memory, TMemoryStream(Stream).Size);
  Stream.Position := 0;
