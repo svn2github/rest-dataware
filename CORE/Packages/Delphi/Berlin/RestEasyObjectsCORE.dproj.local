@@ -24,6 +24,7 @@
     <File Path="..\..\..\Source\libs"/>
     <File Path="..\..\..\Source\libs\JSON"/>
     <File Path="..\..\..\Source\libs\JSON\uDWJSON.pas"/>
+    <File Path="..\..\..\Source\libs\JSON\SynCrossPlatformJSON.pas"/>
     <File Path="..\..\..\Source\libs\ServerUtils.pas"/>
     <File Path="..\..\..\Source\libs\SysTypes.pas"/>
     <File Path="..\..\..\Source\libs\uDWConsts.pas"/>

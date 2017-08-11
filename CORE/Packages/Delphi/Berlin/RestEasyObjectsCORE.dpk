@@ -55,7 +55,8 @@ contains
   uDWPoolerMethod in '..\..\..\Source\uDWPoolerMethod.pas',
   uDWConstsData in '..\..\..\Source\libs\uDWConstsData.pas',
   uDWDatamodule in '..\..\..\Source\DmDados\uDWDatamodule.pas',
-  uDWJSON in '..\..\..\Source\libs\JSON\uDWJSON.pas';
+  uDWJSON in '..\..\..\Source\libs\JSON\uDWJSON.pas',
+  SynCrossPlatformJSON in '..\..\..\Source\libs\JSON\SynCrossPlatformJSON.pas';
 
 end.
 

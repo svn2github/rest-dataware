@@ -36,7 +36,7 @@ Uses
      {$ELSE}
      System.SysUtils, System.Classes,
      {$IFEND}
-     ServerUtils, Windows,  uDWConstsData,       IdTCPClient, uDWJSON,  IdMultipartFormData,
+     ServerUtils, Windows,  uDWConstsData,       IdTCPClient, uDWJSON, IdMultipartFormData,
      IdContext,             IdHTTPServer,        IdCustomHTTPServer,    IdSSLOpenSSL,    IdSSL,
      IdAuthentication,      IdHTTPHeaderInfo,    IdComponent, IdBaseComponent, IdTCPConnection,
      IdHTTP,                uDWJSONObject,       IdMessageCoder,
@@ -312,7 +312,6 @@ Var
  SendParams    : TIdMultipartFormDataStream;
  ss            : TStringStream;
  thd           : TThread_Request;
- aHttpRequest  : TIdHTTP;
  Procedure SetData(InputValue     : String;
                    Var ParamsData : TDWParams;
                    Var ResultJSON : String);
@@ -452,13 +451,12 @@ Begin
    HttpRequest.Request.Charset := 'utf-8'
   Else If vRSCharset = esASCII Then
    HttpRequest.Request.Charset := 'ansi';
-  aHttpRequest  := TIdHTTP.Create(Nil);
-  SetParams(aHttpRequest);
+  SetParams(HttpRequest);
   Case EventType Of
    seGET :
     Begin
-     aHttpRequest.Request.ContentType := 'application/json';
-     Result := aHttpRequest.Get(EventData);
+     HttpRequest.Request.ContentType := 'application/json';
+     Result := HttpRequest.Get(EventData);
     End;
    sePOST,
    sePUT,
@@ -475,16 +473,16 @@ Begin
         SendParams := Nil;
        If Params <> Nil Then
         Begin
-         aHttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
-         aHttpRequest.Request.ContentEncoding := 'multipart/form-data';
-         StringStream                         := TStringStream.Create('');
+         HttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
+         HttpRequest.Request.ContentEncoding := 'multipart/form-data';
+         StringStream                        := TStringStream.Create('');
          If vDatacompress Then
           Begin
-           vResult                            := aHttpRequest.Post(vURL, SendParams);
+           vResult                           := HttpRequest.Post(vURL, SendParams);
            ZDecompressStreamD(vResult, StringStream);
           End
          Else
-          aHttpRequest.Post(vURL, SendParams, StringStream);
+          HttpRequest.Post(vURL, SendParams, StringStream);
          StringStream.Position := 0;
          If SendParams <> Nil Then
           Begin
@@ -494,18 +492,20 @@ Begin
         End
        Else
         Begin
-         aHttpRequest.Request.ContentType     := 'application/json';
-         aHttpRequest.Request.ContentEncoding := '';
-         vResult      := aHttpRequest.Get(EventData);
+         HttpRequest.Request.ContentType     := 'application/json';
+         HttpRequest.Request.ContentEncoding := '';
+         vResult      := HttpRequest.Get(EventData);
          StringStream := TStringStream.Create(vResult);
         End;
-       aHttpRequest.Request.Clear;
+       HttpRequest.Request.Clear;
        StringStream.Position := 0;
        Try
         SetData(StringStream.DataString, Params, Result);
        Finally
         {$IFNDEF FPC}
-        StringStream.Clear;
+         {$IF CompilerVersion > 21}
+          StringStream.Clear;
+         {$IFEND}
         StringStream.Size := 0;
         {$ENDIF}
         FreeAndNil(StringStream);
@@ -513,9 +513,9 @@ Begin
       End
      Else If EventType = sePUT Then
       Begin
-       aHttpRequest.Request.ContentType := 'application/x-www-form-urlencoded';
+       HttpRequest.Request.ContentType := 'application/x-www-form-urlencoded';
        StringStream  := TStringStream.Create('');
-       aHttpRequest.Post(vURL, SendParams, StringStream);
+       HttpRequest.Post(vURL, SendParams, StringStream);
        StringStream.WriteBuffer(#0' ', 1);
        StringStream.Position := 0;
        Try
@@ -528,8 +528,8 @@ Begin
      Else If EventType = seDELETE Then
       Begin
        Try
-        aHttpRequest.Request.ContentType := 'application/json';
-        aHttpRequest.Delete(vURL);
+        HttpRequest.Request.ContentType := 'application/json';
+        HttpRequest.Delete(vURL);
         Result := GetPairJSON('OK', 'DELETE COMMAND OK');
        Except
         On e:exception Do
@@ -548,7 +548,6 @@ Begin
    End;
  End;
  FreeAndNil(vResultParams);
- FreeAndNil(aHttpRequest);
 End;
 
 Function TRESTClientPooler.SendEvent(EventData : String;
