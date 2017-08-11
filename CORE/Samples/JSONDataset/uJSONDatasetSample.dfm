@@ -1062,7 +1062,6 @@ object Form1: TForm1
       'DriverID=FB')
     UpdateOptions.AssignedValues = [uvCountUpdatedRecords]
     ConnectedStoredUsage = []
-    Connected = True
     LoginPrompt = False
     BeforeConnect = Server_FDConnectionBeforeConnect
     Left = 54

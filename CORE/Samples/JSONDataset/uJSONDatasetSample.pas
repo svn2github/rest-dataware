@@ -86,7 +86,7 @@ Begin
  ini.Free;
  Server_FDConnection.Connected := True;
  FDQuery1.Open;
- JSONValue.LoadFromDataset('employee', FDQuery1);
+ JSONValue.LoadFromDataset('employee', FDQuery1, False);
  Memo1.Lines.Add(JSONValue.Value);
 End;
 
