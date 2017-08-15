@@ -93,8 +93,10 @@ implementation
 
 
 Function BytesArrToString(aValue : tIdBytes) : String;
+{$IFDEF FPC}
 Var
  StringStream : TStringStream;
+{$ENDIF}
 Begin
  {$IFDEF FPC}
   StringStream := TStringStream.Create('');
@@ -552,10 +554,11 @@ Begin
  End;
 End;
 
-Function GetObjectName   (TypeObject      : String)       : TTypeObject;
+Function GetObjectName   (TypeObject      : String) : TTypeObject;
 Var
  vTypeObject : String;
 Begin
+ Result := toObject;
  vTypeObject := Uppercase(TypeObject);
  If vTypeObject = Uppercase('toObject') Then
   Result := toObject
@@ -564,9 +567,11 @@ Begin
  Else If vTypeObject = Uppercase('toParam') Then
   Result := toParam
  Else If vTypeObject = Uppercase('toVariable') Then
-  Result := toVariable
+  Result := toVariable;
+{
  Else If vTypeObject = Uppercase('toObject') Then
   Result := toObject;
+}  
 End;
 
 Function GetDirectionName(ObjectDirection : TObjectDirection) : String;
@@ -588,13 +593,16 @@ Function GetDirectionName(ObjectDirection : String) : TObjectDirection;
 Var
  vObjectDirection : String;
 Begin
+ Result := odOUT;
  vObjectDirection := Uppercase(ObjectDirection);
  If vObjectDirection = Uppercase('odINOUT') Then
   Result := odINOUT
  Else If vObjectDirection = Uppercase('odIN') Then
-  Result := odIN
+  Result := odIN;
+{
  Else If vObjectDirection = Uppercase('odOUT') Then
   Result := odOUT;
+}  
 End;
 
 Function GetValueType    (ObjectValue     : TObjectValue)     : String;
@@ -660,6 +668,7 @@ Function GetValueType (ObjectValue : String) : TObjectValue;
 Var
  vObjectValue : String;
 Begin
+ Result := ovSingle;
  vObjectValue := Uppercase(ObjectValue);
  If vObjectValue      = Uppercase('ovUnknown')         Then
   Result := ovUnknown
@@ -834,6 +843,7 @@ Function GetFieldType(FieldType : String) : TFieldType;
 Var
  vFieldType : String;
 Begin
+ Result     := ftString;
  vFieldType := Uppercase(FieldType);
  If vFieldType      = Uppercase('ftUnknown')         Then
   Result := ftUnknown
