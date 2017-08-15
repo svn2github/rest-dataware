@@ -493,7 +493,7 @@ Var
     If bValue.Fields[I].DataType In [{$IFNDEF FPC}{$IF CompilerVersion > 21}ftExtended,
                                      {$IFEND}{$ENDIF}ftFloat, ftCurrency, ftFMTBcd, ftBCD] Then
      vTempValue := Format('"%s"', [StringFloat(bValue.Fields[I].AsString)])
-    Else If bValue.Fields[I].DataType in [ftWideString, ftBytes, ftVarBytes,
+    Else If bValue.Fields[I].DataType in [ftBytes, ftVarBytes,
                                           ftBlob, ftMemo, ftGraphic, ftFmtMemo,
                                           ftOraBlob, ftOraClob] Then
      Begin
@@ -815,7 +815,7 @@ Begin
           Continue;
          If DestDS.Fields[I].DataType In [ftMemo, ftGraphic, ftFmtMemo,
                                           ftParadoxOle, ftDBaseOle, ftTypedBinary,
-                                          ftCursor, ftDataSet, ftOraBlob, ftOraClob, ftWideString
+                                          ftCursor, ftDataSet, ftOraBlob, ftOraClob
                                           {$IFNDEF FPC}{$IF CompilerVersion > 21}, ftParams, ftStream{$IFEND}{$ENDIF}] Then
           Begin
            If vEncoded Then
