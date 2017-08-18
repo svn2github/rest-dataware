@@ -193,6 +193,8 @@ Begin
   Else
    Begin
     vTempQuery.ExecSQL;
+    Result := TJSONValue.Create;
+    Result.SetValue('COMMANDOK');
     vFDConnection.CommitRetaining;
    End;
  Except
@@ -361,6 +363,8 @@ Begin
   Else
    Begin
     vTempQuery.ExecSQL;
+    Result := TJSONValue.Create;
+    Result.SetValue('COMMANDOK');
     vFDConnection.CommitRetaining;
     Error         := False;
    End;
