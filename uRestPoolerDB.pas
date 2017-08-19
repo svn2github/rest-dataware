@@ -25,7 +25,7 @@ uses System.SysUtils,         System.Classes,
      Soap.EncdDecd,           uMasterDetailData,
      DbxCompressionFilter,    uRestCompressTools,      System.ZLib,
      uPoolerServerMethods
-     {$if CompilerVersion > 28}
+     {$if CompilerVersion >= 28}
        ,System.NetEncoding, System.JSON, FireDAC.Stan.StorageJSON, FireDAC.Stan.StorageBin
      {$endif};
 
@@ -909,7 +909,7 @@ Begin
  Value.UrlPath             := vRestURL;
  Value.UserName            := vLogin;
  Value.Password            := vPassword;
- {$if CompilerVersion > 28}
+ {$if CompilerVersion >= 28}
  Value.HTTP.ConnectTimeout := vTimeOut;
  {$endif}
  Value.RESTContext         := vRESTContext;
@@ -1142,7 +1142,7 @@ Begin
          MemTable.Close;
          Original.Position := 0;
          doUnGZIP(Original, gZIPStream);
-         {$if CompilerVersion > 28}
+         {$if CompilerVersion >= 28}
          MemTable.LoadFromStream(gZIPStream, sfJSON);
          {$else}
          MemTable.LoadFromStream(gZIPStream);

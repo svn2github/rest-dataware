@@ -12,7 +12,7 @@ uses System.SysUtils,          System.Classes,          Data.DBXJSON,
      uPoolerMethod,            Data.DBXPlatform,
      DbxCompressionFilter,     uRestCompressTools,
      System.ZLib, uRestPoolerDB
-     {$if CompilerVersion > 28}
+     {$if CompilerVersion >= 28}
      , System.JSON, FireDAC.Stan.StorageBin, FireDAC.Stan.StorageJSON, FireDAC.Phys.IBDef, Datasnap.DSProviderDataModuleAdapter
      {$ifend};
 
@@ -383,7 +383,7 @@ Begin
        gZIPStream   := TMemoryStream.Create;
        Try
         vTempQuery.Open;
-        {$if CompilerVersion > 28}
+        {$if CompilerVersion >= 28}
         vTempQuery.SaveToStream(Original, sfJSON);
         {$else}
         vTempQuery.SaveToStream(Original);
@@ -579,7 +579,7 @@ Begin
        Original     := TStringStream.Create;
        gZIPStream   := TMemoryStream.Create;
        Try
-        {$if CompilerVersion > 28}
+        {$if CompilerVersion >= 28}
         vTempQuery.SaveToStream(Original, sfJSON);
         {$else}
         vTempQuery.SaveToStream(Original);
