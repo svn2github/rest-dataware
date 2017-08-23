@@ -110,12 +110,13 @@ Begin
     Try
      RESTClientPooler1.Host := eHost.Text;
      RESTClientPooler1.Port := StrToInt(ePort.Text);
-     lResponse := RESTClientPooler1.SendEvent('DownloadFile', DWParams);
+     RESTClientPooler1.SendEvent('DownloadFile', DWParams, lResponse);
      If lResponse <> '' Then
       Begin
        JSONValue := TJSONValue.Create;
        Try
         JSONValue.LoadFromJSON(lResponse);
+        lResponse             := '';
         StringStream          := TStringStream.Create('');
         JSONValue.SaveToStream(StringStream);
         Try
@@ -125,16 +126,16 @@ Begin
          StringStream.SetSize(0);
          Showmessage('Download concluído...');
         Finally
-         StringStream.Free;
+         FreeAndNil(StringStream);
         End;
        Finally
-        JSONValue.Free;
+        FreeAndNil(JSONValue);
        End;
       End;
     Except
     End;
    Finally
-    DWParams.Free;
+    FreeAndNil(DWParams);
    End;
   End
  Else

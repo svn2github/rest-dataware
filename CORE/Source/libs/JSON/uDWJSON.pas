@@ -125,6 +125,7 @@ Type
   TJSONObject = class (TZAbstractObject)
   private
     myHashMap : TStringList;
+    ja :TJSONArray;
   public
     (**
       Construct an empty TJSONObject.
@@ -1299,16 +1300,16 @@ end;
      *)
 function TJSONObject.names: TJSONArray;
 var
-  ja :TJSONArray;
   i : integer;
   k : TStringList;
 begin
+  if Not Assigned(ja) then
     ja := TJSONArray.create;
     k := keys;
     try
-      for i := 0 to k.Count -1 do begin
+      If ja.myArrayList.Count = 0 Then
+       for i := 0 to k.Count -1 do
         ja.put (_String.create (k[i]));
-      end;
       if (ja.length = 0) then begin
          result := nil;
       end else begin
@@ -1962,8 +1963,9 @@ end;
 
 
 var
-  CONST_FALSE : _Boolean ;
+  CONST_FALSE : _Boolean;
   CONST_TRUE : _Boolean;
+
 function _Boolean.toString: string;
 begin
   if fvalue then begin
@@ -2183,7 +2185,10 @@ end;
 destructor TJSONObject.destroy;
 begin
   clean;
+  myHashMap.Clear;
   FreeAndNil(myHashMap);
+  if Assigned(ja) then
+   FreeAndNil(ja);
   inherited;
 end;
 
@@ -2229,15 +2234,13 @@ var
 begin
   while myArrayList.Count > 0 do begin
     obj := TObject(myArrayList[0]);
-    myArrayList [0] := nil;
     if (obj <> CONST_FALSE)
       and (obj <> CONST_TRUE)
-      and (obj <> CNULL) then begin
-        obj.Free;
-    end;
+      and (Assigned(obj)) then
+     FreeAndNil(obj);
     myArrayList.Delete(0);
   end;
-  myArrayList.Free;
+  FreeAndNil(myArrayList);
   inherited;
 end;
 
@@ -2954,11 +2957,8 @@ begin
   Begin
    If (myHashMap.Objects[0] <> CONST_FALSE) And
       (myHashMap.Objects[0] <> CONST_TRUE)  And
-      (myHashMap.Objects[0] <> CNULL)       Then
-    Begin
-     myHashMap.Objects[0] := Nil;
-     myHashMap.Objects[0].Free;
-    End;
+      (Assigned(myHashMap.Objects[0]))      Then
+    myHashMap.Objects[0].Free;
    myHashMap.Delete(0);
   End;
 End;

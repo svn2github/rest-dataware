@@ -55,7 +55,10 @@ Begin
  If (Index < Self.Count) And (Index > -1) Then
   Begin
    If Assigned(TList(Self).Items[Index]) Then
-    FreeMem(TList(Self).Items[Index]);
+    Begin
+     FreeAndNil(TList(Self).Items[Index]^);
+     Dispose(TList(Self).Items[Index]);
+    End;
    TList(Self).Delete(Index);
   End;
 End;

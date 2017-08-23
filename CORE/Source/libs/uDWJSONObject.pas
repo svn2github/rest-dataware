@@ -122,6 +122,7 @@ End;
                         Item  : TJSONParam); Overload;
    Function  GetRecName(Index : String)      : TJSONParam;  Overload;
    Procedure PutRecName(Index : String; Item : TJSONParam); Overload;
+   Procedure ClearList;
   Public
    Constructor Create;
    Destructor  Destroy; Override;
@@ -273,22 +274,26 @@ Begin
  If (Index < Self.Count) And (Index > -1) Then
   Begin
    If Assigned(TList(Self).Items[Index]) Then
-    FreeMem(TList(Self).Items[Index]);
+    Begin
+     FreeAndNil(TList(Self).Items[Index]^);
+     Dispose(TList(Self).Items[Index]);
+    End;
    TList(Self).Delete(Index);
   End;
 End;
 
-Destructor TDWParams.Destroy;
+procedure TDWParams.ClearList;
 Var
- I : Integer;
+  I: Integer;
+begin
+  For I := Count -1 Downto 0 Do
+   Delete(I);
+  Self.Clear;
+end;
+
+Destructor TDWParams.Destroy;
 Begin
- For I := TList(Self).Count - 1 DownTo 0 Do
-  Begin
-   TJSONParam(TList(Self).Items[I]^) := Nil;
-   TJSONParam(TList(Self).Items[I]^).Free;
-   FreeMem(TList(Self).Items[I]);
-   TList(Self).Delete(I);
-  End;
+ ClearList;
  Inherited;
 End;
 
@@ -362,6 +367,7 @@ End;
 
 Constructor TJSONValue.Create;
 Begin
+ Inherited;
  {$IFNDEF FPC}
   {$IF CompilerVersion > 21}
    vEncoding     := TEncoding.ASCII;
@@ -796,6 +802,11 @@ Begin
         bJsonOBJ.Clean;
         FreeAndNil(bJsonOBJ);
        End;
+      If Assigned(bJsonOBJ) Then
+       Begin
+        bJsonOBJ.Clean;
+        FreeAndNil(bJsonOBJ);
+       End;
       If Not vFindFlag Then
        ListFields.Add('-1');
      End;
@@ -812,7 +823,11 @@ Begin
        For I := 0 To DestDS.Fields.Count - 1 Do
         Begin
          If StrToInt(ListFields[I]) = -1 Then
-          Continue;
+          Begin
+           If Assigned(bJsonOBJ) Then
+            FreeAndNil(bJsonOBJ);
+           Continue;
+          End;
          If DestDS.Fields[I].DataType In [ftMemo, ftGraphic, ftFmtMemo,
                                           ftParadoxOle, ftDBaseOle, ftTypedBinary,
                                           ftCursor, ftDataSet, ftOraBlob, ftOraClob

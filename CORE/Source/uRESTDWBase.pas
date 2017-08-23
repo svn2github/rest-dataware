@@ -233,6 +233,11 @@ Type
                         Var Params : TDWParams;
                         EventType  : TSendEvent = sePOST;
                         CallBack   : TCallBack = Nil) : String;Overload;
+  Procedure   SendEvent(EventData  : String;
+                        Var Params : TDWParams;
+                        Var Result : String;
+                        EventType  : TSendEvent = sePOST;
+                        CallBack   : TCallBack = Nil);Overload;
   Constructor Create(AOwner: TComponent);Override;
   Destructor  Destroy;Override;
  Published
@@ -298,10 +303,11 @@ Begin
  Result := HttpRequest.HandleRedirects;
 End;
 
-Function TRESTClientPooler.SendEvent(EventData  : String;
-                                     Var Params : TDWParams;
-                                     EventType  : TSendEvent = sePOST;
-                  									 CallBack   : TCallBack= nil) : String;
+Procedure TRESTClientPooler.SendEvent(EventData  : String;
+                                      Var Params : TDWParams;
+                                      Var Result : String;
+                                      EventType  : TSendEvent = sePOST;
+                                      CallBack   : TCallBack = Nil);
 Var
  vResult,
  vResultSTR,
@@ -321,13 +327,14 @@ Var
   bJsonOBJTemp  : TJSONArray;
   JSONParam     : TJSONParam;
   JSONParamNew  : TJSONParam;
-  A, I, InitPos : Integer;
-  vValue,
-  vTempValue    : String;
+  A, I, InitPos,
+  DataSize      : Integer;
+  vValue        : String;
+  vTempValue    : PChar;
  Begin
   Try
    InitPos    := Pos('"RESULT":[', InputValue) + Length('"RESULT":[') -1;
-   vTempValue := Copy(InputValue, InitPos +1, Pos(']}', InputValue) - InitPos - 1);
+   vTempValue := PChar(Copy(InputValue, InitPos +1, Pos(']}', InputValue) - InitPos - 1));
    InputValue := Copy(InputValue, 1, InitPos) + ']}'; //Delete(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
    If Params <> Nil Then
     Begin
@@ -383,6 +390,261 @@ Var
   Finally
    If vTempValue <> '' Then
     ResultJSON := vTempValue;
+   vTempValue := '';
+  End;
+ End;
+ Procedure SetParamsValues(DWParams : TDWParams; SendParamsData : TIdMultipartFormDataStream);
+ Var
+  I : Integer;
+ Begin
+  If DWParams <> Nil Then
+   Begin
+    For I := 0 To DWParams.Count -1 Do
+     Begin
+      If DWParams.Items[I].ObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
+                                           ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob, ovOraClob] Then
+       Begin
+        {$IFNDEF FPC}
+         {$if CompilerVersion > 21}
+          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
+         {$ELSE}
+          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
+         {$IFEND}
+        {$ELSE}
+         SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
+        {$ENDIF}
+       End
+      Else
+       SendParamsData.AddFormField(DWParams.Items[I].ParamName, DWParams.Items[I].ToJSON);
+     End;
+   End;
+ End;
+Begin
+ SendParams := Nil;
+ If vThreadRequest Then
+  Begin
+   thd := TThread_Request.Create;
+   Try
+    thd.FreeOnTerminate := true;
+    thd.Priority        := tpHighest;
+    thd.EventData       := EventData;
+    {TODO CRISTIANO}
+    thd.Params.CopyFrom(Params);
+    thd.EventType       := EventType;
+    thd.vUserName       := vUserName;
+    thd.vPassword       := vPassword;
+    thd.vUrlPath        := vUrlPath;
+    thd.vHost           :=   vHost;
+    thd.vPort           :=   vPort;
+    thd.vAutenticacao   :=   vAutenticacao;
+    thd.vTransparentProxy:=   vTransparentProxy;
+    thd.vRequestTimeOut :=   vRequestTimeOut;
+    thd.vTypeRequest    :=   vTypeRequest;
+    thd.vRSCharset      :=   vRSCharset;
+    thd.FCallBack       :=  CallBack;
+   Finally
+    thd.Execute;
+   End;
+   Exit;
+  End;
+ ss            := Nil;
+ vResultParams := TMemoryStream.Create;
+ If vTypeRequest = trHttp Then
+  vTpRequest := 'http'
+ Else If vTypeRequest = trHttps Then
+  vTpRequest := 'https';
+ Try
+  vURL := LowerCase(Format(UrlBase, [vTpRequest, vHost, vPort, vUrlPath])) + EventData;
+  If vRSCharset = esUtf8 Then
+   HttpRequest.Request.Charset := 'utf-8'
+  Else If vRSCharset = esASCII Then
+   HttpRequest.Request.Charset := 'ansi';
+  SetParams(HttpRequest);
+  Case EventType Of
+   seGET :
+    Begin
+     HttpRequest.Request.ContentType := 'application/json';
+     Result := HttpRequest.Get(EventData);
+    End;
+   sePOST,
+   sePUT,
+   seDELETE :
+    Begin;
+     If EventType = sePOST Then
+      Begin
+       If Params <> Nil Then
+        Begin
+         SendParams := TIdMultiPartFormDataStream.Create;
+         SetParamsValues(Params, SendParams);
+        End
+       Else
+        SendParams := Nil;
+       If Params <> Nil Then
+        Begin
+         HttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
+         HttpRequest.Request.ContentEncoding := 'multipart/form-data';
+         StringStream                        := TStringStream.Create('');
+         If vDatacompress Then
+          Begin
+           vResult                           := HttpRequest.Post(vURL, SendParams);
+           ZDecompressStreamD(vResult, StringStream);
+          End
+         Else
+          HttpRequest.Post(vURL, SendParams, StringStream);
+         StringStream.Position := 0;
+         If SendParams <> Nil Then
+          Begin
+           {$IFNDEF FPC}SendParams.Clear;{$ENDIF}
+           FreeAndNil(SendParams);
+          End;
+        End
+       Else
+        Begin
+         HttpRequest.Request.ContentType     := 'application/json';
+         HttpRequest.Request.ContentEncoding := '';
+         vResult      := HttpRequest.Get(EventData);
+         StringStream := TStringStream.Create(vResult);
+        End;
+       HttpRequest.Request.Clear;
+       StringStream.Position := 0;
+       Try
+        SetData(StringStream.DataString, Params, Result);
+       Finally
+        {$IFNDEF FPC}
+         {$IF CompilerVersion > 21}
+          StringStream.Clear;
+         {$IFEND}
+        StringStream.Size := 0;
+        {$ENDIF}
+        FreeAndNil(StringStream);
+       End;
+      End
+     Else If EventType = sePUT Then
+      Begin
+       HttpRequest.Request.ContentType := 'application/x-www-form-urlencoded';
+       StringStream  := TStringStream.Create('');
+       HttpRequest.Post(vURL, SendParams, StringStream);
+       StringStream.WriteBuffer(#0' ', 1);
+       StringStream.Position := 0;
+       Try
+        SetData(StringStream.DataString, Params, Result);
+       Finally
+        {$IFNDEF FPC}StringStream.Size := 0;{$ENDIF}
+        FreeAndNil(StringStream);
+       End;
+      End
+     Else If EventType = seDELETE Then
+      Begin
+       Try
+        HttpRequest.Request.ContentType := 'application/json';
+        HttpRequest.Delete(vURL);
+        Result := GetPairJSON('OK', 'DELETE COMMAND OK');
+       Except
+        On e:exception Do
+         Begin
+          Result := GetPairJSON('NOK', e.Message);
+         End;
+       End;
+      End;
+    End;
+  End;
+ Except
+  On E : Exception Do
+   Begin
+    {Todo: Acrescentado}
+    Raise Exception.Create(e.Message);
+   End;
+ End;
+ FreeAndNil(vResultParams);
+End;
+
+Function TRESTClientPooler.SendEvent(EventData  : String;
+                                     Var Params : TDWParams;
+                                     EventType  : TSendEvent = sePOST;
+                  									 CallBack   : TCallBack= nil) : String;
+Var
+ vResult,
+ vResultSTR,
+ vURL,
+ vTpRequest    : String;
+ vResultParams : TMemoryStream;
+ StringStream  : TStringStream;
+ SendParams    : TIdMultipartFormDataStream;
+ ss            : TStringStream;
+ thd           : TThread_Request;
+ Procedure SetData(InputValue     : String;
+                   Var ParamsData : TDWParams;
+                   Var ResultJSON : String);
+ Var
+  bJsonOBJ,
+  bJsonValue    : TJsonObject;
+  bJsonOBJTemp  : TJSONArray;
+  JSONParam     : TJSONParam;
+  JSONParamNew  : TJSONParam;
+  A, I, InitPos,
+  DataSize      : Integer;
+  vValue        : String;
+  vTempValue    : PChar;
+ Begin
+  Try
+   InitPos    := Pos('"RESULT":[', InputValue) + Length('"RESULT":[') -1;
+   vTempValue := PChar(Copy(InputValue, InitPos +1, Pos(']}', InputValue) - InitPos - 1));
+   InputValue := Copy(InputValue, 1, InitPos) + ']}'; //Delete(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
+   If Params <> Nil Then
+    Begin
+     bJsonValue    := TJsonObject.Create(InputValue);
+     bJsonOBJTemp  := TJSONArray.Create(bJsonValue.opt(bJsonValue.names.get(0).ToString).ToString);
+     If bJsonOBJTemp.length > 0 Then
+      Begin
+       For A := 0 To bJsonOBJTemp.length -1 Do
+        Begin
+         bJsonOBJ := TJsonObject.Create(bJsonOBJTemp.get(A).ToString);
+         If Length(bJsonOBJ.opt(bJsonOBJ.names.get(0).ToString).ToString) = 0 Then
+          Begin
+           FreeAndNil(bJsonOBJ);
+           Continue;
+          End;
+         If GetObjectName(bJsonOBJ.opt(bJsonOBJ.names.get(0).ToString).ToString) <> toParam Then
+          Begin
+           FreeAndNil(bJsonOBJ);
+           Break;
+          End;
+         JSONParam := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(GetEncoding(TEncodeSelect(vRSCharset))){$IFEND}{$ENDIF};
+         Try
+          JSONParam.ParamName       := bJsonOBJ.names.get(4).ToString;
+          JSONParam.ObjectValue     := GetValueType(bJsonOBJ.opt(bJsonOBJ.names.get(3).ToString).ToString);
+          JSONParam.ObjectDirection := GetDirectionName(bJsonOBJ.opt(bJsonOBJ.names.get(1).ToString).ToString);
+          JSONParam.Encoded         := GetBooleanFromString(bJsonOBJ.opt(bJsonOBJ.names.get(2).ToString).ToString);
+          If JSONParam.Encoded Then
+           vValue := DecodeStrings(bJsonOBJ.opt(bJsonOBJ.names.get(4).ToString).ToString)
+          Else
+           vValue := bJsonOBJ.opt(bJsonOBJ.names.get(4).ToString).ToString;
+          JSONParam.SetValue(vValue);
+          bJsonOBJ.clean;
+          FreeAndNil(bJsonOBJ);
+          //parametro criandos no servidor
+          If ParamsData.ItemsString[JSONParam.ParamName] = Nil Then
+           Begin
+            JSONParamNew           := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(ParamsData.Encoding){$IFEND}{$ENDIF};
+            JSONParamNew.ParamName := JSONParam.ParamName;
+            JSONParamNew.SetValue(JSONParam.Value, JSONParam.Encoded);
+            ParamsData.Add(JSONParamNew);
+           End
+          Else
+           ParamsData.ItemsString[JSONParam.ParamName].SetValue(JSONParam.Value, JSONParam.Encoded);
+         Finally
+          FreeAndNil(JSONParam);
+         End;
+        End;
+      End;
+     bJsonValue.Clean;
+     FreeAndNil(bJsonValue);
+     FreeAndNil(bJsonOBJTemp);
+    End;
+  Finally
+   If vTempValue <> '' Then
+    ResultJSON := vTempValue;
+   vTempValue := '';
   End;
  End;
  Procedure SetParamsValues(DWParams : TDWParams; SendParamsData : TIdMultipartFormDataStream);
