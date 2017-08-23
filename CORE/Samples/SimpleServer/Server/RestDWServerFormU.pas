@@ -68,10 +68,6 @@ type
     memoResp: TMemo;
     Label19: TLabel;
     Label18: TLabel;
-    FDStanStorageJSONLink1: TFDStanStorageJSONLink;
-    FDPhysFBDriverLink1: TFDPhysFBDriverLink;
-    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
-    Server_FDConnection: TFDConnection;
     cbEncode: TCheckBox;
     RESTServicePooler1: TRESTServicePooler;
     CheckBox1: TCheckBox;
@@ -88,7 +84,6 @@ type
     procedure RestaurarAplicao1Click(Sender: TObject);
     procedure RESTServicePooler1LastRequest(Value: string);
     procedure RESTServicePooler1LastResponse(Value: string);
-    procedure Server_FDConnectionBeforeConnect(Sender: TObject);
     procedure tupdatelogsTimer(Sender: TObject);
   Private
    {Private declarations}
@@ -107,9 +102,10 @@ type
    {Public declarations}
    Procedure ShowBalloonTips(IconMessage : Integer = 0; MessageValue : String = '');
    Procedure ShowApplication;
-   Property  Username   : String Read vUsername   Write vUsername;
-   Property  Password   : String Read vPassword   Write vPassword;
-   Property  DatabaseIP : String Read vDatabaseIP Write vDatabaseIP;
+   Property  Username     : String Read vUsername     Write vUsername;
+   Property  Password     : String Read vPassword     Write vPassword;
+   Property  DatabaseIP   : String Read vDatabaseIP   Write vDatabaseIP;
+   Property  DatabaseName : String Read vDatabaseName Write vDatabaseName;
   End;
 
 var
@@ -179,34 +175,6 @@ end;
 procedure TRestDWForm.SairdaAplicao1Click(Sender: TObject);
 begin
  Close;
-end;
-
-procedure TRestDWForm.Server_FDConnectionBeforeConnect(Sender: TObject);
-Var
- porta_BD,
- servidor,
- database,
- pasta,
- usuario_BD,
- senha_BD      : String;
-Begin
- servidor      := vDatabaseIP;
- database      := edBD.Text;
- pasta         := IncludeTrailingPathDelimiter(edPasta.Text);
- porta_BD      := edPortaBD.Text;
- usuario_BD    := edUserNameBD.Text;
- senha_BD      := edPasswordBD.Text;
- vDatabaseName := pasta + database;
- TFDConnection(Sender).Params.Clear;
- TFDConnection(Sender).Params.Add('DriverID=FB');
- TFDConnection(Sender).Params.Add('Server='    + Servidor);
- TFDConnection(Sender).Params.Add('Port='      + porta_BD);
- TFDConnection(Sender).Params.Add('Database='  + vDatabaseName);
- TFDConnection(Sender).Params.Add('User_Name=' + usuario_BD);
- TFDConnection(Sender).Params.Add('Password='  + senha_BD);
- TFDConnection(Sender).Params.Add('Protocol=TCPIP');
- //Server_FDConnection.Params.Add('CharacterSet=ISO8859_1');
- TFDConnection(Sender).UpdateOptions.CountUpdatedRecords := False;
 end;
 
 Procedure TRestDWForm.ShowApplication;
@@ -284,7 +252,6 @@ procedure TRestDWForm.ButtonStopClick(Sender: TObject);
 begin
  tupdatelogs.Enabled       := False;
  RESTServicePooler1.Active := False;
- Server_FDConnection.Connected := False;
  PageControl1.ActivePage := tsConfigs;
  ShowApplication;
 end;
@@ -386,7 +353,6 @@ begin
    RESTServicePooler1.DataCompression       := CheckBox1.Checked;
    If Not RESTServicePooler1.Active Then
     Exit;
-   Server_FDConnection.Connected := True;
    PageControl1.ActivePage := tsLogs;
    HideApplication;
    tupdatelogs.Enabled     := True;

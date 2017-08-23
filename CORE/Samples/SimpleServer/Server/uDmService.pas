@@ -16,9 +16,14 @@ type
   TServerMethodDM = class(TServerMethodDataModule)
     RESTDWPoolerDB1: TRESTDWPoolerDB;
     RESTDWDriverFD1: TRESTDWDriverFD;
+    Server_FDConnection: TFDConnection;
+    FDPhysFBDriverLink1: TFDPhysFBDriverLink;
+    FDStanStorageJSONLink1: TFDStanStorageJSONLink;
+    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     procedure ServerMethodDataModuleReplyEvent(SendType: TSendEvent;
       Context: string; var Params: TDWParams; var Result: string);
     procedure ServerMethodDataModuleCreate(Sender: TObject);
+    procedure Server_FDConnectionBeforeConnect(Sender: TObject);
   private
     { Private declarations }
    Function ConsultaBanco(Var Params : TDWParams) : String;Overload;
@@ -54,7 +59,7 @@ Begin
      {$ELSE}
       fdQuery   := TFDQuery.Create(Nil);
       Try
-       fdQuery.Connection := RestDWForm.Server_FDConnection;
+       fdQuery.Connection := Server_FDConnection;
        fdQuery.SQL.Add(vSQL);
        JSONValue.LoadFromDataset('sql', fdQuery, RestDWForm.cbEncode.Checked);
        Result             := JSONValue.ToJSON;
@@ -93,5 +98,33 @@ Begin
  End;
  JSONObject.Free;
 End;
+
+procedure TServerMethodDM.Server_FDConnectionBeforeConnect(Sender: TObject);
+Var
+ porta_BD,
+ servidor,
+ database,
+ pasta,
+ usuario_BD,
+ senha_BD      : String;
+Begin
+ servidor      := RestDWForm.DatabaseIP;
+ database      := RestDWForm.edBD.Text;
+ pasta         := IncludeTrailingPathDelimiter(RestDWForm.edPasta.Text);
+ porta_BD      := RestDWForm.edPortaBD.Text;
+ usuario_BD    := RestDWForm.edUserNameBD.Text;
+ senha_BD      := RestDWForm.edPasswordBD.Text;
+ RestDWForm.DatabaseName := pasta + database;
+ TFDConnection(Sender).Params.Clear;
+ TFDConnection(Sender).Params.Add('DriverID=FB');
+ TFDConnection(Sender).Params.Add('Server='    + Servidor);
+ TFDConnection(Sender).Params.Add('Port='      + porta_BD);
+ TFDConnection(Sender).Params.Add('Database='  + RestDWForm.DatabaseName);
+ TFDConnection(Sender).Params.Add('User_Name=' + usuario_BD);
+ TFDConnection(Sender).Params.Add('Password='  + senha_BD);
+ TFDConnection(Sender).Params.Add('Protocol=TCPIP');
+ //Server_FDConnection.Params.Add('CharacterSet=ISO8859_1');
+ TFDConnection(Sender).UpdateOptions.CountUpdatedRecords := False;
+end;
 
 end.

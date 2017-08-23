@@ -90,7 +90,7 @@ Begin
      {$ELSE}
       fdQuery   := TFDQuery.Create(Nil);
       Try
-       fdQuery.Connection := RestDWForm.Server_FDConnection;
+       fdQuery.Connection := Nil;//Server_FDConnection; //Alterar no futuro
        fdQuery.SQL.Add(vSQL);
        JSONValue.LoadFromDataset('sql', fdQuery, RestDWForm.cbEncode.Checked);
        Result             := JSONValue.ToJSON;

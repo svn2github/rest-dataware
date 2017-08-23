@@ -1410,37 +1410,6 @@ object RestDWForm: TRestDWForm
       OnClick = SairdaAplicao1Click
     end
   end
-  object FDStanStorageJSONLink1: TFDStanStorageJSONLink
-    Left = 293
-    Top = 245
-  end
-  object FDPhysFBDriverLink1: TFDPhysFBDriverLink
-    Left = 355
-    Top = 240
-  end
-  object FDGUIxWaitCursor1: TFDGUIxWaitCursor
-    Provider = 'Forms'
-    Left = 355
-    Top = 187
-  end
-  object Server_FDConnection: TFDConnection
-    Params.Strings = (
-      
-        'Database=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST' +
-        '_Controls\DEMO\EMPLOYEE.FDB'
-      'User_Name=SYSDBA'
-      'Password=masterkey'
-      'Server=localhost'
-      'Port=3050'
-      'CharacterSet='
-      'DriverID=FB')
-    UpdateOptions.AssignedValues = [uvCountUpdatedRecords]
-    ConnectedStoredUsage = []
-    LoginPrompt = False
-    BeforeConnect = Server_FDConnectionBeforeConnect
-    Left = 294
-    Top = 186
-  end
   object RESTServicePooler1: TRESTServicePooler
     Active = False
     DataCompression = True
