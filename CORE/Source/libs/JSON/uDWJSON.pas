@@ -1756,14 +1756,15 @@ end;
 function TJSONObject.toJSONArray(anames: TJSONArray): TJSONArray;
 var
  i : integer;
- ja : TJSONArray ;
 begin
   if ((anames = nil) or (anames.length() = 0)) then begin
       result := nil;
       exit;
   end;
+  If Not Assigned(ja) Then
    ja := TJSONArray.create;
-  for i := 0 to anames.length -1 {; i < anames.length(); i += 1)} do begin
+  If ja.myArrayList.Count = 0 Then
+   for i := 0 to anames.length -1 {; i < anames.length(); i += 1)} do begin
       ja.put(self.opt(names.getString(i)));
   end;
   result := ja;

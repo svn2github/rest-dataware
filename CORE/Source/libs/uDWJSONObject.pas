@@ -71,6 +71,7 @@ End;
  End;
 
  Type
+  PJSONParam = ^TJSONParam;
   TJSONParam = Class(TObject)
   Private
    vJSONValue: TJSONValue;
@@ -275,7 +276,11 @@ Begin
    If Assigned(TList(Self).Items[Index]) Then
     Begin
      FreeAndNil(TList(Self).Items[Index]^);
-     Dispose(TList(Self).Items[Index]);
+     {$IFDEF FPC}
+      Dispose(PJSONParam(TList(Self).Items[Index]));
+     {$ELSE}
+      Dispose(TList(Self).Items[Index]);
+     {$ENDIF}
     End;
    TList(Self).Delete(Index);
   End;

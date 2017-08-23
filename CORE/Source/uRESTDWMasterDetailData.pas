@@ -22,6 +22,7 @@ Type
 End;
 
 Type
+ PMasterDetailItem = ^TMasterDetailItem;
  TMasterDetailList = Class(TList)
  Private
   Function  GetRec(Index    : Integer)      : TMasterDetailItem;  Overload;
@@ -57,7 +58,11 @@ Begin
    If Assigned(TList(Self).Items[Index]) Then
     Begin
      FreeAndNil(TList(Self).Items[Index]^);
-     Dispose(TList(Self).Items[Index]);
+     {$IFDEF FPC}
+      Dispose(PMasterDetailItem(TList(Self).Items[Index]));
+     {$ELSE}
+      Dispose(TList(Self).Items[Index]);
+     {$ENDIF}
     End;
    TList(Self).Delete(Index);
   End;
