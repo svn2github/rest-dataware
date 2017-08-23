@@ -583,12 +583,12 @@ Var
   JSONParamNew  : TJSONParam;
   A, I, InitPos,
   DataSize      : Integer;
-  vValue        : String;
-  vTempValue    : PChar;
+  vValue,
+  vTempValue    : String;
  Begin
   Try
    InitPos    := Pos('"RESULT":[', InputValue) + Length('"RESULT":[') -1;
-   vTempValue := PChar(Copy(InputValue, InitPos +1, Pos(']}', InputValue) - InitPos - 1));
+   vTempValue := Copy(InputValue, InitPos +1, Pos(']}', InputValue) - InitPos - 1);
    InputValue := Copy(InputValue, 1, InitPos) + ']}'; //Delete(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
    If Params <> Nil Then
     Begin
@@ -634,6 +634,11 @@ Var
            ParamsData.ItemsString[JSONParam.ParamName].SetValue(JSONParam.Value, JSONParam.Encoded);
          Finally
           FreeAndNil(JSONParam);
+          If Assigned(bJsonOBJ) Then
+           Begin
+            bJsonOBJ.clean;
+            FreeAndNil(bJsonOBJ);
+           End;
          End;
         End;
       End;
@@ -737,14 +742,16 @@ Begin
         Begin
          HttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
          HttpRequest.Request.ContentEncoding := 'multipart/form-data';
-         StringStream                        := TStringStream.Create('');
          If vDatacompress Then
           Begin
            vResult                           := HttpRequest.Post(vURL, SendParams);
            ZDecompressStreamD(vResult, StringStream);
           End
          Else
-          HttpRequest.Post(vURL, SendParams, StringStream);
+          Begin
+           StringStream                      := TStringStream.Create('');
+           HttpRequest.Post(vURL, SendParams, StringStream);
+          End;
          StringStream.Position := 0;
          If SendParams <> Nil Then
           Begin

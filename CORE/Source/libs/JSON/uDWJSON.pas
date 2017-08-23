@@ -39,6 +39,12 @@ Uses
  {$ENDIF}SysUtils, Classes, TypInfo;
 
 Type
+ TStringListJSON = Class(TStringList)
+ Public
+  Destructor Destroy;Override;
+End;
+
+Type
     {
     @abstract(Classe pai de todas as classes em uJSON , resolve o problema de
     impedância entre a classe java Object e a classe delphi TObject)
@@ -124,7 +130,7 @@ Type
   { @abstract(Classe que representa um objeto JSON) }
   TJSONObject = class (TZAbstractObject)
   private
-    myHashMap : TStringList;
+    myHashMap : TStringListJSON;
     ja :TJSONArray;
   public
     (**
@@ -969,7 +975,7 @@ end;
 
 constructor TJSONObject.create;
 begin
-  myHashMap := TStringList.create;
+  myHashMap := TStringListJSON.create;
 end;
 
 
@@ -1027,7 +1033,7 @@ begin
       end else if (c <> ':') then begin
           raise x.syntaxError('Expected a ":" after a key');
       end;
-      self.myHashMap.AddObject(key, x.nextValue());
+      self.myHashMap.AddObject(key, x.nextValue);
 
       (*
        * Pairs are separated by ','. We will also tolerate ';'.
@@ -1056,9 +1062,9 @@ constructor TJSONObject.create(map: TStringList);
 var
  i : integer;
 begin
-  self.myHashMap := TStringlist.create;
+  myHashMap := TStringlistJSON.create;
   for i := 0 to map.Count -1 do begin
-    self.myHashMap.AddObject(map[i],map.Objects[i]);
+   myHashMap.AddObject(map[i],map.Objects[i]);
   end;
 end;
 
@@ -1069,7 +1075,7 @@ var
 begin
   token :=  JSONTokener.create(s);
   create (token);
-  token.free;
+  FreeAndNil(token);
 end;
 
 
@@ -2185,7 +2191,7 @@ end;
 destructor TJSONObject.destroy;
 begin
   clean;
-  myHashMap.Clear;
+//  myHashMap.Clear;
   FreeAndNil(myHashMap);
   if Assigned(ja) then
    FreeAndNil(ja);
@@ -2200,7 +2206,7 @@ constructor TJSONArray.create(collection: TList);
 var
   i : integer;
 begin
-  myArrayList := TList.create ();
+  myArrayList := TList.create;
   for i := 0 to collection.count -1 do begin
      myArrayList.add (collection[i]);
   end;
@@ -2223,8 +2229,12 @@ end;
      *  @raises (ParseException The string must conform to JSON syntax.)
      *)
 constructor TJSONArray.create(s: string);
+var
+ token : JSOnTokener;
 begin
-  create (JSONTokener.create(s));
+  token := JSONTokener.create(s);
+  create (token);
+  FreeAndNil(token);
 end;
 
 destructor TJSONArray.destroy;
@@ -2928,6 +2938,7 @@ End;
 
 Function TZAbstractObject.Clone : TZAbstractObject;
 Begin
+ Result := Nil;
  newNotImplmentedFeature;
 End;
 
@@ -2991,6 +3002,24 @@ Begin
 End;
 
 { _Number }
+
+{ TStringListJSON }
+
+Destructor TStringListJSON.Destroy;
+Var
+ I : Integer;
+Begin
+ For I := Count -1 DownTo 0 do
+  Begin
+   If Assigned(Self.Objects[I]) Then
+    Begin
+     Self.Objects[I].Free;
+     Self.Objects[I] := Nil;
+    End;
+  End;
+ Clear;
+ Inherited;
+End;
 
 Initialization
   CONST_FALSE := _Boolean.Create(false);

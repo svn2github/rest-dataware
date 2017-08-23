@@ -228,7 +228,6 @@ Procedure TDWParams.FromJSON(JSON : String);
 Var
  bJsonValue : TJsonObject;
  JSONParam  : TJSONParam;
- vTempValue : String;
  I          : Integer;
 Begin
  bJsonValue := TJsonObject.Create(JSON);
@@ -931,8 +930,8 @@ Begin
       If vObjectValue In [ovWideMemo, ovBytes, ovVarBytes, ovBlob, ovMemo,
                           ovGraphic, ovFmtMemo, ovOraBlob, ovOraClob] Then
        Begin
+        vStringStream := TMemoryStream.Create;
         Try
-         vStringStream := TMemoryStream.Create;
          HexToStream(vTempValue, vStringStream);
          aValue := TIdBytes(StreamToBytes(vStringStream));
         Finally
