@@ -111,6 +111,22 @@ End;
  End;
 
  Type
+  PStringStream     = ^TStringStream;
+  TStringStreamList = Class(TList)
+  Private
+   Function  GetRec    (Index : Integer) : TStringStream;  Overload;
+   Procedure PutRec    (Index : Integer;
+                        Item  : TStringStream); Overload;
+   Procedure ClearList;
+  Public
+   Constructor Create;
+   Destructor  Destroy; Override;
+   Procedure   Delete(Index      : Integer); Overload;
+   Function    Add(Item          : TStringStream) : Integer; Overload;
+   Property    Items   [Index    : Integer]    : TStringStream Read GetRec     Write PutRec; Default;
+ End;
+
+ Type
   TDWParams = Class(TList)
   Private
    {$IFNDEF FPC}
@@ -1196,5 +1212,66 @@ Begin
  vJSONValue.vEncoded := vEncoded;
  vJSONValue.WriteValue(bValue);
 End;
+
+{ TStringStreamList }
+
+function TStringStreamList.Add(Item: TStringStream): Integer;
+Var
+ vItem : ^TStringStream;
+Begin
+ New(vItem);
+ vItem^ := Item;
+ Result := TList(Self).Add(vItem);
+End;
+
+procedure TStringStreamList.ClearList;
+Var
+ I : Integer;
+Begin
+ For I := Count -1 Downto 0 Do
+  Delete(I);
+ Self.Clear;
+End;
+
+Constructor TStringStreamList.Create;
+Begin
+ Inherited;
+End;
+
+procedure TStringStreamList.Delete(Index: Integer);
+begin
+ If (Index < Self.Count) And (Index > -1) Then
+  Begin
+   If Assigned(TList(Self).Items[Index]) Then
+    Begin
+     FreeAndNil(TList(Self).Items[Index]^);
+     {$IFDEF FPC}
+      Dispose(PStringStream(TList(Self).Items[Index]));
+     {$ELSE}
+      Dispose(TList(Self).Items[Index]);
+     {$ENDIF}
+    End;
+   TList(Self).Delete(Index);
+  End;
+end;
+
+Destructor TStringStreamList.Destroy;
+Begin
+ ClearList;
+ Inherited;
+End;
+
+Function TStringStreamList.GetRec(Index: Integer): TStringStream;
+Begin
+ Result := Nil;
+ If (Index < Self.Count) And (Index > -1) Then
+  Result := TStringStream(TList(Self).Items[Index]^);
+End;
+
+procedure TStringStreamList.PutRec(Index: Integer; Item: TStringStream);
+begin
+ If (Index < Self.Count) And (Index > -1) Then
+  TStringStream(TList(Self).Items[Index]^) := Item;
+end;
 
 End.

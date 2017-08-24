@@ -318,6 +318,7 @@ Var
  SendParams    : TIdMultipartFormDataStream;
  ss            : TStringStream;
  thd           : TThread_Request;
+ StringStreamList : TStringStreamList;
  Procedure SetData(InputValue     : String;
                    Var ParamsData : TDWParams;
                    Var ResultJSON : String);
@@ -399,19 +400,22 @@ Var
  Begin
   If DWParams <> Nil Then
    Begin
+    If Not (Assigned(StringStreamList)) Then
+     StringStreamList := TStringStreamList.Create;
     For I := 0 To DWParams.Count -1 Do
      Begin
       If DWParams.Items[I].ObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
                                            ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob, ovOraClob] Then
        Begin
+        StringStreamList.Add(TStringStream.Create(DWParams.Items[I].ToJSON));
         {$IFNDEF FPC}
          {$if CompilerVersion > 21}
-          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
+          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, StringStreamList.Items[StringStreamList.Count-1]);
          {$ELSE}
-          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
+          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, StringStreamList.Items[StringStreamList.Count-1]);
          {$IFEND}
         {$ELSE}
-         SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
+         SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, StringStreamList.Items[StringStreamList.Count-1]);
         {$ENDIF}
        End
       Else
@@ -421,6 +425,7 @@ Var
  End;
 Begin
  SendParams := Nil;
+ StringStreamList := Nil;
  If vThreadRequest Then
   Begin
    thd := TThread_Request.Create;
@@ -492,8 +497,10 @@ Begin
          Else
           HttpRequest.Post(vURL, SendParams, StringStream);
          StringStream.Position := 0;
-         If SendParams <> Nil Then
+         If Assigned(SendParams) Then
           Begin
+           If Assigned(StringStreamList) Then
+            FreeAndNil(StringStreamList);
            {$IFNDEF FPC}SendParams.Clear;{$ENDIF}
            FreeAndNil(SendParams);
           End;
@@ -572,6 +579,7 @@ Var
  SendParams    : TIdMultipartFormDataStream;
  ss            : TStringStream;
  thd           : TThread_Request;
+ StringStreamList : TStringStreamList;
  Procedure SetData(InputValue     : String;
                    Var ParamsData : TDWParams;
                    Var ResultJSON : String);
@@ -579,7 +587,7 @@ Var
   bJsonOBJ,
   bJsonValue    : TJsonObject;
   bJsonOBJTemp  : TJSONArray;
-  JSONParam     : TJSONParam;
+  JSONParam,
   JSONParamNew  : TJSONParam;
   A, I, InitPos,
   DataSize      : Integer;
@@ -658,19 +666,22 @@ Var
  Begin
   If DWParams <> Nil Then
    Begin
+    If Not (Assigned(StringStreamList)) Then
+     StringStreamList := TStringStreamList.Create;
     For I := 0 To DWParams.Count -1 Do
      Begin
       If DWParams.Items[I].ObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
                                            ovMemo,   ovGraphic, ovFmtMemo,  ovOraBlob, ovOraClob] Then
        Begin
+        StringStreamList.Add(TStringStream.Create(DWParams.Items[I].ToJSON));
         {$IFNDEF FPC}
          {$if CompilerVersion > 21}
-          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
+          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, StringStreamList.Items[StringStreamList.Count-1]);
          {$ELSE}
-          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
+          SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, StringStreamList.Items[StringStreamList.Count-1]);
          {$IFEND}
         {$ELSE}
-         SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, TStringStream.Create(DWParams.Items[I].ToJSON));
+         SendParamsData.AddObject(DWParams.Items[I].ParamName, 'multipart/form-data', HttpRequest.Request.Charset, StringStreamList.Items[StringStreamList.Count-1]);
         {$ENDIF}
        End
       Else
@@ -680,6 +691,7 @@ Var
  End;
 Begin
  SendParams := Nil;
+ StringStreamList := Nil;
  If vThreadRequest Then
   Begin
    thd := TThread_Request.Create;
@@ -755,6 +767,8 @@ Begin
          StringStream.Position := 0;
          If SendParams <> Nil Then
           Begin
+           If Assigned(StringStreamList) Then
+            FreeAndNil(StringStreamList);
            {$IFNDEF FPC}SendParams.Clear;{$ENDIF}
            FreeAndNil(SendParams);
           End;
