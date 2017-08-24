@@ -125,11 +125,12 @@ Type
   Procedure CheckConnection;                         //Checa o Estado automatico da Conexão
   Function  TryConnect : Boolean;                    //Tenta Conectar o Servidor para saber se posso executar comandos
   Procedure SetConnectionOptions(Var Value : TRESTClientPooler); //Seta as Opções de Conexão
-  Function  ExecuteCommand  (Var SQL    : TStringList;
-                             Var Params : TParams;
-                             Var Error  : Boolean;
-                             Var MessageError : String;
-                             Execute    : Boolean = False) : TJSONValue;
+  Procedure ExecuteCommand(Var SQL          : TStringList;
+                           Var Params       : TParams;
+                           Var Error        : Boolean;
+                           Var MessageError : String;
+                           Var Result       : TJSONValue;
+                           Execute          : Boolean = False);
   Procedure ExecuteProcedure(ProcName         : String;
                              Params           : TParams;
                              Var Error        : Boolean;
@@ -1073,11 +1074,12 @@ Begin
  SetConnection(True);
 End;
 
-Function TRESTDWDataBase.ExecuteCommand(Var SQL          : TStringList;
-                                        Var Params       : TParams;
-                                        Var Error        : Boolean;
-                                        Var MessageError : String;
-                                        Execute          : Boolean = False) : TJSONValue;
+Procedure TRESTDWDataBase.ExecuteCommand(Var SQL          : TStringList;
+                                         Var Params       : TParams;
+                                         Var Error        : Boolean;
+                                         Var MessageError : String;
+                                         Var Result       : TJSONValue;
+                                         Execute          : Boolean = False);
 Var
  vRESTConnectionDB : TDWPoolerMethodClient;
  LDataSetList      : TJSONValue;
@@ -1107,7 +1109,7 @@ Var
     End;
  End;
 Begin
- Result := Nil;
+// Result := Nil;
  if vRestPooler = '' then
   Exit;
  ParseParams;
@@ -1146,7 +1148,8 @@ Begin
                                                             MessageError, Execute, vTimeOut, vLogin, vPassword);
   If (LDataSetList <> Nil) Then
    Begin
-    Result := TJSONValue.Create;
+    If Not Assigned(Result) Then
+     Result := TJSONValue.Create;
     Error  := Trim(MessageError) <> '';
     If (Trim(LDataSetList.ToJSON) <> '{}') And
        (Trim(LDataSetList.Value) <> '')    And
@@ -1182,7 +1185,8 @@ Begin
      vOnEventConnection(False, E.Message);
    End;
  End;
- LDataSetList.Free;
+ If Assigned(LDataSetList) Then
+  FreeAndNil(LDataSetList);
  vRESTConnectionDB.Free;
 End;
 
@@ -2053,14 +2057,17 @@ Function TRESTDWClientSQL.ExecSQL(Var Error : String) : Boolean;
 Var
  vError        : Boolean;
  vMessageError : String;
+ vResult       : TJSONValue;
 Begin
  Result := False;
  Try
   If vRESTDataBase <> Nil Then
    Begin
-    vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, True);
+    vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, vResult, True);
     Result := Not vError;
     Error  := vMessageError;
+    If Assigned(vResult) Then
+     FreeAndNil(vResult);
    End
   Else
    Raise Exception.Create(PChar('Empty Database Property'));
@@ -2303,8 +2310,8 @@ Begin
  If Assigned(vRESTDataBase) Then
   Begin
    Try
-    LDataSetList := vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, False);
-    If (LDataSetList <> Nil) And (Not (vError)) Then
+    vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, LDataSetList, False);
+    If (Assigned(LDataSetList)) And (Not (vError)) Then
      Begin
       Try
        LDataSetList.Encoded := vRESTDataBase.EncodeStrings;
@@ -2314,9 +2321,9 @@ Begin
       End;
      End;
    Except
-    If LDataSetList <> Nil Then
-     LDataSetList.Free;
    End;
+   If Assigned(LDataSetList) Then
+    FreeAndNil(LDataSetList);
    If vError Then
     Begin
      If csDesigning in ComponentState Then

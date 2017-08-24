@@ -708,7 +708,7 @@ Begin
      If DestDS.FieldDefs.Count = 0 Then
       Begin
        bJsonArray    := bJsonValue.optJSONArray(bJsonValue.names.get(4).ToString);
-       bJsonArraySub := TJsonObject.Create(bJsonArray.opt(0).ToString);
+       bJsonArraySub := bJsonArray.optJSONObject(0);
        bJsonArray    := bJsonArraySub.optJSONArray(bJsonArraySub.names.get(0).ToString);
        For J := 0 To bJsonArray.Length - 1 Do
         Begin
@@ -735,8 +735,6 @@ Begin
           FreeAndNil(bJsonOBJ);
          End;
         End;
-        FreeAndNil(bJsonArraySub);
-        // FreeAndNil(bJsonArray);
       End
     {$IFDEF FPC}
      Else
@@ -767,7 +765,7 @@ Begin
     End;
     // Add Set PK Fields
     bJsonArray    := bJsonValue.optJSONArray(bJsonValue.names.get(4).ToString);
-    bJsonArraySub := TJsonObject.Create(bJsonArray.opt(0).ToString);
+    bJsonArraySub := bJsonArray.optJSONObject(0); //TJsonObject.Create(bJsonArray.opt(0).ToString);
     bJsonArray    := bJsonArraySub.optJSONArray(bJsonArraySub.names.get(0).ToString);
     For J := 0 To bJsonArray.Length - 1 Do
      Begin
@@ -814,9 +812,8 @@ Begin
       If Not vFindFlag Then
        ListFields.Add('-1');
      End;
-    FreeAndNil(bJsonArray);
     bJsonArray    := bJsonValue.optJSONArray(bJsonValue.names.get(4).ToString);
-    bJsonArraySub := TJsonObject.Create(bJsonArray.opt(1).ToString);
+    bJsonArraySub := bJsonArray.optJSONObject(1);
     bJsonArray    := bJsonArraySub.optJSONArray(bJsonArraySub.names.get(0).ToString);
     For J := 0 To bJsonArray.Length - 1 Do
      Begin
@@ -882,7 +879,6 @@ Begin
       End;
       DestDS.Post;
      End;
-    FreeAndNil(bJsonArraySub);
    End
   Else
    Begin

@@ -74,6 +74,7 @@ Type
     NullPointerException = class (Exception) end;
     { @abstract(as features não implementadas geram esta exception) }
     NotImplmentedFeature = class (Exception) end;
+    PJSONArray = ^TJSONArray;
     TJSONArray = class ;
     _Number =  class ;
     _String = class;
@@ -2248,7 +2249,10 @@ begin
     if (obj <> CONST_FALSE)
       and (obj <> CONST_TRUE)
       and (Assigned(obj)) then
-     FreeAndNil(obj);
+     Begin
+      FreeAndNil(obj);
+//      Dispose(myArrayList[0]);
+     End;
     myArrayList.Delete(0);
   end;
   FreeAndNil(myArrayList);
@@ -2970,7 +2974,13 @@ begin
    If (myHashMap.Objects[0] <> CONST_FALSE) And
       (myHashMap.Objects[0] <> CONST_TRUE)  And
       (Assigned(myHashMap.Objects[0]))      Then
-    myHashMap.Objects[0].Free;
+    Begin
+     Try
+      myHashMap.Objects[0].Free;
+     Except
+
+     End;
+    End;
    myHashMap.Delete(0);
   End;
 End;
