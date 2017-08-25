@@ -35,7 +35,7 @@ End;
      vEncoding      : TEncoding;
     {$IFEND}
    {$ENDIF}
-   Function GetValue : String;
+   Function  GetValue : String;
    Procedure WriteValue  (bValue : String);
    Function FormatValue  (bValue : String)   : String;
    Function GetValueJSON (bValue : String)   : String;
@@ -445,8 +445,8 @@ Begin
   End;
  If vEncoded Then
   Begin
-   If (vObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob, ovMemo,
-                        ovGraphic, ovFmtMemo, ovOraBlob, ovOraClob]) And (vBinary) Then
+   If (vObjectValue in [ovBytes,   ovVarBytes, ovBlob,
+                        ovGraphic, ovOraBlob,  ovOraClob]) And (vBinary) Then
     vTempString := vTempString
    Else
     Begin
@@ -519,9 +519,8 @@ Var
     If bValue.Fields[I].DataType In [{$IFNDEF FPC}{$IF CompilerVersion > 21}ftExtended,
                                      {$IFEND}{$ENDIF}ftFloat, ftCurrency, ftFMTBcd, ftBCD] Then
      vTempValue := Format('"%s"', [StringFloat(bValue.Fields[I].AsString)])
-    Else If bValue.Fields[I].DataType in [ftBytes, ftVarBytes,
-                                          ftBlob, ftMemo, ftGraphic, ftFmtMemo,
-                                          ftOraBlob, ftOraClob] Then
+    Else If bValue.Fields[I].DataType in [ftBytes,   ftVarBytes, ftBlob,
+                                          ftGraphic, ftOraBlob,  ftOraClob] Then
      Begin
       vStringStream := TStringStream.Create('');
       Try
@@ -539,8 +538,10 @@ Var
      End
     Else
      Begin
-      If bValue.Fields[I].DataType in [ftString, ftWideString,
-                                       ftFixedChar] Then
+      If bValue.Fields[I].DataType in [ftString,  ftWideString,
+                                       ftMemo,
+                                       {$IFNDEF FPC}{$IF CompilerVersion > 21}ftWideMemo,{$IFEND}{$ENDIF}
+                                       ftFmtMemo, ftFixedChar] Then
        Begin
         If vEncoded Then
          vTempValue := Format('"%s"', [EncodeStrings(bValue.Fields[I].AsString)])
@@ -842,12 +843,14 @@ Begin
          If StrToInt(ListFields[I]) = -1 Then
           Begin
            If Assigned(bJsonOBJ) Then
-            FreeAndNil(bJsonOBJ);
+            Begin
+             bJsonOBJ.Clean;
+             FreeAndNil(bJsonOBJ);
+            End;
            Continue;
           End;
-         If DestDS.Fields[I].DataType In [ftMemo, ftGraphic, ftFmtMemo,
-                                          ftParadoxOle, ftDBaseOle, ftTypedBinary,
-                                          ftCursor, ftDataSet, ftOraBlob, ftOraClob
+         If DestDS.Fields[I].DataType In [ftGraphic, ftParadoxOle, ftDBaseOle, ftTypedBinary,
+                                          ftCursor,  ftDataSet,    ftBlob,     ftOraBlob,  ftOraClob
                                           {$IFNDEF FPC}{$IF CompilerVersion > 21}, ftParams, ftStream{$IFEND}{$ENDIF}] Then
           Begin
            If vEncoded Then
@@ -871,7 +874,7 @@ Begin
            If bJsonOBJTemp.get(StrToInt(ListFields[I])).ToString <> '' Then
             Begin
              If DestDS.Fields[I].DataType in [ftString, ftWideString,
-                                              ftFixedChar] Then
+                                              ftMemo,   ftFmtMemo, ftFixedChar] Then
               Begin
                If vEncoded Then
                 DestDS.Fields[I].AsString := DecodeStrings(bJsonOBJTemp.get(StrToInt(ListFields[I])).ToString)
@@ -944,8 +947,8 @@ Begin
      End;
     If vEncoded Then
      Begin
-      If vObjectValue In [ovWideMemo, ovBytes, ovVarBytes, ovBlob, ovMemo,
-                          ovGraphic, ovFmtMemo, ovOraBlob, ovOraClob] Then
+      If vObjectValue In [ovBytes,   ovVarBytes, ovBlob,
+                          ovGraphic, ovOraBlob,  ovOraClob] Then
        Begin
         vStringStream := TMemoryStream.Create;
         Try
@@ -958,8 +961,8 @@ Begin
       Else
        vTempValue := DecodeStrings(vTempValue);
      End;
-    If Not(vObjectValue In [ovWideMemo, ovBytes, ovVarBytes, ovBlob, ovMemo,
-                            ovGraphic, ovFmtMemo, ovOraBlob, ovOraClob]) Then
+    If Not(vObjectValue In [ovBytes,   ovVarBytes, ovBlob,
+                            ovGraphic, ovOraBlob,  ovOraClob]) Then
      SetValue(vTempValue, vEncoded)
     Else
      Begin
@@ -990,9 +993,8 @@ Begin
  vEncoded := Encode;
  If Encode Then
   Begin
-   If vObjectValue in [ovWideMemo, ovBytes, ovVarBytes, ovBlob,
-                       ovMemo, ovGraphic,   ovFmtMemo,  ovOraBlob,
-                       ovOraClob] Then
+   If vObjectValue in [ovBytes,   ovVarBytes, ovBlob,
+                       ovGraphic, ovOraBlob,  ovOraClob] Then
     WriteValue(Value)
    Else
     WriteValue(EncodeStrings(Value))
@@ -1004,7 +1006,7 @@ End;
 Procedure TJSONValue.WriteValue(bValue : String);
 Begin
  SetLength(aValue, 0);
- If vObjectValue = ovString Then
+ If vObjectValue in [ovString, ovMemo, ovWideMemo, ovFmtMemo] Then
   Begin
    If vEncoded Then
     Begin
@@ -1091,14 +1093,14 @@ Procedure TJSONParam.LoadFromParam(Param: TParam);
 Var
  MemoryStream : TMemoryStream;
 Begin
- If Param.DataType in [ftString, ftWideString, ftFixedChar] Then
+ If Param.DataType in [ftString, ftWideString, ftMemo, ftFmtMemo, ftFixedChar] Then
   SetValue(Param.AsString, True)
  Else If Param.DataType in [{$IFNDEF FPC}{$IF CompilerVersion > 21}ftExtended,
                             {$IFEND}{$ENDIF}ftInteger, ftSmallint, ftFloat,
                             ftCurrency, ftFMTBcd, ftBCD] Then
   SetValue(Param.AsString, False)
- Else If Param.DataType In [ftWideString, ftBytes, ftVarBytes, ftBlob, ftMemo,
-                             ftGraphic, ftFmtMemo, ftOraBlob, ftOraClob] Then
+ Else If Param.DataType In [ftBytes,   ftVarBytes, ftBlob,
+                            ftGraphic, ftOraBlob,  ftOraClob] Then
   Begin
    MemoryStream := TMemoryStream.Create;
    Try

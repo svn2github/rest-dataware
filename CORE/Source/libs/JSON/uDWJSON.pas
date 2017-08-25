@@ -2981,7 +2981,11 @@ begin
 
      End;
     End;
-   myHashMap.Delete(0);
+   Try
+    myHashMap.Delete(0);
+   Except
+    Exit;
+   End;
   End;
 End;
 
