@@ -46,30 +46,39 @@ implementation
 {$R *.dfm}
 
 Function GetFilesServer(Const List : TStrings) : Boolean;
-Var
- SRec : TSearchRec;
- Res  : Integer;
+  procedure ScanFolder(const Path: String; List: TStrings);
+  var
+    sPath: string;
+    rec : TSearchRec;
+  begin
+    sPath := IncludeTrailingPathDelimiter(Path);
+    if FindFirst(sPath + '*.*', faAnyFile, rec) = 0 then
+    begin
+      repeat
+        if (rec.Attr and faDirectory) <> 0 then
+        begin
+          if (rec.Name <> '.') and (rec.Name <> '..') then
+            ScanFolder(IncludeTrailingPathDelimiter(sPath + rec.Name), List);
+        end
+        else
+        begin
+          if pos(StartDir, Path) > 0 then
+            List.Add(copy(Path, length(StartDir) + 1, length(path)) + rec.Name)
+          else
+            List.Add(Path + rec.Name);
+        end;
+      until FindNext(rec) <> 0;
+      FindClose(rec);
+    end;
+  end;
 Begin
  If Not Assigned(List) Then
   Begin
-   Result := False;
-   Exit;
-  End;
- Res := FindFirst(IncludeTrailingPathDelimiter(StartDir) + '*.*', faAnyfile, SRec);
- If Res = 0 Then
-  Begin
-   Try
-    While res = 0 do
-     Begin
-      If (SRec.Attr And faDirectory <> faDirectory) Then
-       List.Add(SRec.Name);
-      Res := FindNext(SRec);
-     End;
-   Finally
-    FindClose(SRec)
-   End;
-  End;
- Result := (List.Count > 0);
+    Result := False;
+    Exit;
+  end;
+  ScanFolder(StartDir, List);
+  Result := (List.Count > 0);
 End;
 
 Procedure TfServer.LoadLocalFiles;
@@ -84,7 +93,7 @@ Begin
  StartDir := DirName;
  If Not DirectoryExists(DirName) Then
   ForceDirectories(DirName);
- If GetFilesServer(List) Then
+  If GetFilesServer(List) Then
   Begin
    For I := 0 To List.Count -1 Do
     lbLocalFiles.AddItem(List[I], Nil);

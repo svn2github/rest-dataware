@@ -90,7 +90,7 @@ End;
 
 Function TSMDWCore.SendReplicationFile(Var Params : TDWParams) : String;
 Var
- vArquivo     : String;
+ vArquivo, vDiretorio: String;
  JSONValue    : TJSONValue;
  vFileIn,
  vFile        : TMemoryStream;
@@ -113,11 +113,20 @@ Var
   SHFileOperation(FOS);
  End;
 Begin
- If (Params.ItemsString['Arquivo']     <> Nil) Then
+  If (Params.ItemsString['Arquivo']     <> Nil) Then
   Begin
+   vDiretorio := '';
+   If (Params.ItemsString['Diretorio'] <> Nil) Then
+   begin
+     if Params.ItemsString['Diretorio'].value <> '' then
+     begin
+       vDiretorio := IncludeTrailingPathDelimiter(Params.ItemsString['Diretorio'].value);
+       ForceDirectories(fServer.DirName + vDiretorio);
+     end;
+   end;
    JSONValue          := TJSONValue.Create;
    JSONValue.Encoding := GetEncoding(fServer.rspServerFiles.Encoding);
-   vArquivo           := fServer.DirName + Trim(ExtractFileName(Params.ItemsString['Arquivo'].Value));
+   vArquivo           := fServer.DirName + vDiretorio + Trim(ExtractFileName(Params.ItemsString['Arquivo'].Value));
    If FileExists(vArquivo) Then
     DeleteFile(vArquivo);
    vFileIn            := TMemoryStream.Create;

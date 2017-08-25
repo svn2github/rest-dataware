@@ -120,6 +120,7 @@ Begin
         StringStream          := TStringStream.Create('');
         JSONValue.SaveToStream(StringStream);
         Try
+         ForceDirectories(ExtractFilePath(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]));
          If FileExists(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]) Then
           DeleteFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
          StringStream.SaveToFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
@@ -159,6 +160,13 @@ Begin
    JSONParam.ObjectDirection    := odIN;
    JSONParam.SetValue(OpenDialog1.FileName);
    DWParams.Add(JSONParam);
+   {
+   JSONParam                    := TJSONParam.Create(DWParams.Encoding);
+   JSONParam.ParamName          := 'Diretorio';
+   JSONParam.ObjectDirection    := odIN;
+   JSONParam.SetValue('SubPasta');
+   DWParams.Add(JSONParam);
+   }
    JSONParam                    := TJSONParam.Create(DWParams.Encoding);
    JSONParam.ParamName          := 'FileSend';
    JSONParam.ObjectDirection    := odIN;
