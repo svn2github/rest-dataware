@@ -5,8 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics,
   Controls, Forms, Dialogs, StdCtrls, uRESTDWBase, ExtCtrls,
-  pngimage, uDWJSONObject, uDWConsts, uDWConstsData, acPNG,
-  ComCtrls, idComponent;
+  pngimage, uDWJSONObject, uDWConsts, uDWConstsData, ComCtrls, idComponent,
+  acPNG;
 
 type
   TForm4 = class(TForm)
@@ -38,10 +38,9 @@ type
     procedure Button3Click(Sender: TObject);
     procedure RESTClientPooler1Work(ASender: TObject; AWorkMode: TWorkMode;
       AWorkCount: Int64);
-    procedure RESTClientPooler1WorkBegin(ASender: TObject;
-      AWorkMode: TWorkMode; AWorkCountMax: Int64);
-    procedure RESTClientPooler1WorkEnd(ASender: TObject;
-      AWorkMode: TWorkMode);
+    procedure RESTClientPooler1WorkBegin(ASender: TObject; AWorkMode: TWorkMode;
+      AWorkCountMax: Int64);
+    procedure RESTClientPooler1WorkEnd(ASender: TObject; AWorkMode: TWorkMode);
   private
     { Private declarations }
    FBytesToTransfer : Int64;
@@ -69,8 +68,6 @@ Begin
  RESTClientPooler1.Password := edPasswordDW.Text;
  Try
   Try
-   RESTClientPooler1.Host := eHost.Text;
-   RESTClientPooler1.Port := StrToInt(ePort.Text);
    lResponse := RESTClientPooler1.SendEvent('FileList');
    If lResponse <> '' Then
     Begin
@@ -113,12 +110,13 @@ Begin
     Try
      RESTClientPooler1.Host := eHost.Text;
      RESTClientPooler1.Port := StrToInt(ePort.Text);
-     lResponse := RESTClientPooler1.SendEvent('DownloadFile', DWParams);
+     RESTClientPooler1.SendEvent('DownloadFile', DWParams, lResponse);
      If lResponse <> '' Then
       Begin
        JSONValue := TJSONValue.Create;
        Try
         JSONValue.LoadFromJSON(lResponse);
+        lResponse             := '';
         StringStream          := TMemoryStream.Create;
         JSONValue.SaveToStream(StringStream);
         Try
@@ -127,16 +125,16 @@ Begin
          StringStream.SaveToFile(DirName + lbLocalFiles.Items[lbLocalFiles.ItemIndex]);
          Showmessage('Download concluído...');
         Finally
-         StringStream.Free;
+         FreeAndNil(StringStream);
         End;
        Finally
-        JSONValue.Free;
+        FreeAndNil(JSONValue);
        End;
       End;
     Except
     End;
    Finally
-
+    FreeAndNil(DWParams);
    End;
   End
  Else
@@ -166,6 +164,7 @@ Begin
    MemoryStream                 := TMemoryStream.Create;
    MemoryStream.LoadFromFile(OpenDialog1.FileName);
    JSONParam.LoadFromStream(MemoryStream);
+   MemoryStream.SetSize(0);
    MemoryStream.Free;
    DWParams.Add(JSONParam);
    JSONParam                    := TJSONParam.Create;
@@ -182,6 +181,7 @@ Begin
       Finally
       End;
     End;
+   DWParams.Free;
   End;
 end;
 
@@ -193,8 +193,8 @@ begin
   ForceDirectories(DirName);
 end;
 
-procedure TForm4.RESTClientPooler1Work(ASender: TObject;
-  AWorkMode: TWorkMode; AWorkCount: Int64);
+procedure TForm4.RESTClientPooler1Work(ASender: TObject; AWorkMode: TWorkMode;
+  AWorkCount: Int64);
 begin
   If FBytesToTransfer = 0 Then // No Update File
    Exit;

@@ -1,6 +1,6 @@
 object Form4: TForm4
-  Left = 390
-  Top = 167
+  Left = 365
+  Top = 158
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'FileClient'
