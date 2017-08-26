@@ -288,8 +288,13 @@ End;
 
 Destructor  TRESTClientPooler.Destroy;
 Begin
- HttpRequest.Free;
- vTransparentProxy.Free;
+ Try
+  If HttpRequest.Connected Then
+   HttpRequest.Disconnect;
+ Except
+ End;
+ FreeAndNil(HttpRequest);
+ FreeAndNil(vTransparentProxy);
  Inherited;
 End;
 

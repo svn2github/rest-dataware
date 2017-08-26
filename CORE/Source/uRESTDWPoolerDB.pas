@@ -130,7 +130,8 @@ Type
                            Var Error        : Boolean;
                            Var MessageError : String;
                            Var Result       : TJSONValue;
-                           Execute          : Boolean = False);
+                           Execute          : Boolean = False;
+                           RESTClientPooler : TRESTClientPooler = Nil);
   Procedure ExecuteProcedure(ProcName         : String;
                              Params           : TParams;
                              Var Error        : Boolean;
@@ -144,7 +145,8 @@ Type
   Function InsertMySQLReturnID(Var SQL          : TStringList;
                                Var Params       : TParams;
                                Var Error        : Boolean;
-                               Var MessageError : String) : Integer;
+                               Var MessageError : String;
+                               RESTClientPooler : TRESTClientPooler = Nil) : Integer;
   Function  GetStateDB : Boolean;
   Procedure SetMyIp(Value : String);
  Public
@@ -190,6 +192,7 @@ Type
   TRESTDWClientSQL   = Class(TJvMemoryData)                 //Classe com as funcionalidades de um DBQuery
  {$ENDIF}
  Private
+  vRESTClientPooler    : TRESTClientPooler;
   vOldStatus           : TDatasetState;
   vDataSource          : TDataSource;
   vOnAfterScroll       : TOnAfterScroll;
@@ -240,7 +243,7 @@ Type
   Procedure   OldAfterPost       (DataSet : TDataSet);      //Eventos do Dataset para realizar o AfterPost
   Procedure   OldAfterDelete     (DataSet : TDataSet);      //Eventos do Dataset para realizar o AfterDelete
   Procedure   SetMasterDataSet     (Value : TRESTDWClientSQL);
-  Procedure   PrepareDetails  (ActiveMode : Boolean);
+  Procedure   PrepareDetails       (ActiveMode : Boolean);
   Procedure   SetCacheUpdateRecords(Value : Boolean);
   Procedure   PrepareDetailsNew;
   Function    FirstWord          (Value   : String) : String;
@@ -1006,7 +1009,8 @@ End;
 Function TRESTDWDataBase.InsertMySQLReturnID(Var SQL          : TStringList;
                                              Var Params       : TParams;
                                              Var Error        : Boolean;
-                                             Var MessageError : String) : Integer;
+                                             Var MessageError : String;
+                                             RESTClientPooler : TRESTClientPooler = Nil) : Integer;
 {
 Var
  vDSRConnection    : TRESTClientPooler;
@@ -1079,7 +1083,8 @@ Procedure TRESTDWDataBase.ExecuteCommand(Var SQL          : TStringList;
                                          Var Error        : Boolean;
                                          Var MessageError : String;
                                          Var Result       : TJSONValue;
-                                         Execute          : Boolean = False);
+                                         Execute          : Boolean = False;
+                                         RESTClientPooler : TRESTClientPooler = Nil);
 Var
  vRESTConnectionDB : TDWPoolerMethodClient;
  LDataSetList      : TJSONValue;
@@ -1140,12 +1145,12 @@ Begin
                                                                      , vEncondig
                                                                     {$IFEND}
                                                                     {$ENDIF}), Error,
-                                                        MessageError, Execute, vTimeOut, vLogin, vPassword)
+                                                        MessageError, Execute, vTimeOut, vLogin, vPassword, RESTClientPooler)
   Else
    LDataSetList := vRESTConnectionDB.ExecuteCommandPureJSON(vRestPooler,
                                                             vRestModule,
                                                             GetLineSQL(SQL), Error,
-                                                            MessageError, Execute, vTimeOut, vLogin, vPassword);
+                                                            MessageError, Execute, vTimeOut, vLogin, vPassword, RESTClientPooler);
   If (LDataSetList <> Nil) Then
    Begin
     If Not Assigned(Result) Then
@@ -1187,7 +1192,7 @@ Begin
  End;
  If Assigned(LDataSetList) Then
   FreeAndNil(LDataSetList);
- vRESTConnectionDB.Free;
+ FreeAndNil(vRESTConnectionDB);
 End;
 
 Procedure TRESTDWDataBase.ExecuteProcedure(ProcName         : String;
@@ -1316,8 +1321,8 @@ End;
 Destructor  TRESTDWDataBase.Destroy;
 Begin
  vAutoCheckData.vAutoCheck := False;
- vProxyOptions.Free;
- vAutoCheckData.Free;
+ FreeAndNil(vProxyOptions);
+ FreeAndNil(vAutoCheckData);
  Inherited;
 End;
 
@@ -1486,6 +1491,7 @@ Constructor TRESTDWClientSQL.Create(AOwner : TComponent);
 Begin
  vInactive                         := True;
  Inherited;
+ vRESTClientPooler                 := TRESTClientPooler.Create(Nil);
  vInactive                         := False;
  vDataCache                        := False;
  vConnectedOnce                    := True;
@@ -1535,16 +1541,17 @@ End;
 
 Destructor  TRESTDWClientSQL.Destroy;
 Begin
- vSQL.Free;
- vParams.Free;
- FieldDefsUPD.Free;
+ FreeAndNil(vSQL);
+ FreeAndNil(vParams);
+ FreeAndNil(FieldDefsUPD);
  If (vMasterDataSet <> Nil) Then
   TRESTDWClientSQL(vMasterDataSet).vMasterDetailList.DeleteDS(TRESTClient(Self));
- vMasterDetailList.Free;
- vDataSource.Free;
- If vCacheDataDB <> Nil Then
-  vCacheDataDB.Free;
- OldData.Free;
+ FreeAndNil(vMasterDetailList);
+ FreeAndNil(vDataSource);
+ If Assigned(vCacheDataDB) Then
+  FreeAndNil(vCacheDataDB);
+ FreeAndNil(OldData);
+ FreeAndNil(vRESTClientPooler);
  vInactive := False;
  Inherited;
 End;
@@ -2063,7 +2070,7 @@ Begin
  Try
   If vRESTDataBase <> Nil Then
    Begin
-    vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, vResult, True);
+    vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, vResult, True, vRESTClientPooler);
     Result := Not vError;
     Error  := vMessageError;
     If Assigned(vResult) Then
@@ -2083,7 +2090,7 @@ Begin
  Result := -1;
  Try
   If vRESTDataBase <> Nil Then
-   Result := vRESTDataBase.InsertMySQLReturnID(vSQL, vParams, vError, vMessageError)
+   Result := vRESTDataBase.InsertMySQLReturnID(vSQL, vParams, vError, vMessageError, vRESTClientPooler)
   Else 
    Raise Exception.Create(PChar('Empty Database Property')); 
  Except
@@ -2310,7 +2317,7 @@ Begin
  If Assigned(vRESTDataBase) Then
   Begin
    Try
-    vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, LDataSetList, False);
+    vRESTDataBase.ExecuteCommand(vSQL, vParams, vError, vMessageError, LDataSetList, False, vRESTClientPooler);
     If (Assigned(LDataSetList)) And (Not (vError)) Then
      Begin
       Try
