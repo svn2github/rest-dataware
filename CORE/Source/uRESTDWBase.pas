@@ -1028,38 +1028,44 @@ Var
  vExecute  : Boolean;
  vMessageError : String;
 Begin
- If ServerMethodsClass <> Nil Then
-  Begin
-   For I := 0 To ServerMethodsClass.ComponentCount -1 Do
+  try
+   If ServerMethodsClass <> Nil Then
     Begin
-     If ServerMethodsClass.Components[i] is TRESTDWPoolerDB Then
+     For I := 0 To ServerMethodsClass.ComponentCount -1 Do
       Begin
-       If UpperCase(Pooler) = UpperCase(Format('%s.%s', [ServerMethodsClass.ClassName, ServerMethodsClass.Components[i].Name])) then
+       If ServerMethodsClass.Components[i] is TRESTDWPoolerDB Then
         Begin
-         If TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver <> Nil Then
+         If UpperCase(Pooler) = UpperCase(Format('%s.%s', [ServerMethodsClass.ClassName, ServerMethodsClass.Components[i].Name])) then
           Begin
-           vExecute := StringToBoolean(DWParams.ItemsString['Execute'].Value);
-           vError   := StringToBoolean(DWParams.ItemsString['Error'].Value);
-           TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver.EncodeStringsJSON := vEncodeStrings;
-           vTempJSON := TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver.ExecuteCommand(DWParams.ItemsString['SQL'].Value,
-                                                                                                    vError,
-                                                                                                    vMessageError,
-                                                                                                    vExecute);
-           DWParams.ItemsString['MessageError'].SetValue(vMessageError);
-           DWParams.ItemsString['Error'].SetValue(BooleanToString(vError));
-           If DWParams.ItemsString['Result'] <> Nil Then
+           If TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver <> Nil Then
             Begin
-             If vTempJSON <> Nil Then
-              DWParams.ItemsString['Result'].SetValue(vTempJSON.ToJSON)
-             Else
-              DWParams.ItemsString['Result'].SetValue('');
+             vExecute := StringToBoolean(DWParams.ItemsString['Execute'].Value);
+             vError   := StringToBoolean(DWParams.ItemsString['Error'].Value);
+             TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver.EncodeStringsJSON := vEncodeStrings;
+             vTempJSON := TRESTDWPoolerDB(ServerMethodsClass.Components[i]).RESTDriver.ExecuteCommand(DWParams.ItemsString['SQL'].Value,
+                                                                                                      vError,
+                                                                                                      vMessageError,
+                                                                                                      vExecute);
+             DWParams.ItemsString['MessageError'].SetValue(vMessageError);
+             DWParams.ItemsString['Error'].SetValue(BooleanToString(vError));
+             If DWParams.ItemsString['Result'] <> Nil Then
+              Begin
+               If vTempJSON <> Nil Then
+                DWParams.ItemsString['Result'].SetValue(vTempJSON.ToJSON)
+               Else
+                DWParams.ItemsString['Result'].SetValue('');
+              End;
             End;
+           Break;
           End;
-         Break;
         End;
       End;
     End;
-  End;
+  finally
+  {Ico}
+   FreeAndNil(vTempJSON);
+  {Ico}
+  end;
 End;
 
 Procedure TRESTServicePooler.ExecuteCommandJSON(ServerMethodsClass : TComponent;
@@ -1343,6 +1349,9 @@ Begin
                DWParams.Add(JSONParam);
                {$IFNDEF FPC}ms.Size := 0;{$ENDIF}
                FreeAndNil(ms);
+               {ico}
+               FreeAndNil(newdecoder);
+               {ico}
               End;
              mcptIgnore :
               Begin
@@ -1480,6 +1489,7 @@ Begin
      End;
    End;
  Finally
+  //JSONParam.Free;
   FreeAndNil(DWParams);
  End;
 End;

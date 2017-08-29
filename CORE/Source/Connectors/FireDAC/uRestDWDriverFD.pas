@@ -339,7 +339,7 @@ Begin
  Inherited;
  Result := Nil;
  Error  := False;
- Result := TJSONValue.Create;
+ //Result := TJSONValue.Create;
  vTempQuery               := TFDQuery.Create(Owner);
  Try
   If Not vFDConnection.Connected Then
@@ -362,11 +362,15 @@ Begin
    End
   Else
    Begin
-    vTempQuery.ExecSQL;
-    Result := TJSONValue.Create;
-    Result.SetValue('COMMANDOK');
-    vFDConnection.CommitRetaining;
-    Error         := False;
+    try
+      vTempQuery.ExecSQL;
+      Result := TJSONValue.Create;
+      Result.SetValue('COMMANDOK');
+      vFDConnection.CommitRetaining;
+      Error         := False;
+    finally
+    end;
+
    End;
  Except
   On E : Exception do
@@ -379,8 +383,12 @@ Begin
      vFDConnection.RollbackRetaining;
     Except
     End;
+
    End;
  End;
+   {ico}
+// Result.Free;
+   {ico}
  vTempQuery.Close;
  vTempQuery.Free;
 End;

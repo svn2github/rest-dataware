@@ -601,7 +601,7 @@ Begin
  vtagName         := Lowercase(TableName);
  vEncoded         := EncodedValue;
  vTagGeral        := DatasetValues(bValue);
- aValue           := TIdBytes(ToBytes(vTagGeral));
+ aValue           := ToBytes(vTagGeral);
 End;
 
 Function TJSONValue.ToJSON : String;
