@@ -1153,8 +1153,8 @@ Begin
                                                             MessageError, Execute, vTimeOut, vLogin, vPassword, RESTClientPooler);
   If (LDataSetList <> Nil) Then
    Begin
-    If Not Assigned(Result) Then
-     Result := TJSONValue.Create;
+//    If Not Assigned(Result) Then //Correção fornecida por romyllldo no Forum
+    Result := TJSONValue.Create;
     Error  := Trim(MessageError) <> '';
     If (Trim(LDataSetList.ToJSON) <> '{}') And
        (Trim(LDataSetList.Value) <> '')    And

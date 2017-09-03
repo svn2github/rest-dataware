@@ -53,6 +53,7 @@ Destructor TRESTBridge.Destroy;
 Begin
  StopServer;
  lHandler.DisposeOf;
+ FServer.Free; //Correção enviada por fabricio1970 no Forum.
  Inherited;
 End;
 
