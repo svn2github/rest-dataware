@@ -1,15 +1,14 @@
 unit ServerMethodsUnit1;
 
+{$MODE Delphi}
+
 interface
 
-uses SysUtils, Classes, uDWConsts, uDWConstsData,
-     Dialogs, ServerUtils, SysTypes,
-     sqldb, uDWJSONTools, uDWJSONObject;
-
+uses SysUtils, Classes, Windows, uRESTDWBase, uDWConsts, uDWConstsData, uDWJSONTools, uDWJSONObject,
+     IBConnection, sqldb, Dialogs, ServerUtils, SysTypes;
 Type
 {$METHODINFO ON}
-  {TServerMethods1}
-  TServerMethods1 = class(TServerMethods)
+  TServerMethodsComp = Class(TServerMethods)
   Private
    Function ConsultaBanco(Var Params : TDWParams) : String;Overload;
   public
@@ -25,67 +24,67 @@ Type
 
 implementation
 
+uses StrUtils, RestDWServerFormU;
 
-uses StrUtils, formMain;
 
-Constructor TServerMethods1.Create (aOwner : TComponent);
+Constructor TServerMethodsComp.Create (aOwner : TComponent);
 Begin
  Inherited Create (aOwner);
- ReplyEvent := @vReplyEvent;
+ ReplyEvent := vReplyEvent;
 End;
 
-Destructor TServerMethods1.Destroy;
+Destructor TServerMethodsComp.Destroy;
 Begin
  Inherited Destroy;
 End;
 
-Procedure TServerMethods1.vReplyEvent(SendType   : TSendEvent;
-                                      Context    : String;
-                                      Var Params : TDWParams;
-                                      Var Result : String);
-Var
- JSONObject : TJSONValue;
+Procedure TServerMethodsComp.vReplyEvent(SendType   : TSendEvent;
+                                         Context    : String;
+                                         Var Params : TDWParams;
+                                         Var Result : String);
 Begin
- JSONObject := TJSONValue.Create;
  Case SendType Of
   sePOST   :
    Begin
     If UpperCase(Context) = Uppercase('ConsultaBanco') Then
      Result := ConsultaBanco(Params)
     Else
-     Result := JSONObject.ToJSON;
+     Result := '{(''STATUS'',   ''NOK''), (''MENSAGEM'', ''Método não encontrado'')}';
    End;
  End;
- JSONObject.Free;
 End;
 
-Function TServerMethods1.ConsultaBanco(Var Params : TDWParams) : String;
+Function TServerMethodsComp.ConsultaBanco(Var Params : TDWParams) : String;
 Var
  vSQL : String;
- JSONValue : TJSONValue;
- fdQuery   : TSQLQuery;
+ JSONValue : uDWJSONObject.TJSONValue;
+ fdQuery : TSQLQuery;
 Begin
  If Params.ItemsString['SQL'] <> Nil Then
   Begin
-   fdQuery            := TSQLQuery.Create(Nil);
    JSONValue          := uDWJSONObject.TJSONValue.Create;
    If Params.ItemsString['SQL'].value <> '' Then
     Begin
      If Params.ItemsString['TESTPARAM'] <> Nil Then
-      Params.ItemsString['TESTPARAM'].SetValue('OK');
+      Params.ItemsString['TESTPARAM'].SetValue('OK, OK');
      vSQL      := Params.ItemsString['SQL'].value;
-     Try
-      fdQuery.DataBase := frmMain.IBConnection1;
-      fdQuery.SQL.Add(vSQL);
-      JSONValue.LoadFromDataset('sql', fdQuery, frmMain.cbEncode.Checked);
-      Result             := JSONValue.ToJSON;
-     Finally
-      JSONValue.Free;
-      fdQuery.Free;
-     End;
+     {$IFDEF FPC}
+     {$ELSE}
+      fdQuery   := TFDQuery.Create(Nil);
+      Try
+       fdQuery.Connection := Nil;//Server_FDConnection; //Alterar no futuro
+       fdQuery.SQL.Add(vSQL);
+       JSONValue.LoadFromDataset('sql', fdQuery, RestDWForm.cbEncode.Checked);
+       Result             := JSONValue.ToJSON;
+      Finally
+       JSONValue.Free;
+       fdQuery.Free;
+      End;
+     {$ENDIF}
     End;
   End;
 End;
+
 
 End.
 

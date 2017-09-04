@@ -1,5 +1,7 @@
 Unit uSock;
 
+{$MODE Delphi}
+
 Interface
 
 Uses Windows, Winsock;

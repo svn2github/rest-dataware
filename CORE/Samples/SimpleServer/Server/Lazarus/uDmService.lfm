@@ -1,0 +1,51 @@
+object ServerMethodDM: TServerMethodDM
+  OnCreate = ServerMethodDataModuleCreate
+  OldCreateOrder = False
+  OnReplyEvent = ServerMethodDataModuleReplyEvent
+  Height = 255
+  HorizontalOffset = 737
+  VerticalOffset = 244
+  Width = 306
+  object RESTDWPoolerDB1: TRESTDWPoolerDB
+    RESTDriver = RESTDWDriverFD1
+    Compression = True
+    Encoding = esUtf8
+    StrsTrim = False
+    StrsEmpty2Null = False
+    StrsTrim2Len = True
+    Active = True
+    PoolerOffMessage = 'RESTPooler not active.'
+    left = 88
+    top = 96
+  end
+  object RESTDWDriverFD1: TRESTDWLazDriver
+    Connection = Server_FDConnection
+    left = 176
+    top = 96
+  end
+  object Server_FDConnection: TIBConnection
+    Connected = False
+    LoginPrompt = False
+    BeforeConnect = Server_FDConnectionBeforeConnect
+    DatabaseName = 'D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\DEMO\EMPLOYEE.FDB'
+    KeepConnection = False
+    Params.Strings = (
+      ''
+    )
+    Password = 'masterkey'
+    Transaction = SQLTransaction1
+    UserName = 'SYSDBA'
+    HostName = 'localhost'
+    Options = []
+    CheckTransactionParams = False
+    left = 80
+    top = 24
+  end
+  object SQLTransaction1: TSQLTransaction
+    Active = False
+    Database = Server_FDConnection
+    Options = []
+    left = 152
+    top = 24
+  end
+end
