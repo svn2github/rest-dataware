@@ -9,38 +9,23 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <OtherUnitFiles Value="..\..\libs;..\..;..\..\libs\JSON;..\..\DmDados"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="7">
+    <Files Count="3">
       <Item1>
         <Filename Value="uRestDWLazDriver.pas"/>
         <UnitName Value="uRestDWLazDriver"/>
       </Item1>
       <Item2>
-        <Filename Value="..\..\libs\uDWConsts.pas"/>
-        <UnitName Value="uDWConsts"/>
+        <Filename Value="uRestDWLazDriverReg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="uRestDWLazDriverReg"/>
       </Item2>
       <Item3>
-        <Filename Value="..\..\libs\uDWConstsData.pas"/>
-        <UnitName Value="uDWConstsData"/>
+        <Filename Value="restdwlazdriver.lrs"/>
+        <Type Value="LRS"/>
       </Item3>
-      <Item4>
-        <Filename Value="..\..\uRESTDWPoolerDB.pas"/>
-        <UnitName Value="uRESTDWPoolerDB"/>
-      </Item4>
-      <Item5>
-        <Filename Value="..\..\libs\uDWJSONObject.pas"/>
-        <UnitName Value="uDWJSONObject"/>
-      </Item5>
-      <Item6>
-        <Filename Value="..\..\libs\JSON\uDWJSON.pas"/>
-        <UnitName Value="uDWJSON"/>
-      </Item6>
-      <Item7>
-        <Filename Value="..\..\DmDados\uDWDatamodule.pas"/>
-        <UnitName Value="uDWDatamodule"/>
-      </Item7>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>

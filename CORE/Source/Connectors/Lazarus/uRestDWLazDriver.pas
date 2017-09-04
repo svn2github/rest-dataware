@@ -9,22 +9,12 @@ uses SysUtils, Classes, DB, sqldb,     mssqlconn,        pqconnection,
      uRestDWPoolerDB,   uDWJSONObject;
 
 Type
-
- { TConnection }
-
- TConnection = Class(TSQLConnection)
- Public
-  Procedure Close;
-End;
-
-{$IFDEF MSWINDOWS}
-Type
  TRESTDWLazDriver   = Class(TRESTDWDriver)
  Private
   vConnectionBack,
-  vConnection                   : TConnection;
-  Procedure SetConnection(Value : TConnection);
-  Function  GetConnection       : TConnection;
+  vConnection                   : TComponent;
+  Procedure SetConnection(Value : TComponent);
+  Function  GetConnection       : TComponent;
  Public
   Procedure ApplyChanges        (TableName,
                                  SQL              : String;
@@ -62,9 +52,8 @@ Type
                                  Var MessageError : String);Override;
   Procedure Close;Override;
  Published
-  Property Connection : TConnection Read GetConnection Write SetConnection;
+  Property Connection : TComponent Read GetConnection Write SetConnection;
 End;
-{$ENDIF}
 
 Procedure Register;
 
@@ -72,20 +61,12 @@ implementation
 
 Uses uDWJSONTools;
 
-{$IFDEF MSWINDOWS}
 Procedure Register;
 Begin
  RegisterComponents('REST Dataware - CORE - Drivers', [TRESTDWLazDriver]);
 End;
 
 { TConnection }
-
-Procedure TConnection.Close;
-Begin
-
-End;
-
-{$ENDIF}
 
 procedure TRESTDWLazDriver.ApplyChanges(TableName,
                                      SQL              : String;
@@ -107,7 +88,7 @@ end;
 Procedure TRESTDWLazDriver.Close;
 Begin
  If Connection <> Nil Then
-  Connection.Close;
+  TSQLConnection(Connection).Close;
 End;
 
 function TRESTDWLazDriver.ExecuteCommand(SQL              : String;
@@ -261,7 +242,6 @@ Var
 Begin
  Result := Nil;
  Error  := False;
- //Result := TJSONValue.Create;
  vTempQuery               := TSQLQuery.Create(Nil);
  Try
   vTempQuery.DataBase     := TDatabase(vConnection);
@@ -309,6 +289,7 @@ Begin
     Try
      Error        := True;
      MessageError := E.Message;
+     Result := TJSONValue.Create;
      Result.Encoded := True;
      Result.SetValue(GetPairJSON('NOK', MessageError));
      ATransaction.RollbackRetaining;
@@ -317,15 +298,12 @@ Begin
 
    End;
  End;
-   {ico}
-// Result.Free;
-   {ico}
  vTempQuery.Close;
  FreeAndNil(vTempQuery);
  FreeAndNil(ATransaction);
 End;
 
-Function TRESTDWLazDriver.GetConnection: TConnection;
+Function TRESTDWLazDriver.GetConnection: TComponent;
 Begin
  Result := vConnectionBack;
 End;
@@ -353,9 +331,21 @@ Begin
  End;
 End;
 
-Procedure TRESTDWLazDriver.SetConnection(Value : TConnection);
+Procedure TRESTDWLazDriver.SetConnection(Value : TComponent);
 Begin
- If Not(Value is TSQLConnection) Then
+ If Not((Value is TIBConnection)      Or
+        (Value is TMSSQLConnection)   Or
+        (Value is TMySQL40Connection) Or
+        (Value is TMySQL41Connection) Or
+        (Value is TMySQL50Connection) Or
+        (Value is TMySQL51Connection) Or
+        (Value is TMySQL55Connection) Or
+        (Value is TMySQL56Connection) Or
+        (Value is TODBCConnection)    Or
+        (Value is TOracleConnection)  Or
+        (Value is TPQConnection)      Or
+        (Value is TSQLite3Connection) Or
+        (Value is TSybaseConnection)) Then
   Begin
    vConnection     := Nil;
    vConnectionBack := vConnection;
@@ -367,7 +357,7 @@ Begin
  Else
   Begin
    If vConnection <> Nil Then
-    vConnection.Close;
+    TSQLConnection(vConnection).Close;
   End;
 End;
 

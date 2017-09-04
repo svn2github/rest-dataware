@@ -7,13 +7,13 @@ unit RESTDWLazDriver;
 interface
 
 uses
-  uRestDWLazDriver, uDWConsts, uDWConstsData, uRESTDWPoolerDB, uDWJSONObject, 
-  uDWJSON, uDWDatamodule, LazarusPackageIntf;
+  uRestDWLazDriver, uRestDWLazDriverReg, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
+  RegisterUnit('uRestDWLazDriverReg', @uRestDWLazDriverReg.Register);
 end;
 
 initialization
