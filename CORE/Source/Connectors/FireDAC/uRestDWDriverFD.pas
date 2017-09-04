@@ -184,7 +184,8 @@ Begin
   If Not Execute Then
    Begin
     vTempQuery.Active := True;
-    Result := TJSONValue.Create;
+    If Result = Nil Then
+     Result := TJSONValue.Create;
     Try
      Result.LoadFromDataset('RESULTDATA', vTempQuery, EncodeStringsJSON);
     Finally
@@ -193,7 +194,8 @@ Begin
   Else
    Begin
     vTempQuery.ExecSQL;
-    Result := TJSONValue.Create;
+    If Result = Nil Then
+     Result := TJSONValue.Create;
     Result.SetValue('COMMANDOK');
     vFDConnection.CommitRetaining;
    End;
@@ -203,6 +205,8 @@ Begin
     Try
      Error        := True;
      MessageError := E.Message;
+     If Result = Nil Then
+      Result := TJSONValue.Create;
      Result.Encoded := True;
      Result.SetValue(GetPairJSON('NOK', MessageError));
      vFDConnection.RollbackRetaining;
@@ -364,7 +368,8 @@ Begin
    Begin
     try
       vTempQuery.ExecSQL;
-      Result := TJSONValue.Create;
+      If Result = Nil Then
+       Result := TJSONValue.Create;
       Result.SetValue('COMMANDOK');
       vFDConnection.CommitRetaining;
       Error         := False;
@@ -376,8 +381,10 @@ Begin
   On E : Exception do
    Begin
     Try
-     Error        := True;
-     MessageError := E.Message;
+     Error          := True;
+     MessageError   := E.Message;
+     If Result = Nil Then
+      Result        := TJSONValue.Create;
      Result.Encoded := True;
      Result.SetValue(GetPairJSON('NOK', MessageError));
      vFDConnection.RollbackRetaining;
