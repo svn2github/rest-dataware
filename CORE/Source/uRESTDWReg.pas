@@ -5,7 +5,7 @@ interface
 uses
   {$IFDEF FPC}
    {$IFNDEF UNIX}Windows,
-   {$ELSE}Lcl,{$ENDIF}LResources, Classes, propedits, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
+   {$ELSE}Lcl,{$ENDIF}LResources, FormEditingIntf, Classes, propedits, uRESTDWBase, uRESTDWPoolerDB, uDWDatamodule;
   {$ELSE}
    Windows,
    {$if CompilerVersion > 21}
@@ -75,6 +75,8 @@ Begin
  {$IFNDEF FPC}
   RegisterNoIcon([TServerMethodDataModule]);
   RegisterCustomModule(TServerMethodDataModule, TCustomModule); //TDataModuleDesignerCustomModule);
+ {$ELSE}
+  FormEditingHook.RegisterDesignerBaseClass(TServerMethodDataModule);
  {$ENDIF}
  RegisterComponents('REST Dataware - Service',     [TRESTServicePooler, TRESTClientPooler]);
  RegisterComponents('REST Dataware - CORE - DB',   [TRESTDWPoolerDB, TRESTDWDataBase, TRESTDWClientSQL, TRESTDWStoredProc, TRESTDWPoolerList]);
