@@ -123,7 +123,6 @@ Var
  End;
 Begin
  Inherited;
- Result := Nil;
  Error  := False;
  Result := TJSONValue.Create;
  vTempQuery               := TFDQuery.Create(Owner);

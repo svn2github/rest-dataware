@@ -122,9 +122,7 @@ Type
   Procedure SetConnection (Value : Boolean);          //Seta o Estado da Conexão
   Procedure SetRestPooler (Value : String);           //Seta o Restpooler a ser utilizado
   Procedure SetPoolerPort (Value : Integer);          //Seta a Porta do Pooler a ser usada
-  Procedure CheckConnection;                         //Checa o Estado automatico da Conexão
   Function  TryConnect : Boolean;                    //Tenta Conectar o Servidor para saber se posso executar comandos
-  Procedure SetConnectionOptions(Var Value : TRESTClientPooler); //Seta as Opções de Conexão
   Procedure ExecuteCommand(Var SQL          : TStringList;
                            Var Params       : TParams;
                            Var Error        : Boolean;
@@ -911,33 +909,6 @@ Begin
  {$ENDIF}
 End;
 
-Procedure TRESTDWDataBase.SetConnectionOptions(Var Value : TRESTClientPooler);
-Begin
- Value                     := TRESTClientPooler.Create(Nil);
- Value.TypeRequest         := trHttp;
- Value.Host                := vRestWebService;
- Value.Port                := vPoolerPort;
- Value.UrlPath             := vRestURL;
- Value.UserName            := vLogin;
- Value.Password            := vPassword;
- Value.RequestTimeOut      := vTimeOut;
- Value.UrlPath             := vContentex;
- If vProxy Then
-  Begin
-   Value.ProxyOptions.ProxyServer    := vProxyOptions.vServer;
-   Value.ProxyOptions.ProxyPort      := vProxyOptions.vPort;
-   Value.ProxyOptions.ProxyUsername  := vProxyOptions.vLogin;
-   Value.ProxyOptions.ProxyPassword  := vProxyOptions.vPassword;
-  End
- Else
-  Begin
-   Value.ProxyOptions.ProxyServer   := '';
-   Value.ProxyOptions.ProxyPort     := 0;
-   Value.ProxyOptions.ProxyUsername := '';
-   Value.ProxyOptions.ProxyPassword := '';
-  End;
-End;
-
 Procedure TRESTDWDataBase.ApplyUpdates(Var SQL          : TStringList;
                                        Var Params       : TParams;
                                        ADeltaList       : TJSONValue;
@@ -1190,7 +1161,7 @@ Begin
      vOnEventConnection(False, E.Message);
    End;
  End;
- If Assigned(LDataSetList) Then
+ If LDataSetList <> Nil Then
   FreeAndNil(LDataSetList);
  FreeAndNil(vRESTConnectionDB);
 End;
@@ -1326,11 +1297,6 @@ Begin
  Inherited;
 End;
 
-Procedure TRESTDWDataBase.CheckConnection;
-Begin
- vConnected := TryConnect;
-End;
-
 Procedure TRESTDWDataBase.Close;
 Begin
  SetConnection(False);
@@ -1338,7 +1304,6 @@ End;
 
 Function  TRESTDWPoolerList.TryConnect : Boolean;
 Var
- vTempResult : String;
  vConnection : TDWPoolerMethodClient;
 Begin
  Result       := False;
@@ -1359,7 +1324,6 @@ Var
  vTempSend   : String;
  vConnection : TDWPoolerMethodClient;
 Begin
- Result                  := False;
  vConnection             := TDWPoolerMethodClient.Create(Nil);
  vConnection.Host        := vRestWebService;
  vConnection.Port        := vPoolerPort;
@@ -2329,7 +2293,7 @@ Begin
      End;
    Except
    End;
-   If Assigned(LDataSetList) Then
+   If LDataSetList <> Nil Then
     FreeAndNil(LDataSetList);
    If vError Then
     Begin

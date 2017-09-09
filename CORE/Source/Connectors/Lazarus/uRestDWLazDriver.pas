@@ -2,11 +2,11 @@ unit uRestDWLazDriver;
 
 interface
 
-uses SysUtils, Classes, DB, sqldb,     mssqlconn,        pqconnection,
-     oracleconnection,  odbcconn,      mysql40conn,      mysql41conn,
-     mysql50conn,       mysql51conn,   mysql55conn,      mysql56conn,
-     sqlite3conn,       ibconnection,  uDWConsts,        uDWConstsData,
-     uRestDWPoolerDB,   uDWJSONObject;
+uses SysUtils, Classes, DB, sqldb,       mssqlconn,    pqconnection,
+     oracleconnection,  odbcconn,        mysql40conn,  mysql41conn,
+     mysql50conn,       mysql51conn,     mysql55conn,  mysql56conn,
+     mysql57conn,       sqlite3conn,     ibconnection, uDWConsts,
+     uDWConstsData,     uRestDWPoolerDB, uDWJSONObject;
 
 Type
  TRESTDWLazDriver   = Class(TRESTDWDriver)

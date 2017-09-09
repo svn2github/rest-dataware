@@ -736,6 +736,7 @@ Begin
   Else If vRSCharset = esASCII Then
    HttpRequest.Request.Charset := 'ansi';
   SetParams(HttpRequest);
+  HttpRequest.MaxAuthRetries := 0;
   Case EventType Of
    seGET :
     Begin

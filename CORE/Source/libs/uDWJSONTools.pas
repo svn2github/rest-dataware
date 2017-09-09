@@ -4,7 +4,7 @@ interface
 
 Uses
   {$IFDEF FPC}
-   SysUtils, ServerUtils, Classes, uDWConsts, IdGlobal, IdCoderMIME, uDWConstsData, IdHashMessageDigest, base64, LConvEncoding;
+   SysUtils, Classes, uDWConsts, IdGlobal, IdCoderMIME, uDWConstsData, IdHashMessageDigest, base64, LConvEncoding;
   {$ELSE}
    {$if CompilerVersion > 21} // Delphi 2010 pra cima
     System.SysUtils, ServerUtils, System.Classes, IdGlobal, IdCoderMIME, uDWConsts, uDWConstsData, IdHashMessageDigest;

@@ -308,7 +308,8 @@ Begin
  Try
   Try
    lResponse := RESTClientPoolerExec.SendEvent('GetPoolerList', DWParams);
-   If lResponse <> '' Then
+   If (lResponse <> '') And
+      (Uppercase(lResponse) <> Uppercase('HTTP/1.1 401 Unauthorized')) Then
     Begin
      Result      := TStringList.Create;
      vTempString := DWParams.ItemsString['Result'].Value;
@@ -325,6 +326,13 @@ Begin
          Delete(vTempString, 1, Length(vTempString));
         End;
       End;
+    End
+   Else
+    Begin
+     If (lResponse = '') Then
+      Raise Exception.CreateFmt('Unresolved Host : ''%s''', [Host])
+     Else If (Uppercase(lResponse) <> Uppercase('HTTP/1.1 401 Unauthorized')) Then
+      Raise Exception.CreateFmt('Unauthorized Username : ''%s''', [UserName]);
     End;
   Except
   End;
@@ -343,7 +351,6 @@ Function TDWPoolerMethodClient.EchoPooler(Method_Prefix,
                                           RESTClientPooler        : TRESTClientPooler = Nil) : String;
 Var
  RESTClientPoolerExec : TRESTClientPooler;
- vTempString,
  lResponse            : String;
  JSONParam            : TJSONParam;
  DWParams             : TDWParams;
@@ -401,8 +408,16 @@ Begin
  Try
   Try
    lResponse := RESTClientPoolerExec.SendEvent('EchoPooler', DWParams);
-   If lResponse <> '' Then
-    Result   := DWParams.ItemsString['Result'].Value;
+   If (lResponse <> '') And
+      (Uppercase(lResponse) <> Uppercase('HTTP/1.1 401 Unauthorized')) Then
+    Result   := DWParams.ItemsString['Result'].Value
+   Else
+    Begin
+     If (lResponse = '') Then
+      Raise Exception.CreateFmt('Unresolved Host : ''%s''', [Host])
+     Else If (Uppercase(lResponse) <> Uppercase('HTTP/1.1 401 Unauthorized')) Then
+      Raise Exception.CreateFmt('Unauthorized Username : ''%s''', [UserName]);
+    End;
   Except
   End;
  Finally
@@ -424,7 +439,6 @@ Function TDWPoolerMethodClient.ExecuteCommand(Pooler, Method_Prefix,
                                               RESTClientPooler        : TRESTClientPooler = Nil)   : TJSONValue;
 Var
  RESTClientPoolerExec : TRESTClientPooler;
- vTempString,
  lResponse            : String;
  JSONParam            : TJSONParam;
  DWParams             : TDWParams;
@@ -550,7 +564,8 @@ Begin
  Try
   Try
    lResponse := RESTClientPoolerExec.SendEvent('ExecuteCommandJSON', DWParams);
-   If lResponse <> '' Then
+   If (lResponse <> '') And
+      (Uppercase(lResponse) <> Uppercase('HTTP/1.1 401 Unauthorized')) Then
     Begin
      Result         := TJSONValue.Create;
      Result.Encoded := False;
@@ -560,6 +575,13 @@ Begin
       MessageError  := DWParams.ItemsString['MessageError'].Value;
      If DWParams.ItemsString['Result'] <> Nil Then
       Result.LoadFromJSON(DWParams.ItemsString['Result'].Value);
+    End
+   Else
+    Begin
+     If (lResponse = '') Then
+      Raise Exception.CreateFmt('Unresolved Host : ''%s''', [Host])
+     Else If (Uppercase(lResponse) <> Uppercase('HTTP/1.1 401 Unauthorized')) Then
+      Raise Exception.CreateFmt('Unauthorized Username : ''%s''', [UserName]);
     End;
   Except
   End;
@@ -582,7 +604,6 @@ Function TDWPoolerMethodClient.ExecuteCommandJSON(Pooler, Method_Prefix,
                                                   RESTClientPooler        : TRESTClientPooler = Nil)   : TJSONValue;
 Var
  RESTClientPoolerExec : TRESTClientPooler;
- vTempString,
  lResponse        : String;
  JSONParam        : TJSONParam;
  DWParams         : TDWParams;
@@ -724,7 +745,8 @@ Begin
  Try
   Try
    lResponse := RESTClientPoolerExec.SendEvent('ExecuteCommandJSON', DWParams);
-   If lResponse <> '' Then
+   If (lResponse <> '') And
+      (Uppercase(lResponse) <> Uppercase('HTTP/1.1 401 Unauthorized')) Then
     Begin
      Result         := TJSONValue.Create;
      Result.Encoded := False;
@@ -737,6 +759,13 @@ Begin
        If DWParams.ItemsString['Result'].Value <> '' Then
         Result.LoadFromJSON(DWParams.ItemsString['Result'].Value);
       End;
+    End
+   Else
+    Begin
+     If (lResponse = '') Then
+      Raise Exception.CreateFmt('Unresolved Host : ''%s''', [Host])
+     Else If (Uppercase(lResponse) <> Uppercase('HTTP/1.1 401 Unauthorized')) Then
+      Raise Exception.CreateFmt('Unauthorized Username : ''%s''', [UserName]);
     End;
   Except
   End;
@@ -772,7 +801,6 @@ Function TDWPoolerMethodClient.ExecuteCommandPureJSON(Pooler,
                                                       RESTClientPooler    : TRESTClientPooler = Nil)   : TJSONValue;
 Var
  RESTClientPoolerExec : TRESTClientPooler;
- vTempString,
  lResponse        : String;
  JSONParam        : TJSONParam;
  DWParams         : TDWParams;
@@ -900,7 +928,8 @@ Begin
  Try
   Try
    lResponse := RESTClientPoolerExec.SendEvent('ExecuteCommandPureJSON', DWParams);
-   If lResponse <> '' Then
+   If (lResponse <> '') And
+      (Uppercase(lResponse) <> Uppercase('HTTP/1.1 401 Unauthorized')) Then
     Begin
      Result         := TJSONValue.Create;
      Result.Encoded := False;
@@ -913,6 +942,13 @@ Begin
        If DWParams.ItemsString['Result'].Value <> '' Then
         Result.LoadFromJSON(DWParams.ItemsString['Result'].Value);
       End;
+    End
+   Else
+    Begin
+     If (lResponse = '') Then
+      Raise Exception.CreateFmt('Unresolved Host : ''%s''', [Host])
+     Else If (Uppercase(lResponse) <> Uppercase('HTTP/1.1 401 Unauthorized')) Then
+      Raise Exception.CreateFmt('Unauthorized Username : ''%s''', [UserName]);
     End;
   Except
   End;

@@ -86,11 +86,8 @@ End;
    vParamName       : String;
    vBinary,
    vEncoded         : Boolean;
-   Function  EncodedString: String;
-   Function  FormatValue (bValue : String) : String;
    Procedure WriteValue  (bValue : String);
    Procedure SetParamName(bValue : String);
-   Function  GetValueJSON(bValue : String) : String;
   Public
    Constructor Create{$IFNDEF FPC}{$IF CompilerVersion > 21}(Encoding: TEncoding){$IFEND}{$ENDIF};
    Destructor Destroy; Override;
@@ -343,6 +340,7 @@ Function TDWParams.ParamsReturn: Boolean;
 Var
  I : Integer;
 Begin
+ Result := False;
  For I := 0 To Self.Count - 1 Do
   Begin
    Result := Items[I].vObjectDirection In [odOUT, odINOUT];
@@ -695,6 +693,7 @@ Var
  Var
   I : Integer;
  Begin
+  Result := -1;
   For I := 0 To ListFields.Count - 1 Do
    Begin
     If Uppercase(ListFields[I]) = Uppercase(FieldName) Then
@@ -966,12 +965,12 @@ Begin
      SetValue(vTempValue, vEncoded)
     Else
      Begin
+      vStringStream := TMemoryStream.Create;
       Try
-       vStringStream := TMemoryStream.Create;
        HexToStream(vTempValue, vStringStream);
        aValue := TIdBytes(StreamToBytes(vStringStream));
       Finally
-       vStringStream.Free;
+       FreeAndNil(vStringStream);
       End;
      End;
    End;
@@ -1056,37 +1055,6 @@ Destructor TJSONParam.Destroy;
 Begin
  FreeAndNil(vJSONValue);
  Inherited;
-End;
-
-Function TJSONParam.FormatValue(bValue : String): String;
-Var
- aResult : String;
-Begin
- aResult := bValue;
- If vTypeObject = toDataset Then
-  Result := Format(TValueFormatJSON, ['ObjectType', GetObjectName(vTypeObject),      'Direction',
-                                      GetDirectionName(vObjectDirection), 'Encoded', EncodedString, 'ValueType',
-                                      GetValueType(vObjectValue), vParamName,        GetValueJSON(aResult)])
- Else
-  Result := Format(TValueFormatJSONValue, ['ObjectType', GetObjectName(vTypeObject),      'Direction',
-                                           GetDirectionName(vObjectDirection), 'Encoded', EncodedString, 'ValueType',
-                                           GetValueType(vObjectValue), vParamName,        GetValueJSON(aResult)])
-End;
-
-Function TJSONParam.EncodedString : String;
-Begin
- If vEncoded Then
-  Result := 'true'
- Else
-  Result := 'false';
-End;
-
-Function TJSONParam.GetValueJSON(bValue: String): String;
-Begin
- Result := bValue;
- If vObjectValue In [ovString,        ovFixedChar,    ovWideString,
-                     ovFixedWideChar, ovDate, ovTime, ovDateTime] Then
-  Result := '"' + bValue + '"';
 End;
 
 Procedure TJSONParam.LoadFromParam(Param: TParam);
