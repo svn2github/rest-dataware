@@ -706,6 +706,11 @@ Var
 Begin
  ListFields := TStringList.Create;
  Try
+  If Pos('[', JSONValue) = 0 Then
+   Begin
+    FreeAndNil(ListFields);
+    Exit;
+   End;
   bJsonValue := TJsonObject.Create(JSONValue);
   If bJsonValue.names.Length > 0 Then
    Begin
