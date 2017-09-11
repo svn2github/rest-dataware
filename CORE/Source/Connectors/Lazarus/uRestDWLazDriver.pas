@@ -341,6 +341,7 @@ Begin
         (Value is TMySQL51Connection) Or
         (Value is TMySQL55Connection) Or
         (Value is TMySQL56Connection) Or
+        (Value is TMySQL57Connection) Or
         (Value is TODBCConnection)    Or
         (Value is TOracleConnection)  Or
         (Value is TPQConnection)      Or
