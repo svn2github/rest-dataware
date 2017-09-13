@@ -3,7 +3,7 @@ object ServerMethodDM: TServerMethodDM
   OnCreate = ServerMethodDataModuleCreate
   OnReplyEvent = ServerMethodDataModuleReplyEvent
   OnWelcomeMessage = ServerMethodDataModuleWelcomeMessage
-  Height = 255
+  Height = 220
   Width = 366
   object RESTDWPoolerDB1: TRESTDWPoolerDB
     RESTDriver = RESTDWDriverFD1

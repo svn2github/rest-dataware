@@ -240,13 +240,16 @@ End;
 
 Procedure TDWParams.FromJSON(JSON : String);
 Var
+ bJsonOBJ,
  bJsonValue : TJsonObject;
+ bJsonArray : TJsonArray;
  JSONParam  : TJSONParam;
  I          : Integer;
 Begin
- bJsonValue := TJsonObject.Create(JSON);
+ bJsonValue  := TJsonObject.Create(Format('{"PARAMS":[%s]}', [JSON]));
  Try
-  For I := 0 To bJsonValue.names.Length - 1 Do
+  bJsonArray    := bJsonValue.optJSONArray(bJsonValue.names.get(0).ToString);
+  For I := 0 To bJsonArray.Length - 1 Do
    Begin
     {$IFNDEF FPC}
      {$IF CompilerVersion > 21}
@@ -255,12 +258,18 @@ Begin
       JSONParam := TJSONParam.Create;
      {$IFEND}
     {$ENDIF}
-    JSONParam.ParamName       := Lowercase(bJsonValue.names.get(4).ToString);
-    JSONParam.ObjectDirection := GetDirectionName(bJsonValue.opt(bJsonValue.names.get(1).ToString).ToString);
-    JSONParam.ObjectValue     := GetValueType(bJsonValue.opt(bJsonValue.names.get(3).ToString).ToString);
-    JSONParam.Encoded         := GetBooleanFromString(bJsonValue.opt(bJsonValue.names.get(2).ToString).ToString);
-    JSONParam.SetValue(bJsonValue.opt(bJsonValue.names.get(4).ToString).ToString);
-    Add(JSONParam);
+    bJsonOBJ                  := TJsonObject.Create(bJsonArray.get(I).ToString);
+    Try
+     JSONParam.ParamName       := Lowercase(bJsonOBJ.names.get(4).ToString);
+     JSONParam.ObjectDirection := GetDirectionName(bJsonOBJ.opt(bJsonOBJ.names.get(1).ToString).ToString);
+     JSONParam.ObjectValue     := GetValueType(bJsonOBJ.opt(bJsonOBJ.names.get(3).ToString).ToString);
+     JSONParam.Encoded         := GetBooleanFromString(bJsonOBJ.opt(bJsonOBJ.names.get(2).ToString).ToString);
+     JSONParam.SetValue(bJsonOBJ.opt(bJsonOBJ.names.get(4).ToString).ToString);
+     Add(JSONParam);
+    Finally
+     bJsonOBJ.Clean;
+     FreeAndNil(bJsonOBJ);
+    End;
    End;
   Finally
    bJsonValue.Free;
@@ -1067,7 +1076,7 @@ Var
  MemoryStream : TMemoryStream;
 Begin
  If Param.DataType in [ftString, ftWideString, ftMemo, ftFmtMemo, ftFixedChar] Then
-  SetValue(Param.AsString, True)
+  SetValue(Param.AsString, False)
  Else If Param.DataType in [{$IFNDEF FPC}{$IF CompilerVersion > 21}ftExtended,
                             {$IFEND}{$ENDIF}ftInteger, ftSmallint, ftFloat,
                             ftCurrency, ftFMTBcd, ftBCD] Then
@@ -1086,13 +1095,13 @@ Begin
       Param.SetData(MemoryStream);
      {$IFEND}
     {$ENDIF}
-    LoadFromStream(MemoryStream, True);
+    LoadFromStream(MemoryStream);
    Finally
     MemoryStream.Free;
    End;
   End
  Else If Param.DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] Then
-  SetValue(Param.AsString, True);
+  SetValue(Param.AsString, False);
  vObjectValue := FieldTypeToObjectValue(Param.DataType);
 End;
 
