@@ -1623,7 +1623,7 @@ Begin
  HTTPServer.OnCommandGet         := aCommandGet;
  HTTPServer.OnCommandOther       := aCommandOther;
  {$ENDIF}
- vServerParams                   := TServerParams.Create;
+ vServerParams                   := TServerParams.Create(Self);
  vActive                         := False;
  vEncodeStrings                  := True;
  vServerParams.HasAuthentication := True;

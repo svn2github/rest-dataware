@@ -4460,8 +4460,8 @@ object RestDWForm: TRestDWForm
     OnLastResponse = RESTServicePooler1LastResponse
     Encoding = esASCII
     ServerContext = 'restdataware'
-    left = 132
-    top = 192
+    left = 136
+    top = 120
   end
   object tupdatelogs: TTimer
     Enabled = False

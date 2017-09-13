@@ -109,10 +109,6 @@ object RestDWForm: TRestDWForm
     TabOrder = 3
     object tsConfigs: TTabSheet
       Caption = 'Configuration'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 7
         Top = 37
@@ -1318,9 +1314,9 @@ object RestDWForm: TRestDWForm
         Text = ''
       end
       object cbEncode: TCheckBox
-        Left = 273
+        Left = 270
         Top = 56
-        Width = 91
+        Width = 101
         Height = 19
         Caption = 'Encode Strings'
         Checked = True
@@ -1353,10 +1349,6 @@ object RestDWForm: TRestDWForm
     object tsLogs: TTabSheet
       Caption = 'Logs'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label19: TLabel
         Left = 7
         Top = 147
@@ -1424,6 +1416,9 @@ object RestDWForm: TRestDWForm
     EncodeStrings = True
     ServicePort = 8082
     ProxyOptions.Port = 8888
+    ServerParams.HasAuthentication = True
+    ServerParams.UserName = 'testserver'
+    ServerParams.Password = 'testserver'
     SSLVersion = sslvSSLv2
     OnLastRequest = RESTServicePooler1LastRequest
     OnLastResponse = RESTServicePooler1LastResponse
