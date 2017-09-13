@@ -124,6 +124,7 @@ Type
   vStrsTrim,
   vStrsEmpty2Null,
   vStrsTrim2Len        : Boolean;
+  vParamCreate         : Boolean;
   Procedure SetConnection(Value : Boolean);          //Seta o Estado da Conexão
   Procedure SetRestPooler(Value : String);           //Seta o Restpooler a ser utilizado
   Procedure SetPoolerPort(Value : Integer);          //Seta a Porta do Pooler a ser usada
@@ -180,6 +181,7 @@ Type
   Property StrsTrim           : Boolean                  Read vStrsTrim           Write vStrsTrim;
   Property StrsEmpty2Null     : Boolean                  Read vStrsEmpty2Null     Write vStrsEmpty2Null;
   Property StrsTrim2Len       : Boolean                  Read vStrsTrim2Len       Write vStrsTrim2Len;
+  Property ParamCreate        : Boolean                  read vParamCreate        write vParamCreate;
 End;
 
 Type
@@ -345,6 +347,7 @@ Type
   vStrsTrim2Len,
   vCompression       : Boolean;
   vEncoding          : TEncodeSelect;
+  vParamCreate       : Boolean;
  Public
   Procedure ApplyChanges        (TableName,
                                  SQL               : String;
@@ -387,6 +390,7 @@ Type
   Property StrsTrim2Len   : Boolean       Read vStrsTrim2Len   Write vStrsTrim2Len;
   Property Compression    : Boolean       Read vCompression    Write vCompression;
   Property Encoding       : TEncodeSelect Read vEncoding       Write vEncoding;
+  property ParamCreate    : Boolean       read vParamCreate    write vParamCreate;
 End;
 //PoolerDB Control
 Type
@@ -404,6 +408,7 @@ Type
   vCompression   : Boolean;
   vEncoding      : TEncodeSelect;
   vMessagePoolerOff : String;
+  vParamCreate   : Boolean;
   Procedure SetConnection(Value : TRESTDriver);
   Function  GetConnection  : TRESTDriver;
  Public
@@ -452,6 +457,7 @@ Type
   Property    StrsTrim2Len     : Boolean       Read vStrsTrim2Len     Write vStrsTrim2Len;
   Property    Active           : Boolean       Read vActive           Write vActive;
   Property    PoolerOffMessage : String        Read vMessagePoolerOff Write vMessagePoolerOff;
+  Property    ParamCreate      : Boolean       Read vParamCreate      Write vParamCreate;
 End;
 {$ENDIF}
 
@@ -606,6 +612,7 @@ Begin
    vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
    vRESTDriver.vCompression       := vCompression;
    vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.vParamCreate       := vParamCreate;
    Result := vRESTDriver.InsertMySQLReturnID(SQL, Error, MessageError);
   End
  Else
@@ -628,6 +635,7 @@ Begin
    vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
    vRESTDriver.vCompression       := vCompression;
    vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.vParamCreate       := vParamCreate;
    Result := vRESTDriver.InsertMySQLReturnID(SQL, Params, Error, MessageError);
   End
  Else
@@ -650,6 +658,7 @@ Begin
    vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
    vRESTDriver.vCompression       := vCompression;
    vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.vParamCreate       := vParamCreate;
    Result := vRESTDriver.ExecuteCommand(SQL, Error, MessageError, Execute);
   End
  Else
@@ -673,6 +682,7 @@ Begin
    vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
    vRESTDriver.vCompression       := vCompression;
    vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.vParamCreate       := vParamCreate;
    Result := vRESTDriver.ExecuteCommand(SQL, Params, Error, MessageError, Execute);
   End
  Else
@@ -694,6 +704,7 @@ Begin
    vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
    vRESTDriver.vCompression       := vCompression;
    vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.vParamCreate       := vParamCreate;
    vRESTDriver.ExecuteProcedure(ProcName, Params, Error, MessageError);
   End
  Else
@@ -714,6 +725,7 @@ Begin
    vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
    vRESTDriver.vCompression       := vCompression;
    vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.vParamCreate       := vParamCreate;
    vRESTDriver.ExecuteProcedurePure(ProcName, Error, MessageError);
   End
  Else
@@ -736,6 +748,7 @@ begin
    vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
    vRESTDriver.vCompression       := vCompression;
    vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.vParamCreate       := vParamCreate;
    vRESTDriver.ApplyChanges(TableName, SQL, Error, MessageError, ADeltaList);
   End
  Else
@@ -759,6 +772,7 @@ begin
    vRESTDriver.vStrsTrim2Len      := vStrsTrim2Len;
    vRESTDriver.vCompression       := vCompression;
    vRESTDriver.vEncoding          := vEncoding;
+   vRESTDriver.vParamCreate       := vParamCreate;
    vRESTDriver.ApplyChanges(TableName, SQL, Params, Error, MessageError, ADeltaList);
   End
  Else
@@ -780,6 +794,7 @@ Begin
  vActive           := True;
  vEncoding         := esUtf8;
  vMessagePoolerOff := 'RESTPooler not active.';
+ vParamCreate      := True;
 End;
 
 Destructor  TRESTPoolerDB.Destroy;
@@ -1288,6 +1303,7 @@ Begin
  vStrsTrim                 := False;
  vStrsEmpty2Null           := False;
  vStrsTrim2Len             := True;
+ vParamCreate              := True;
 End;
 
 Destructor  TRESTPoolerList.Destroy;
