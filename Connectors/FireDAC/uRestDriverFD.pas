@@ -338,6 +338,7 @@ Begin
   If Params <> Nil Then
    Begin
     Try
+     vTempQuery.Params.Prepare(ftString, ptInput);
      vTempQuery.Prepare;
     Except
     End;
