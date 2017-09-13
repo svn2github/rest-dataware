@@ -28,6 +28,7 @@ Uses {$IFDEF FPC}
      vEncoding           : TEncodeSelect;
     {$IFEND}
    {$ENDIF}
+   vWelcomeMessage,
    vHost : String;
    vPort : Integer;
    Procedure SetOnWork     (Value : TOnWork);
@@ -160,12 +161,13 @@ Uses {$IFDEF FPC}
    Property Encoding    : TEncodeSelect Read vEncoding    Write vEncoding;
    {$IFEND}
   {$ENDIF}
-   Property Host        : String        Read vHost        Write vHost;
-   Property Port        : Integer       Read vPort        Write vPort;
-   Property OnWork      : TOnWork       Read vOnWork      Write SetOnWork;
-   Property OnWorkBegin : TOnWorkBegin  Read vOnWorkBegin Write SetOnWorkBegin;
-   Property OnWorkEnd   : TOnWorkEnd    Read vOnWorkEnd   Write SetOnWorkEnd;
-   Property OnStatus    : TOnStatus     Read vOnStatus    Write SetOnStatus;
+   Property Host           : String        Read vHost           Write vHost;
+   Property Port           : Integer       Read vPort           Write vPort;
+   Property WelcomeMessage : String        Read vWelcomeMessage Write vWelcomeMessage;
+   Property OnWork         : TOnWork       Read vOnWork         Write SetOnWork;
+   Property OnWorkBegin    : TOnWorkBegin  Read vOnWorkBegin    Write SetOnWorkBegin;
+   Property OnWorkEnd      : TOnWorkEnd    Read vOnWorkEnd      Write SetOnWorkEnd;
+   Property OnStatus       : TOnStatus     Read vOnStatus       Write SetOnStatus;
   End;
 
 implementation
@@ -272,6 +274,7 @@ Begin
   RESTClientPoolerExec                := TRESTClientPooler.Create(Nil)
  Else
   RESTClientPoolerExec                := RESTClientPooler;
+ RESTClientPoolerExec.WelcomeMessage  := vWelcomeMessage;
  RESTClientPoolerExec.Host            := Host;
  RESTClientPoolerExec.Port            := Port;
  RESTClientPoolerExec.UserName        := UserName;
@@ -359,6 +362,7 @@ Begin
   RESTClientPoolerExec               := TRESTClientPooler.Create(Nil)
  Else
   RESTClientPoolerExec               := RESTClientPooler;
+ RESTClientPoolerExec.WelcomeMessage := vWelcomeMessage;
  RESTClientPoolerExec.Host           := Host;
  RESTClientPoolerExec.Port           := Port;
  RESTClientPoolerExec.UserName       := UserName;
@@ -447,6 +451,7 @@ Begin
   RESTClientPoolerExec               := TRESTClientPooler.Create(Nil)
  Else
   RESTClientPoolerExec               := RESTClientPooler;
+ RESTClientPoolerExec.WelcomeMessage := vWelcomeMessage;
  RESTClientPoolerExec.Host           := Host;
  RESTClientPoolerExec.Port           := Port;
  RESTClientPoolerExec.UserName       := UserName;
@@ -612,6 +617,7 @@ Begin
   RESTClientPoolerExec                := TRESTClientPooler.Create(Nil)
  Else
   RESTClientPoolerExec                := RESTClientPooler;
+ RESTClientPoolerExec.WelcomeMessage := vWelcomeMessage;
  RESTClientPoolerExec.Host           := Host;
  RESTClientPoolerExec.Port           := Port;
  RESTClientPoolerExec.UserName       := UserName;
@@ -809,6 +815,7 @@ Begin
   RESTClientPoolerExec                := TRESTClientPooler.Create(Nil)
  Else
   RESTClientPoolerExec                := RESTClientPooler;
+ RESTClientPoolerExec.WelcomeMessage := vWelcomeMessage;
  RESTClientPoolerExec.Host           := Host;
  RESTClientPoolerExec.Port           := Port;
  RESTClientPoolerExec.UserName       := UserName;

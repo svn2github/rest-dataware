@@ -2,6 +2,7 @@ object ServerMethodDM: TServerMethodDM
   OnCreate = ServerMethodDataModuleCreate
   OldCreateOrder = False
   OnReplyEvent = ServerMethodDataModuleReplyEvent
+  OnWelcomeMessage = DataModuleWelcomeMessage
   Height = 255
   HorizontalOffset = 737
   VerticalOffset = 244

@@ -24,6 +24,7 @@ type
       Context: string; var Params: TDWParams; var Result: string);
     procedure ServerMethodDataModuleCreate(Sender: TObject);
     procedure Server_FDConnectionBeforeConnect(Sender: TObject);
+    procedure ServerMethodDataModuleWelcomeMessage(Welcomemsg: string);
   private
     { Private declarations }
    Function ConsultaBanco(Var Params : TDWParams) : String;Overload;
@@ -98,6 +99,12 @@ Begin
  End;
  JSONObject.Free;
 End;
+
+procedure TServerMethodDM.ServerMethodDataModuleWelcomeMessage(
+  Welcomemsg: string);
+begin
+ RestDWForm.edBD.Text := Welcomemsg;
+end;
 
 procedure TServerMethodDM.Server_FDConnectionBeforeConnect(Sender: TObject);
 Var

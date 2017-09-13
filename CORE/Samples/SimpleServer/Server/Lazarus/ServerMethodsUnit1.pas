@@ -30,7 +30,7 @@ uses StrUtils, RestDWServerFormU;
 Constructor TServerMethodsComp.Create (aOwner : TComponent);
 Begin
  Inherited Create (aOwner);
- ReplyEvent := vReplyEvent;
+ OnReplyEvent := vReplyEvent;
 End;
 
 Destructor TServerMethodsComp.Destroy;

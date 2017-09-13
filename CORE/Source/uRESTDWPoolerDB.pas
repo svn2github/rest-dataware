@@ -93,6 +93,7 @@ Type
   vOnWorkBegin         : TOnWorkBegin;
   vOnWorkEnd           : TOnWorkEnd;
   vOnStatus            : TOnStatus;
+  vWelcomeMessage,
   vLogin,                                            //Login do Usuário caso haja autenticação
   vPassword,                                         //Senha do Usuário caso haja autenticação
   vRestWebService,                                   //Rest WebService para consultas
@@ -177,6 +178,7 @@ Type
   Property StrsTrim           : Boolean                  Read vStrsTrim           Write vStrsTrim;
   Property StrsEmpty2Null     : Boolean                  Read vStrsEmpty2Null     Write vStrsEmpty2Null;
   Property StrsTrim2Len       : Boolean                  Read vStrsTrim2Len       Write vStrsTrim2Len;
+  Property WelcomeMessage     : String                   Read vWelcomeMessage     Write vWelcomeMessage;
   Property OnWork             : TOnWork                  Read vOnWork             Write SetOnWork;
   Property OnWorkBegin        : TOnWorkBegin             Read vOnWorkBegin        Write SetOnWorkBegin;
   Property OnWorkEnd          : TOnWorkEnd               Read vOnWorkEnd          Write SetOnWorkEnd;
@@ -320,6 +322,7 @@ End;
 Type
  TRESTDWPoolerList = Class(TComponent)
  Private
+  vWelcomeMessage,
   vPoolerPrefix,                                     //Prefixo do WS
   vLogin,                                            //Login do Usuário caso haja autenticação
   vPassword,                                         //Senha do Usuário caso haja autenticação
@@ -341,6 +344,7 @@ Type
   Property Active             : Boolean                  Read vConnected          Write SetConnection;      //Seta o Estado da Conexão
   Property Login              : String                   Read vLogin              Write vLogin;             //Login do Usuário caso haja autenticação
   Property Password           : String                   Read vPassword           Write vPassword;          //Senha do Usuário caso haja autenticação
+  Property WelcomeMessage     : String                   Read vWelcomeMessage     Write vWelcomeMessage;    //Welcome Message Event
   Property Proxy              : Boolean                  Read vProxy              Write vProxy;             //Diz se tem servidor Proxy
   Property ProxyOptions       : TProxyOptions            Read vProxyOptions       Write vProxyOptions;      //Se tem Proxy diz quais as opções
   Property PoolerService      : String                   Read vRestWebService     Write vRestWebService;    //Host do WebService REST
@@ -1089,23 +1093,24 @@ Begin
  if vRestPooler = '' then
   Exit;
  ParseParams;
- vRESTConnectionDB              := TDWPoolerMethodClient.Create(Nil);
- vRESTConnectionDB.Host         := vRestWebService;
- vRESTConnectionDB.Port         := vPoolerPort;
- vRESTConnectionDB.Compression  := vCompression;
+ vRESTConnectionDB                := TDWPoolerMethodClient.Create(Nil);
+ vRESTConnectionDB.WelcomeMessage := vWelcomeMessage;
+ vRESTConnectionDB.Host           := vRestWebService;
+ vRESTConnectionDB.Port           := vPoolerPort;
+ vRESTConnectionDB.Compression    := vCompression;
  {$IFNDEF FPC}
-  vRESTConnectionDB.OnWork      := vOnWork;
-  vRESTConnectionDB.OnWorkBegin := vOnWorkBegin;
-  vRESTConnectionDB.OnWorkEnd   := vOnWorkEnd;
-  vRESTConnectionDB.OnStatus    := vOnStatus;
+  vRESTConnectionDB.OnWork        := vOnWork;
+  vRESTConnectionDB.OnWorkBegin   := vOnWorkBegin;
+  vRESTConnectionDB.OnWorkEnd     := vOnWorkEnd;
+  vRESTConnectionDB.OnStatus      := vOnStatus;
   {$if CompilerVersion > 21}
-  vRESTConnectionDB.Encoding    := VEncondig;
+  vRESTConnectionDB.Encoding      := VEncondig;
   {$IFEND}
  {$ELSE}
-  vRESTConnectionDB.OnWork      := vOnWork;
-  vRESTConnectionDB.OnWorkBegin := vOnWorkBegin;
-  vRESTConnectionDB.OnWorkEnd   := vOnWorkEnd;
-  vRESTConnectionDB.OnStatus    := vOnStatus;
+  vRESTConnectionDB.OnWork        := vOnWork;
+  vRESTConnectionDB.OnWorkBegin   := vOnWorkBegin;
+  vRESTConnectionDB.OnWorkEnd     := vOnWorkEnd;
+  vRESTConnectionDB.OnStatus      := vOnStatus;
  {$ENDIF}
  Try
   If Params.Count > 0 Then
@@ -1215,10 +1220,11 @@ Var
  vConnection : TDWPoolerMethodClient;
  I           : Integer;
 Begin
- vConnection             := TDWPoolerMethodClient.Create(Nil);
- vConnection.Host        := vRestWebService;
- vConnection.Port        := vPoolerPort;
- vConnection.Compression := vCompression;
+ vConnection                := TDWPoolerMethodClient.Create(Nil);
+ vConnection.WelcomeMessage := vWelcomeMessage;
+ vConnection.Host           := vRestWebService;
+ vConnection.Port           := vPoolerPort;
+ vConnection.Compression    := vCompression;
  Result := TStringList.Create;
  Try
   vTempList := vConnection.GetPoolerList(vRestModule, vTimeOut, vLogin, vPassword);
@@ -1306,10 +1312,11 @@ Function  TRESTDWPoolerList.TryConnect : Boolean;
 Var
  vConnection : TDWPoolerMethodClient;
 Begin
- Result       := False;
- vConnection  := TDWPoolerMethodClient.Create(Nil);
- vConnection.Host := vRestWebService;
- vConnection.Port := vPoolerPort;
+ Result                     := False;
+ vConnection                := TDWPoolerMethodClient.Create(Nil);
+ vConnection.WelcomeMessage := vWelcomeMessage;
+ vConnection.Host           := vRestWebService;
+ vConnection.Port           := vPoolerPort;
  Try
   vPoolerList.Clear;
   vPoolerList.Assign(vConnection.GetPoolerList(vPoolerPrefix, 3000, vLogin, vPassword));
@@ -1324,23 +1331,24 @@ Var
  vTempSend   : String;
  vConnection : TDWPoolerMethodClient;
 Begin
- vConnection             := TDWPoolerMethodClient.Create(Nil);
- vConnection.Host        := vRestWebService;
- vConnection.Port        := vPoolerPort;
- vConnection.Compression := vCompression;
+ vConnection                := TDWPoolerMethodClient.Create(Nil);
+ vConnection.WelcomeMessage := vWelcomeMessage;
+ vConnection.Host           := vRestWebService;
+ vConnection.Port           := vPoolerPort;
+ vConnection.Compression    := vCompression;
  {$IFNDEF FPC}
-  vConnection.OnWork      := vOnWork;
-  vConnection.OnWorkBegin := vOnWorkBegin;
-  vConnection.OnWorkEnd   := vOnWorkEnd;
-  vConnection.OnStatus    := vOnStatus;
+  vConnection.OnWork        := vOnWork;
+  vConnection.OnWorkBegin   := vOnWorkBegin;
+  vConnection.OnWorkEnd     := vOnWorkEnd;
+  vConnection.OnStatus      := vOnStatus;
   {$if CompilerVersion > 21}
-  vConnection.Encoding    := VEncondig;
+  vConnection.Encoding      := VEncondig;
   {$IFEND}
  {$ELSE}
-  vConnection.OnWork      := vOnWork;
-  vConnection.OnWorkBegin := vOnWorkBegin;
-  vConnection.OnWorkEnd   := vOnWorkEnd;
-  vConnection.OnStatus    := vOnStatus;
+  vConnection.OnWork        := vOnWork;
+  vConnection.OnWorkBegin   := vOnWorkBegin;
+  vConnection.OnWorkEnd     := vOnWorkEnd;
+  vConnection.OnStatus      := vOnStatus;
  {$ENDIF}
  Try
   vTempSend   := vConnection.EchoPooler(vRestURL, vRestPooler, vTimeOut, vLogin, vPassword);

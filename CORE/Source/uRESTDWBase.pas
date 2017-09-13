@@ -212,6 +212,7 @@ Type
   vOnStatus         : TOnStatus;
   vTypeRequest      : TTypeRequest;
   vRSCharset        : TEncodeSelect;
+  vWelcomeMessage,
   vUrlPath,
   vUserName,
   vPassword,
@@ -256,6 +257,7 @@ Type
   Property ThreadRequest    : Boolean                Read vThreadRequest     Write vThreadRequest;
   Property AllowCookies     : Boolean                Read GetAllowCookies    Write SetAllowCookies;
   Property HandleRedirects  : Boolean                Read GetHandleRedirects Write SetHandleRedirects;
+  Property WelcomeMessage   : String                 Read vWelcomeMessage    Write vWelcomeMessage;
   Property OnWork           : TOnWork                Read vOnWork            Write SetOnWork;
   Property OnWorkBegin      : TOnWorkBegin           Read vOnWorkBegin       Write SetOnWorkBegin;
   Property OnWorkEnd        : TOnWorkEnd             Read vOnWorkEnd         Write SetOnWorkEnd;
@@ -749,14 +751,12 @@ Begin
     Begin;
      If EventType = sePOST Then
       Begin
+       SendParams := TIdMultiPartFormDataStream.Create;
        If Params <> Nil Then
-        Begin
-         SendParams := TIdMultiPartFormDataStream.Create;
-         SetParamsValues(Params, SendParams);
-        End
-       Else
-        SendParams := Nil;
-       If Params <> Nil Then
+        SetParamsValues(Params, SendParams);
+       If vWelcomeMessage <> '' Then
+        SendParams.AddFormField('dwwelcomemessage', EncodeStrings(vWelcomeMessage));
+       If (Params <> Nil) Or (vWelcomeMessage <> '') Then
         Begin
          HttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
          HttpRequest.Request.ContentEncoding := 'multipart/form-data';
@@ -1189,6 +1189,7 @@ Var
   vCriticalSection : TRTLCriticalSection;
  {$ENDIF}
  DWParams           : TDWParams;
+ vWelcomeMessage,
  boundary,
  startboundary,
  vReplyString,
@@ -1345,9 +1346,14 @@ Begin
                Decoder     := newdecoder;
                If Decoder <> Nil Then
                 TIdMessageDecoderMIME(Decoder).MIMEBoundary := Boundary;
-               JSONParam   := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(DWParams.Encoding){$IFEND}{$ENDIF};
-               JSONParam.FromJSON(ms.DataString);
-               DWParams.Add(JSONParam);
+               If pos('dwwelcomemessage', tmp) > 0 Then
+                vWelcomeMessage := DecodeStrings(ms.DataString)
+               Else
+                Begin
+                 JSONParam   := TJSONParam.Create{$IFNDEF FPC}{$if CompilerVersion > 21}(DWParams.Encoding){$IFEND}{$ENDIF};
+                 JSONParam.FromJSON(ms.DataString);
+                 DWParams.Add(JSONParam);
+                End;
                {$IFNDEF FPC}ms.Size := 0;{$ENDIF}
                FreeAndNil(ms);
                {ico}
@@ -1378,7 +1384,25 @@ Begin
          End;
        End;
       If Assigned(vServerMethod) Then
-       vTempServerMethods := vServerMethod.Create(Nil)
+       Begin
+        vTempServerMethods := vServerMethod.Create(Nil);
+        If vServerBaseMethod = TServerMethods Then
+         Begin
+          If Trim(vWelcomeMessage) <> '' Then
+           Begin
+            If Assigned(TServerMethods(vTempServerMethods).OnWelcomeMessage) then
+             TServerMethods(vTempServerMethods).OnWelcomeMessage(vWelcomeMessage);
+           End;
+         End
+        Else If vServerBaseMethod = TServerMethodDatamodule Then
+         Begin
+          If Trim(vWelcomeMessage) <> '' Then
+           Begin
+            If Assigned(TServerMethodDatamodule(vTempServerMethods).OnWelcomeMessage) then
+             TServerMethodDatamodule(vTempServerMethods).OnWelcomeMessage(vWelcomeMessage);
+           End;
+         End;
+       End
       Else
        JSONStr := GetPairJSON(-5, 'Server Methods Cannot Assigned');
       Try
@@ -1422,8 +1446,8 @@ Begin
               Begin
                If vServerBaseMethod = TServerMethods Then
                 Begin
-                 If Assigned(TServerMethods(vTempServerMethods).ReplyEvent) then
-                  TServerMethods(vTempServerMethods).ReplyEvent(seGET, UrlMethod, DWParams, JSONStr);
+                 If Assigned(TServerMethods(vTempServerMethods).OnReplyEvent) then
+                  TServerMethods(vTempServerMethods).OnReplyEvent(seGET, UrlMethod, DWParams, JSONStr);
                 End
                Else If vServerBaseMethod = TServerMethodDatamodule Then
                 Begin
@@ -1435,8 +1459,8 @@ Begin
               Begin
                If vServerBaseMethod = TServerMethods Then
                 Begin
-                 If Assigned(TServerMethods(vTempServerMethods).ReplyEvent) then
-                  TServerMethods(vTempServerMethods).ReplyEvent(sePOST, UrlMethod, DWParams, JSONStr);
+                 If Assigned(TServerMethods(vTempServerMethods).OnReplyEvent) then
+                  TServerMethods(vTempServerMethods).OnReplyEvent(sePOST, UrlMethod, DWParams, JSONStr);
                 End
                Else If vServerBaseMethod = TServerMethodDatamodule Then
                 Begin
@@ -1549,9 +1573,9 @@ Begin
       If vTempServerMethods <> Nil Then
        Begin
         If UpperCase(Copy (Cmd, 1, 3)) = 'PUT' Then
-         TServerMethods(vTempServerMethods).ReplyEvent(sePUT, '', DWParams, JSONStr);
+         TServerMethods(vTempServerMethods).OnReplyEvent(sePUT, '', DWParams, JSONStr);
         If UpperCase(Copy (Cmd, 1, 6)) = 'DELETE' Then
-         TServerMethods(vTempServerMethods).ReplyEvent(seDELETE, '', DWParams, JSONStr);
+         TServerMethods(vTempServerMethods).OnReplyEvent(seDELETE, '', DWParams, JSONStr);
        End;
      End;
     Try

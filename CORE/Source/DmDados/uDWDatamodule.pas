@@ -8,11 +8,13 @@ Uses
  Type
   TServerMethodDataModule = Class(TDataModule)
   Private
-   vReplyEvent : TReplyEvent;
+   vReplyEvent     : TReplyEvent;
+   vWelcomeMessage : TWelcomeMessage;
   Public
    Encoding: TEncodeSelect;
   Published
-   Property OnReplyEvent : TReplyEvent Read vReplyEvent Write vReplyEvent;
+   Property OnReplyEvent     : TReplyEvent      Read vReplyEvent     Write vReplyEvent;
+   Property OnWelcomeMessage : TWelcomeMessage  Read vWelcomeMessage Write vWelcomeMessage;
  End;
 
 implementation

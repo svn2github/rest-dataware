@@ -19,6 +19,7 @@ type
     RESTDWDriverFD1: TRESTDWLazDriver;
     Server_FDConnection: TIBConnection;
     SQLTransaction1: TSQLTransaction;
+    procedure DataModuleWelcomeMessage(Welcomemsg: String);
     procedure ServerMethodDataModuleReplyEvent(SendType: TSendEvent;
       Context: string; var Params: TDWParams; var Result: string);
     procedure ServerMethodDataModuleCreate(Sender: TObject);
@@ -85,6 +86,11 @@ Begin
    End;
  End;
 End;
+
+procedure TServerMethodDM.DataModuleWelcomeMessage(Welcomemsg: String);
+begin
+ RestDWForm.edBD.Text := Welcomemsg;
+end;
 
 procedure TServerMethodDM.Server_FDConnectionBeforeConnect(Sender: TObject);
 Var

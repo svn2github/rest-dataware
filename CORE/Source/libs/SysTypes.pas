@@ -7,10 +7,11 @@ Uses
   uDWJSONObject, uDWConstsData;
 
 Type
- TReplyEvent = Procedure(SendType   : TSendEvent;
-                         Context    : String;
-                         Var Params : TDWParams;
-                         Var Result : String) Of Object;
+ TReplyEvent     = Procedure(SendType   : TSendEvent;
+                             Context    : String;
+                             Var Params : TDWParams;
+                             Var Result : String) Of Object;
+ TWelcomeMessage = Procedure(Welcomemsg : String) Of Object;
 
 Type
   TResultErro = Record
@@ -29,18 +30,18 @@ Type
 {$ENDIF}): TDWParams;
     Class Function Result2JSON(wsResult: TResultErro): String;
     Class Function ParseWebFormsParams(Params: TStrings; Const URL: String;
-      Var UrlMethod: String
-{$IFNDEF FPC}
-{$IF CompilerVersion > 21}
-      ; vEncoding: TEncoding
-{$IFEND}
-{$ENDIF}): TDWParams;
+                                       Var UrlMethod: String{$IFNDEF FPC}
+                                                             {$IF CompilerVersion > 21}
+                                                              ;vEncoding: TEncoding
+                                                             {$IFEND}
+                                                            {$ENDIF}): TDWParams;
   End;
 
 Type
   TServerMethods = Class(TComponent)
   Protected
-   vReplyEvent : TReplyEvent;
+   vReplyEvent     : TReplyEvent;
+   vWelcomeMessage : TWelcomeMessage;
    Function ReturnIncorrectArgs: String;
    Function ReturnMethodNotFound: String;
   Public
@@ -48,7 +49,8 @@ Type
    Constructor Create(aOwner: TComponent); Override;
    Destructor Destroy; Override;
   Published
-   Property ReplyEvent: TReplyEvent Read vReplyEvent Write vReplyEvent;
+   Property OnReplyEvent     : TReplyEvent      Read vReplyEvent     Write vReplyEvent;
+   Property OnWelcomeMessage : TWelcomeMessage  Read vWelcomeMessage Write vWelcomeMessage;
   End;
 
 implementation

@@ -2,6 +2,7 @@ object ServerMethodDM: TServerMethodDM
   OldCreateOrder = False
   OnCreate = ServerMethodDataModuleCreate
   OnReplyEvent = ServerMethodDataModuleReplyEvent
+  OnWelcomeMessage = ServerMethodDataModuleWelcomeMessage
   Height = 255
   Width = 366
   object RESTDWPoolerDB1: TRESTDWPoolerDB
