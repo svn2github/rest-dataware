@@ -25,18 +25,20 @@ Const
  TableBase64   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
 
-Function GetPairJSON  (Status      : Integer;
-                       MessageText : String;
-                       Encoding    : TEncodeSelect = esUtf8) : String;Overload;
-Function GetPairJSON  (Tag,
-                       MessageText : String;
-                       Encoding    : TEncodeSelect = esUtf8) : String;Overload;
-Function DecodeBase64 (Const Value : AnsiString)             : AnsiString;
-Function EncodeBase64 (Const Value : AnsiString)             : AnsiString;
-Function EncodeStrings(Value       : String)                 : String;
-Function DecodeStrings(Value       : String)                 : String;
-Function EncodeBytes  (Value : String{$IFNDEF FPC}{$if CompilerVersion > 21}
+Function  GetPairJSON  (Status      : Integer;
+                        MessageText : String;
+                        Encoding    : TEncodeSelect = esUtf8) : String;Overload;
+Function  GetPairJSON  (Tag,
+                        MessageText : String;
+                        Encoding    : TEncodeSelect = esUtf8) : String;Overload;
+Function  DecodeBase64 (Const Value : AnsiString)             : AnsiString;
+Function  EncodeBase64 (Const Value : AnsiString)             : AnsiString;
+Function  EncodeStrings(Value       : String)                 : String;
+Function  DecodeStrings(Value       : String)                 : String;
+Function  EncodeBytes  (Value : String{$IFNDEF FPC}{$if CompilerVersion > 21}
                                       ;Encoding : TEncoding {$IFEND}{$ENDIF}) : TIdBytes;
+Procedure HexStringToStream(Value : String; Var BinaryStream : TStringStream);
+Function  StreamToHex(Value : TStream) : String;
 
 Implementation
 
@@ -196,6 +198,18 @@ Begin
  End;
 End;
 
+Procedure HexStringToStream(Value : String; Var BinaryStream : TStringStream);
+Begin
+ Try
+  If Not Assigned(BinaryStream) Then
+   BinaryStream := TStringStream.Create;
+  BinaryStream.Size := Length(Value) div 2;
+  If BinaryStream.Size > 0 Then
+   HexToBin(PChar(Value), TMemoryStream(BinaryStream).Memory, BinaryStream.Size);
+ Except
+ End;
+End;
+
 Function StringToHex(Value : String) : String;
 Var
  BinaryStream : TStringStream;
@@ -215,6 +229,16 @@ Begin
   BinToHex(TMemoryStream(BinaryStream).Memory, PChar(Result), BinaryStream.Size);
  Finally
   BinaryStream.Free;
+ End;
+End;
+
+Function StreamToHex(Value : TStream) : String;
+Begin
+ Try
+  TMemoryStream(Value).Position := 0;
+  SetLength(Result, TMemoryStream(Value).Size * 2);
+  BinToHex(TMemoryStream(Value).Memory, PChar(Result), Value.Size);
+ Except
  End;
 End;
 

@@ -533,10 +533,9 @@ Var
       Try
        bStream := bValue.CreateBlobStream(TBlobField(bValue.Fields[I]), bmRead);
        bStream.Position := 0;
-       vStringStream.CopyFrom(bStream, bStream.Size);
-       vStringStream.Position := 0;
+       vStringStream.LoadFromStream(bStream);
        If vEncoded Then
-        vTempValue := Format('"%s"', [EncodeStrings(vStringStream.DataString)])
+        vTempValue := Format('%s', [StreamToHex(vStringStream)])
        Else
         vTempValue := Format('"%s"', [vStringStream.DataString])
       Finally
@@ -657,6 +656,7 @@ Var
  vFindFlag      : Boolean;
  vBlobStream    : TStringStream;
  ListFields     : TStringList;
+ bs             : TStream;
  Procedure SetValueA(Field : TField; Value : String);
  Begin
   Case Field.DataType Of
@@ -867,12 +867,13 @@ Begin
                                           {$IFNDEF FPC}{$IF CompilerVersion > 21}, ftParams, ftStream{$IFEND}{$ENDIF}] Then
           Begin
            If vEncoded Then
-            vBlobStream := TStringStream.Create(DecodeStrings(bJsonOBJTemp.get(StrToInt(ListFields[I])).ToString))
+            HexStringToStream(bJsonOBJTemp.get(StrToInt(ListFields[I])).ToString, vBlobStream)
            Else
             vBlobStream := TStringStream.Create(bJsonOBJTemp.get(StrToInt(ListFields[I])).ToString);
            Try
             vBlobStream.Position := 0;
-            DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
+            bs := DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
+            vBlobStream.SaveToStream(bs);
            Finally
             {$IFNDEF FPC}
              {$IF CompilerVersion > 21}
