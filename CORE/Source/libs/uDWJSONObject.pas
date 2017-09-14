@@ -90,17 +90,17 @@ End;
    Procedure SetParamName(bValue : String);
   Public
    Constructor Create{$IFNDEF FPC}{$IF CompilerVersion > 21}(Encoding: TEncoding){$IFEND}{$ENDIF};
-   Destructor Destroy; Override;
-   Procedure FromJSON(JSON : String);
-   Function ToJSON : String;
-   Procedure CopyFrom      (JSONParam : TJSONParam);
-   Function  Value : String;
-   Procedure SetValue      (aValue : String;
-                            Encode : Boolean = True);
-   Procedure LoadFromStream(Stream : TMemoryStream;
-                            Encode : Boolean = True);
-   Procedure SaveToStream  (Stream : TMemoryStream);
-   Procedure LoadFromParam (Param  : TParam);
+   Destructor  Destroy; Override;
+   Procedure   FromJSON(JSON : String);
+   Function    ToJSON : String;
+   Procedure   CopyFrom      (JSONParam : TJSONParam);
+   Function    Value : String;
+   Procedure   SetValue      (aValue : String;
+                              Encode : Boolean = True);
+   Procedure   LoadFromStream(Stream : TMemoryStream;
+                              Encode : Boolean = True);
+   Procedure   SaveToStream  (Stream : TMemoryStream);
+   Procedure   LoadFromParam (Param  : TParam);
    Property ObjectDirection : TObjectDirection Read vObjectDirection Write vObjectDirection;
    Property ObjectValue     : TObjectValue     Read vObjectValue     Write vObjectValue;
    Property ParamName       : String           Read vParamName       Write SetParamName;
@@ -533,7 +533,15 @@ Var
       Try
        bStream := bValue.CreateBlobStream(TBlobField(bValue.Fields[I]), bmRead);
        bStream.Position := 0;
-       vStringStream.LoadFromStream(bStream);
+       {$IFDEF FPC}
+        vStringStream.CopyFrom(bStream, bStream.Size);
+       {$ELSE}
+        {$IF CompilerVersion > 21}
+         vStringStream.LoadFromStream(bStream);
+        {$ELSE}
+         vStringStream.CopyFrom(bStream, bStream.Size);
+        {$IFEND}
+       {$ENDIF}
        If vEncoded Then
         vTempValue := Format('%s', [StreamToHex(vStringStream)])
        Else
@@ -622,7 +630,8 @@ Begin
   {$ENDIF}
  Else
   vTempValue  := FormatValue(BytesArrToString(aValue));
- Result := vTempValue;
+ If Not(Pos('"TAGJSON":}', vTempValue) > 0) Then
+  Result := vTempValue;
 End;
 
 Procedure TJSONValue.ToStream(Var bValue : TMemoryStream);
@@ -713,6 +722,8 @@ Var
    End;
  End;
 Begin
+ If JSONValue = '' Then
+  Exit;
  ListFields := TStringList.Create;
  Try
   If Pos('[', JSONValue) = 0 Then
@@ -873,7 +884,17 @@ Begin
            Try
             vBlobStream.Position := 0;
             bs := DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
-            vBlobStream.SaveToStream(bs);
+            {$IFDEF FPC}
+             bs.CopyFrom(vBlobStream, vBlobStream.Size);
+             bs.Position := 0;
+            {$ELSE}
+             {$IF CompilerVersion > 21}
+              vBlobStream.SaveToStream(bs);
+             {$ELSE}
+              bs.CopyFrom(vBlobStream, vBlobStream.Size);
+              bs.Position := 0;
+             {$IFEND}
+            {$ENDIF}
            Finally
             {$IFNDEF FPC}
              {$IF CompilerVersion > 21}

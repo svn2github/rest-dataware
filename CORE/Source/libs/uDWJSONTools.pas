@@ -202,7 +202,17 @@ Procedure HexStringToStream(Value : String; Var BinaryStream : TStringStream);
 Begin
  Try
   If Not Assigned(BinaryStream) Then
-   BinaryStream := TStringStream.Create;
+   Begin
+   {$IFDEF FPC}
+    BinaryStream := TStringStream.Create('');
+   {$ELSE}
+    {$IF CompilerVersion > 21}
+     BinaryStream := TStringStream.Create;
+    {$ELSE}
+     BinaryStream := TStringStream.Create('');
+    {$IFEND}
+   {$ENDIF}
+   End;
   BinaryStream.Size := Length(Value) div 2;
   If BinaryStream.Size > 0 Then
    HexToBin(PChar(Value), TMemoryStream(BinaryStream).Memory, BinaryStream.Size);

@@ -599,13 +599,17 @@ Var
   A, I, InitPos,
   DataSize      : Integer;
   vValue,
+  aValue,
   vTempValue    : String;
  Begin
   Try
    InitPos    := Pos('"RESULT":[', InputValue) + Length('"RESULT":[') -1;
-   vTempValue := Copy(InputValue, InitPos +1, Pos(']}', InputValue) - InitPos - 1);
+   aValue     := Copy(InputValue, InitPos +1, Length(InputValue));
+   If Pos(']}', aValue) > 0 Then
+    aValue     := Copy(aValue, 1, Pos(']}', aValue) -1);
+   vTempValue := aValue;
    InputValue := Copy(InputValue, 1, InitPos) + ']}'; //Delete(InputValue, InitPos, Pos(']}', InputValue) - InitPos);
-   If Params <> Nil Then
+   If (Params <> Nil) And (InputValue <> '{"PARAMS"]}') Then
     Begin
      bJsonValue    := TJsonObject.Create(InputValue);
      bJsonOBJTemp  := TJSONArray.Create(bJsonValue.opt(bJsonValue.names.get(0).ToString).ToString);
