@@ -1,10 +1,12 @@
 program ClientBLOB;
 
+{$MODE Delphi}
+
 uses
-  Forms,
+  Forms, Interfaces,
   Unit1 in 'Unit1.pas' {Form5};
 
-{$R *.res}
+{.$R *.res}
 
 begin
   Application.Initialize;

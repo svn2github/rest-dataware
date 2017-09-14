@@ -1,12 +1,13 @@
 unit Unit1;
 
+{$MODE Delphi}
+
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics,
+  LCLIntf, LCLType, LMessages, Messages, SysUtils, Variants, Classes, Graphics,
   Controls, Forms, Dialogs, StdCtrls, uRESTDWPoolerDB, DB,
-  JvMemoryDataset, ExtCtrls, ComCtrls, DBCtrls, IdComponent,
-  Mask, acPNG;
+  ExtCtrls, ComCtrls, DBCtrls, MaskEdit, idComponent;
 
 type
   TForm5 = class(TForm)
@@ -60,7 +61,7 @@ var
 
 implementation
 
-{$R *.dfm}
+{$R *.lfm}
 
 procedure TForm5.Button1Click(Sender: TObject);
 begin
