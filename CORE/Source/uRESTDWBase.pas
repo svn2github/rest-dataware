@@ -320,6 +320,7 @@ Var
  vResultSTR,
  vURL,
  vTpRequest    : String;
+ aStringStream,
  vResultParams : TMemoryStream;
  StringStream  : TStringStream;
  SendParams    : TIdMultipartFormDataStream;
@@ -495,11 +496,12 @@ Begin
         Begin
          HttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
          HttpRequest.Request.ContentEncoding := 'multipart/form-data';
-         StringStream                        := TStringStream.Create('');
+         aStringStream                       := TMemoryStream.Create;
          If vDatacompress Then
           Begin
-           vResult                           := HttpRequest.Post(vURL, SendParams);
-           ZDecompressStreamD(vResult, StringStream);
+           HttpRequest.Post(vURL, SendParams, aStringStream);
+           ZDecompressStreamD(aStringStream, StringStream);
+           FreeAndNil(aStringStream);
           End
          Else
           HttpRequest.Post(vURL, SendParams, StringStream);
@@ -575,12 +577,13 @@ End;
 Function TRESTClientPooler.SendEvent(EventData  : String;
                                      Var Params : TDWParams;
                                      EventType  : TSendEvent = sePOST;
-                  									 CallBack   : TCallBack= nil) : String;
+                            		     CallBack   : TCallBack= nil) : String;
 Var
  vResult,
  vResultSTR,
  vURL,
  vTpRequest    : String;
+ aStringStream,
  vResultParams : TMemoryStream;
  StringStream  : TStringStream;
  SendParams    : TIdMultipartFormDataStream;
@@ -603,7 +606,7 @@ Var
   vTempValue    : String;
  Begin
   Try
-   InitPos    := Pos('"RESULT":[', InputValue) + Length('"RESULT":[') -1;
+   InitPos    := Pos(', "RESULT":[', InputValue) + Length(', "RESULT":[') -1;
    aValue     := Copy(InputValue, InitPos +1, Length(InputValue));
    If Pos(']}', aValue) > 0 Then
     aValue     := Copy(aValue, 1, Pos(']}', aValue) -1);
@@ -766,8 +769,11 @@ Begin
          HttpRequest.Request.ContentEncoding := 'multipart/form-data';
          If vDatacompress Then
           Begin
-           vResult                           := HttpRequest.Post(vURL, SendParams);
-           ZDecompressStreamD(vResult, StringStream);
+//           vResult                           := HttpRequest.Post(vURL, SendParams);
+           aStringStream                     := TMemoryStream.Create;
+           HttpRequest.Post(vURL, SendParams, aStringStream);
+           ZDecompressStreamD(aStringStream, StringStream);
+           FreeAndNil(aStringStream);
           End
          Else
           Begin

@@ -10,7 +10,11 @@ uses
   ExtCtrls, ComCtrls, DBCtrls, MaskEdit, idComponent;
 
 type
+
+  { TForm5 }
+
   TForm5 = class(TForm)
+    DBImage1: TDBImage;
     Label4: TLabel;
     Label5: TLabel;
     Image1: TImage;
@@ -42,7 +46,6 @@ type
     RESTDWClientSQL1NM_LOGIN: TStringField;
     RESTDWClientSQL1DS_SENHA: TStringField;
     RESTDWClientSQL1DS_FOTO: TBlobField;
-    DBImage1: TDBImage;
     procedure Button1Click(Sender: TObject);
     procedure RESTDWDataBase1Work(ASender: TObject; AWorkMode: TWorkMode;
       AWorkCount: Int64);

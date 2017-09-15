@@ -665,7 +665,6 @@ Var
  vFindFlag      : Boolean;
  vBlobStream    : TStringStream;
  ListFields     : TStringList;
- bs             : TStream;
  Procedure SetValueA(Field : TField; Value : String);
  Begin
   Case Field.DataType Of
@@ -883,18 +882,7 @@ Begin
             vBlobStream := TStringStream.Create(bJsonOBJTemp.get(StrToInt(ListFields[I])).ToString);
            Try
             vBlobStream.Position := 0;
-            bs := DestDS.CreateBlobStream(DestDS.Fields[I], bmWrite);
-            {$IFDEF FPC}
-             bs.CopyFrom(vBlobStream, vBlobStream.Size);
-             bs.Position := 0;
-            {$ELSE}
-             {$IF CompilerVersion > 21}
-              vBlobStream.SaveToStream(bs);
-             {$ELSE}
-              bs.CopyFrom(vBlobStream, vBlobStream.Size);
-              bs.Position := 0;
-             {$IFEND}
-            {$ENDIF}
+            TBlobField(DestDS.Fields[I]).LoadFromStream(vBlobStream);
            Finally
             {$IFNDEF FPC}
              {$IF CompilerVersion > 21}

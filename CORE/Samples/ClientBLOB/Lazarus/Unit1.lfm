@@ -641,10 +641,10 @@ object Form5: TForm5
     TabOrder = 10
   end
   object DBImage1: TDBImage
-    Left = 192
-    Height = 145
-    Top = 192
-    Width = 281
+    Left = 191
+    Height = 138
+    Top = 198
+    Width = 265
     DataField = 'DS_FOTO'
     DataSource = DataSource1
     Stretch = True

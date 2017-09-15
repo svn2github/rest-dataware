@@ -359,16 +359,17 @@ Var
  DWParams             : TDWParams;
 Begin
  If Not Assigned(RESTClientPooler) Then
-  RESTClientPoolerExec               := TRESTClientPooler.Create(Nil)
+  RESTClientPoolerExec                := TRESTClientPooler.Create(Nil)
  Else
-  RESTClientPoolerExec               := RESTClientPooler;
- RESTClientPoolerExec.WelcomeMessage := vWelcomeMessage;
- RESTClientPoolerExec.Host           := Host;
- RESTClientPoolerExec.Port           := Port;
- RESTClientPoolerExec.UserName       := UserName;
- RESTClientPoolerExec.Password       := Password;
- RESTClientPoolerExec.RequestTimeOut := TimeOut;
- RESTClientPoolerExec.UrlPath        := Method_Prefix;
+  RESTClientPoolerExec                := RESTClientPooler;
+ RESTClientPoolerExec.WelcomeMessage  := vWelcomeMessage;
+ RESTClientPoolerExec.Host            := Host;
+ RESTClientPoolerExec.Port            := Port;
+ RESTClientPoolerExec.UserName        := UserName;
+ RESTClientPoolerExec.Password        := Password;
+ RESTClientPoolerExec.RequestTimeOut  := TimeOut;
+ RESTClientPoolerExec.UrlPath         := Method_Prefix;
+ RESTClientPoolerExec.DataCompression := vCompression;
  {$IFDEF FPC}
   RESTClientPoolerExec.OnWork        := vOnWork;
   RESTClientPoolerExec.OnWorkBegin   := vOnWorkBegin;
@@ -448,16 +449,17 @@ Var
  DWParams             : TDWParams;
 Begin
  If Not Assigned(RESTClientPooler) Then
-  RESTClientPoolerExec               := TRESTClientPooler.Create(Nil)
+  RESTClientPoolerExec                := TRESTClientPooler.Create(Nil)
  Else
-  RESTClientPoolerExec               := RESTClientPooler;
- RESTClientPoolerExec.WelcomeMessage := vWelcomeMessage;
- RESTClientPoolerExec.Host           := Host;
- RESTClientPoolerExec.Port           := Port;
- RESTClientPoolerExec.UserName       := UserName;
- RESTClientPoolerExec.Password       := Password;
- RESTClientPoolerExec.RequestTimeOut := TimeOut;
- RESTClientPoolerExec.UrlPath        := Method_Prefix;
+  RESTClientPoolerExec                := RESTClientPooler;
+ RESTClientPoolerExec.WelcomeMessage  := vWelcomeMessage;
+ RESTClientPoolerExec.Host            := Host;
+ RESTClientPoolerExec.Port            := Port;
+ RESTClientPoolerExec.UserName        := UserName;
+ RESTClientPoolerExec.Password        := Password;
+ RESTClientPoolerExec.RequestTimeOut  := TimeOut;
+ RESTClientPoolerExec.UrlPath         := Method_Prefix;
+ RESTClientPoolerExec.DataCompression := vCompression;
  {$IFDEF FPC}
   RESTClientPoolerExec.OnWork        := vOnWork;
   RESTClientPoolerExec.OnWorkBegin   := vOnWorkBegin;
@@ -617,13 +619,14 @@ Begin
   RESTClientPoolerExec                := TRESTClientPooler.Create(Nil)
  Else
   RESTClientPoolerExec                := RESTClientPooler;
- RESTClientPoolerExec.WelcomeMessage := vWelcomeMessage;
- RESTClientPoolerExec.Host           := Host;
- RESTClientPoolerExec.Port           := Port;
- RESTClientPoolerExec.UserName       := UserName;
- RESTClientPoolerExec.Password       := Password;
- RESTClientPoolerExec.RequestTimeOut := TimeOut;
- RESTClientPoolerExec.UrlPath        := Method_Prefix;
+ RESTClientPoolerExec.WelcomeMessage  := vWelcomeMessage;
+ RESTClientPoolerExec.Host            := Host;
+ RESTClientPoolerExec.Port            := Port;
+ RESTClientPoolerExec.UserName        := UserName;
+ RESTClientPoolerExec.Password        := Password;
+ RESTClientPoolerExec.RequestTimeOut  := TimeOut;
+ RESTClientPoolerExec.UrlPath         := Method_Prefix;
+ RESTClientPoolerExec.DataCompression := vCompression;
  {$IFDEF FPC}
   RESTClientPoolerExec.OnWork        := vOnWork;
   RESTClientPoolerExec.OnWorkBegin   := vOnWorkBegin;
@@ -815,13 +818,14 @@ Begin
   RESTClientPoolerExec                := TRESTClientPooler.Create(Nil)
  Else
   RESTClientPoolerExec                := RESTClientPooler;
- RESTClientPoolerExec.WelcomeMessage := vWelcomeMessage;
- RESTClientPoolerExec.Host           := Host;
- RESTClientPoolerExec.Port           := Port;
- RESTClientPoolerExec.UserName       := UserName;
- RESTClientPoolerExec.Password       := Password;
- RESTClientPoolerExec.RequestTimeOut := TimeOut;
- RESTClientPoolerExec.UrlPath        := Method_Prefix;
+ RESTClientPoolerExec.WelcomeMessage  := vWelcomeMessage;
+ RESTClientPoolerExec.Host            := Host;
+ RESTClientPoolerExec.Port            := Port;
+ RESTClientPoolerExec.UserName        := UserName;
+ RESTClientPoolerExec.Password        := Password;
+ RESTClientPoolerExec.RequestTimeOut  := TimeOut;
+ RESTClientPoolerExec.UrlPath         := Method_Prefix;
+ RESTClientPoolerExec.DataCompression := vCompression;
  {$IFDEF FPC}
   RESTClientPoolerExec.OnWork        := vOnWork;
   RESTClientPoolerExec.OnWorkBegin   := vOnWorkBegin;

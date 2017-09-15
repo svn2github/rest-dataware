@@ -70,7 +70,7 @@ Type
  Function  FileToStr    (Const FileName     : String) : String;
  Procedure StrToFile    (Const FileName,
                                SourceString : String);
- Function  StreamToHex  (Stream : TStream)  : String;
+ Function  StreamToHex  (Stream : TStream; Quoted : Boolean = True)  : String;
  Procedure HexToStream  (Str    : String;
                          Stream : TStream);
  Function  StreamToBytes(Stream       : TMemoryStream) : tidBytes;
@@ -78,7 +78,7 @@ Type
                                Dest   : TStream);
  Function  ZDecompressStr(Const S     : String;
                           Var Value   : String) : Boolean;
- Function  ZDecompressStreamD(Const S   : String;
+ Function  ZDecompressStreamD(Const S   : TMemoryStream;
                               Var Value : TStringStream) : Boolean;
  Function  ZCompressStr  (Const s     : String;
                           Var Value   : String) : Boolean;
@@ -133,20 +133,10 @@ Begin
   Try
     ZCompressStream(Utf8Stream, Compressed);
     Compressed.Position := 0;
-    Base64Stream := TStringStream.Create(''{$IFNDEF FPC}{$if CompilerVersion > 21},TEncoding.ASCII{$IFEND}{$ENDIF});
    Try
-    {$IFDEF FPC}
-     Encoder       := TBase64EncodingStream.Create(Base64Stream);
-     Encoder.CopyFrom(Compressed, Compressed.Size);
-     FreeAndNil(Encoder);
-    {$ELSE}
-     EncodeStream(Compressed, Base64Stream);
-    {$ENDIF}
-    Value  := Base64Stream.DataString;
+    Value  := StreamToHex(Compressed, False);
     Result := True;
    Finally
-    {$IFNDEF FPC}{$if CompilerVersion > 21}Base64Stream.Clear;{$IFEND}{$ENDIF}
-    FreeAndNil(Base64Stream);
    End;
   Finally
    {$IFNDEF FPC}{$if CompilerVersion > 21}Compressed.Clear;{$IFEND}{$ENDIF}
@@ -158,7 +148,7 @@ Begin
  End;
 End;
 
-Function ZDecompressStreamD(Const S   : String;
+Function ZDecompressStreamD(Const S   : TMemoryStream;
                             Var Value : TStringStream) : Boolean;
 Var
  Utf8Stream,
@@ -168,25 +158,28 @@ Var
  {$ENDIF}
 Begin
  {$IFDEF FPC}
-  Base64Stream := TStringStream.Create(S);
+  Base64Stream := TStringStream.Create('');
+  S.Position   := 0;
+  Base64Stream.CopyFrom(S, S.Size);
+  Base64Stream.Position   := 0;
  {$ELSE}
-  Base64Stream := TStringStream.Create(S{$if CompilerVersion > 21}, TEncoding.ASCII{$IFEND});
+  Base64Stream := TStringStream.Create(''{$if CompilerVersion > 21}, TEncoding.ASCII{$IFEND});
+  S.Position   := 0;
+  Base64Stream.CopyFrom(S, S.Size);
+  Base64Stream.Position   := 0;
  {$ENDIF}
  Try
   Value := TStringStream.Create('');
   Try
    Try
     {$IFDEF FPC}
-     Utf8Stream    := TStringStream.Create('');
-     Encoder       := TBase64DecodingStream.Create(Base64Stream);
-     Utf8Stream.CopyFrom(Encoder, Encoder.Size);
-     Utf8Stream.Position := 0;
-     FreeAndNil(Encoder);
-     Value.position := 0;
+     Utf8Stream := TStringStream.Create('');
+     HexToStream(Base64Stream.DataString, Utf8Stream);
      ZDecompressStream(Utf8Stream, Value);
+     Value.position := 0;
     {$ELSE}
      Utf8Stream := TStringStream.Create(''{$if CompilerVersion > 21}, TEncoding.UTF8{$IFEND});
-     DecodeStream(Base64Stream, Utf8Stream);
+     HexToStream(Base64Stream.DataString, Utf8Stream);
      Utf8Stream.position := 0;
      ZDecompressStream(Utf8Stream, Value);
      Value.Position := 0;
@@ -304,12 +297,13 @@ Begin
  Stream.Position := 0;
 End;
 
-Function StreamToHex(Stream  : TStream) : String;
+Function StreamToHex(Stream  : TStream; Quoted : Boolean = True) : String;
 Begin
  Stream.Position := 0;
  SetLength     (Result, Stream.Size * 2);
  BinToHex      (TMemoryStream(Stream).Memory, PChar(Result), Stream.Size);
- Result := '"' + Result + '"';
+ If Quoted Then
+  Result := '"' + Result + '"';
 End;
 
 Function FileToStr(Const FileName : String):string;
