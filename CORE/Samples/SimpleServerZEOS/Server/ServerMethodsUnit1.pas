@@ -52,7 +52,7 @@ uses StrUtils, RestDWServerFormU;
 Constructor TServerMethods1.Create (aOwner : TComponent);
 Begin
  Inherited Create (aOwner);
- ReplyEvent := vReplyEvent;
+ OnReplyEvent := vReplyEvent;
 End;
 
 Destructor TServerMethods1.Destroy;

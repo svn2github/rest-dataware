@@ -1063,6 +1063,7 @@ Procedure TRESTDWDataBase.ExecuteCommand(Var SQL          : TStringList;
 Var
  vRESTConnectionDB : TDWPoolerMethodClient;
  LDataSetList      : TJSONValue;
+ DWParams          : TDWParams;
  Function GetLineSQL(Value : TStringList) : String;
  Var
   I : Integer;
@@ -1114,14 +1115,14 @@ Begin
  {$ENDIF}
  Try
   If Params.Count > 0 Then
-   LDataSetList := vRESTConnectionDB.ExecuteCommandJSON(vRestPooler,
-                                                        vRestModule, GetLineSQL(SQL),
-                                                        GetDWParams(Params{$IFNDEF FPC}
-                                                                    {$if CompilerVersion > 21}
-                                                                     , vEncondig
-                                                                    {$IFEND}
-                                                                    {$ENDIF}), Error,
-                                                        MessageError, Execute, vTimeOut, vLogin, vPassword, RESTClientPooler)
+   Begin
+    DWParams     := GetDWParams(Params{$IFNDEF FPC}{$if CompilerVersion > 21}, vEncondig{$IFEND}{$ENDIF});
+    LDataSetList := vRESTConnectionDB.ExecuteCommandJSON(vRestPooler,
+                                                         vRestModule, GetLineSQL(SQL),
+                                                         DWParams, Error,
+                                                         MessageError, Execute, vTimeOut, vLogin, vPassword, RESTClientPooler);
+    FreeAndNil(DWParams);
+   End
   Else
    LDataSetList := vRESTConnectionDB.ExecuteCommandPureJSON(vRestPooler,
                                                             vRestModule,
@@ -1175,43 +1176,7 @@ Procedure TRESTDWDataBase.ExecuteProcedure(ProcName         : String;
                                            Params           : TParams;
                                            Var Error        : Boolean;
                                            Var MessageError : String);
-{
-Var
- vDSRConnection    : TRESTClientPooler;
- vRESTConnectionDB : TSMPoolerMethodClient;
-}
 Begin
-{
- if vRestPooler = '' then
-  Exit;
- If Trim(ProcName) = '' Then
-  Begin
-   Error := True;
-   MessageError := 'ProcName Cannot is Empty';
-  End
- Else
-  Begin
-   SetConnectionOptions(vDSRConnection);
-   vRESTConnectionDB             := TSMPoolerMethodClient.Create(vDSRConnection, True);
-   vRESTConnectionDB.Compression := vCompression;
-   vRESTConnectionDB.Encoding    := GetEncoding(VEncondig);
-   Try
-    If Params.Count > 0 Then
-     vRESTConnectionDB.ExecuteProcedure(vRestPooler, vRestModule, ProcName, Params, Error, MessageError)
-    Else
-     vRESTConnectionDB.ExecuteProcedurePure(vRestPooler, vRestModule, ProcName, Error, MessageError);
-   Except
-    On E : Exception do
-     Begin
-      vDSRConnection.SessionID := '';
-      if Assigned(vOnEventConnection) then
-       vOnEventConnection(False, E.Message);
-     End;
-   End;
-  vDSRConnection.Free;
-  vRESTConnectionDB.Free;
- End;
-}
 End;
 
 Function TRESTDWDataBase.GetRestPoolers : TStringList;

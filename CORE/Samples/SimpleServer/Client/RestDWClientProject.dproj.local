@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>2017/07/16 17:08:56.000.688,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\SimpleServer\Client\Unit2.dfm=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\SimpleServer\Client\uDmClientDW.dfm</Transaction>
+    <Transaction>2017/07/16 17:08:56.000.688,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\SimpleServer\Client\uDmClientDW.dfm=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\SimpleServer\Client\Unit2.dfm</Transaction>
   </Transactions>
 </BorlandProject>

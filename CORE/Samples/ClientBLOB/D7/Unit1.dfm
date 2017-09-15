@@ -2009,7 +2009,7 @@ object Form5: TForm5
     Params = <>
     DataBase = RESTDWDataBase1
     SQL.Strings = (
-      'select * from TB_USUARIO')
+      'SELECT * FROM TB_USUARIO')
     CacheUpdateRecords = True
     Left = 291
     Top = 23
@@ -2039,7 +2039,7 @@ object Form5: TForm5
     Password = 'testserver'
     Proxy = False
     ProxyOptions.Port = 8888
-    PoolerService = '127.0.0.1'
+    PoolerService = 'localhost'
     PoolerPort = 8082
     PoolerName = 'TServerMethodDM.RESTDWPoolerDB1'
     StateConnection.AutoCheck = False
