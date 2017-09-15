@@ -857,7 +857,7 @@ Begin
     bJsonArray    := bJsonArraySub.optJSONArray(bJsonArraySub.names.get(0).ToString);
     For J := 0 To bJsonArray.Length - 1 Do
      Begin
-      bJsonOBJ := TJsonObject.Create(bJsonArray.get(J).ToString);
+      bJsonOBJ     := TJsonObject.Create(bJsonArray.get(J).ToString);
       bJsonOBJTemp := bJsonOBJ.optJSONArray(bJsonOBJ.names.get(0).ToString);
       DestDS.Append;
       Try

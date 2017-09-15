@@ -67,6 +67,7 @@ Begin
  RESTClientPooler1.Port     := StrToInt(ePort.Text);
  RESTClientPooler1.UserName := edUserNameDW.Text;
  RESTClientPooler1.Password := edPasswordDW.Text;
+ RESTClientPooler1.DataCompression := True;
  Try
   Try
    lResponse := RESTClientPooler1.SendEvent('FileList');
@@ -101,6 +102,7 @@ Begin
    RESTClientPooler1.Port     := StrToInt(ePort.Text);
    RESTClientPooler1.UserName := edUserNameDW.Text;
    RESTClientPooler1.Password := edPasswordDW.Text;
+   RESTClientPooler1.DataCompression := True;
    DWParams                   := TDWParams.Create;
    JSONParam                  := TJSONParam.Create;
    JSONParam.ParamName        := 'Arquivo';
@@ -150,6 +152,7 @@ Var
  MemoryStream        : TMemoryStream;
 Begin
   RESTClientPooler1.RequestTimeOut:= StrToInt(Copy(cmb_tmp.Text, 1,1)) * 60000;
+  RESTClientPooler1.DataCompression := True;
   If OpenDialog1.Execute Then
   Begin
    DWParams                     := TDWParams.Create;

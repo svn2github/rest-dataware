@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="2">
+    <Units Count="4">
       <Unit0>
         <Filename Value="FileClient.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -20,19 +20,91 @@
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <CursorPos X="89" Y="8"/>
+        <TopLine Value="60"/>
+        <CursorPos Y="73"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="..\..\..\..\Source\libs\JSON\uDWJSON.pas"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="1067"/>
+        <CursorPos Y="1080"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="939"/>
+        <CursorPos Y="940"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit3>
     </Units>
-    <JumpHistory Count="1">
+    <JumpHistory Count="15" HistoryIndex="14">
       <Position1>
         <Filename Value="uFileClient.pas"/>
         <Caret Line="10" Column="53"/>
       </Position1>
+      <Position2>
+        <Filename Value="uFileClient.pas"/>
+        <Caret Line="8" Column="89"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\..\..\Source\libs\JSON\uDWJSON.pas"/>
+        <Caret Line="1005" TopLine="992"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\..\..\Source\libs\JSON\uDWJSON.pas"/>
+        <Caret Line="1059" TopLine="1047"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\..\..\Source\libs\JSON\uDWJSON.pas"/>
+        <Caret Line="1080" TopLine="1067"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\..\..\Source\libs\uDWJSONObject.pas"/>
+        <Caret Line="940" TopLine="939"/>
+      </Position6>
+      <Position7>
+        <Filename Value="uFileClient.pas"/>
+        <Caret Line="70" Column="2" TopLine="57"/>
+      </Position7>
+      <Position8>
+        <Filename Value="uFileClient.pas"/>
+        <Caret Line="105" Column="46" TopLine="91"/>
+      </Position8>
+      <Position9>
+        <Filename Value="uFileClient.pas"/>
+        <Caret Line="155" Column="45" TopLine="147"/>
+      </Position9>
+      <Position10>
+        <Filename Value="uFileClient.pas"/>
+        <Caret Line="73" TopLine="60"/>
+      </Position10>
+      <Position11>
+        <Filename Value="uFileClient.pas"/>
+        <Caret Line="74" TopLine="60"/>
+      </Position11>
+      <Position12>
+        <Filename Value="uFileClient.pas"/>
+        <Caret Line="76" TopLine="60"/>
+      </Position12>
+      <Position13>
+        <Filename Value="uFileClient.pas"/>
+        <Caret Line="77" TopLine="60"/>
+      </Position13>
+      <Position14>
+        <Filename Value="uFileClient.pas"/>
+        <Caret Line="78" TopLine="60"/>
+      </Position14>
+      <Position15>
+        <Filename Value="uFileClient.pas"/>
+        <Caret Line="79" TopLine="60"/>
+      </Position15>
     </JumpHistory>
   </ProjectSession>
-  <SkipCheckLCLInterfaces Value="True"/>
 </CONFIG>

@@ -65,9 +65,10 @@
       </Unit5>
       <Unit6>
         <Filename Value="..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <EditorIndex Value="12"/>
-        <TopLine Value="867"/>
-        <CursorPos Y="867"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="10"/>
+        <TopLine Value="871"/>
+        <CursorPos X="20" Y="879"/>
         <UsageCount Value="19"/>
         <Loaded Value="True"/>
       </Unit6>
@@ -142,20 +143,17 @@
       </Unit15>
       <Unit16>
         <Filename Value="C:\lazarus\fpc\3.0.2\source\rtl\objpas\classes\classesh.inc"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="847"/>
         <CursorPos X="46" Y="861"/>
         <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit16>
       <Unit17>
         <Filename Value="C:\lazarus\fpc\3.0.2\source\rtl\objpas\classes\streams.inc"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="59"/>
         <CursorPos Y="65"/>
         <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit17>
       <Unit18>
         <Filename Value="C:\lazarus\lcl\include\dbimage.inc"/>
@@ -305,15 +303,4 @@
       </Position30>
     </JumpHistory>
   </ProjectSession>
-  <Debugging>
-    <BreakPoints Count="1">
-      <Item1>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="C:\lazarus\fpc\3.0.2\source\rtl\objpas\classes\streams.inc"/>
-        <Line Value="65"/>
-      </Item1>
-    </BreakPoints>
-  </Debugging>
 </CONFIG>
