@@ -109,6 +109,7 @@ begin
    rspServerFiles.ServerParams.UserName := edUserNameDW.Text;
    rspServerFiles.ServerParams.Password := edPasswordDW.Text;
    rspServerFiles.ServicePort := StrToInt(edPortaDW.Text);
+   rspServerFiles.DataCompression := True;
    rspServerFiles.Active      := True;
    If Not rspServerFiles.Active Then
     Exit;

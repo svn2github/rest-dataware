@@ -585,6 +585,7 @@ Var
  vTpRequest    : String;
  aStringStream,
  vResultParams : TMemoryStream;
+ bStringStream,
  StringStream  : TStringStream;
  SendParams    : TIdMultipartFormDataStream;
  ss            : TStringStream;
@@ -793,8 +794,25 @@ Begin
         Begin
          HttpRequest.Request.ContentType     := 'application/json';
          HttpRequest.Request.ContentEncoding := '';
-         vResult      := HttpRequest.Get(EventData);
-         StringStream := TStringStream.Create(vResult);
+         aStringStream := TMemoryStream.Create;
+         HttpRequest.Get(EventData, aStringStream);
+         aStringStream.Position := 0;
+         StringStream   := TStringStream.Create('');
+         bStringStream  := TStringStream.Create('');
+         If vDatacompress Then
+          Begin
+           bStringStream.CopyFrom(aStringStream, aStringStream.Size);
+           bStringStream.Position := 0;
+           ZDecompressStreamD(bStringStream, StringStream);
+          End
+         Else
+          Begin
+           bStringStream.CopyFrom(aStringStream, aStringStream.Size);
+           bStringStream.Position := 0;
+           HexToStream(bStringStream.DataString, StringStream);
+          End;
+         FreeAndNil(bStringStream);
+         FreeAndNil(aStringStream);
         End;
        HttpRequest.Request.Clear;
        StringStream.Position := 0;

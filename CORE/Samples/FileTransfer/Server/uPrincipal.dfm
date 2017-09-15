@@ -1050,6 +1050,9 @@ object fServer: TfServer
     EncodeStrings = True
     ServicePort = 0
     ProxyOptions.Port = 8888
+    ServerParams.HasAuthentication = True
+    ServerParams.UserName = 'testserver'
+    ServerParams.Password = 'testserver'
     SSLVersion = sslvSSLv2
     Encoding = esASCII
     ServerContext = 'restdataware'
