@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, uRESTDWPoolerDB, Data.DB,
   JvMemoryDataset, Vcl.ExtCtrls, Vcl.Imaging.pngimage, Vcl.ComCtrls, Vcl.DBCtrls, IdComponent,
-  Vcl.Mask;
+  Vcl.Mask, Vcl.Buttons;
 
 type
   TForm5 = class(TForm)
@@ -46,12 +46,14 @@ type
     DBEdit2: TDBEdit;
     DBEdit3: TDBEdit;
     DBImage1: TDBImage;
+    BitBtn1: TBitBtn;
     procedure Button1Click(Sender: TObject);
     procedure RESTDWDataBase1Work(ASender: TObject; AWorkMode: TWorkMode;
       AWorkCount: Int64);
     procedure RESTDWDataBase1WorkBegin(ASender: TObject; AWorkMode: TWorkMode;
       AWorkCountMax: Int64);
     procedure RESTDWDataBase1WorkEnd(ASender: TObject; AWorkMode: TWorkMode);
+    procedure BitBtn1Click(Sender: TObject);
   private
     { Private declarations }
    FBytesToTransfer : Int64;
@@ -65,6 +67,22 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TForm5.BitBtn1Click(Sender: TObject);
+begin
+ RESTDWDataBase1.Close;
+ RESTDWDataBase1.PoolerService := eHost.Text;
+ RESTDWDataBase1.PoolerPort    := StrToInt(ePort.Text);
+ RESTDWDataBase1.Login         := edUserNameDW.Text;
+ RESTDWDataBase1.Password      := edPasswordDW.Text;
+ RESTDWDataBase1.Compression   := CheckBox1.Checked;
+ RESTDWDataBase1.Open;
+ RESTDWClientSQL1.Close;
+ RESTDWClientSQL1.SQL.Clear;
+ RESTDWClientSQL1.SQL.Add('SELECT * FROM TB_USUARIO WHERE ID_PESSOA = :ID_PESSOA or NM_LOGIN like upper(:NM_LOGIN)');
+ RESTDWClientSQL1.ParamByName('NM_LOGIN').AsString := '%' + Inputbox('Pesquisa de dados', 'Digite o valor', '') + '%';
+ RESTDWClientSQL1.Open;
+end;
 
 procedure TForm5.Button1Click(Sender: TObject);
 begin
