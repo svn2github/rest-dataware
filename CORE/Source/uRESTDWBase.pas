@@ -317,14 +317,12 @@ Procedure TRESTClientPooler.SendEvent(EventData  : String;
                                       CallBack   : TCallBack = Nil);
 Var
  vResult,
- vResultSTR,
  vURL,
  vTpRequest    : String;
- aStringStream,
+ aStringStream : TStringStream;
  vResultParams : TMemoryStream;
  StringStream  : TStringStream;
  SendParams    : TIdMultipartFormDataStream;
- ss            : TStringStream;
  thd           : TThread_Request;
  StringStreamList : TStringStreamList;
  Procedure SetData(InputValue     : String;
@@ -336,8 +334,7 @@ Var
   bJsonOBJTemp  : TJSONArray;
   JSONParam     : TJSONParam;
   JSONParamNew  : TJSONParam;
-  A, I, InitPos,
-  DataSize      : Integer;
+  A, InitPos    : Integer;
   vValue        : String;
   vTempValue    : PChar;
  Begin
@@ -460,7 +457,6 @@ Begin
    End;
    Exit;
   End;
- ss            := Nil;
  vResultParams := TMemoryStream.Create;
  If vTypeRequest = trHttp Then
   vTpRequest := 'http'
@@ -496,7 +492,7 @@ Begin
         Begin
          HttpRequest.Request.ContentType     := 'application/x-www-form-urlencoded';
          HttpRequest.Request.ContentEncoding := 'multipart/form-data';
-         aStringStream                       := TMemoryStream.Create;
+         aStringStream                       := TStringStream.Create('');
          If vDatacompress Then
           Begin
            HttpRequest.Post(vURL, SendParams, aStringStream);
@@ -579,16 +575,13 @@ Function TRESTClientPooler.SendEvent(EventData  : String;
                                      EventType  : TSendEvent = sePOST;
                             		     CallBack   : TCallBack= nil) : String;
 Var
- vResult,
- vResultSTR,
  vURL,
  vTpRequest    : String;
- aStringStream,
+ aStringStream : TStringStream;
  vResultParams : TMemoryStream;
  bStringStream,
  StringStream  : TStringStream;
  SendParams    : TIdMultipartFormDataStream;
- ss            : TStringStream;
  thd           : TThread_Request;
  StringStreamList : TStringStreamList;
  Procedure SetData(InputValue     : String;
@@ -600,8 +593,7 @@ Var
   bJsonOBJTemp  : TJSONArray;
   JSONParam,
   JSONParamNew  : TJSONParam;
-  A, I, InitPos,
-  DataSize      : Integer;
+  A, InitPos    : Integer;
   vValue,
   aValue,
   vTempValue    : String;
@@ -733,7 +725,6 @@ Begin
    End;
    Exit;
   End;
- ss            := Nil;
  vResultParams := TMemoryStream.Create;
  If vTypeRequest = trHttp Then
   vTpRequest := 'http'
@@ -770,9 +761,11 @@ Begin
          HttpRequest.Request.ContentEncoding := 'multipart/form-data';
          If vDatacompress Then
           Begin
-//           vResult                           := HttpRequest.Post(vURL, SendParams);
-           aStringStream                     := TMemoryStream.Create;
-           HttpRequest.Post(vURL, SendParams, aStringStream);
+           {$IFDEF FPC}
+            aStringStream := TStringStream.Create(HttpRequest.Post(vURL, SendParams, GetEncoding(TEncodeSelect(vRSCharset))));
+           {$ELSE}
+            aStringStream := TStringStream.Create(HttpRequest.Post(vURL, SendParams));
+           {$ENDIF}
            ZDecompressStreamD(aStringStream, StringStream);
            FreeAndNil(aStringStream);
           End
@@ -794,7 +787,7 @@ Begin
         Begin
          HttpRequest.Request.ContentType     := 'application/json';
          HttpRequest.Request.ContentEncoding := '';
-         aStringStream := TMemoryStream.Create;
+         aStringStream := TStringStream.Create('');
          HttpRequest.Get(EventData, aStringStream);
          aStringStream.Position := 0;
          StringStream   := TStringStream.Create('');
@@ -1165,7 +1158,6 @@ Var
  vResult,
  vResultIP,
  vUrlMethod   :  String;
- PoolerList   :  TStringList;
 Begin
  Result       := False;
  vUrlMethod   := UpperCase(UrlMethod);
@@ -1230,7 +1222,6 @@ Var
  Decoder            : TIdMessageDecoder;
  JSONParam          : TJSONParam;
  msgEnd             : Boolean;
- I                  : Integer;
  mb,
  ms                 : TStringStream;
  Function GetParamsReturn(Params : TDWParams) : String;
@@ -1361,7 +1352,7 @@ Begin
             decoder.SourceStream := ARequestInfo.PostStream;
             decoder.FreeSourceStream := False;
             decoder.ReadHeader;
-            Inc(I);
+//            Inc(I);
             Case Decoder.PartType of
              mcptAttachment,
              mcptText :
@@ -1779,7 +1770,8 @@ begin
 end;
 
 procedure TThread_Request.Execute;
-VAR SResult ,
+Var
+ SResult,
  vResult,
  vURL,
  vTpRequest    : String;
@@ -1787,19 +1779,18 @@ VAR SResult ,
  StringStream  : TStringStream;
  SendParams    : TIdMultipartFormDataStream;
  ss            : TStringStream;
- thd           : TThread_Request;
  Procedure SetData(InputValue     : String;
                    Var ParamsData : TDWParams;
                    Var ResultJSON : String);
  Var
   bJsonOBJ,
-  bJsonValue    : TJsonObject;
-  bJsonOBJTemp  : TJSONArray;
-  JSONParam     : TJSONParam;
-  JSONParamNew  : TJSONParam;
-  A, I, InitPos : Integer;
+  bJsonValue   : TJsonObject;
+  bJsonOBJTemp : TJSONArray;
+  JSONParam,
+  JSONParamNew : TJSONParam;
+  A, InitPos   : Integer;
   vValue,
-  vTempValue  : String;
+  vTempValue   : String;
  Begin
   Try
    InitPos    := Pos('"RESULT":[', InputValue) + 10;

@@ -889,7 +889,7 @@ Begin
               vBlobStream.Clear;
              {$IFEND}
             {$ENDIF}
-            vBlobStream.Free;
+            FreeAndNil(vBlobStream);
            End;
           End
          Else

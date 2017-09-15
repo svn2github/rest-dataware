@@ -5,7 +5,7 @@ interface
 Uses
  SysUtils, Classes, zlib{$IFDEF FPC}, zstream{$ENDIF};
 
-  //Fun√ß√µes de Compress√£o e descompress√£o de Stream com ZLib
+  //FunÁıes de Compress„o e descompress„o de Stream com ZLib
   Procedure ZCompressStream  (inStream, outStream : TStream);
   Procedure ZDecompressStream(inStream, outStream : TStream);
 
@@ -41,11 +41,33 @@ Begin
  ReadDWord := d;
 End;
 
+{$IFDEF FPC}
+Procedure ZDecompressStream(inStream, outStream : TStream);
+Var
+ D : TDecompressionstream;
+ B : Array[1..CompressBuffer] of Byte;
+ R : Integer;
+ Size : Longint;
+Begin
+ d := TDecompressionstream.Create(inStream);
+ d.Read(Size, SizeOf(Size));
+ While True Do
+  Begin
+   R := d.Read(B, sizeof(B));
+   If R <> 0 Then
+    outStream.WriteBuffer(B, R)
+   Else
+    Break;
+  End;
+ outStream.Position := 0;
+ FreeAndNil(d);
+End;
+{$ELSE}
 Procedure ZDecompressStream(inStream, outStream : TStream);
 Var
  D    : TDecompressionstream;
  B    : Array[1..CompressBuffer] of Byte;
- R, X : Integer;
+ R    : Integer;
  Size : Longint;
 Begin
  d := TDecompressionstream.Create(inStream);
@@ -65,6 +87,7 @@ Begin
   d.Free;
  End;
 End;
+{$ENDIF}
 
 end.
 

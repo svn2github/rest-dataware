@@ -32,7 +32,7 @@ Const
  AuthRealm             = 'Provide Authentication';
  UrlBase               = '%s://%s:%d/%s';
  ByteBuffer            = 1024 * 8; //8kb
- CompressBuffer        = 1024 * 16;
+ CompressBuffer        = 1024 * 2;
 
 Type
  TTypeObject      = (toDataset,   toParam,
@@ -49,8 +49,10 @@ Type
  TDatasetType     = (dtReflection,      dtFull,         dtDiff);
  {$IFNDEF FPC}
   {$if CompilerVersion > 21}
-   Function GetEncoding             (Avalue          : TEncodeSelect)    : TEncoding;
+   Function GetEncoding(Avalue  : TEncodeSelect)    : TEncoding;
   {$IFEND}
+  {$ELSE}
+   Function GetEncoding(Avalue  : TEncodeSelect) : IIdTextEncoding;
  {$ENDIF}
  Function GetObjectName           (TypeObject      : TTypeObject)      : String;          Overload;
  Function GetObjectName           (TypeObject      : String)           : TTypeObject;     Overload;
@@ -78,7 +80,7 @@ Type
                                Dest   : TStream);
  Function  ZDecompressStr(Const S     : String;
                           Var Value   : String) : Boolean;
- Function  ZDecompressStreamD(Const S   : TMemoryStream;
+ Function  ZDecompressStreamD(Const S   : TStringStream;
                               Var Value : TStringStream) : Boolean;
  Function  ZCompressStr  (Const s     : String;
                           Var Value   : String) : Boolean;
@@ -148,7 +150,7 @@ Begin
  End;
 End;
 
-Function ZDecompressStreamD(Const S   : TMemoryStream;
+Function ZDecompressStreamD(Const S   : TStringStream;
                             Var Value : TStringStream) : Boolean;
 Var
  Utf8Stream,
@@ -160,7 +162,7 @@ Begin
  {$IFDEF FPC}
   Base64Stream := TStringStream.Create('');
   S.Position   := 0;
-  Base64Stream.CopyFrom(S, S.Size);
+  Base64Stream.CopyFrom(S, 0);
   Base64Stream.Position   := 0;
  {$ELSE}
   Base64Stream := TStringStream.Create(''{$if CompilerVersion > 21}, TEncoding.ASCII{$IFEND});
@@ -175,6 +177,7 @@ Begin
     {$IFDEF FPC}
      Utf8Stream := TStringStream.Create('');
      HexToStream(Base64Stream.DataString, Utf8Stream);
+     Utf8Stream.Position := 0;
      ZDecompressStream(Utf8Stream, Value);
      Value.position := 0;
     {$ELSE}
@@ -962,6 +965,16 @@ Begin
   esASCII : Result := TEncoding.ASCII;
  End;
 End;
-{$IFEND}{$ENDIF}
+{$IFEND}
+{$ELSE}
+Function GetEncoding(Avalue  : TEncodeSelect) : IIdTextEncoding;
+Begin
+ Result := IndyTextEncoding(encIndyDefault);
+ Case Avalue of
+  esUtf8  : Result := IndyTextEncoding(encUTF8);
+  esASCII : Result := IndyTextEncoding(encASCII);
+ End;
+End;
+{$ENDIF}
 
 end.
