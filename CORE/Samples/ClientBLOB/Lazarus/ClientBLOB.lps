@@ -8,9 +8,11 @@
       <Unit0>
         <Filename Value="ClientBLOB.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="28" Y="8"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="25" Y="14"/>
         <UsageCount Value="39"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
@@ -171,11 +173,9 @@
       <Unit21>
         <Filename Value="..\..\..\Source\Connectors\Lazarus\restdwlazdriver.pas"/>
         <UnitName Value="RESTDWLazDriver"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="10"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit21>
     </Units>
     <JumpHistory Count="3" HistoryIndex="2">
@@ -188,7 +188,8 @@
         <Caret Line="87" Column="5" TopLine="72"/>
       </Position2>
       <Position3>
-        <Filename Value="..\..\..\Source\Connectors\Lazarus\restdwlazdriver.pas"/>
+        <Filename Value="Unit1.pas"/>
+        <Caret Line="92" Column="24" TopLine="84"/>
       </Position3>
     </JumpHistory>
   </ProjectSession>
