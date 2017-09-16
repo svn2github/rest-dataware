@@ -1588,9 +1588,10 @@ Var
  Begin
   FieldDef := FindField(Value);
   If FieldDef <> Nil Then
-   vParams.CreateParam(FieldDef.DataType, Value, ptUnknown)
+   vParams.CreateParam(FieldDef.DataType, Value, ptInput)
   Else
-   vParams.CreateParam(ftUnknown, Value, ptUnknown);
+   vParams.CreateParam(ftUnknown, Value, ptInput);
+  vParams.ParamByName(Value).Size := FieldDef.Size;
  End;
 Begin
  vParams.Clear;

@@ -1173,12 +1173,13 @@ object Form5: TForm5
     Params = <>
     DataBase = RESTDWDataBase1
     SQL.Strings = (
-      'select * from TB_USUARIO')
+      'SELECT * FROM TB_USUARIO')
     CacheUpdateRecords = True
     Left = 291
     Top = 23
     object RESTDWClientSQL1ID_PESSOA: TIntegerField
       FieldName = 'ID_PESSOA'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
     object RESTDWClientSQL1NM_LOGIN: TStringField
@@ -1209,8 +1210,9 @@ object Form5: TForm5
     end
   end
   object RESTDWDataBase1: TRESTDWDataBase
-    Active = False
+    Active = True
     Compression = True
+    MyIP = '127.0.0.1'
     Login = 'testserver'
     Password = 'testserver'
     Proxy = False
