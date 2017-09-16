@@ -713,7 +713,7 @@ object Form5: TForm5
       end>
     DataBase = RESTDWDataBase1
     SQL.Strings = (
-      'SELECT * FROM TB_USUARIO WHERE ID_PESSOA = :ID_PESSOA or NM_LOGIN like upper(:NM_LOGIN)'
+      'SELECT * FROM TB_USUARIO'
     )
     CacheUpdateRecords = True
     left = 291

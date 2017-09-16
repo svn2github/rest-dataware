@@ -4,14 +4,13 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="22">
+    <Units Count="23">
       <Unit0>
         <Filename Value="ClientBLOB.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="-1"/>
         <CursorPos X="25" Y="14"/>
         <UsageCount Value="39"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
@@ -58,25 +57,23 @@
       </Unit4>
       <Unit5>
         <Filename Value="..\..\..\Source\uRESTDWPoolerDB.pas"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="1579"/>
         <CursorPos X="51" Y="1594"/>
         <UsageCount Value="17"/>
         <Bookmarks Count="1">
           <Item0 Y="2332" ID="1"/>
         </Bookmarks>
-        <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\..\..\Source\libs\uDWJSONObject.pas"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="746"/>
         <CursorPos Y="770"/>
         <UsageCount Value="19"/>
         <Bookmarks Count="1">
           <Item0 Y="743" ID="2"/>
         </Bookmarks>
-        <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="..\..\..\Source\libs\uDWJSONTools.pas"/>
@@ -185,8 +182,20 @@
         <CursorPos X="3" Y="10"/>
         <UsageCount Value="10"/>
       </Unit21>
+      <Unit22>
+        <Filename Value="Unit1.lfm"/>
+        <EditorIndex Value="-1"/>
+        <ExtraEditorCount Value="1"/>
+        <ExtraEditor1>
+          <EditorIndex Value="-1"/>
+          <TopLine Value="701"/>
+          <CursorPos X="32" Y="716"/>
+        </ExtraEditor1>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit22>
     </Units>
-    <JumpHistory Count="7" HistoryIndex="6">
+    <JumpHistory Count="3" HistoryIndex="2">
       <Position1>
         <Filename Value="Unit1.pas"/>
         <Caret Line="80" Column="5" TopLine="71"/>
@@ -199,22 +208,6 @@
         <Filename Value="Unit1.pas"/>
         <Caret Line="92" Column="24" TopLine="84"/>
       </Position3>
-      <Position4>
-        <Filename Value="..\..\..\Source\uRESTDWPoolerDB.pas"/>
-        <Caret Line="2331" TopLine="2312"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\..\..\Source\uRESTDWPoolerDB.pas"/>
-        <Caret Line="2248" Column="2" TopLine="2248"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\..\..\Source\uRESTDWPoolerDB.pas"/>
-        <Caret Line="2039" Column="2" TopLine="2039"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\..\..\Source\uRESTDWPoolerDB.pas"/>
-        <Caret Line="1596" TopLine="1583"/>
-      </Position7>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>
