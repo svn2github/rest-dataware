@@ -761,11 +761,7 @@ Begin
          HttpRequest.Request.ContentEncoding := 'multipart/form-data';
          If vDatacompress Then
           Begin
-           {$IFDEF FPC}
-            aStringStream := TStringStream.Create(HttpRequest.Post(vURL, SendParams, GetEncoding(TEncodeSelect(vRSCharset))));
-           {$ELSE}
-            aStringStream := TStringStream.Create(HttpRequest.Post(vURL, SendParams));
-           {$ENDIF}
+           aStringStream := TStringStream.Create(HttpRequest.Post(vURL, SendParams));
            ZDecompressStreamD(aStringStream, StringStream);
            FreeAndNil(aStringStream);
           End
