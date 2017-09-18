@@ -241,14 +241,16 @@ Begin
    End
   Else
    Begin
+        if not vUniConnection.InTransaction then
+           vUniConnection.StartTransaction;
     vTempQuery.ExecSQL;
-    vUniConnection.CommitRetaining;
+    vUniConnection.Commit;//Retaining;
    End;
  Except
   On E : Exception do
    Begin
     Try
-     vUniConnection.RollbackRetaining;
+     vUniConnection.Rollback;//Retaining;
     Except
     End;
     Error := True;
@@ -319,13 +321,15 @@ Begin
        Break;
      End;
    End;
+  if not vUniConnection.InTransaction then
+  vUniConnection.StartTransaction;
   vTempStoredProc.ExecProc;
-  vUniConnection.CommitRetaining;
+  vUniConnection.Commit;//Retaining;
  Except
   On E : Exception do
    Begin
     Try
-     vUniConnection.RollbackRetaining;
+     vUniConnection.Rollback;//Retaining;
     Except
     End;
     Error := True;
@@ -350,13 +354,16 @@ Begin
    vUniConnection.Connected                     := True;
    vTempStoredProc.Connection                   := vUniConnection;
    vTempStoredProc.StoredProcName               := DecodeStrings(ProcName, GetEncoding(Encoding));
+
+  if not vUniConnection.InTransaction then
+  vUniConnection.StartTransaction;
    vTempStoredProc.ExecProc;
-   vUniConnection.CommitRetaining;
+   vUniConnection.Commit;//Retaining;
  Except
   On E : Exception do
    Begin
     Try
-     vUniConnection.RollbackRetaining;
+     vUniConnection.Rollback;//Retaining;
     Except
     End;
     Error := True;
@@ -429,14 +436,16 @@ Begin
    End
   Else
    Begin
+        if not vUniConnection.InTransaction then
+           vUniConnection.StartTransaction;
     vTempQuery.ExecSQL;
-    vUniConnection.CommitRetaining;
+    vUniConnection.Commit;//Retaining;
    End;
  Except
   On E : Exception do
    Begin
     Try
-     vUniConnection.RollbackRetaining;
+     vUniConnection.Rollback;//Retaining;
     Except
     End;
     Error := True;
