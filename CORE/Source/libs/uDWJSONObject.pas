@@ -39,16 +39,25 @@ End;
    Procedure WriteValue  (bValue : String);
    Function FormatValue  (bValue : String)   : String;
    Function GetValueJSON (bValue : String)   : String;
-   Function DatasetValues(bValue : TDataset) : String;
+   Function DatasetValues(bValue      : TDataset;
+                          DTSeparator : String = '/';
+                          TMSeparator : String = ':';
+                          DCSeparator : String = ',') : String;
    Function EncodedString : String;
   Public
    Procedure ToStream       (Var bValue   : TMemoryStream);
    Procedure LoadFromDataset(TableName    : String;
                              bValue       : TDataset;
-                             EncodedValue : Boolean = True);
+                             EncodedValue : Boolean = True;
+                             DTSeparator  : String = '/';
+                             TMSeparator  : String = ':';
+                             DCSeparator  : String = ',');
    Procedure WriteToDataset(DatasetType   : TDatasetType;
                             JSONValue     : String;
-                            DestDS        : TDataset);
+                            DestDS        : TDataset;
+                            DTSeparator   : String = '/';
+                            TMSeparator   : String = ':';
+                            DCSeparator   : String = ',');
    Procedure   LoadFromJSON  (bValue      : String);
    Procedure   LoadFromStream(Stream      : TMemoryStream;
                               Encode      : Boolean = True);
@@ -478,7 +487,10 @@ Begin
   Result := vTempString;
 End;
 
-Function TJSONValue.DatasetValues(bValue : TDataset) : String;
+Function TJSONValue.DatasetValues(bValue      : TDataset;
+                                  DTSeparator : String = '/';
+                                  TMSeparator : String = ':';
+                                  DCSeparator : String = ',') : String;
 Var
  vLines : String;
  A      : Integer;
@@ -525,7 +537,7 @@ Var
    Begin
     If bValue.Fields[I].DataType In [{$IFNDEF FPC}{$IF CompilerVersion > 21}ftExtended,
                                      {$IFEND}{$ENDIF}ftFloat, ftCurrency, ftFMTBcd, ftBCD] Then
-     vTempValue := Format('"%s"', [StringFloat(bValue.Fields[I].AsString)])
+     vTempValue := Format('"%s"', [StringReplace(FormatFloat('########0.0000', bValue.Fields[I].AsFloat), ',', 'dc', [rfReplaceAll])])
     Else If bValue.Fields[I].DataType in [ftBytes,   ftVarBytes, ftBlob,
                                           ftGraphic, ftOraBlob,  ftOraClob] Then
      Begin
@@ -561,6 +573,18 @@ Var
          vTempValue := Format('"%s"', [EncodeStrings(bValue.Fields[I].AsString)])
         Else
          vTempValue := Format('"%s"', [bValue.Fields[I].AsString])
+       End
+      Else If bValue.Fields[I].DataType in [ftDate, ftTime, ftDateTime, ftTimeStamp] Then
+       Begin
+        If bValue.Fields[I].DataType      =   ftDate Then
+         vTempValue := Format('"%s"', [StringReplace(FormatDateTime('dd/mm/yyyy', bValue.Fields[I].AsDateTime), '/', 'dt', [rfReplaceAll])])
+        Else If bValue.Fields[I].DataType =   ftTime Then
+         vTempValue := Format('"%s"', [StringReplace(FormatDateTime('hh:mm:ss',   bValue.Fields[I].AsDateTime), ':', 'ts', [rfReplaceAll])])
+        Else If bValue.Fields[I].DataType In [ftDateTime, ftTimeStamp] Then
+         Begin
+          vTempValue := StringReplace(FormatDateTime('dd/mm/yyyy', bValue.Fields[I].AsDateTime), '/', 'dt', [rfReplaceAll]);
+          vTempValue := Format('"%s"', [vTempValue + ' ' + StringReplace(FormatDateTime('hh:mm:ss',   bValue.Fields[I].AsDateTime), ':', 'ts', [rfReplaceAll])]);
+         End;
        End
       Else
        vTempValue := Format('"%s"', [bValue.Fields[I].AsString]);
@@ -605,7 +629,10 @@ End;
 
 Procedure TJSONValue.LoadFromDataset(TableName    : String;
                                      bValue       : TDataset;
-                                     EncodedValue : Boolean = True);
+                                     EncodedValue : Boolean = True;
+                                     DTSeparator  : String = '/';
+                                     TMSeparator  : String = ':';
+                                     DCSeparator  : String = ',');
 Var
  vTagGeral : String;
 Begin
@@ -614,7 +641,10 @@ Begin
  vObjectValue     := ovDataSet;
  vtagName         := Lowercase(TableName);
  vEncoded         := EncodedValue;
- vTagGeral        := DatasetValues(bValue);
+ vTagGeral        := DatasetValues(bValue,
+                                   DTSeparator,
+                                   TMSeparator,
+                                   DCSeparator);
  aValue           := ToBytes(vTagGeral);
 End;
 
@@ -652,7 +682,10 @@ End;
 
 Procedure TJSONValue.WriteToDataset(DatasetType : TDatasetType;
                                     JSONValue   : String;
-                                    DestDS      : TDataset);
+                                    DestDS      : TDataset;
+                                    DTSeparator : String = '/';
+                                    TMSeparator : String = ':';
+                                    DCSeparator : String = ',');
 Var
  bJsonOBJ,
  bJsonArraySub,
@@ -666,6 +699,8 @@ Var
  vBlobStream    : TStringStream;
  ListFields     : TStringList;
  Procedure SetValueA(Field : TField; Value : String);
+ Var
+  vTempValue    : String;
  Begin
   Case Field.DataType Of
    ftUnknown,
@@ -687,13 +722,16 @@ Var
    ftCurrency,
    ftBCD,
    ftFMTBcd     : Begin
-                   If Value <> '' Then
+                   vTempValue := Value;
+                   If Pos('dc', vTempValue) > 0 Then
+                    vTempValue := StringReplace(vTempValue, 'dc', DCSeparator, [rfReplaceAll]);
+                   If vTempValue <> '' Then
                     Begin
                      Case Field.DataType Of
-                       ftFloat  : Field.AsFloat    := StrToFloat(Value);
+                       ftFloat  : Field.AsFloat    := StrToFloat(vTempValue);
                        ftCurrency,
                        ftBCD,
-                       ftFMTBcd : Field.AsCurrency := StrToFloat(Value);
+                       ftFMTBcd : Field.AsCurrency := StrToFloat(vTempValue);
                      End;
                     End;
                   End;
@@ -701,8 +739,13 @@ Var
    ftTime,
    ftDateTime,
    ftTimeStamp  : Begin
-                   If Value <> '' Then
-                    Field.AsDateTime := StrToDateTime(Value);
+                   vTempValue := Value;
+                   If Pos('dt', vTempValue) > 0 Then
+                    vTempValue := StringReplace(vTempValue, 'dt', DTSeparator, [rfReplaceAll]);
+                   If Pos('ts', vTempValue) > 0 Then
+                    vTempValue := StringReplace(vTempValue, 'ts', TMSeparator, [rfReplaceAll]);
+                   If vTempValue <> '' Then
+                    Field.AsDateTime := StrToDateTime(vTempValue);
                   End;
   End;
  End;
@@ -907,7 +950,7 @@ Begin
              Else
               Begin
                {$IFNDEF FPC}
-                DestDS.Fields[I].Value := bJsonOBJTemp.get(StrToInt(ListFields[I])).ToString;
+                SetValueA(DestDS.Fields[I], bJsonOBJTemp.get(StrToInt(ListFields[I])).ToString);
                {$ELSE}
                 SetValueA(DestDS.Fields[I], bJsonOBJTemp.get(StrToInt(ListFields[I])).ToString);
                {$ENDIF}
