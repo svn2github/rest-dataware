@@ -341,7 +341,7 @@ Begin
     if vTempQuery.ResourceOptions.ParamCreate then
     begin
       Try
-       vTempQuery.Params.Prepare(ftString, ptInput);
+//       vTempQuery.Params.Prepare(ftString, ptInput);
        vTempQuery.Prepare;
       Except
       End;
