@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2017/09/06 17:20:16.000.249,C:\Users\Administrador\Documents\Embarcadero\Studio\Projects\ProjectGroup1.groupproj=D:\sistemas\tokio\Samples\DprGroupConflex3c.groupproj</Transaction>
+    <Transaction>2017/09/18 12:05:59.000.910,D:\sistemas\Base_RdWare\DwErp\DprGroupConflex3c.groupproj=D:\sistemas\Base_RdWare\DwErp\DprGroupDwErp.groupproj</Transaction>
+  </Transactions>
+	<Default.Personality>
+		<Projects ActiveProject="D:\sistemas\Base_RdWare\DwErp\Server\ServerDw.dproj"/>
+	</Default.Personality>
+</BorlandProject>
