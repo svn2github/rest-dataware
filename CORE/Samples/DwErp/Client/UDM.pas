@@ -78,24 +78,7 @@ end;
 
 procedure TDM.DataModuleCreate(Sender: TObject);
 begin
-//  if (Fcnpj <> EmptyStr) then
-//  begin
-//    Coneccao.Close;
-//    Coneccao.WelcomeMessage := Fcnpj;
-//    Coneccao.PoolerService := Fservidor;
-//    Coneccao.PoolerPort := Fporta;
-//    Coneccao.Login := Fusuario;
-//    Coneccao.Password := Fsenha;
-//    Coneccao.Compression := True;
-//
-//    CdsConfig.Close;
-//    CdsConfig.SQL.Clear;
-//    CdsConfig.SQL.Add('select * from SYS_CONFIG');
-//    CdsConfig.Open;
-//  end;
-
-
- Fusuario:=  'point';
+    Fusuario:=  'point';
     Fsenha:= 'gadu!@##@!';
     Fporta:= 8080;
     Fservidor:= 'localhost';

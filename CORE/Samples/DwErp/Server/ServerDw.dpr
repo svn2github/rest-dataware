@@ -11,8 +11,7 @@ uses
   System.UITypes,
   uPrincipal in 'uPrincipal.pas' {FrmServer},
   uClassePonto in 'Libs\uClassePonto.pas',
-
-  uUpdateDB in 'Libs\uUpdateDB.pas' {$R *.res},
+   uUpdateDB in 'Libs\uUpdateDB.pas' {$R *.res},
   Winapi.Windows,
   Vcl.Dialogs,
   System.SysUtils,

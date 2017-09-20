@@ -14,7 +14,9 @@ uses
   FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
   FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt,
   JvStringHolder, Vcl.Forms,
-  Vcl.Dialogs, System.StrUtils
+  Vcl.Dialogs, System.StrUtils,
+
+  Data.FireDACJSONReflect, FireDAC.Stan.StorageBin, Datasnap.Provider
 
     ;
 
@@ -27,8 +29,9 @@ type
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     Server_FDConnection: TFDConnection;
     qry: TFDQuery;
+    FDStanStorageBinLink1: TFDStanStorageBinLink;
     FDMem: TFDMemTable;
-    FDQuery1: TFDQuery;
+    Qryapplyupdate: TFDQuery;
     procedure ServerMethodDataModuleReplyEvent(SendType: TSendEvent; Context: string; var Params: TDWParams;
       var Result: string);
     procedure ServerMethodDataModuleWelcomeMessage(Welcomemsg: string);
@@ -59,91 +62,70 @@ uses uPrincipal;
 function TServerMetodDM.ApllyUpdadte(var Params: TDWParams): String;
 Var
   JSONValue: TJSONValue;
-  _vtabela, _vsql, _Vcnpj: string;
-  
-  aTag : WideString;
-  _Posini , _poinitabela , _posfintabela : integer;
-  Vqry : string;
- x,i: integer;
+  Vqry, _vsql, _Vcnpj: string;
 
+  aTag: WideString;
+  i, _Posini: integer;
+  ExecSql: string;
 Begin
+
   JSONValue := TJSONValue.Create;
   JSONValue.Encoding := GetEncoding(FrmServer.ServerMetodos.Encoding);
+
   Try
     If (Params.ItemsString['SQL'] <> Nil) Then
-      _vsql := Params.ItemsString['SQL'].Value;
+      _vsql := StringReplace(Params.ItemsString['SQL'].Value, #$D#$A , '', [rfReplaceAll]);
+
 
     If (Params.ItemsString['CNPJ'] <> Nil) Then
       _Vcnpj := Params.ItemsString['CNPJ'].Value;
-
 
     if setarbanco(_Vcnpj) then
     begin
       if Server_FDConnection.Connected then
       begin
 
-        Try
-           i := 1;
-           while Length( _vsql ) > 0 do
+        try
+          i := 1;
+          while Length(_vsql) > 0 do
+          begin
+            aTag := 'º';
+            _Posini := Pos(aTag, _vsql);
+            Vqry := EmptyStr;
+            if ( _Posini > 0 ) then
+            begin
+
+              Vqry := copy(_vsql, 0, _Posini - 1);
+              JSONValue.WriteToDataset(dtFull, Vqry, FDMem);
+
+              ExecSql := funcoes.InSertUpdate(FDMem, funcoes.peganometabela(Vqry));
+              Server_FDConnection.ExecSql(ExecSql);
+              _vsql := copy(_vsql, _Posini + 1, Length(_vsql));
+              inc(i);
+            end
+            else
+            begin
+              Vqry := _vsql;
+              JSONValue.WriteToDataset(dtFull, Vqry, FDMem);
+              ExecSql := funcoes.InSertUpdate(FDMem, funcoes.peganometabela(Vqry));
+              Server_FDConnection.ExecSql(ExecSql);
+
+              break;
+            end;
+            if funcoes.Empty(_vsql) then
+            begin
+              if (Params.ItemsString['RESULTADO'] <> nil) then
+                Params.ItemsString['RESULTADO'].SetValue('Atualizado com Sucesso...');
+            end;
+
+          end;
+        except
+           on e : exception do
            begin
-             aTag := 'º';
-             _Posini := Pos(aTag, _vsql );
-             Vqry := '';
-             if _Posini > 0 then
-             begin
-
-               Vqry := copy( _vsql, 0, _Posini-1 );
-               try
-               JSONValue.WriteToDataset(dtFull, vqry , FDQuery1 );
-
-
-               FDQuery1.ApplyUpdates(0);
-               finally
-
-               end;
-
-
-               _vsql := copy( _vsql, _Posini+1, Length(_vsql) );
-               inc( i );
-             end
-             else
-             begin
-               Vqry :=  _vsql;
-
-               try
-             //  JSONValue.WriteToDataset(dtFull, vqry , fdqry );
-
-
-
-               finally
-               end;
-
-
-
-               break;
-             end;
+                if (Params.ItemsString['RESULTADO'] <> nil) then
+                Params.ItemsString['RESULTADO'].SetValue( e.Message );
            end;
-
-           for x  := 1 to i do
-           begin
-
-
-
-           end;
-
-
-//          fdQuery.Open;
-//
-//          Result := JSONValue.ToJSON;
-//
-//          if (Params.ItemsString['RESULTADO'] <> nil) then
-//            Params.ItemsString['RESULTADO'].SetValue(Result);
-
-        Finally
-
-
-        End;
-
+        end;
       end;
     end;
   Finally
@@ -152,7 +134,6 @@ Begin
   End;
 
 end;
-
 
 function TServerMetodDM.RetornaSql(var Params: TDWParams): String;
 Var
@@ -226,7 +207,7 @@ Begin
         Try
           fdQuery.Connection := Server_FDConnection;
           fdQuery.SQL.Text := _vsql;
-          fdQuery.ExecSQL(_vsql);
+          fdQuery.ExecSql(_vsql);
           FreeAndNil(fdQuery);
           if (Params.ItemsString['RESULTADO'] <> nil) then
             Params.ItemsString['RESULTADO'].SetValue('OK');
@@ -268,7 +249,6 @@ Begin
         Else If UpperCase(Context) = UpperCase('ApllyUpdadte') Then
           Result := ApllyUpdadte(Params)
 
-
         Else
         Begin
           If (Params.ItemsString['CNPJ'] <> Nil) Then
@@ -309,14 +289,14 @@ Begin
     SL.LoadFromFile(ExtractFilepath(Application.Exename) + 'data_config.xml');
 
     for i := 0 to SL.Count - 1 do
-      SL_Decrypted.Add(string(Funcoes.Decrypt(string(SL.Strings[i]), 2801)));
+      SL_Decrypted.Add(string(funcoes.Decrypt(string(SL.Strings[i]), 2801)));
 
     dataXML.ReadFromString(SL_Decrypted.Text);
     dataXML.XmlFormat := xfReadable;
 
     if not Assigned(dataXML.Root) then
     begin
-      ShowMessage('Sem arquivo de configuração ( data_config.xml )');
+      Showmessage('Sem arquivo de configuração ( data_config.xml )');
       Application.Terminate;
       Exit;
       Abort;
@@ -333,7 +313,7 @@ Begin
         begin
           aTempNode2 := aTempNode.Nodes[j];
 
-          if Funcoes.Empty(aTempNode2.AttributeByName['file_path']) then
+          if funcoes.Empty(aTempNode2.AttributeByName['file_path']) then
             Continue;
 
           // PontoInf := AnsiSameText(Trim(aTempNode2.AttributeByName['pontoinf']), '1');
@@ -372,10 +352,10 @@ end;
 
 initialization
 
-Funcoes := TClassePonto.Create;
+funcoes := TClassePonto.Create;
 
 finalization
 
-Funcoes.Free;
+funcoes.Free;
 
 end.

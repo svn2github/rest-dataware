@@ -943,7 +943,7 @@ object FrmServer: TFrmServer
     Top = 120
     Width = 513
     Height = 340
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     TabOrder = 3
     object TabSheet1: TTabSheet
       Caption = 'TabSheet1'
@@ -951,9 +951,22 @@ object FrmServer: TFrmServer
         Left = 3
         Top = 18
         Width = 494
-        Height = 291
+        Height = 95
         ItemHeight = 13
         TabOrder = 0
+      end
+      object DBGrid1: TDBGrid
+        Left = 5
+        Top = 119
+        Width = 484
+        Height = 190
+        DataSource = DataSource1
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
       end
     end
     object TabSheet2: TTabSheet
@@ -32117,5 +32130,10 @@ object FrmServer: TFrmServer
       '534554205445524d203b205e'
       ''
       '434f4d4d495420574f524b3b')
+  end
+  object DataSource1: TDataSource
+    DataSet = ServerMetodDM.FDMem
+    Left = 364
+    Top = 296
   end
 end

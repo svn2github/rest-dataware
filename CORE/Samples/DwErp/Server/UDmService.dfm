@@ -22,11 +22,11 @@ object ServerMetodDM: TServerMetodDM
     Top = 80
   end
   object FDPhysFBDriverLink1: TFDPhysFBDriverLink
-    Left = 559
+    Left = 479
     Top = 23
   end
   object FDStanStorageJSONLink1: TFDStanStorageJSONLink
-    Left = 525
+    Left = 357
     Top = 23
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
@@ -50,6 +50,7 @@ object ServerMetodDM: TServerMetodDM
     UpdateOptions.AssignedValues = [uvLockMode, uvLockWait]
     UpdateOptions.LockMode = lmPessimistic
     UpdateOptions.LockWait = True
+    Connected = True
     LoginPrompt = False
     Left = 592
     Top = 72
@@ -61,7 +62,12 @@ object ServerMetodDM: TServerMetodDM
     Left = 592
     Top = 128
   end
+  object FDStanStorageBinLink1: TFDStanStorageBinLink
+    Left = 480
+    Top = 72
+  end
   object FDMem: TFDMemTable
+    CachedUpdates = True
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -69,13 +75,16 @@ object ServerMetodDM: TServerMetodDM
     UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
-    Left = 320
-    Top = 224
+    Left = 296
+    Top = 216
   end
-  object FDQuery1: TFDQuery
+  object Qryapplyupdate: TFDQuery
     CachedUpdates = True
     Connection = Server_FDConnection
-    Left = 368
-    Top = 224
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate, uvUpdateChngFields, uvUpdateMode, uvRefreshMode]
+    SQL.Strings = (
+      '')
+    Left = 392
+    Top = 216
   end
 end

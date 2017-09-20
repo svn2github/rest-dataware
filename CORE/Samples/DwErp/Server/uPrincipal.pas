@@ -7,7 +7,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uRESTDWBase, Vcl.StdCtrls, Vcl.ExtCtrls,
   Vcl.Imaging.pngimage, dxGDIPlusClasses, nfeNFDXML,
   Data.DBXFirebird, Data.DB, Data.SqlExpr, uUpdateDB, uClassePonto,
-  System.Math, System.StrUtils, UDMservice, Vcl.ComCtrls, JvStringHolder;
+  System.Math, System.StrUtils, UDMservice, Vcl.ComCtrls, JvStringHolder,
+  Vcl.Grids, Vcl.DBGrids;
 
 type
   TFrmServer = class(TForm)
@@ -30,6 +31,8 @@ type
     tupdatelogs: TTimer;
     ScriptMaster: TJvStrHolder;
     Image1: TImage;
+    DBGrid1: TDBGrid;
+    DataSource1: TDataSource;
     procedure FormCreate(Sender: TObject);
     procedure ButtonStartClick(Sender: TObject);
     procedure ServerMetodosLastRequest(Value: string);

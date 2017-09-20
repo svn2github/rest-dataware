@@ -7,11 +7,12 @@ uses
 {$IFDEF Debug}
   CodeSiteLogging,
 {$ENDIF}
-  uDWJSON, uDWJSONObject, System.JSON, System.SysUtils, Data.DB, REST.Response.Adapter,
+  system.json, uDWJSON, System.SysUtils, Data.DB, REST.Response.Adapter,
   UDM, FireDAC.Comp.Client, Menus, System.Classes, Vcl.Forms, Vcl.Controls,
   uLogin, Winapi.Windows, Vcl.Dialogs, Graphics, JvMemoryDataset,
   uDWConstsData,
-  uDWConsts, DBXJSon ;
+  uDWConsts, uRESTDWPoolerDB,
+  uDWJSONObject;
 
 const
 
@@ -96,7 +97,7 @@ type
 
     constructor Create;
     destructor Destroy; override;
-    procedure JsonToDataset(aDataset: TDataSet; aJSON: string);
+    //procedure JsonToDataset(aDataset: TDataSet; aJSON: string);
     function GetConfig(ACampo: string; ADefaultIfEmpty: Variant): Variant;
     procedure Retornasql(_sql: string);
     procedure RunSql(_sql: string);
@@ -109,8 +110,9 @@ type
     function Encrypt(const S: AnsiString; Key: Word): AnsiString;
     function VersaoMaior(Ver1, Ver2: string): Boolean;
     function FixSlash(aPath: string): string;
-    function DataSetToJsonTxt(pDataSet: TDataSet): string;
+//    function DataSetToJsonTxt(pDataSet: TDataSet): string;
     procedure VerificaForm(TFormulario: TComponentClass; var Formulario);
+    function ApplayUpdates(ArrayDataSets: array of TRESTDWClientSQL): Boolean;
 
   end;
 
@@ -121,7 +123,83 @@ implementation
 
 { TFuncoes }
 
-uses UPrincipal, NFDXML;
+uses UPrincipal, NFDXML, variants;
+
+function TFuncoes.ApplayUpdates(ArrayDataSets: array of TRESTDWClientSQL): Boolean;
+
+var
+  JSONValue: TJSONValue;
+  DWParams: TDWParams;
+  JSONParam: TJSONParam;
+  Json_dataset: TStringList;
+  jsontexto , lResponse: String;
+  i: integer;
+
+begin
+  Result := True;
+
+  try
+
+    JSONValue := TJSONValue.Create;
+    Json_dataset := TStringList.Create;
+    try
+      i := 0;
+      while i <= High(ArrayDataSets) do
+      begin
+        JSONValue.LoadFromDataset(ArrayDataSets[i].Name, ArrayDataSets[i], False);
+        Json_dataset.add(JSONValue.ToJSON +'º');
+
+        i := i + 1;
+      end;
+
+      dm.RESTClientPooler1.RequestTimeOut := 2 * 60000;
+      DWParams := TDWParams.Create;
+      try
+        DWParams.Encoding := GetEncoding(dm.RESTClientPooler1.Encoding);
+        JSONParam := TJSONParam.Create(DWParams.Encoding);
+        JSONParam.ParamName := 'SQL';
+        JSONParam.ObjectDirection := odIN;
+        JSONParam.SetValue(Json_dataset.Text);
+        DWParams.add(JSONParam);
+
+        JSONParam := TJSONParam.Create(DWParams.Encoding);
+        JSONParam.ParamName := 'CNPJ';
+        JSONParam.ObjectDirection := odIN;
+        JSONParam.SetValue(dm.cnpj);
+        DWParams.add(JSONParam);
+
+        JSONParam := TJSONParam.Create(DWParams.Encoding);
+        JSONParam.ParamName := 'RESULTADO';
+        JSONParam.SetValue('');
+        DWParams.add(JSONParam);
+
+        lResponse := dm.RESTClientPooler1.SendEvent('ApllyUpdadte', DWParams);
+        If DWParams.ItemsString['RESULTADO'].Value <> '' Then
+        begin
+          ShowMessage( DWParams.ItemsString['RESULTADO'].Value );
+        end;
+
+      finally
+
+        freeandnil(DWParams);
+
+      end;
+
+    finally
+      freeandnil(JSONValue);
+      freeandnil(Json_dataset);
+    end;
+
+  except
+    on E: Exception do
+    begin
+      Application.MessageBox(PChar(Format('Erro ao executar o MultiApplyUpdate' + #13#10#13#10 + '%s', [E.Message])),
+        PChar(Application.Title), MB_OK + MB_ICONWARNING);
+      Result := False;
+    end;
+  end;
+
+end;
 
 constructor TFuncoes.Create;
 begin
@@ -131,14 +209,12 @@ end;
 
 destructor TFuncoes.Destroy;
 begin
-  FreeAndNil(CurrentUser);
+  freeandnil(CurrentUser);
 
   inherited;
 end;
 
-
-
-procedure Tfuncoes.VerificaForm(TFormulario: TComponentClass; var Formulario);
+procedure TFuncoes.VerificaForm(TFormulario: TComponentClass; var Formulario);
 var
   i: integer;
   Achou: Boolean;
@@ -178,58 +254,56 @@ begin
   end;
 end;
 
-
-
-function TFuncoes.DataSetToJsonTxt(pDataSet: TDataSet): string;
-var
-  ArrayJSon: TJSONArray;
-  ObjJSon: TJSONObject;
-  strJSon: TJSONString;
-  intJSon: TJSONNumber;
-  TrueJSon: TJSONTrue;
-  FalseJSon: TJSONFalse;
-  I: Integer;
-  pField: TField;
-begin
-  ArrayJSon := TJSONArray.Create;
-  try
-    pDataSet.First;
-    while not pDataSet.Eof do
-    begin
-      ObjJSon := TJSONObject.Create;
-      for pField in pDataSet.Fields do
-        case pField.DataType of
-          ftString:
-            begin
-              strJSon := TJSONString.Create(pField.AsString);
-              ObjJSon.AddPair(pField.FieldName, strJSon);
-            end;
-          ftInteger:
-            begin
-              intJSon := TJSONNumber.Create(pField.AsInteger);
-              ObjJSon.AddPair(pField.FieldName, intJSon);
-            end;
-          ftBoolean:
-
-            begin
-              TrueJSon := TJSONTrue.Create;
-              ObjJSon.AddPair(pField.FieldName, TrueJSon);
-            end;
-
-        else // casos gerais são tratados como string
-          begin
-            strJSon := TJSONString.Create(pField.AsString);
-            ObjJSon.AddPair(pField.FieldName, strJSon);
-          end;
-        end;
-      ArrayJSon.AddElement(ObjJSon);
-      pDataSet.next;
-    end;
-    result := ArrayJSon.ToString;
-  finally
-    ArrayJSon.Free;
-  end;
-end;
+//function TFuncoes.DataSetToJsonTxt(pDataSet: TDataSet): string;
+//var
+//  ArrayJSon: TJSONArray;
+//  ObjJSon: TJSONObject;
+//  strJSon: TJSONString;
+//  intJSon: TJSONNumber;
+//  TrueJSon: TJSONTrue;
+//  FalseJSon: TJSONFalse;
+//  i: integer;
+//  pField: TField;
+//begin
+//  ArrayJSon := TJSONArray.Create;
+//  try
+//    pDataSet.First;
+//    while not pDataSet.Eof do
+//    begin
+//      ObjJSon := TJSONObject.Create;
+//      for pField in pDataSet.Fields do
+//        case pField.DataType of
+//          ftString:
+//            begin
+//              strJSon := TJSONString.Create(pField.AsString);
+//              ObjJSon.AddPair(pField.FieldName, strJSon);
+//            end;
+//          ftInteger:
+//            begin
+//              intJSon := TJSONNumber.Create(pField.AsInteger);
+//              ObjJSon.AddPair(pField.FieldName, intJSon);
+//            end;
+//          ftBoolean:
+//
+//            begin
+//              TrueJSon := TJSONTrue.Create;
+//              ObjJSon.AddPair(pField.FieldName, TrueJSon);
+//            end;
+//
+//        else // casos gerais são tratados como string
+//          begin
+//            strJSon := TJSONString.Create(pField.AsString);
+//            ObjJSon.AddPair(pField.FieldName, strJSon);
+//          end;
+//        end;
+//      ArrayJSon.AddElement(ObjJSon);
+//      pDataSet.next;
+//    end;
+//    Result := ArrayJSon.ToString;
+//  finally
+//    ArrayJSon.Free;
+//  end;
+//end;
 
 function TFuncoes.FixSlash(aPath: string): string;
 var
@@ -245,72 +319,72 @@ begin
       Delete(vPath, 1, 1);
   end;
 
-  result := vPath;
+  Result := vPath;
 end;
 
 function TFuncoes.VersaoMaior(Ver1, Ver2: string): Boolean;
 var
-  na, nb: array [1 .. 4] of Integer;
-  I, Ps: Integer;
+  na, nb: array [1 .. 4] of integer;
+  i, Ps: integer;
   sStr, tVer1, tVer2: string;
 begin
   tVer1 := Trim(Ver1);
   tVer2 := Trim(Ver2);
   if (Pos('.', tVer1) <= 0) or (Pos('.', tVer2) <= 0) then
   begin
-    result := True;
+    Result := True;
     Exit;
   end;
 
   { Pegando a primeira versão, e decompondo ela }
   sStr := tVer1;
-  for I := 1 to 4 do
+  for i := 1 to 4 do
   begin
     Ps := Pos('.', sStr);
     if Ps > 0 then
-      na[I] := StrToInt(Copy(sStr, 1, Ps - 1))
+      na[i] := StrToInt(Copy(sStr, 1, Ps - 1))
     else
-      na[I] := StrToInt(sStr);
+      na[i] := StrToInt(sStr);
     sStr := Copy(sStr, Ps + 1, Length(sStr));
   end;
 
   { Pegando a segunda versão, e decompondo ela }
   sStr := tVer2;
-  for I := 1 to 4 do
+  for i := 1 to 4 do
   begin
     Ps := Pos('.', sStr);
     if Ps > 0 then
-      nb[I] := StrToInt(Copy(sStr, 1, Ps - 1))
+      nb[i] := StrToInt(Copy(sStr, 1, Ps - 1))
     else
-      nb[I] := StrToInt(sStr);
+      nb[i] := StrToInt(sStr);
     sStr := Copy(sStr, Ps + 1, Length(sStr));
   end;
 
-  result := False;
+  Result := False;
 
   if (na[1] > nb[1]) then
-    result := True;
+    Result := True;
   if (na[1] <= nb[1]) and (na[2] > nb[2]) then
-    result := True;
+    Result := True;
   if (na[1] <= nb[1]) and (na[2] <= nb[2]) and (na[3] > nb[3]) then
-    result := True;
+    Result := True;
   if (na[1] <= nb[1]) and (na[2] <= nb[2]) and (na[3] <= nb[3]) and (na[4] > nb[4]) then
-    result := True;
+    Result := True;
 
 end;
 
 function TFuncoes.Decrypt(const S: AnsiString; Key: Word): AnsiString;
   function InternalDecrypt(const S: AnsiString; Key: Word): AnsiString;
   var
-    I: Word;
+    i: Word;
     Seed: int64;
   begin
-    result := S;
+    Result := S;
     Seed := Key;
-    for I := 1 to Length(result) do
+    for i := 1 to Length(Result) do
     begin
-      result[I] := AnsiChar(Byte(result[I]) xor (Seed shr 8));
-      Seed := (Byte(S[I]) + Seed) * Word(C1) + Word(C2)
+      Result[i] := AnsiChar(Byte(Result[i]) xor (Seed shr 8));
+      Seed := (Byte(S[i]) + Seed) * Word(C1) + Word(C2)
     end
   end;
   function PreProcess(const S: AnsiString): AnsiString;
@@ -327,56 +401,56 @@ function TFuncoes.Decrypt(const S: AnsiString; Key: Word): AnsiString;
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     var
-      I: LongInt;
+      i: LongInt;
     begin
       case Length(S) of
         2:
           begin
-            I := Map[S[1]] + (Map[S[2]] shl 6);
-            SetLength(result, 1);
-            Move(I, result[1], Length(result))
+            i := Map[S[1]] + (Map[S[2]] shl 6);
+            SetLength(Result, 1);
+            Move(i, Result[1], Length(Result))
           end;
         3:
           begin
-            I := Map[S[1]] + (Map[S[2]] shl 6) + (Map[S[3]] shl 12);
-            SetLength(result, 2);
-            Move(I, result[1], Length(result))
+            i := Map[S[1]] + (Map[S[2]] shl 6) + (Map[S[3]] shl 12);
+            SetLength(Result, 2);
+            Move(i, Result[1], Length(Result))
           end;
         4:
           begin
-            I := Map[S[1]] + (Map[S[2]] shl 6) + (Map[S[3]] shl 12) + (Map[S[4]] shl 18);
-            SetLength(result, 3);
-            Move(I, result[1], Length(result))
+            i := Map[S[1]] + (Map[S[2]] shl 6) + (Map[S[3]] shl 12) + (Map[S[4]] shl 18);
+            SetLength(Result, 3);
+            Move(i, Result[1], Length(Result))
           end
       end
     end;
 
   begin
     SS := S;
-    result := '';
+    Result := '';
     while SS <> '' do
     begin
-      result := result + Decode(Copy(SS, 1, 4));
+      Result := Result + Decode(Copy(SS, 1, 4));
       Delete(SS, 1, 4)
     end
   end;
 
 begin
-  result := InternalDecrypt(PreProcess(S), Key)
+  Result := InternalDecrypt(PreProcess(S), Key)
 end;
 
 function TFuncoes.Encrypt(const S: AnsiString; Key: Word): AnsiString;
   function InternalEncrypt(const S: AnsiString; Key: Word): AnsiString;
   var
-    I: Word;
+    i: Word;
     Seed: int64;
   begin
-    result := S;
+    Result := S;
     Seed := Key;
-    for I := 1 to Length(result) do
+    for i := 1 to Length(Result) do
     begin
-      result[I] := AnsiChar(Byte(result[I]) xor (Seed shr 8));
-      Seed := (Byte(result[I]) + Seed) * Word(C1) + Word(C2)
+      Result[i] := AnsiChar(Byte(Result[i]) xor (Seed shr 8));
+      Seed := (Byte(Result[i]) + Seed) * Word(C1) + Word(C2)
     end
   end;
   function PostProcess(const S: AnsiString): AnsiString;
@@ -387,32 +461,32 @@ function TFuncoes.Encrypt(const S: AnsiString; Key: Word): AnsiString;
     const
       Map: array [0 .. 63] of AnsiChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + 'abcdefghijklmnopqrstuvwxyz0123456789+/';
     var
-      I: LongInt;
+      i: LongInt;
     begin
-      I := 0;
-      Move(S[1], I, Length(S));
+      i := 0;
+      Move(S[1], i, Length(S));
       case Length(S) of
         1:
-          result := Map[I mod 64] + Map[(I shr 6) mod 64];
+          Result := Map[i mod 64] + Map[(i shr 6) mod 64];
         2:
-          result := Map[I mod 64] + Map[(I shr 6) mod 64] + Map[(I shr 12) mod 64];
+          Result := Map[i mod 64] + Map[(i shr 6) mod 64] + Map[(i shr 12) mod 64];
         3:
-          result := Map[I mod 64] + Map[(I shr 6) mod 64] + Map[(I shr 12) mod 64] + Map[(I shr 18) mod 64]
+          Result := Map[i mod 64] + Map[(i shr 6) mod 64] + Map[(i shr 12) mod 64] + Map[(i shr 18) mod 64]
       end
     end;
 
   begin
     SS := S;
-    result := '';
+    Result := '';
     while SS <> '' do
     begin
-      result := result + Encode(Copy(SS, 1, 3));
+      Result := Result + Encode(Copy(SS, 1, 3));
       Delete(SS, 1, 3)
     end
   end;
 
 begin
-  result := PostProcess(InternalEncrypt(S, Key))
+  Result := PostProcess(InternalEncrypt(S, Key))
 end;
 
 function TFuncoes.RetornaGUID(const SemHifen: Boolean = True): string;
@@ -421,12 +495,12 @@ var
 begin
   CreateGUID(vGUID);
   if not SemHifen then
-    result := GUIDToString(vGUID)
+    Result := GUIDToString(vGUID)
   else
   begin
-    result := StringReplace(GUIDToString(vGUID), '-', EmptyStr, [rfReplaceAll]);
-    result := StringReplace(result, '{', EmptyStr, [rfReplaceAll]);
-    result := StringReplace(result, '}', EmptyStr, [rfReplaceAll]);
+    Result := StringReplace(GUIDToString(vGUID), '-', EmptyStr, [rfReplaceAll]);
+    Result := StringReplace(Result, '{', EmptyStr, [rfReplaceAll]);
+    Result := StringReplace(Result, '}', EmptyStr, [rfReplaceAll]);
   end;
 end;
 
@@ -436,17 +510,17 @@ begin
     Exit;
 
   if vQuoted then
-    result := QuotedStr(Trim(CurrentUser.Idempresa))
+    Result := QuotedStr(Trim(CurrentUser.Idempresa))
   else
-    result := Trim(Funcoes.CurrentUser.Idempresa);
+    Result := Trim(Funcoes.CurrentUser.Idempresa);
 end;
 
 function TFuncoes.GetIDPointCliente(const vQuoted: Boolean = True): string;
 begin
   if vQuoted then
-    result := QuotedStr(Trim(CurrentUser.Idsys_point_cliente))
+    Result := QuotedStr(Trim(CurrentUser.Idsys_point_cliente))
   else
-    result := Trim(CurrentUser.Idsys_point_cliente);
+    Result := Trim(CurrentUser.Idsys_point_cliente);
 end;
 
 function TFuncoes.pegaversao: string;
@@ -471,38 +545,38 @@ begin
       V4 := dwFileVersionLS and $FFFF;
     end;
     FreeMem(VerInfo, VerInfoSize);
-    result := Format('%d.%d.%d.%d', [V1, V2, V3, V4]);
+    Result := Format('%d.%d.%d.%d', [V1, V2, V3, V4]);
   except
-    result := '0.0.0';
+    Result := '0.0.0';
   end;
 end;
 
 function TFuncoes.Empty(Texto: string): Boolean;
 begin
-  result := (Trim(Texto) = '');
+  Result := (Trim(Texto) = '');
 end;
 
-procedure TFuncoes.JsonToDataset(aDataset: TDataSet; aJSON: string);
-var
-  JObj: TJSONArray;
-  vConv: TCustomJSONDataSetAdapter;
-begin
-  if (aJSON = EmptyStr) then
-  begin
-    Exit;
-  end;
-
-  JObj := TJSONObject.ParseJSONValue(aJSON) as TJSONArray;
-  vConv := TCustomJSONDataSetAdapter.Create(Nil);
-
-  try
-    vConv.Dataset := aDataset;
-    vConv.UpdateDataSet(JObj);
-  finally
-    vConv.Free;
-    JObj.Free;
-  end;
-end;
+//procedure TFuncoes.JsonToDataset(aDataset: TDataSet; aJSON: string);
+//var
+//  JObj: TJSONArray;
+//  vConv: TCustomJSONDataSetAdapter;
+//begin
+//  if (aJSON = EmptyStr) then
+//  begin
+//    Exit;
+//  end;
+//
+//  JObj := TJSONObject.ParseJSONValue(aJSON) as TJSONArray;
+//  vConv := TCustomJSONDataSetAdapter.Create(Nil);
+//
+//  try
+//    vConv.Dataset := aDataset;
+//    vConv.UpdateDataSet(JObj);
+//  finally
+//    vConv.Free;
+//    JObj.Free;
+//  end;
+//end;
 
 procedure TFuncoes.Retornasql(_sql: string);
 var
@@ -526,7 +600,7 @@ begin
     TempSQL := StringReplace(TempSQL, ':psys_point_cliente', Funcoes.GetIDPointCliente, [rfReplaceAll, rfIgnoreCase]);
     dm.Ret_sql.Close;
     dm.Ret_sql.SQL.Clear;
-    dm.Ret_sql.SQL.Add(TempSQL);
+    dm.Ret_sql.SQL.add(TempSQL);
     dm.Ret_sql.Open;
     dm.Ret_sql.First;
 
@@ -552,23 +626,23 @@ Begin
     JSONParam.ParamName := 'SQL';
     JSONParam.ObjectDirection := odIN;
     JSONParam.SetValue(_sql);
-    DWParams.Add(JSONParam);
+    DWParams.add(JSONParam);
 
     JSONParam := TJSONParam.Create(DWParams.Encoding);
     JSONParam.ParamName := 'CNPJ';
     JSONParam.ObjectDirection := odIN;
     JSONParam.SetValue(dm.Fcnpj);
-    DWParams.Add(JSONParam);
+    DWParams.add(JSONParam);
 
     JSONParam := TJSONParam.Create(DWParams.Encoding);
     JSONParam.ParamName := 'RESULTADO';
     JSONParam.SetValue('');
-    DWParams.Add(JSONParam);
+    DWParams.add(JSONParam);
 
     lResponse := dm.RESTClientPooler1.SendEvent('runsql', DWParams);
 
   finally
-    FreeAndNil(DWParams);
+    freeandnil(DWParams);
 
   end;
 
@@ -592,7 +666,7 @@ end;
 function TFuncoes.GetConfig(ACampo: string; ADefaultIfEmpty: Variant): Variant;
 begin
   if (dm.CdsConfig.FieldByName(ACampo).IsNull) then
-    result := ADefaultIfEmpty
+    Result := ADefaultIfEmpty
   else
   begin
     case dm.CdsConfig.FieldByName(ACampo).DataType of
@@ -600,12 +674,12 @@ begin
         ftVarBytes:
         begin
           if (dm.CdsConfig.FieldByName(ACampo).AsString = EmptyStr) then
-            result := ADefaultIfEmpty
+            Result := ADefaultIfEmpty
           else
-            result := dm.CdsConfig.FieldByName(ACampo).Value;
+            Result := dm.CdsConfig.FieldByName(ACampo).Value;
         end;
     else
-      result := dm.CdsConfig.FieldByName(ACampo).Value;
+      Result := dm.CdsConfig.FieldByName(ACampo).Value;
     end;
   end;
 
@@ -620,21 +694,21 @@ end;
 
 destructor TUser.Destroy;
 begin
-  FreeAndNil(FUserRights);
+  freeandnil(FUserRights);
   inherited;
 end;
 
 procedure TUser.LoadRights(FormObj: TCustomForm);
 var
-  I: Integer;
+  i: integer;
   ObjName: string;
 begin
   if Admin then
     Exit;
 
-  for I := 0 to UserRights.Count - 1 do
+  for i := 0 to UserRights.Count - 1 do
   begin
-    ObjName := UserRights.Strings[I];
+    ObjName := UserRights.Strings[i];
 
     if FormObj.FindComponent(ObjName) = nil then
       Exit;
@@ -657,21 +731,21 @@ begin
   FrmLogin.FinalizaSistema := FinalizarSistema;
   try
     if Funcoes.Empty(sLogin) and Funcoes.Empty(sSenha) then
-      result := (FrmLogin.ShowModal = mrOk)
+      Result := (FrmLogin.ShowModal = mrOk)
     else
     begin
       FrmLogin.edUser.Text := sLogin;
       FrmLogin.edSenha.Text := sSenha;
       FrmLogin.edUser.Enabled := False;
       FrmLogin.edSenha.Enabled := False;
-      result := (FrmLogin.ShowModal = mrOk);
+      Result := (FrmLogin.ShowModal = mrOk);
     end;
 
-    if result then
+    if Result then
     begin
       Funcoes.Retornasql('SELECT  * FROM EMPRESA WHERE IDSYS_POINT_CLIENTE = ' + QuotedStr(Trim(FIdsys_point_cliente)));
       dm.Ret_sql.First;
-      dm.CdsEmpresa.LoadFromDataSet(dm.Ret_sql, 0, lmCopy);
+      dm.CdsEmpresa.LoadFromDataset(dm.Ret_sql, 0, lmCopy);
 
     end;
 

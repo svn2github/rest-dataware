@@ -104,7 +104,7 @@ object FrmAdminConfig: TFrmAdminConfig
         TabOrder = 1
         object cxGrid1DBTableView1: TcxGridDBTableView
           Navigator.Buttons.CustomButtons = <>
-          DataController.DataSource = dsSysPoint
+          DataController.DataSource = dsSYS_POINT_CLIENTE
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <>
           DataController.Summary.SummaryGroups = <>
@@ -438,7 +438,7 @@ object FrmAdminConfig: TFrmAdminConfig
           Top = 11
           Width = 273
           Height = 154
-          DataSource = dsSysPoint
+          DataSource = dsSYS_POINT_CLIENTE
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
           TabOrder = 0
           TitleFont.Charset = DEFAULT_CHARSET
@@ -474,10 +474,10 @@ object FrmAdminConfig: TFrmAdminConfig
       end
     end
   end
-  object dsSysPoint: TDataSource
-    DataSet = cdsSysPoint
-    Left = 32
-    Top = 248
+  object dsSYS_POINT_CLIENTE: TDataSource
+    DataSet = SYS_POINT_CLIENTE
+    Left = 56
+    Top = 240
   end
   object dsEmpresa: TDataSource
     DataSet = cdsEmpresa
@@ -991,7 +991,7 @@ object FrmAdminConfig: TFrmAdminConfig
       FieldName = 'PORTAEMAIL'
     end
   end
-  object cdsSysPoint: TRESTDWClientSQL
+  object SYS_POINT_CLIENTE: TRESTDWClientSQL
     FieldDefs = <
       item
         Name = 'IDSYS_POINT_CLIENTE'
@@ -1026,32 +1026,32 @@ object FrmAdminConfig: TFrmAdminConfig
     SQL.Strings = (
       ' select *  from SYS_POINT_CLIENTE')
     CacheUpdateRecords = True
-    Left = 40
-    Top = 192
-    object cdsSysPointIDSYS_POINT_CLIENTE: TStringField
+    Left = 56
+    Top = 184
+    object SYS_POINT_CLIENTEIDSYS_POINT_CLIENTE: TStringField
       FieldName = 'IDSYS_POINT_CLIENTE'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
       Size = 38
     end
-    object cdsSysPointSTATUS: TStringField
+    object SYS_POINT_CLIENTESTATUS: TStringField
       FieldName = 'STATUS'
       Size = 1
     end
-    object cdsSysPointRAZAO_SOCIAL: TStringField
+    object SYS_POINT_CLIENTERAZAO_SOCIAL: TStringField
       FieldName = 'RAZAO_SOCIAL'
       Size = 70
     end
-    object cdsSysPointCNPJ: TStringField
+    object SYS_POINT_CLIENTECNPJ: TStringField
       FieldName = 'CNPJ'
       Size = 18
     end
-    object cdsSysPointMENSAGEM: TMemoField
+    object SYS_POINT_CLIENTEMENSAGEM: TMemoField
       FieldName = 'MENSAGEM'
       BlobType = ftMemo
     end
   end
-  object FDMemTable1: TFDMemTable
+  object FDMem: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -1063,19 +1063,72 @@ object FrmAdminConfig: TFrmAdminConfig
     Top = 344
   end
   object DataSource1: TDataSource
-    DataSet = FDMemTable2
+    DataSet = FDMem
     Left = 512
     Top = 344
   end
-  object FDMemTable2: TFDMemTable
-    FetchOptions.AssignedValues = [evMode]
-    FetchOptions.Mode = fmAll
-    ResourceOptions.AssignedValues = [rvSilentMode]
-    ResourceOptions.SilentMode = True
-    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
-    UpdateOptions.CheckRequired = False
-    UpdateOptions.AutoCommitUpdates = True
-    Left = 401
-    Top = 344
+  object cdscliente: TRESTDWClientSQL
+    FieldDefs = <
+      item
+        Name = 'IDSYS_POINT_CLIENTE'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 38
+      end
+      item
+        Name = 'STATUS'
+        DataType = ftString
+        Size = 1
+      end
+      item
+        Name = 'RAZAO_SOCIAL'
+        DataType = ftString
+        Size = 70
+      end
+      item
+        Name = 'CNPJ'
+        DataType = ftString
+        Size = 18
+      end
+      item
+        Name = 'MENSAGEM'
+        DataType = ftMemo
+      end>
+    MasterCascadeDelete = True
+    Inactive = False
+    DataCache = False
+    Params = <>
+    DataBase = DM.Coneccao
+    SQL.Strings = (
+      ' select *  from SYS_POINT_CLIENTE')
+    CacheUpdateRecords = True
+    Left = 48
+    Top = 96
+    object StringField1: TStringField
+      FieldName = 'IDSYS_POINT_CLIENTE'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+      Size = 38
+    end
+    object StringField2: TStringField
+      FieldName = 'STATUS'
+      Size = 1
+    end
+    object StringField3: TStringField
+      FieldName = 'RAZAO_SOCIAL'
+      Size = 70
+    end
+    object StringField4: TStringField
+      FieldName = 'CNPJ'
+      Size = 18
+    end
+    object MemoField1: TMemoField
+      FieldName = 'MENSAGEM'
+      BlobType = ftMemo
+    end
+  end
+  object DsCliente: TDataSource
+    Left = 104
+    Top = 96
   end
 end

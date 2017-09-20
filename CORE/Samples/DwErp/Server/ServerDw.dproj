@@ -83,7 +83,7 @@
         <AppEnableHighDPI>true</AppEnableHighDPI>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
-        <DCC_Define>madExcept;$(DCC_Define)</DCC_Define>
+        <DCC_Define>madExcept;LeakChecking;$(DCC_Define)</DCC_Define>
         <DCC_ExeOutput>..\_Bin\$(Config)</DCC_ExeOutput>
         <DCC_DcpOutput>..\_Dcu\Servidor\$(Config)</DCC_DcpOutput>
         <DCC_DcuOutput>..\_Dcu\Servidor\$(Config)</DCC_DcuOutput>

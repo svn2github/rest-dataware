@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>2017/07/16 17:08:56.000.688,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\SimpleServer\Client\Unit2.dfm=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\SimpleServer\Client\uDmClientDW.dfm</Transaction>
+    <Transaction>2017/07/16 17:08:56.000.688,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\SimpleServer\Client\uDmClientDW.dfm=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\SimpleServer\Client\Unit2.dfm</Transaction>
     <Transaction>2017/09/09 13:19:53.000.962,D:\sistemas\tokio\conflex3c\Client\uDmClientDW.pas=</Transaction>
     <Transaction>2017/09/10 12:08:39.000.539,=D:\sistemas\tokio\conflex3c\Client\Unit1.pas</Transaction>
-    <Transaction>2017/09/10 12:08:59.000.647,D:\sistemas\tokio\conflex3c\Client\Unit1.pas=D:\sistemas\tokio\conflex3c\Client\Ufuncoes.pas</Transaction>
-    <Transaction>2017/09/12 00:17:35.000.196,D:\sistemas\tokio\conflex3c\Client\ConflexClient.dproj=D:\sistemas\tokio\conflex3c\Client\RestDWClientProject.dproj</Transaction>
-    <Transaction>2017/09/14 01:30:39.000.794,D:\sistemas\tokio\conflex3c\Client\FrmPrincipal.pas=D:\sistemas\tokio\conflex3c\Client\formMain.pas</Transaction>
-    <Transaction>2017/09/14 01:30:39.000.794,D:\sistemas\tokio\conflex3c\Client\FrmPrincipal.dfm=D:\sistemas\tokio\conflex3c\Client\formMain.dfm</Transaction>
-    <Transaction>2017/09/14 01:36:39.000.484,D:\sistemas\tokio\conflex3c\Client\UPrincipal.dfm=D:\sistemas\tokio\conflex3c\Client\FrmPrincipal.dfm</Transaction>
-    <Transaction>2017/09/14 01:36:39.000.484,D:\sistemas\tokio\conflex3c\Client\UPrincipal.pas=D:\sistemas\tokio\conflex3c\Client\FrmPrincipal.pas</Transaction>
+    <Transaction>2017/09/10 12:08:59.000.647,D:\sistemas\tokio\conflex3c\Client\Ufuncoes.pas=D:\sistemas\tokio\conflex3c\Client\Unit1.pas</Transaction>
+    <Transaction>2017/09/12 00:17:35.000.196,D:\sistemas\tokio\conflex3c\Client\RestDWClientProject.dproj=D:\sistemas\tokio\conflex3c\Client\ConflexClient.dproj</Transaction>
+    <Transaction>2017/09/14 01:30:39.000.794,D:\sistemas\tokio\conflex3c\Client\formMain.dfm=D:\sistemas\tokio\conflex3c\Client\FrmPrincipal.dfm</Transaction>
+    <Transaction>2017/09/14 01:30:39.000.794,D:\sistemas\tokio\conflex3c\Client\formMain.pas=D:\sistemas\tokio\conflex3c\Client\FrmPrincipal.pas</Transaction>
+    <Transaction>2017/09/14 01:36:39.000.484,D:\sistemas\tokio\conflex3c\Client\FrmPrincipal.pas=D:\sistemas\tokio\conflex3c\Client\UPrincipal.pas</Transaction>
+    <Transaction>2017/09/14 01:36:39.000.484,D:\sistemas\tokio\conflex3c\Client\FrmPrincipal.dfm=D:\sistemas\tokio\conflex3c\Client\UPrincipal.dfm</Transaction>
     <Transaction>2017/09/14 01:43:05.000.638,=D:\sistemas\tokio\conflex3c\Client\Unit2.pas</Transaction>
-    <Transaction>2017/09/14 01:43:30.000.650,D:\sistemas\tokio\conflex3c\Client\UDM.pas=D:\sistemas\tokio\conflex3c\Client\Unit2.pas</Transaction>
-    <Transaction>2017/09/14 01:43:30.000.650,D:\sistemas\tokio\conflex3c\Client\UDM.dfm=D:\sistemas\tokio\conflex3c\Client\Unit2.dfm</Transaction>
+    <Transaction>2017/09/14 01:43:30.000.650,D:\sistemas\tokio\conflex3c\Client\Unit2.dfm=D:\sistemas\tokio\conflex3c\Client\UDM.dfm</Transaction>
+    <Transaction>2017/09/14 01:43:30.000.650,D:\sistemas\tokio\conflex3c\Client\Unit2.pas=D:\sistemas\tokio\conflex3c\Client\UDM.pas</Transaction>
     <Transaction>2017/09/16 23:29:06.000.617,=D:\sistemas\tokio\conflex3c\lib\csDXFunctions.pas</Transaction>
     <Transaction>2017/09/17 00:21:50.000.170,=D:\sistemas\tokio\conflex3c\Client\uLogin.pas</Transaction>
     <Transaction>2017/09/17 00:24:37.000.387,=D:\sistemas\tokio\conflex3c\Client\uSplashConexao.pas</Transaction>
@@ -20,6 +20,6 @@
     <Transaction>2017/09/17 01:19:57.000.579,=D:\sistemas\tokio\conflex3c\Client\uClasseFindArea.pas</Transaction>
     <Transaction>2017/09/17 01:23:32.000.675,=D:\sistemas\tokio\conflex3c\Client\uAdminConfig.pas</Transaction>
     <Transaction>2017/09/17 01:38:58.000.185,=D:\sistemas\tokio\conflex3c\lib\NFDXML.pas</Transaction>
-    <Transaction>2017/09/18 12:06:53.000.062,D:\sistemas\Base_RdWare\DwErp\Client\ConflexClient.dproj=D:\sistemas\Base_RdWare\DwErp\Client\ClientDw.dproj</Transaction>
+    <Transaction>2017/09/18 12:06:53.000.062,D:\sistemas\Base_RdWare\DwErp\Client\ClientDw.dproj=D:\sistemas\Base_RdWare\DwErp\Client\ConflexClient.dproj</Transaction>
   </Transactions>
 </BorlandProject>

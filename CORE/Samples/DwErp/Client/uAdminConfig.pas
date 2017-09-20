@@ -36,7 +36,7 @@ type
     cxGrid1DBTableView1: TcxGridDBTableView;
     cxGrid1Level1: TcxGridLevel;
     cxGrid1: TcxGrid;
-    dsSysPoint: TDataSource;
+    dsSYS_POINT_CLIENTE: TDataSource;
     cxGrid1DBTableView1STATUS: TcxGridDBColumn;
     cxGrid1DBTableView1RAZAO_SOCIAL: TcxGridDBColumn;
     cxGrid1DBTableView1CNPJ: TcxGridDBColumn;
@@ -74,12 +74,12 @@ type
     cxGridDBTableView1Column2: TcxGridDBColumn;
     cxGridDBTableView1Column3: TcxGridDBColumn;
     cdsEmpresa: TRESTDWClientSQL;
-    cdsSysPoint: TRESTDWClientSQL;
-    cdsSysPointIDSYS_POINT_CLIENTE: TStringField;
-    cdsSysPointSTATUS: TStringField;
-    cdsSysPointRAZAO_SOCIAL: TStringField;
-    cdsSysPointCNPJ: TStringField;
-    cdsSysPointMENSAGEM: TMemoField;
+    SYS_POINT_CLIENTE: TRESTDWClientSQL;
+    SYS_POINT_CLIENTEIDSYS_POINT_CLIENTE: TStringField;
+    SYS_POINT_CLIENTESTATUS: TStringField;
+    SYS_POINT_CLIENTERAZAO_SOCIAL: TStringField;
+    SYS_POINT_CLIENTECNPJ: TStringField;
+    SYS_POINT_CLIENTEMENSAGEM: TMemoField;
     cdsEmpresaIDSYS_POINT_CLIENTE: TStringField;
     cdsEmpresaIDEMPRESA: TStringField;
     cdsEmpresaDTHR_CADASTRO: TSQLTimeStampField;
@@ -137,10 +137,16 @@ type
     cdsEmpresaSENHAEMAIL: TStringField;
     cdsEmpresaPORTAEMAIL: TIntegerField;
     JvMemo1: TJvMemo;
-    FDMemTable1: TFDMemTable;
+    FDMem: TFDMemTable;
     DataSource1: TDataSource;
     DBGrid1: TDBGrid;
-    FDMemTable2: TFDMemTable;
+    cdscliente: TRESTDWClientSQL;
+    StringField1: TStringField;
+    StringField2: TStringField;
+    StringField3: TStringField;
+    StringField4: TStringField;
+    MemoField1: TMemoField;
+    DsCliente: TDataSource;
     procedure FormCreate(Sender: TObject);
     procedure cdsSysPointNewRecord(DataSet: TDataSet);
     procedure JvImgBtn2Click(Sender: TObject);
@@ -197,7 +203,7 @@ end;
 procedure TFrmAdminConfig.cxGridDBTableView1Column1PropertiesButtonClick(Sender: TObject; AButtonIndex: Integer);
 begin
   Panel3.Visible := true;
-  cdsSysPoint.First;
+  SYS_POINT_CLIENTE.First;
   dxNavBar1.Enabled := false;
   JvImgBtn3.Enabled := false;
   JvImgBtn4.Enabled := false;
@@ -223,14 +229,65 @@ begin
 end;
 
 procedure TFrmAdminConfig.FormCreate(Sender: TObject);
+
+var
+  _vsql : string ;
+
+
+
 begin
+  _vsql := 'SELECT first 3 P.*,' + #13#10 +
+       'CID1.DESCRICAO AS FK_CIDADE_NOME,' + #13#10 +
+       'CID1.UF AS FK_CIDADE_UF,' + #13#10 +
+       '' + #13#10 +
+       'CID2.DESCRICAO AS FK_CIDADE_ENTR_NOME,' + #13#10 +
+       'CID2.UF AS FK_CIDADE_ENTR_UF,' + #13#10 +
+       '' + #13#10 +
+       'CID3.DESCRICAO AS FK_CIDADE_COB_NOME,' + #13#10 +
+       'CID3.UF AS FK_CIDADE_COB_UF,' + #13#10 +
+       '' + #13#10 +
+       'P1.RAZAO_SOCIAL AS FK_REPRES_RAZAO,' + #13#10 +
+       'P2.RAZAO_SOCIAL AS FK_SUPERVISOR_RAZAO ,' + #13#10 +
+       'P3.RAZAO_SOCIAL AS FK_TRANS_RAZAO ,' + #13#10 +
+       'P4.RAZAO_SOCIAL AS FK_RAZAO_GERENTE ,' + #13#10 +
+       'GP.DESCRICAO AS FK_DESC_GRUPOPESSOA ,' + #13#10 +
+       'TB.DESCRICAO AS FK_DESCRTB,' + #13#10 +
+       'TB1.DESCRICAO AS FK_DESCRTB1,' + #13#10 +
+       'TB2.DESCRICAO AS FK_DESCRTB2,' + #13#10 +
+       'TB3.DESCRICAO AS FK_DESCRTB3,' + #13#10 +
+       '' + #13#10 +
+       'R.DESCRICAO AS FK_ROTA' + #13#10 +
+       '' + #13#10 +
+       'FROM PESSOA P' + #13#10 +
+       'LEFT JOIN CIDADE CID1 ON (CID1.IDCIDADE = P.IDCIDADE)' + #13#10 +
+       'LEFT JOIN CIDADE CID2 ON (CID2.IDCIDADE = P.ENTR_IDCIDADE)' + #13#10 +
+       'LEFT JOIN CIDADE CID3 ON (CID3.IDCIDADE = P.COB_IDCIDADE)' + #13#10 +
+       'LEFT JOIN PESSOA P1 ON (P1.IDPESSOA = P.IDREPRESENTANTE)  AND ( P1.IDSYS_POINT_CLIENTE = P.IDSYS_POINT_CLIENTE )' + #13#10 +
+       'LEFT JOIN PESSOA P2 ON (P2.IDPESSOA = P.REPRESENTANTE_IDSUPERVISOR)  AND ( P2.IDSYS_POINT_CLIENTE = P.IDSYS_POINT_CLIENTE )' + #13#10 +
+       'LEFT JOIN PESSOA P3 ON (P3.IDPESSOA = P.IDPESSOATRANS )  AND ( P3.IDSYS_POINT_CLIENTE = P.IDSYS_POINT_CLIENTE )' + #13#10 +
+       'LEFT JOIN PESSOA P4 ON (P4.IDPESSOA = P.REPRESENTANTE_IDGERENTE )  AND ( P4.IDSYS_POINT_CLIENTE = P.IDSYS_POINT_CLIENTE )' + #13#10 +
+       'LEFT JOIN GRUPOPESSOA GP ON ( GP.IDGRUPOPESSOA = P.IDGRUPOPESSOA ) AND ( GP.IDSYS_POINT_CLIENTE = P.IDSYS_POINT_CLIENTE )' + #13#10 +
+       'LEFT JOIN TABELAPRECO TB ON ( TB.IDTABELAPRECO = P.IDTABELAPRECO ) AND ( TB.IDSYS_POINT_CLIENTE = P.IDSYS_POINT_CLIENTE )' + #13#10 +
+       'LEFT JOIN TABELAPRECO TB1 ON ( TB1.IDTABELAPRECO = P.IDTABELAPRECO1_NET ) AND ( TB1.IDSYS_POINT_CLIENTE = P.IDSYS_POINT_CLIENTE )' + #13#10 +
+       '' + #13#10 +
+       'LEFT JOIN TABELAPRECO TB2 ON ( TB2.IDTABELAPRECO = P.IDTABELAPRECO2_NET ) AND ( TB2.IDSYS_POINT_CLIENTE = P.IDSYS_POINT_CLIENTE )' + #13#10 +
+       'LEFT JOIN TABELAPRECO TB3 ON ( TB3.IDTABELAPRECO = P.IDTABELAPRECO3_NET ) AND ( TB3.IDSYS_POINT_CLIENTE = P.IDSYS_POINT_CLIENTE )' + #13#10 +
+       'LEFT JOIN ROTA R ON (R.IDSYS_POINT_CLIENTE = P.IDSYS_POINT_CLIENTE AND R.IDROTA=P.IDROTA)' ;
+
+  Funcoes.RetornaSQL(_vsql );
+  dm.Ret_sql.First;
+  cdscliente.LoadFromDataSet(dm.Ret_sql, 0, lmCopy);
+
+
+
+
   cxPageControl1.Properties.HideTabs := true;
   cxPageControl1.ActivePageIndex := 0;
 
    // abrindo a tabela de configuracoes
   Funcoes.RetornaSQL('select * from SYS_POINT_CLIENTE');
   dm.Ret_sql.First;
-  CdsSyspoint.LoadFromDataSet(dm.Ret_sql, 0, lmCopy);
+  SYS_POINT_CLIENTE.LoadFromDataSet(dm.Ret_sql, 0, lmCopy);
 
 
   Funcoes.RetornaSQL('select * from empresa');
@@ -247,8 +304,8 @@ procedure TFrmAdminConfig.JvDBGrid1KeyPress(Sender: TObject; var Key: Char);
 begin
   if not( cdsEmpresa.state in [dsedit]) then
      cdsEmpresa.edit;
-  cdsEmpresa.FieldByName( 'IDSYS_POINT_CLIENTE' ).AsString := cdsSysPoint.FieldByName('IDSYS_POINT_CLIENTE').AsString;
-  cdsEmpresa.FieldByName( 'FK_POINT_CLIENTE').AsString := cdsSysPoint.FieldByName( 'RAZAO_SOCIAL').AsString;
+  cdsEmpresa.FieldByName( 'IDSYS_POINT_CLIENTE' ).AsString := SYS_POINT_CLIENTE.FieldByName('IDSYS_POINT_CLIENTE').AsString;
+  cdsEmpresa.FieldByName( 'FK_POINT_CLIENTE').AsString := SYS_POINT_CLIENTE.FieldByName( 'RAZAO_SOCIAL').AsString;
   cdsEmpresa.Post;
   Panel3.Visible := false;
   dxNavBar1.Enabled := true;
@@ -258,73 +315,11 @@ begin
 end;
 
 procedure TFrmAdminConfig.JvImgBtn1Click(Sender: TObject);
-var
-JSONValue     : TJSONValue;
-jsontexto : string;
-
-  DWParams: TDWParams;
-  JSONParam: TJSONParam;
-  lResponse: String;
-
 begin
- JSONValue := TJSONValue.Create;
-
- JSONValue.LoadFromDataset('SYS_POINT_CLIENTE', cdsSysPoint, False );
-
- jsontexto:= ' {"ObjectType":"toDataset", "Direction":"odINOUT", "Encoded":"False", "ValueType":"ovDataSet", "'+'SYS_POINT_CLIENTE'+'":[';
- jsontexto:= jsontexto + JSONValue.Value + ']}' ;
- jvMemo1.Text := jsontexto;
 
 
-
-
- JSONValue.WriteToDataset(dtFull, jvMemo1.Text, FDMemTable2 );
-
-
- JSONValue.Free;
-
- dm.RESTClientPooler1.RequestTimeOut := 2 * 60000;
-
-  DWParams := TDWParams.Create;
-
-  try
-    DWParams.Encoding := GetEncoding( dm.RESTClientPooler1.Encoding);
-
-    JSONParam := TJSONParam.Create(DWParams.Encoding);
-    JSONParam.ParamName := 'SQL';
-    JSONParam.ObjectDirection := odIN;
-    JSONParam.SetValue( jvmemo1.Text +'º'+jvmemo1.Text );
-    DWParams.Add(JSONParam);
-
-    JSONParam := TJSONParam.Create(DWParams.Encoding);
-    JSONParam.ParamName := 'CNPJ';
-    JSONParam.ObjectDirection := odIN;
-    JSONParam.SetValue( dm.cnpj);
-    DWParams.Add(JSONParam);
-
-
-    JSONParam := TJSONParam.Create(DWParams.Encoding);
-    JSONParam.ParamName := 'RESULTADO';
-    JSONParam.SetValue('');
-    DWParams.Add(JSONParam);
-
-    lResponse := dm.RESTClientPooler1.SendEvent('ApllyUpdadte', DWParams);
-
-    If DWParams.ItemsString['RESULTADO'].Value <> '' Then
-    begin
-
-      // Memo1.Lines.Text := trim(DWParams.ItemsString['RESULTADO'].Value);
-      // JSONValue.WriteToDataset(dtFull, Memo1.Lines.Text, FDMemTable1);
-
-    end;
-
-  finally
-    FreeAndNil(DWParams);
-
-  end;
-
-
-//  cxPageControl1.ActivePageIndex := 0;
+ funcoes.ApplayUpdates([SYS_POINT_CLIENTE]);
+ cxPageControl1.ActivePageIndex := 0;
 end;
 
 procedure TFrmAdminConfig.JvImgBtn2Click(Sender: TObject);

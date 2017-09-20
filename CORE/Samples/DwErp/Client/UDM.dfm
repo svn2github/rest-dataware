@@ -45,7 +45,7 @@ object DM: TDM
     Params = <>
     DataBase = Coneccao
     SQL.Strings = (
-      'select * from sys_config')
+      '')
     CacheUpdateRecords = False
     Left = 160
     Top = 8
