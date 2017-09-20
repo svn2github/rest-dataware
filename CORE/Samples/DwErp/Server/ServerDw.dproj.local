@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2017/07/01 08:00:00.000.128,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\uPrincipal.dfm=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2017/07/01 08:00:04.000.876,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\Server.dproj=C:\Users\XyberX\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2017/07/01 08:05:00.000.985,D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\FileServer.dproj=D:\Meus Dados\Projetos\SUGV\Componentes\XyberPower\REST_Controls\CORE\Samples\FileTransfer\Server\Server.dproj</Transaction>
+    <Transaction>2017/09/09 15:47:59.000.717,D:\sistemas\tokio\conflex3c\Server\ServerConflex3c.dproj=D:\sistemas\tokio\conflex3c\Server\FileServer.dproj</Transaction>
+    <Transaction>2017/09/09 15:56:40.000.237,=D:\sistemas\tokio\conflex3c\Server\UDM.pas</Transaction>
+    <Transaction>2017/09/09 16:01:00.000.178,=D:\sistemas\tokio\conflex3c\Server\Libs\uClassePonto.pas</Transaction>
+    <Transaction>2017/09/09 16:01:56.000.838,=D:\sistemas\tokio\conflex3c\Server\Libs\uUpdateDB.pas</Transaction>
+    <Transaction>2017/09/09 21:18:50.000.575,=D:\sistemas\tokio\conflex3c\Server\Unit1.pas</Transaction>
+    <Transaction>2017/09/09 21:19:14.000.207,D:\sistemas\tokio\conflex3c\Server\RestDM.pas=D:\sistemas\tokio\conflex3c\Server\Unit1.pas</Transaction>
+    <Transaction>2017/09/09 21:19:14.000.207,D:\sistemas\tokio\conflex3c\Server\RestDM.dfm=D:\sistemas\tokio\conflex3c\Server\Unit1.dfm</Transaction>
+    <Transaction>2017/09/09 21:30:18.000.431,D:\sistemas\tokio\conflex3c\Server\SMDWCore.pas=</Transaction>
+    <Transaction>2017/09/09 21:30:45.000.475,=D:\sistemas\tokio\conflex3c\Server\SMDWCore.pas</Transaction>
+    <Transaction>2017/09/09 21:31:59.000.380,D:\sistemas\tokio\conflex3c\Server\RestDM.pas=</Transaction>
+    <Transaction>2017/09/09 21:39:37.000.952,D:\sistemas\tokio\conflex3c\Server\SMDWCore.pas=</Transaction>
+    <Transaction>2017/09/09 21:55:09.000.123,=D:\sistemas\tokio\conflex3c\Server\Unit1.pas</Transaction>
+    <Transaction>2017/09/09 21:55:38.000.232,D:\sistemas\tokio\conflex3c\Server\Unit1.dfm=D:\sistemas\tokio\conflex3c\Server\UDwDM.dfm</Transaction>
+    <Transaction>2017/09/09 21:55:38.000.232,D:\sistemas\tokio\conflex3c\Server\Unit1.pas=D:\sistemas\tokio\conflex3c\Server\UDwDM.pas</Transaction>
+    <Transaction>2017/09/13 00:04:27.000.730,=D:\sistemas\tokio\conflex3c\lib\NFDXML.pas</Transaction>
+    <Transaction>2017/09/14 21:35:56.000.858,D:\sistemas\tokio\conflex3c\Server\UDmService.dfm=D:\sistemas\tokio\conflex3c\Server\UDwDM.dfm</Transaction>
+    <Transaction>2017/09/14 21:35:56.000.858,D:\sistemas\tokio\conflex3c\Server\UDmService.pas=D:\sistemas\tokio\conflex3c\Server\UDwDM.pas</Transaction>
+    <Transaction>2017/09/14 22:50:02.000.713,D:\sistemas\tokio\conflex3c\Server\UDM.pas=</Transaction>
+    <Transaction>2017/09/14 23:54:09.000.599,=D:\sistemas\tokio\conflex3c\Server\UDM.pas</Transaction>
+    <Transaction>2017/09/18 12:06:23.000.623,D:\sistemas\Base_RdWare\DwErp\Server\ServerConflex3c.dproj=D:\sistemas\Base_RdWare\DwErp\Server\ServerDw.dproj</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="..\..\DwErp"/>
+    <File Path="..\lib"/>
+    <File Path="..\lib\NFDXML.pas"/>
+    <File Path="Libs"/>
+    <File Path="Libs\uClassePonto.pas"/>
+    <File Path="Libs\uUpdateDB.pas"/>
+    <File Path="Libs\uUpdateDB.dfm"/>
+    <File Path="UDmService.pas"/>
+    <File Path="UDmService.dfm"/>
+    <File Path="uPrincipal.pas"/>
+    <File Path="uPrincipal.dfm"/>
+  </ProjectSortOrder>
+</BorlandProject>
