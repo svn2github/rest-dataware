@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="23">
+    <Units Count="24">
       <Unit0>
         <Filename Value="ClientBLOB.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -20,8 +20,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
         <TopLine Value="84"/>
-        <CursorPos X="115" Y="95"/>
+        <CursorPos X="13" Y="93"/>
         <UsageCount Value="39"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -56,14 +57,15 @@
         </Bookmarks>
       </Unit4>
       <Unit5>
-        <Filename Value="..\..\..\Source\uRESTDWPoolerDB.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1579"/>
-        <CursorPos X="51" Y="1594"/>
+        <Filename Value="..\..\..\Source\uRestDWPoolerDB.pas"/>
+        <UnitName Value="uRESTDWPoolerDB"/>
+        <TopLine Value="1591"/>
+        <CursorPos X="66" Y="1605"/>
         <UsageCount Value="17"/>
         <Bookmarks Count="1">
           <Item0 Y="2332" ID="1"/>
         </Bookmarks>
+        <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\..\..\Source\libs\uDWJSONObject.pas"/>
@@ -194,8 +196,16 @@
         <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit22>
+      <Unit23>
+        <Filename Value="..\..\..\Source\libs\indy10\trunk\Lib\System\IdStream.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="16"/>
+        <CursorPos X="3" Y="29"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit23>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
+    <JumpHistory Count="4" HistoryIndex="3">
       <Position1>
         <Filename Value="Unit1.pas"/>
         <Caret Line="80" Column="5" TopLine="71"/>
@@ -208,6 +218,10 @@
         <Filename Value="Unit1.pas"/>
         <Caret Line="92" Column="24" TopLine="84"/>
       </Position3>
+      <Position4>
+        <Filename Value="..\..\..\Source\uRestDWPoolerDB.pas"/>
+        <Caret Line="1605" Column="66" TopLine="1591"/>
+      </Position4>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>

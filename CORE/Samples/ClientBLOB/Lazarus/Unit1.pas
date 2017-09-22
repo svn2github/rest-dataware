@@ -78,6 +78,8 @@ begin
  RESTDWDataBase1.Compression   := CheckBox1.Checked;
  RESTDWDataBase1.Open;
  RESTDWClientSQL1.Close;
+ RESTDWClientSQL1.SQL.Clear;
+ RESTDWClientSQL1.SQL.Add('SELECT * FROM TB_USUARIO');
  RESTDWClientSQL1.Open;
 end;
 

@@ -138,7 +138,7 @@ object RestDWForm: TRestDWForm
         ParentFont = False
       end
       object Label3: TLabel
-        Left = 167
+        Left = 164
         Top = 37
         Width = 35
         Height = 13
@@ -222,7 +222,7 @@ object RestDWForm: TRestDWForm
       object Bevel1: TBevel
         Left = 8
         Top = 28
-        Width = 344
+        Width = 360
         Height = 2
         Shape = bsTopLine
       end
@@ -1228,7 +1228,7 @@ object RestDWForm: TRestDWForm
         Text = 'testserver'
       end
       object edPasswordDW: TEdit
-        Left = 167
+        Left = 164
         Top = 55
         Width = 100
         Height = 21
@@ -1314,7 +1314,7 @@ object RestDWForm: TRestDWForm
         Text = ''
       end
       object cbEncode: TCheckBox
-        Left = 270
+        Left = 268
         Top = 56
         Width = 101
         Height = 19
@@ -1330,7 +1330,7 @@ object RestDWForm: TRestDWForm
         TabOrder = 12
       end
       object CheckBox1: TCheckBox
-        Left = 270
+        Left = 268
         Top = 81
         Width = 91
         Height = 19

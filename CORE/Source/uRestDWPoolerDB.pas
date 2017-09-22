@@ -1452,7 +1452,7 @@ Begin
  {$ELSE}
   vSQL.OnChange                    := OnChangingSQL;
  {$ENDIF}
- vParams                           := TParams.Create;
+ vParams                           := TParams.Create(Self);
 // vCacheDataDB                      := Self.CloneSource;
  vUpdateTableName                  := '';
  FieldDefsUPD                      := TFieldDefs.Create(Self);
@@ -1597,10 +1597,12 @@ Var
  Begin
   FieldDef := FindField(Value);
   If FieldDef <> Nil Then
-   vParams.CreateParam(FieldDef.DataType, Value, ptInput)
+   Begin
+    vParams.CreateParam(FieldDef.DataType, Value, ptInput);
+    vParams.ParamByName(Value).Size := FieldDef.Size;
+   End
   Else
-   vParams.CreateParam(ftUnknown, Value, ptInput);
-  vParams.ParamByName(Value).Size := FieldDef.Size;
+   vParams.CreateParam(ftString, Value, ptInput);
  End;
 Begin
  vParams.Clear;
@@ -2378,8 +2380,7 @@ End;
 constructor TRESTDWStoredProc.Create(AOwner: TComponent);
 begin
  Inherited;
- vParams   := TParams.Create;
- vParams   := Nil;
+ vParams   := TParams.Create(Self);
  vProcName := '';
 end;
 
